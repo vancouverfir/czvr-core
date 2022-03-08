@@ -1,7 +1,6 @@
-# Winnipeg FIR Core 
-### The website for the Virtual Winnipeg FIR on VATSIM - https://winnipegfir.ca
+# Vancouver FIR Core
 
-### Thank you to the team at the [Gander Oceanic OCA](https://github.com/gander-oceanic-fir-vatsim) for developing the initial core! [Click here to visit their repository.](https://github.com/gander-oceanic-fir-vatsim/czqo-core)
+### Thank you to the team at the [Gander Oceanic OCA](https://github.com/gander-oceanic-fir-vatsim) amd [Winnipeg FIR](https://github.com/winnipegfir) for developing the initial core! [Click here to visit the Gander repository.](https://github.com/gander-oceanic-fir-vatsim/czqo-core) and [here to visit the CZWG repository](https://github.com/winnipegfir/CZWG-core)
 ---
 ### Contributing
 
