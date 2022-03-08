@@ -1,0 +1,17 @@
+version: 7
+
+preset: laravel
+
+tab-width: 4
+
+use-tabs: false
+
+finder:
+  exclude:
+    - ".github"
+    - "public"
+    - "storage"
+    - "vendor"
+  name: "*.php"
+  not-name:
+    - "*.blade.php"
