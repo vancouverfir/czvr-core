@@ -116,7 +116,7 @@
                             No hours recorded
                         </span></h3>
                         @endif
-<!--Winnipeg Training Hrs-->
+<!--Vancouver Training Hrs-->
                         @if ($user->rosterProfile->status == "training")
                         @if (!$user->rosterProfile->currency == 0)
                           @if ($user->rosterProfile->currency < 2.0)
@@ -131,9 +131,9 @@
                           @endif
                               <p>They require <b>2 hours</b> of activity every month.</p>
                         @endif
-<!--End Winnipeg Training Hours-->
+<!--End Vancouver Training Hours-->
 
-<!--Winnipeg Cntrlr Hrs-->
+<!--Vancouver Cntrlr Hrs-->
                         @if ($user->rosterProfile->status == "home")
                         @if (!$user->rosterProfile->currency == 0)
                           @if ($user->rosterProfile->currency < 2.0)
@@ -148,9 +148,9 @@
                           @endif
                               <p>They require <b>2 hours</b> of activity every month.</p>
                         @endif
-<!--End Winnipeg Cntrlr Hours-->
+<!--End Vancouver Cntrlr Hours-->
 
-<!--Winnipeg Vstr Cntrlr Hrs-->
+<!--Vancouver Vstr Cntrlr Hrs-->
                         @if ($user->rosterProfile->status == "visit")
                         @if (!$user->rosterProfile->currency == 0)
                         @if ($user->rosterProfile->currency < 1.0)
@@ -166,9 +166,9 @@
                         <p>They require <b>1 hour</b> of activity every month.</p>
                         @endif
 
-<!--End Winnipeg Cntrlr Hours-->
+<!--End Vancouver Cntrlr Hours-->
 
-<!--Winnipeg Cntrlr Hrs-->
+<!--Vancouver Cntrlr Hrs-->
                         @if ($user->rosterProfile->status == "instructor")
                         @if (!$user->rosterProfile->currency == 0)
                             @if ($user->rosterProfile->currency < 3.0)
@@ -183,7 +183,7 @@
                             @endif
                             <p>They require <b>3 hours</b> of activity every 2 month.</p>
                         @endif
-<!--End Winnipeg Instrctr Hours-->
+<!--End Vancouver Instrctr Hours-->
 
                     @endif
 
@@ -258,7 +258,7 @@
                     @if($user->hasDiscord())
                     <h5><img style="border-radius:50%; height: 30px;" class="img-fluid" src="{{$user->getDiscordAvatar()}}" alt="">&nbsp;&nbsp;{{$user->getDiscordUser()->username}}#{{$user->getDiscordUser()->discriminator}}</h5>
                     <ul class="list-unstyled">
-                        <li class="d-flex align-items-center">Member of the Winnipeg Discord: <i style="margin-left: 5px;font-size: 20px;" class="{{$user->memberOfCZWGGuild() ? 'fas fa-check-circle green-text' : 'fas fa-times-circle red-text'}}"></i></li>
+                        <li class="d-flex align-items-center">Member of the Vancouver Discord: <i style="margin-left: 5px;font-size: 20px;" class="{{$user->memberOfCZWGGuild() ? 'fas fa-check-circle green-text' : 'fas fa-times-circle red-text'}}"></i></li>
                     </ul>
                     <hr>
                     <h5>

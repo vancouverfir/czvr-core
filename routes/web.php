@@ -18,7 +18,7 @@ Route::get('/nate', 'HomeController@nate')->name('nate');
 Route::get('/roster', 'AtcTraining\RosterController@showPublic')->name('roster.public');
 Route::get('/roster/{id}', 'Users\UserController@viewProfile');
 Route::get('/roster/{id}/connections', 'Users\UserController@viewConnections');
-Route::get('/join', 'AtcTraining\ApplicationsController@joinWinnipeg')->name('join.public');
+Route::get('/join', 'AtcTraining\ApplicationsController@joinVancouver')->name('join.public');
 Route::get('/staff', 'Users\StaffListController@index')->name('staff');
 Route::get('/policies', 'Publications\PoliciesController@index')->name('policies');
 Route::get('/meetingminutes', 'News\NewsController@minutesIndex')->name('meetingminutes');
