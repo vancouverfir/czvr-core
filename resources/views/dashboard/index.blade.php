@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 @section('content')
-@section('title', 'Dashboard - Winnipeg FIR')
+@section('title', 'Dashboard - Vancouver FIR')
 
 <style>
 .accordion {
@@ -50,7 +50,7 @@
 <div style="background-color: #013162">
     <div class="container py-4">
         <h1 data-step="1"
-            data-intro="Welcome to your Dashboard! This is your central hub for all things Winnipeg. Here you can interact with our FIR, and manage your account."
+            data-intro="Welcome to your Dashboard! This is your central hub for all things Vancouver. Here you can interact with our FIR, and manage your account."
             class="font-weight-bold white-text">Dashboard</h1>
         <br class="my-2">
         <div class="row">
@@ -78,7 +78,7 @@
                     </div>
                 @endif
                 <br>
-                <div data-step="2" data-intro="Here is where you manage and view the data we store on you and your Winnipeg FIR Profile." class="card ">
+                <div data-step="2" data-intro="Here is where you manage and view the data we store on you and your Vancouver FIR Profile." class="card ">
                     <div class="card-body pb-0">
                         <h3 class="font-weight-bold blue-text pb-2">Profile</h3>
                         <div class="row">
@@ -200,7 +200,7 @@
                                                 <hr>
                                                 <h5 class="font-weight-bold">What Does This Mean?</h5>
                                                 <p>
-                                                    When you subscribe to our email service, you allow the Winnipeg FIR to send you 'promotional' emails as defined by the European Union GDPR.
+                                                    When you subscribe to our email service, you allow the Vancouver FIR to send you 'promotional' emails as defined by the European Union GDPR.
                                                     These emails are typically not necessary to your continued participation in the FIR or holding an account with us on our system.<br/>
                                                     Some examples would include:
                                                 </p>
@@ -214,7 +214,7 @@
                                                 <p>To learn more about how we manage your data, please read our <a href="{{url('/privacy')}}">privacy policy!</a>
                                                 <br>
                                                 @if (Auth::user()->gdpr_subscribed_emails == 0)
-                                                <a role="button" class="ml-0 mt-3 btn btn-sm btn-success" href="{{url('/dashboard/emailpref/subscribe')}}">Subscribe to Winnipeg Emails Now!</a>
+                                                <a role="button" class="ml-0 mt-3 btn btn-sm btn-success" href="{{url('/dashboard/emailpref/subscribe')}}">Subscribe to Vancouver Emails Now!</a>
                                                 @else
                                                 <a role="button" class="ml-0 mt-3 btn btn-sm btn-danger" href="{{url('/dashboard/emailpref/unsubscribe')}}">Unsubscribe</a>
                                                 @endif
@@ -441,7 +441,7 @@
                                     @endif
                                 @endif
 
-                            <!--Winnipeg Training Hrs-->
+                            <!--Vancouver Training Hrs-->
                                 @if (Auth::user()->rosterProfile->status == "training")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 2.0)
@@ -457,8 +457,8 @@
                                     <p>You require <b>2 hours</b> of activity every month!</p>
                                 @endif
 
-                            <!--End Winnipeg Training Hours-->
-                                <!--Winnipeg Cntrlr Hrs-->
+                            <!--End Vancouver Training Hours-->
+                                <!--Vancouver Cntrlr Hrs-->
                                 @if (Auth::user()->rosterProfile->status == "home")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 2.0)
@@ -473,9 +473,9 @@
                                     @endif
                                     <p>You require <b>2 hours</b> of activity every month!</p>
                                 @endif
-                            <!--End Winnipeg Cntrlr Hours-->
+                            <!--End Vancouver Cntrlr Hours-->
 
-                                <!--Winnipeg Vstr Cntrlr Hrs-->
+                                <!--Vancouver Vstr Cntrlr Hrs-->
                                 @if (Auth::user()->rosterProfile->status == "visit")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 1.0)
@@ -491,9 +491,9 @@
                                     <p>You require <b>1 hour</b> of activity every month!</p>
                                 @endif
 
-                            <!--End Winnipeg Cntrlr Hours-->
+                            <!--End Vancouver Cntrlr Hours-->
 
-                                <!--Winnipeg Cntrlr Hrs-->
+                                <!--Vancouver Cntrlr Hrs-->
                                 @if (Auth::user()->rosterProfile->status == "instructor")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
@@ -508,7 +508,7 @@
                                     @endif
                                     <p>You require <b>3 hours</b> of activity every month!</p>
                                 @endif
-                            <!--End Winnipeg Instrctr Hours-->
+                            <!--End Vancouver Instrctr Hours-->
                                 @if (Auth::user()->rosterProfile->rating == 'S1' || Auth::user()->rosterProfile->rating == 'S2' || Auth::user()->rosterProfile->rating == 'S3')
                                     <b>Rating:</b>
 
