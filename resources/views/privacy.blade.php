@@ -469,7 +469,7 @@
                 </div>
             </div>
         </div>
-        <div class="accordion__item" data-item="1">
+        <div class="accordion__item active" data-item="1">
             <div class="accordion__title">
                 <span><div class="paragraph"><span style="color:rgb(42, 42, 42)">How we use your information</span></div><span>
             </span></span></div>
@@ -479,7 +479,7 @@
                 </div>
             </div>
         </div>
-        <div class="accordion__item" data-item="2">
+        <div class="accordion__item active" data-item="2">
             <div class="accordion__title">
                 <span><div class="paragraph"><span style="color:rgb(42, 42, 42)">Who we share with</span></div><span>
             </span></span></div>
@@ -489,7 +489,7 @@
                 </div>
             </div>
         </div>
-        <div class="accordion__item" data-item="3">
+        <div class="accordion__item active" data-item="3">
             <div class="accordion__title">
                 <span><div class="paragraph"><span style="color:rgb(42, 42, 42)">Cookie Usage</span></div><span>
             </span></span></div>
@@ -499,7 +499,7 @@
                 </div>
             </div>
         </div>
-        <div class="accordion__item" data-item="4">
+        <div class="accordion__item active" data-item="4">
             <div class="accordion__title">
                 <span><div class="paragraph"><span style="color:rgb(42, 42, 42)">Right to be Forgotten, Data Rectification &amp; Access</span></div><span>
             </span></span></div>
