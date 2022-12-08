@@ -12,7 +12,7 @@
                     <div class="py-5">
                         <div>
                             <br>
-                            <h1 style="font-size: 7em; color: #fff">
+                            <h1 style="font-size: 5em; color: #fff">
                                 <span class="main-colour corner" style="padding: 1%">We Are Vancouver.</span>
                             </h1>
                             <h6 style="font-size: 1.25em; color: #fff;">
