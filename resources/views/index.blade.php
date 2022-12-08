@@ -4,7 +4,7 @@
 
 @section('content')
 <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
-    <div class="winnipeg-blue">
+    <div class="main-colour">
         <div data-jarallax data-speed="0.2" class="jarallax" style="height: calc(100vh - 59px)">
             <div class="mask flex-center flex-column"
                  style="z-index: 1; width: 100%; background-image: url({{$background->url}}); {{$background->css}}">
@@ -13,10 +13,10 @@
                         <div>
                             <br>
                             <h1 style="font-size: 7em; color: #fff">
-                                <span class="winnipeg-blue corner" style="padding: 1%">We Are Winnipeg.</span>
+                                <span class="main-colour corner" style="padding: 1%">We Are Winnipeg.</span>
                             </h1>
                             <h6 style="font-size: 1.25em; color: #fff;">
-                                <span class="winnipeg-blue corner" style="padding: 0.5%">Screenshot by {{$background->credit}}</span>
+                                <span class="main-colour corner" style="padding: 0.5%">Screenshot by {{$background->credit}}</span>
                             </h6>
                             <br>
                             <h4 style="font-size: 2em; color: #fff;">
@@ -36,7 +36,7 @@
                         </div>
                         <div class="card-body" style="padding-bottom:2%">
                             @foreach($news as $n)
-                                <h5><span class="badge winnipeg-blue">{{$n->posted_on_pretty()}}</span>&nbsp;&nbsp;<a href="{{url('/news').'/'.$n->slug}}" style="color: black;"><text class="align-middle">{{$n->title}}</text></h5></a>
+                                <h5><span class="badge main-colour">{{$n->posted_on_pretty()}}</span>&nbsp;&nbsp;<a href="{{url('/news').'/'.$n->slug}}" style="color: black;"><text class="align-middle">{{$n->title}}</text></h5></a>
                             @endforeach
                         </div>
                         <div class="card-footer pb-1">
@@ -55,7 +55,7 @@
                                 <h5 style="text-align: center;">Stay tuned here for upcoming events!</h5>
                             @endif
                             @foreach($nextEvents as $e)
-                                <h5><a href="{{url('/events').'/'.$e->slug}}" style="color: black;"><text class="align-middle">{{$e->name}}</text></a>&nbsp;&nbsp;<span class="float-right badge winnipeg-blue">{{$e->start_timestamp_pretty()}}</span></h5>
+                                <h5><a href="{{url('/events').'/'.$e->slug}}" style="color: black;"><text class="align-middle">{{$e->name}}</text></a>&nbsp;&nbsp;<span class="float-right badge main-colour">{{$e->start_timestamp_pretty()}}</span></h5>
                             @endforeach
                         </div>
                         <div class="card-footer pb-1">
@@ -114,7 +114,7 @@
                                         </a>
                                     </div>
                                     <div style="float: right;">
-                                    <span class="badge winnipeg-blue">
+                                    <span class="badge main-colour">
                                         {{$p->callsign}} on {{$p->frequency}}
                                     </span>
                                     </div>

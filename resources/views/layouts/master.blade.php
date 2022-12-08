@@ -17,7 +17,7 @@
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <!--Rich Preview Meta-->
-        <title>@yield('title', 'Winnipeg FIR')</title>
+        <title>@yield('title', 'Vancouver FIR')</title>
         <meta name="description" content="@yield('description', '')">
         <meta name="theme-color" content="#013162">
         <meta name="og:title" content="@yield('title', 'Winnipeg FIR')">
@@ -84,6 +84,8 @@
         <script src="{{asset('js/dropzone.js')}}"></script>
         <!--JqueryValidate-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+        <!---->
+        <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
     </head>
     <body>
     <!--Header-->
@@ -96,7 +98,7 @@
         </div>
     @endif
     <header>
-        <nav id="czwgHeader" class="navbar navbar-expand-lg navbar-dark p-0" style="min-height:59px; background-color:#013162">
+        <nav class="navbar navbar-expand-lg navbar-dark p-0 main-colour" style="min-height:59px">
             <div class="container">
                 <a class="navbar-brand" href="{{route('index')}}"><img style="height: 40px; width:auto;" src="https://winnipegfir.ca/storage/files/uploads/1612557788.png" alt=""></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"

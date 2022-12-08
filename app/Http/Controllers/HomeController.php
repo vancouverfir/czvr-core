@@ -25,16 +25,14 @@ class HomeController extends Controller
 
         $prefixes = [
             'WPG_',
-            'CZWG_',
-            'ZWG_',
-            'CYWG_',
-            'CYPG_',
-            'CYAV_',
-            'CYXE_',
-            'CYQR_',
-            'CYQT_',
-            'CYMJ_',
-            'CYFO_',
+            'CZVR_',
+            'ZVR_',
+            'CYVR_',
+            'CYYJ_',
+            'CYLW_',
+            'CYXS_',
+            'CYXX_',
+            'CYCD_',
         ];
 
         foreach ($controllers as $c) {
@@ -76,7 +74,7 @@ class HomeController extends Controller
         //Weather
         $weather = Cache::remember('weather.data', 900, function () {
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://api.checkwx.com/metar/CYWG,CYXE,CYQR,CYQT,CYPG,CYMJ/decoded?pretty=1');
+            curl_setopt($ch, CURLOPT_URL, 'https://api.checkwx.com/metar/CYVR,CYYJ,CYLW,CYXS,CYXX,CYCD/decoded?pretty=1');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-API-Key: '.env('AIRPORT_API_KEY')]);
 
@@ -89,22 +87,22 @@ class HomeController extends Controller
             if ($resp) {
                 foreach ($resp->data as $w) {
                     switch ($w->icao) {
-                        case 'CYWG':
+                        case 'CYVR':
                             $weatherArray[0] = $w;
                             break;
-                        case 'CYXE':
+                        case 'CYYJ':
                             $weatherArray[1] = $w;
                             break;
-                        case 'CYQT':
+                        case 'CYLW':
                             $weatherArray[2] = $w;
                             break;
-                        case 'CYQR':
+                        case 'CYXS':
                             $weatherArray[3] = $w;
                             break;
-                        case 'CYMJ':
+                        case 'CYXX':
                             $weatherArray[4] = $w;
                             break;
-                        case 'CYPG':
+                        case 'CYCD':
                             $weatherArray[5] = $w;
                             break;
                     }
