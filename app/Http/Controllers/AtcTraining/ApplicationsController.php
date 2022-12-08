@@ -131,8 +131,8 @@ class ApplicationsController extends Controller
         return view('dashboard.training.applications.viewall', compact('pendingapplications', 'acceptedapplications', 'deniedapplications'));
     }
 
-    public function joinVancouver()
+    public function joinvancouver()
     {
-        return view('joinVancouver');
+        return view('joinvancouver');
     }
 }
