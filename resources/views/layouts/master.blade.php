@@ -209,18 +209,8 @@
                         </li>
                         @endauth
                         <li class="nav-item d-flex align-items-center">
-                            <a href="https://www.facebook.com/CZWGFIR" class="nav-link waves-effect waves-light" target="_BLANK" >
-                                <i style="font-size: 1.7em;" class="fab fa-facebook"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center">
-                            <a href="https://twitter.com/CZWGFIR" class="nav-link waves-effect waves-light" target="_BLANK" >
+                            <a href="https://mobile.twitter.com/vancouverfir" class="nav-link waves-effect waves-light" target="_BLANK" >
                                 <i style="font-size: 1.7em;" class="fab fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center">
-                            <a href="https://www.instagram.com/CZWGFIR" class="nav-link waves-effect waves-light" target="_BLANK" >
-                                <i style="font-size: 1.7em;" class="fab fa-instagram"></i>
                             </a>
                         </li>
                         <li class="nav-item d-flex align-items-center">
