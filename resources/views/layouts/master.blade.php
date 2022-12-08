@@ -276,7 +276,7 @@
     <footer class="page-footer text-light font-small py-4 bg-dark {{Request::is('/dashboard') ? 'mt-5' : ''}}">
         <div class="container">
             <p style="color:white">For Flight Simulation Use Only - Not to be used for real-world navigation. By using this site, you agree to hold harmless and indemnify the owners and authors of these web pages, those listed on these pages, and all pages that this site that may be pointed to (i.e. external links).</p>
-            <p style="color:white">Copyright © {{ date('Y') }} Winnipeg FIR | All Rights Reserved.</p>
+            <p style="color:white">Copyright © {{ date('Y') }} Vancouver FIR | All Rights Reserved.</p>
             <div class="flex-left mt-3">
             <a href="{{route('about')}}">Github</a>
                 &nbsp;
@@ -308,7 +308,6 @@
                                 <img src="https://cdn.discordapp.com/attachments/482817676067209217/695255571623837837/220px-Bisexual_Pride_Flag.png" style="height:20px;" alt="">
                 </div>
                 <p>The Vancover FIR stands with the LGBTQIA+ community on VATSIM.</p>
-                <a href="{{route('about')}}"><small class="text-muted">{{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->sys_name}} {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->release}} ({{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->sys_build}})</small></a> <small>- <a target="_blank" href="https://blog.winnipegfir.ca" class="text-muted">The Winnipeg FIR Blog</a></small>
             </div>
         </div>
     </footer>
