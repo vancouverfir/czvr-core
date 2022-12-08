@@ -15,7 +15,7 @@ class EventReminders extends Command
      *
      * @var string
      */
-    protected $signature = 'winnipeg:event';
+    protected $signature = 'vancouver:event';
 
     /**
      * The console command description.

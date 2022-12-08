@@ -42,7 +42,7 @@ class News extends Notification
     {
         return (new MailMessage)->view(
             'emails.news', ['user' => $this->user, 'news' => $this->news]
-        )->subject('Winnipeg FIR News | '.$this->news->title);
+        )->subject('Vancouver FIR News | '.$this->news->title);
     }
 
     /**

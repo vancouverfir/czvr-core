@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
-@section('title', 'Instructing Staff - Winnipeg FIR')
-@section('description', 'The Winnipeg Instructors and Mentors!')
+@section('title', 'Instructing Staff - Vancouver FIR')
+@section('description', 'The Vancouver Instructors and Mentors!')
 
 @section('content')
     <div class="container" style="margin-top: 20px;">

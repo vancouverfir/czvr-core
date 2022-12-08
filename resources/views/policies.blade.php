@@ -7,7 +7,7 @@
 @stop
 
 @section('title', 'Policies')
-@section('description', 'Policies and Guidelines from the Winnipeg FIR')
+@section('description', 'Policies and Guidelines from the Vancouver FIR')
 
 @section('content')
     <div class="container" style="margin-top: 20px;">

@@ -22,6 +22,6 @@ class CheckCertified
             }
         }
 
-        abort(403, 'You are not a certified Winnipeg controller (ISCERTIFIED check)');
+        abort(403, 'You are not a certified Vancouver controller (ISCERTIFIED check)');
     }
 }

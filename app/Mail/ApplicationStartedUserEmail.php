@@ -32,7 +32,7 @@ class ApplicationStartedUserEmail extends Mailable
     {
         return $this
             ->to(config('mail.from.address'))
-            ->subject('Winnipeg Application Started')
+            ->subject('Vancouver Application Started')
             ->view('emails.applicationstarteduser');
     }
 }

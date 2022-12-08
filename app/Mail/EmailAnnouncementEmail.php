@@ -32,7 +32,7 @@ class EmailAnnouncementEmail extends Mailable
     {
         return $this
             ->to(config('mail.from.address'))
-            ->subject('Winnipeg FIR News: '.$this->news->title)
+            ->subject('Vancouver FIR News: '.$this->news->title)
             ->view('emails.announcement');
     }
 }

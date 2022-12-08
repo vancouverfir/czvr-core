@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', $id.' - Winnipeg FIR ')
+@section('title', $id.' - Vancouver FIR ')
 @section('description', $id.'\'s user profile')
 
 <style>

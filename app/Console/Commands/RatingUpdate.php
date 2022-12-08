@@ -15,7 +15,7 @@ class RatingUpdate extends Command
      *
      * @var string
      */
-    protected $signature = 'winnipeg:rating';
+    protected $signature = 'vancouver:rating';
 
     /**
      * The console command description.

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
-@section('title', 'News - Winnipeg FIR')
-@section('description', 'News from Winnipeg FIR')
+@section('title', 'News - Vancouver FIR')
+@section('description', 'News from Vancouver FIR')
 
 @section('content')
     <div class="container py-4">

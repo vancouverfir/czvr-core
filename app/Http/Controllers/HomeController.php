@@ -16,7 +16,7 @@ class HomeController extends Controller
 {
     public function view()
     {
-        //Winnipeg online controllers
+        //Vancouver online controllers
         $client = new Client();
         $response = $client->request('GET', VatsimHelper::getDatafeedUrl());
         $controllers = json_decode($response->getBody()->getContents())->controllers;

@@ -24,7 +24,7 @@ function createBigMap(planes, finalPositions) {
     console.log(ganderControllers)
     if(finalPositions['callsign']="CZWG_CTR") {
         console.log('test');
-        var winnipegFIR = L.polygon([
+        var VancouverFIR = L.polygon([
             [47.083333, -87.000000],
             [47.908333, -88.775000],
             [48.108333, -90.100000],
@@ -40,7 +40,7 @@ function createBigMap(planes, finalPositions) {
             [50.000000, -86.266667],
             [49.533333, -87.000000],
         ]).addTo(map);
-        winnipegFIR.bindPopup('<h3>Winnipeg Centre Online</h3>')
+        VancouverFIR.bindPopup('<h3>Vancouver Centre Online</h3>')
     }
 
     //Get tracks

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Winnipeg FIR Core'),
+    'name' => env('APP_NAME', 'Vancouver FIR Core'),
 
     /*
     |--------------------------------------------------------------------------

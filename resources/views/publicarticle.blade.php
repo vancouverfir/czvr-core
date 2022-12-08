@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', $article->title.' - Winnipeg FIR')
+@section('title', $article->title.' - Vancouver FIR')
 @section('description', $article->summary)
 
 @section('content')

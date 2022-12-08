@@ -87,13 +87,13 @@ class PoliciesController extends Controller
                 $data['lname'] = Auth::user()->lname;
                 $data['receivingname'] = $user->fname;
                 Mail::to($user->email)->send(new EmailAnnouncementEmail($data), function ($message) use ($data) {
-                    $message->subject('Winnipeg News: '.$data['title']);
+                    $message->subject('Vancouver News: '.$data['title']);
                 });
             }
         } elseif ($request->get('email') == 'emailcert') {
             $news = new News([
                 'title' => 'New Policy: '.$policy->name,
-                'content' => "The '".$policy->name."' policy for Winnipeg has been released. Read it on the policies page.",
+                'content' => "The '".$policy->name."' policy for Vancouver has been released. Read it on the policies page.",
                 'date' => date('Y-m-d'),
                 'type' => 'CertifiedOnly',
                 'user_id' => Auth::user()->id,
@@ -109,7 +109,7 @@ class PoliciesController extends Controller
                     $data['lname'] = Auth::user()->lname;
                     $data['receivingname'] = $user->fname;
                     Mail::to($user->email)->send(new EmailAnnouncementEmail($data), function ($message) use ($data) {
-                        $message->subject('Winnipeg Controller News: '.$data['title']);
+                        $message->subject('Vancouver Controller News: '.$data['title']);
                     });
                 }
             }
@@ -118,7 +118,7 @@ class PoliciesController extends Controller
 
             $news = new News([
                 'title' => 'New Policy: '.$policy->name,
-                'content' => "The '".$policy->name."' policy for Winnipeg has been released. Read it on the policies page.",
+                'content' => "The '".$policy->name."' policy for Vancouver has been released. Read it on the policies page.",
                 'published' => date('Y-m-d'),
                 'type' => 'NoEmail',
                 'user_id' => Auth::user()->id,

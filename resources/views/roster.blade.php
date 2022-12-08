@@ -6,8 +6,8 @@
 
 @stop
 
-@section('title', 'Roster - Winnipeg FIR')
-@section('description', "Winnipeg FIR's Controller Roster")
+@section('title', 'Roster - Vancouver FIR')
+@section('description', "Vancouver FIR's Controller Roster")
 
 @section('content')
 <div class="container" style="margin-top: 20px;">
@@ -28,7 +28,7 @@
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><br>
 
-<!--WINNIPEG CONTROLLERS ROSTER-->
+<!--Vancouver CONTROLLERS ROSTER-->
         <table id="rosterTable" class="table table-hover">
             <thead>
                 <tr>
@@ -53,7 +53,7 @@
                         {{$controller->user->rating_short}}
                     </td>
 
-<!--WINNIPEG Controller Position Ratings from Db -->
+<!--Vancouver Controller Position Ratings from Db -->
 <!--Delivery-->
                     @if ($controller->del == "1")
                         <td align="center" class="bg-danger text-white">Not Certified</td>
@@ -136,7 +136,7 @@
 </div>
 <div class="tab-pane fade" id="visit" role="tabpanel" aria-labelledby="visit-tab"><br>
 
-<!--WINNIPEG VISITING CONTROLLERS ROSTER-->
+<!--Vancouver VISITING CONTROLLERS ROSTER-->
         <table id="visitRosterTable" class="table table-hover">
             <thead>
                 <tr>
@@ -162,7 +162,7 @@
                         {{$visitcontroller->user->rating_short}}
                     </td>
 
-<!--WINNIPEG Controller Position Ratings from Db -->
+<!--Vancouver Controller Position Ratings from Db -->
 <!--Delivery-->
                     @if ($visitcontroller->del == "1")
                         <td align="center" class="bg-danger text-white">Not Certified</td>

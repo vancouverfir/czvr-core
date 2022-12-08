@@ -17,7 +17,7 @@ class CurrencyCheck extends Command
      *
      * @var string
      */
-    protected $signature = 'winnipeg:currency';
+    protected $signature = 'vancouver:currency';
 
     /**
      * The console command description.

@@ -1,6 +1,6 @@
 @extends('layouts.master')
-@section('title', 'Airports - Winnipeg FIR')
-@section('description', 'Winnipeg FIR\'s weather and airports')
+@section('title', 'Airports - Vancouver FIR')
+@section('description', 'Vancouver FIR\'s weather and airports')
 @section('content')
 
     <style>
@@ -20,7 +20,7 @@
     <h1 class="font-weight-bold blue-text">Airports</h1>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="cywg-tab" data-toggle="tab" href="#cywg" role="tab" aria-controls="cywg" aria-selected="true">Winnipeg (CYWG/CYAV)</a>
+            <a class="nav-link active" id="cywg-tab" data-toggle="tab" href="#cywg" role="tab" aria-controls="cywg" aria-selected="true">Vancouver (CYWG/CYAV)</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="cypg-tab" data-toggle="tab" href="#cypg" role="tab" aria-controls="cypg" aria-selected="false">Southport (CYPG)</a>

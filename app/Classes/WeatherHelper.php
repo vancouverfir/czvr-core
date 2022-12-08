@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class WeatherHelper
 {
     /**
-     * Gets ATIS Letter for Winnipeg Airports Page.
+     * Gets ATIS Letter for Vancouver Airports Page.
      * @param $icao
      * @return string|null
      */
@@ -31,7 +31,7 @@ class WeatherHelper
     }
 
     /**
-     * Gets ATIS Letter for Winnipeg Airports Page.
+     * Gets ATIS Letter for Vancouver Airports Page.
      * @param $icao
      * @return string
      */

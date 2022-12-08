@@ -46,7 +46,7 @@ class ApplicationsController extends Controller
     public function submitApplication(Request $request)
     {
         $messages = [
-            'applicant_statement.required' => 'You need to write why you wish to control at Winnipeg.',
+            'applicant_statement.required' => 'You need to write why you wish to control at Vancouver.',
         ];
 
         //Validate form
@@ -71,7 +71,7 @@ class ApplicationsController extends Controller
         Mail::to(Auth::user()->email)->send(new ApplicationStartedUserEmail($application));
 
         //Return user to the applications detail page
-        return redirect()->route('application.view', $application->application_id)->with('success', 'Application submitted! It should be processed within 72 hours. If you do not get a response, please send a ticket to the FIR Chief. Thanks for applying to Winnipeg!');
+        return redirect()->route('application.view', $application->application_id)->with('success', 'Application submitted! It should be processed within 72 hours. If you do not get a response, please send a ticket to the FIR Chief. Thanks for applying to Vancouver!');
     }
 
     public function withdrawApplication($application_id)
@@ -131,8 +131,8 @@ class ApplicationsController extends Controller
         return view('dashboard.training.applications.viewall', compact('pendingapplications', 'acceptedapplications', 'deniedapplications'));
     }
 
-    public function joinWinnipeg()
+    public function joinVancouver()
     {
-        return view('joinwinnipeg');
+        return view('joinVancouver');
     }
 }

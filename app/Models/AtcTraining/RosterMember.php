@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RosterMember extends Model
 
-//WINNIPEG CONTROLLERS
+//Vancouver CONTROLLERS
 {
     protected $table = 'roster';
 

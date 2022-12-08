@@ -20,7 +20,7 @@ class ActivityLog extends Command
      *
      * @var string
      */
-    protected $signature = 'winnipeg:activity';
+    protected $signature = 'vancouver:activity';
 
     /**
      * The console command description.
@@ -121,7 +121,7 @@ class ActivityLog extends Command
         }
 
         foreach ($sessionLogs as $log) {
-            //We really like setting flags here at the Winnipeg FIR™
+            //We really like setting flags here at the Vancouver FIR™
             $stillOnline = false;
 
             foreach ($onlineControllers as $oc) {

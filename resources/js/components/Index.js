@@ -6,7 +6,7 @@ const axios = require('axios');
 export default class Index extends Component {
     constructor(props) {
         super(props);
-        this.state = { visible: true, airportICAO: 'CYWG', airportName: 'Winnipeg / James Armstrong Richardson International Airport', flightRules: 'N/A', metar: 'N/A' };
+        this.state = { visible: true, airportICAO: 'CYVR', airportName: 'Vancouver International Airport', flightRules: 'N/A', metar: 'N/A' };
     }
 
     componentDidMount() {
@@ -35,7 +35,7 @@ export default class Index extends Component {
             }
         }
 
-        const url = 'https://api.checkwx.com/metar/CYWG,CYXE,CYQR,CYQT,CYPG,CYMJ/decoded';
+        const url = 'https://api.checkwx.com/metar/CYWG,CYXE,CYQR,CYQT,CYPG,CYMJ,CYVR/decoded';
         const options = {
             headers: {'X-API-Key': process.env.MIX_REACT_APP_AIRPORT_API_KEY}
         };

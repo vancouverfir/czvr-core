@@ -7,7 +7,7 @@
 @stop
 
 @section('title', 'ATC Resources')
-@section('description', 'Sector Files & Resources for Winnipeg Controllers')
+@section('description', 'Sector Files & Resources for Vancouver Controllers')
 
 @section('content')
 <div class="container" style="margin-top: 20px;">

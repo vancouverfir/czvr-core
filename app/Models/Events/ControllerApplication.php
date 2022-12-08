@@ -39,7 +39,7 @@ class ControllerApplication extends Model
             /*
              * The username shown in the message
              */
-            'username' => 'Winnipeg FIR',
+            'username' => 'Vancouver FIR',
             /*
              * The image location for the senders image
              */
@@ -82,7 +82,7 @@ class ControllerApplication extends Model
 
                     // Footer object
                     'footer' => [
-                        'text' => 'Winnipeg FIR',
+                        'text' => 'Vancouver FIR',
                         'icon_url' => asset('img/W_okay-300x203.png'),
                     ],
 

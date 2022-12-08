@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         DB::table('core_info')->insert([
             'id' => 1,
-            'sys_name' => 'Winnipeg FIR Core',
+            'sys_name' => 'Vancouver FIR Core',
             'release' => 'DEV',
             'sys_build' => 'DEV',
             'copyright_year' => 'NONE',
@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
             'position' => 'FIR Chief',
             'user_id' => 1,
             'group_id' => 1,
-            'description' => 'Head of Winnipeg’s day-to-day operations, manages all staff in the FIR, and keeps VATCAN updated with Winnipeg. Also is currently the interim Events Coordinator.',
+            'description' => 'Head of Vancouver’s day-to-day operations, manages all staff in the FIR, and keeps VATCAN updated with Vancouver. Also is currently the interim Events Coordinator.',
             'email' => 'chief@info.com',
             'shortform' => 'firchief',
         ]);

@@ -31,7 +31,7 @@ class FeedbackEmail extends Mailable
     {
         return $this
             ->to(config('mail.from.address'))
-            ->subject('Winnipeg Feedback Form Submission')
+            ->subject('Vancouver Feedback Form Submission')
             ->view('emails.feedback');
     }
 }

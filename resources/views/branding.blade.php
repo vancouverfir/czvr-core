@@ -1,11 +1,11 @@
 @extends('layouts.master')
-@section('title', 'Branding - Winnipeg FIR')
-@section('description', 'Winnipeg FIR Branding guidelines and logos')
+@section('title', 'Branding - Vancouver FIR')
+@section('description', 'Vancouver FIR Branding guidelines and logos')
 @section('content')
 <div class="container py-4">
     <h1 class="font-weight-bold blue-text">Branding</h1>
-    <p>This is the place to find all official Winnipeg FIR branding. Please feel free to use this branding for any event postings and publications.</p>
-    Be sure to read up on our <a href="https://winnipegfir.ca/policies">Branding Guidelines</a> before using any of our brand. Thank you!
+    <p>This is the place to find all official Vancouver FIR branding. Please feel free to use this branding for any event postings and publications.</p>
+    Be sure to read up on our <a href="https://cyvr.ca/policies">Branding Guidelines</a> before using any of our brand. Thank you!
     <hr>
     <h4 class="font-weight-bold blue-text">Banners/Wordmarks/Letterheads</h4>
     <div class="pt-1">

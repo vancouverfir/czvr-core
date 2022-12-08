@@ -42,7 +42,7 @@ class UserController extends Controller
         $user->save();
         $user->notify(new WelcomeNewUser($user));
 
-        return redirect('/dashboard')->with('success', 'Welcome to Winnipeg, '.$user->fname.'! We are glad to have you on board.');
+        return redirect('/dashboard')->with('success', 'Welcome to Vancouver, '.$user->fname.'! We are glad to have you on board.');
     }
 
     public function privacyDeny()
@@ -636,7 +636,7 @@ class UserController extends Controller
 
         $discord->channel->createMessage(['channel.id' => 695849973585149962, 'content' => '<@'.$discordUser->id.'> ('.Auth::id().') has joined.']);
 
-        return redirect()->route('dashboard.index')->with('success', 'You have joined the Winnipeg Discord server!');
+        return redirect()->route('dashboard.index')->with('success', 'You have joined the Vancouver Discord server!');
     }
 
     public function unlinkDiscord()

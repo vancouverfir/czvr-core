@@ -20,7 +20,7 @@
             <a class="nav-link active" id="pilots-tab" data-toggle="tab" href="#pilots" role="tab" aria-controls="pilots" aria-selected="true">For Pilots</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="false">For Winnipeg Controllers</a>
+            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="false">For Vancouver Controllers</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="neighbours-tab" data-toggle="tab" href="#neighbours" role="tab" aria-controls="neighbours" aria-selected="false">For Our Neighbours</a>
@@ -30,16 +30,16 @@
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="pilots" role="tabpanel" aria-labelledby="pilots" style="padding-left: 1.3%"><br>
             <div class="row">
-                <h5>If you're a pilot who's flown in Winnipeg's airspace before, you should note a few small changes you'll probably see.</h5>
+                <h5>If you're a pilot who's flown in Vancouver's airspace before, you should note a few small changes you'll probably see.</h5>
             </div><br>
-            <li>Winnipeg Centre (previously shown on pilot clients as "CZWG_CTR") will now be shown as "WPG_CTR". The main frequency for CTR will not change (124.00).</li>
+            <li>Vancouver Centre (previously shown on pilot clients as "CZWG_CTR") will now be shown as "WPG_CTR". The main frequency for CTR will not change (124.00).</li>
             <br>
             <li>You may encounter multiple Centres on at once (eg. WPG_L_CTR, WPG_H_CTR). These are new splits created to ease controller stress during high-traffic events. Controllers will advise you which CTR to contact, don't worry.</li>
         </div>
 
         <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home" style="padding-left: 1.3%"><br>
             <div class="row">
-                <h5>So you're a Winnipeg Controller! Here's what you need to know.</h5>
+                <h5>So you're a Vancouver Controller! Here's what you need to know.</h5>
             </div><br>
             <li>Centre callsigns are changing - if you're a Centre controller (or are certified or training for CTR), you'll be logging on as WPG_CTR from now on - so long, CZWG_CTR.</li>
             <br>
@@ -49,24 +49,24 @@
             <br>
             <li>Centre has new splits! We've finally added more splits to CTR for higher-traffic events (or if you want to go on a strange CTR, for whatever reason.) They are as follows:</li>
             <br>
-            <img src="https://winnipegfir.ca/storage/files/uploads/1615434515.png"><img src="https://winnipegfir.ca/storage/files/uploads/1615434526.png">
+            <img src="https://cyvr.ca/storage/files/uploads/1615434515.png"><img src="https://cyvr.ca/storage/files/uploads/1615434526.png">
             <br></br>
-            <p><text class="font-weight-bold">NOTE:</text> There are a handful of sectors that cover others when they are offline, as well as new details on splitting CTR - make sure to take a look at Winnipeg's <a href="{{ route('policies') }}">Standard Operating Procedures</a> for details.</p>
+            <p><text class="font-weight-bold">NOTE:</text> There are a handful of sectors that cover others when they are offline, as well as new details on splitting CTR - make sure to take a look at Vancouver's <a href="{{ route('policies') }}">Standard Operating Procedures</a> for details.</p>
         </div>
 
         <div class="tab-pane fade" id="neighbours" role="tabpanel" aria-labelledby="neighbours" style="padding-left: 1.3%"><br>
         <div class="row">
                 <h5>Hello, Neighbouring FIR/ARTCCs! (Drinks are on us for making you change things.)</h5>
             </div><br>
-            <li>Whenever you're looking for Winnipeg Centre on your end - don't look for CZWG_CTR anymore. Winnipeg will now show as WPG_CTR. The main frequency is still 124.00.</li>
+            <li>Whenever you're looking for Vancouver Centre on your end - don't look for CZWG_CTR anymore. Vancouver will now show as WPG_CTR. The main frequency is still 124.00.</li>
             <br>
-            <li>Winnipeg has (finally) implemented new CTR splits for our controllers - these can all be found in Winnipeg's <a href="{{ route('policies') }}">Standard Operating Procedures, section 2.3.4.</a></li>
+            <li>Vancouver has (finally) implemented new CTR splits for our controllers - these can all be found in Vancouver's <a href="{{ route('policies') }}">Standard Operating Procedures, section 2.3.4.</a></li>
             <br>
-            <li>Winnipeg controllers will advise all neighbouring FIR/ARTCCs of where to handoff to, if CTR is split.</li>
+            <li>Vancouver controllers will advise all neighbouring FIR/ARTCCs of where to handoff to, if CTR is split.</li>
         </div>
     </div>
     <br>
-    <p>Questions, comments or concerns? Get in touch with the Winnipeg FIR Staff <a href="{{ route('staff') }}"><text class="font-weight-bold">HERE</text></a>.</p>
+    <p>Questions, comments or concerns? Get in touch with the Vancouver FIR Staff <a href="{{ route('staff') }}"><text class="font-weight-bold">HERE</text></a>.</p>
 </div>
 
 @endsection

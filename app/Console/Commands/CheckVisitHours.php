@@ -17,14 +17,14 @@ class CheckVisitHours extends Command
      *
      * @var string
      */
-    protected $signature = 'winnipeg:visit-hours';
+    protected $signature = 'vancouver:visit-hours';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Checks if controllers have put 50% of their time on Winnipeg positions';
+    protected $description = 'Checks if controllers have put 50% of their time on Vancouver positions';
 
     /**
      * Create a new command instance.
@@ -76,7 +76,7 @@ class CheckVisitHours extends Command
 
             $quotient = $hours == 0 ? 0 : round($r->currency / $hours, 3);
 
-            // Winnipeg Hours / VATSIM Total is less than 50%
+            // Vancouver Hours / VATSIM Total is less than 50%
             if ($quotient < 0.5) {
                 $name = $r->full_name.' '.$r->cid;
 

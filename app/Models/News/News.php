@@ -43,7 +43,7 @@ class News extends Model
     public function author_pretty()
     {
         if (! $this->show_author) {
-            return 'Winnipeg FIR Staff';
+            return 'Vancouver FIR Staff';
         }
 
         return $this->user->fullName('FLC');
