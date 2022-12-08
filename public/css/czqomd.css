@@ -12,7 +12,7 @@ body, html {
     background-color: rgb(0, 0, 0);
 }
 #czwgHeader {
-    background-color: #094b26;
+    background-color: #6CC24A;
 }
 
 #czqoHeaderImg {
@@ -33,7 +33,7 @@ body, html {
 }
 
 .dropdown-menu .dropdown-item.active, .dropdown-item:active {
-    background: #094b26;
+    background: #6CC24A;
 }
 
 .staff_img_container {
@@ -122,7 +122,7 @@ div.d-flex.flex-row > i {
 }
 
 .nav-item .active {
-    color:#094b26!important;
+    color:#6CC24A!important;
 }
 
 .dropdown-item.active {
@@ -130,7 +130,7 @@ div.d-flex.flex-row > i {
 }
 
 .dropdown-item:active {
-    color: #094b26!important;
+    color: #6CC24A!important;
     background: none!important;
 }
 
@@ -142,11 +142,11 @@ div.d-flex.flex-row > i {
 
 .btn .bg-czqo-blue-light:not([disabled]):not(.disabled):active {
     background-color: #cfeaff !important;
-    color: #094b26 !important;
+    color: #6CC24A !important;
 }
 
 .list-group-item.active {
-    background-color: #094b26;
+    background-color: #6CC24A;
 }
 
 .btn, .btn:hover, .btn:active {
@@ -165,7 +165,7 @@ div.d-flex.flex-row > i {
 
 .modal-content .modal-header h5.modal-title {
     font-weight: 700 !important;
-    color: #094b26!important;
+    color: #6CC24A!important;
     font-size: 1.2rem;
 }
 
@@ -197,11 +197,11 @@ div.d-flex.flex-row > i {
 }
 
 .blue {
-    background-color: #094b26 !important;
+    background-color: #6CC24A !important;
 }
 
 .blue-text {
-    color: #094b26 !important;
+    color: #6CC24A !important;
 }
 
 .btn-primary {
@@ -224,12 +224,12 @@ div.d-flex.flex-row > i {
 }
 
 .bg-ins {
-    background-color: #094b26;
+    background-color: #6CC24A;
 }
 
 .dashboard-card-actions {
     font-size: 1.3em !important;
-    color: #094b26;
+    color: #6CC24A;
     font-weight: 600;
 }
 

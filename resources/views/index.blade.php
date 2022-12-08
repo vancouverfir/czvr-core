@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('description', 'Welcome to Winnipeg - located in the heart of Canada on the VATSIM network.')
+@section('description', 'Welcome to Vanouver - located in the left of Canada on the VATSIM network.')
 
 
 @section('content')
@@ -13,14 +13,14 @@
                         <div>
                             <br>
                             <h1 style="font-size: 7em; color: #fff">
-                                <span class="main-colour corner" style="padding: 1%">We Are Winnipeg.</span>
+                                <span class="main-colour corner" style="padding: 1%">We Are Vancouver.</span>
                             </h1>
                             <h6 style="font-size: 1.25em; color: #fff;">
                                 <span class="main-colour corner" style="padding: 0.5%">Screenshot by {{$background->credit}}</span>
                             </h6>
                             <br>
                             <h4 style="font-size: 2em; color: #fff;">
-                                <span class="white corner" style="padding: 0.5%"><a href="#mid" id="discoverMore" class="blue-text">Come explore the heart of Canada.&nbsp;&nbsp;<i class="fas fa-arrow-down"></i></a></span>
+                                <span class="white corner" style="padding: 0.5%"><a href="#mid" id="discoverMore" class="blue-text">Come explore the left of Canada.&nbsp;&nbsp;<i class="fas fa-arrow-down"></i></a></span>
                             </h4>
                         </div>
                     </div>
