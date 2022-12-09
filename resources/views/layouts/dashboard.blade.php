@@ -150,6 +150,7 @@
                             <a class="nav-link dropdown-toggle" style="cursor:pointer; color: #013162" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                               <!--  <a class="dropdown-item" href="{{route('airports')}}">Airports</a> Hide Until Updated with CZVR airports -->
+                                <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
                                 <a class="dropdown-item" href="https://www.vatsim.net/pilots/resources" target="_blank">VATSIM Resources</a>
                                 <a class="dropdown-item" href="https://simaware.ca" target="_blank">Live Map</a>
                             </div>
@@ -201,18 +202,8 @@
                         </li>
                         @endauth
                         <li class="nav-item d-flex align-items-center">
-                            <a href="https://www.facebook.com/CZWGFIR" class="nav-link waves-effect waves-light" target="_BLANK" >
-                                <i style="font-size: 1.7em; color: #013162" class="fab fa-facebook"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center">
-                            <a href="https://twitter.com/CZWGFIR" class="nav-link waves-effect waves-light" target="_BLANK" >
+                            <a href="https://twitter.com/vancouverfir" class="nav-link waves-effect waves-light" target="_BLANK" >
                                 <i style="font-size: 1.7em; color: #013162" class="fab fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center">
-                            <a href="https://www.instagram.com/CZWGFIR" class="nav-link waves-effect waves-light" target="_BLANK" >
-                                <i style="font-size: 1.7em; color: #013162" class="fab fa-instagram"></i>
                             </a>
                         </li>
                         <li class="nav-item d-flex align-items-center">
@@ -389,7 +380,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                <img style="height: 90px;" src="{{asset('/img/discord/winnipegdiscord.png')}}" class="img-fluid mb-2" alt=""></img>
                     <p>To link your Discord account and join our Discord community, please head to your <a href="{{route('dashboard.index')}}">dashboard.</a></p>
                     <p>VATCAN has a Discord too! You can join the VATCAN discord by clicking <a href="https://vatcan.ca/my/discord/join" rel="noopener noreferrer" target="_blank">here!</a>
                 </div>

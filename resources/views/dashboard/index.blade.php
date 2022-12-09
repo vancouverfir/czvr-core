@@ -93,7 +93,7 @@
                                 Role: {{Auth::user()->permissions()}}<br/>
                                 @if(Auth::user()->staffProfile)
                                     Staff Role: {{Auth::user()->staffProfile->position}}
-                                @endif 
+                                @endif
                                 <hr>
                                 <div data-step="4" data-intro="Here you can link your Discord account to receive reminders for training sessions, and gain access to the CZWG Discord.">
                                     <h5 class="mt-2 font-weight-bold blue-text">Discord</h5>
@@ -110,12 +110,12 @@
                                             <a href="#" data-toggle="modal" data-target="#joinDiscordServerModal"
                                                class="mt-1">Join The CZWG Discord</a><br/>
                                         @endif
-                                        <a href="#" class="btn-sm btn-danger m-0" data-toggle="modal" data-target="#discordModal" class="mt-1">Unlink</a>   
+                                        <a href="#" class="btn-sm btn-danger m-0" data-toggle="modal" data-target="#discordModal" class="mt-1">Unlink</a>
                                         <hr>
                                     @endif
                                 </div>
                             </div>
-                            
+
                             <div data-step="5" data-intro="You can change your avatar here. Your avatar is available when people view your account. This will likely only be staff members, unless you sign up for an event or similar activity."
                                  class="col">
                                 <h4 class="blue-text font-weight-bold card-title; text-center" style="padding-bottom: 2%">Avatar</h5>
@@ -144,7 +144,7 @@
                                                     <h5 class="font-weight-bold blue-text">First Name</h5>
                                                     <input type="text" class="form-control" value="{{Auth::user()->display_fname}}"
                                                         name="display_fname" id="input_display_fname">
-                                                    <br>   
+                                                    <br>
                                                     <script>
                                                         function resetToCertFirstName() {
                                                             $("#input_display_fname").val("{{Auth::user()->fname}}")
@@ -182,7 +182,7 @@
                                                     <p>Please ensure this complies with the VATSIM Code of Conduct.</p>
                                                     <input type="submit" class="btn btn-sm btn-success ml-0" value="Save">
                                                 </form><br>
-                                        </div>                     
+                                        </div>
                                     </div>
                                     <button class="accordion">Your Preferences</button>
                                         <div class="panel">
@@ -218,7 +218,7 @@
                                                 @else
                                                 <a role="button" class="ml-0 mt-3 btn btn-sm btn-danger" href="{{url('/dashboard/emailpref/unsubscribe')}}">Unsubscribe</a>
                                                 @endif
-                                            </div>                     
+                                            </div>
                                         </div>
                                     </li>
                                 </ul>
@@ -567,113 +567,16 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="card" data-step="7"
-                         data-intro="This is where you'll see any training-related notifications - exams, modules and more will appear here!">
-                        <div class="card-body">
-                            <h3 class="font-weight-bold blue-text pb-2">1Winnipeg Training</h3>
-                            <h5 class="font-weight-bold blue-text">Notifications</h5>
-                            @if (count($cbtnotifications) < 1)
-                                <text style="color: gray">There are no notifications to show!</text>
-                            @else
-                                @foreach ($cbtnotifications as $cn)
-                                    <li>{{$cn->message}} <a href="{{route('cbt.notification.dismiss', $cn->id)}}"><i style="color: red" class="fas fa-times"></i></a></li>
-                                @endforeach
-                            @endif
-                            <hr>
-                            @if($yourinstructor != null && $yourinstructor->instructor != null)
-                                <p class="mb-0"><b>Your Instructor:</b> {{$yourinstructor->instructor->user->fullName('FL')}}
-                                    <br>
-                                <b>Email:</b> <a href="mailto:{{$yourinstructor->instructor_email}}">{{$yourinstructor->instructor->email}}</a>
-                                </p>
-                            @else
-                                @if ($certification == "training")
-                                    You do not have an Instructor yet - check back soon or contact our Chief Instructor.
-                                @endif
-                            @endif
-                            <ul class="list-unstyled mt-2 mb-0">
-                                <li class="mb-2">
-                                    <a href="{{route('cbt.index')}}" style="text-decoration:none;">
-                                        <span class="blue-text"><i class="fas fa-chevron-right"></i></span> 
-                                        &nbsp; 
-                                        <span class="black-text">Training Centre</span></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                <br/>
                     <div data-step="8"
                          data-intro="If you have any enquires or issues for the staff, feel free to make a ticket via the ticketing system."
                          class="card">
                         <div class="card-body">
                             <h3 class="font-weight-bold blue-text pb-2">Support</h3>
-                            <h5 class="font-weight-bold blue-text">Tickets</h5>
-                            @if (count($openTickets) < 1)
-                                You have no open support tickets
-                                <br>
-                            @else
-                                <h5 class="black-text" style="font-weight: bold">
-                                    @if (count($openTickets) == 1)
-                                        1 open ticket
-                                    @else
-                                        {{count($openTickets)}} open tickets
-                                    @endif
-                                </h5>
-                                <div class="list-group">
-                                    @foreach ($openTickets as $ticket)
-                                        <a href="{{url('/dashboard/tickets/'.$ticket->ticket_id)}}"
-                                           class="list-group-item list-group-item-action black-text rounded-0 "
-                                           style="background-color:#d9d9d9">{{$ticket->title}}<br/>
-                                            <small title="{{$ticket->updated_at}} (GMT+0, Zulu)">Last
-                                                updated {{$ticket->updated_at_pretty()}}</small>
-                                        </a>
-                                    @endforeach
-                                </div>
-                                <br>
-                            @endif
-                            @if(Auth::user()->permissions >= 4)
-                                <br>
-                                <h5 class="font-weight-bold blue-text">Staff Tickets</h5>
-
-                                @if (count($staffTickets) < 1)
-                                    You have no open <b>staff</b> tickets
-                                    <br>
-                                @else
-                                    <h5 class="black-text" style="font-weight: bold">
-                                        @if (count($staffTickets) == 1)
-                                            1 open staff ticket
-                                        @else
-                                            {{count($staffTickets)}} open staff tickets
-                                        @endif
-                                    </h5>
-                                    <div class="list-group">
-                                        @foreach ($staffTickets as $ticket)
-                                            <a href="{{url('/dashboard/tickets/'.$ticket->ticket_id)}}"
-                                               class="list-group-item list-group-item-action black-text rounded-0 "
-                                               style="background-color:#d9d9d9">{{$ticket->title}}<br/>
-                                                <small title="{{$ticket->updated_at}} (GMT+0, Zulu)">Last
-                                                    updated {{$ticket->updated_at_pretty()}}</small>
-                                            </a>
-                                        @endforeach
-                                    </div>
-                                @endif
-                                <br>
-                            @endif
                             <ul class="list-unstyled mt-2 mb-0">
                                 <li class="mb-2">
                                     <a href="{{route('feedback.create')}}" style="text-decoration:none;"><span
                                             class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
                                             class="black-text">Send feedback</span></a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="{{route('tickets.index', ['create' => 'yes'])}}"
-                                       style="text-decoration:none;"><span
-                                            class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
-                                            class="black-text">Start a support ticket</span></a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="{{route('tickets.index')}}" style="text-decoration:none;"><span
-                                            class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
-                                            class="black-text">View previous support tickets</span></a>
                                 </li>
                                 <li class="mb-2">
                                     <a href="{{route('me.data')}}" style="text-decoration:none;">
@@ -686,17 +589,6 @@
                                 </span>
                                 </a>
                             </li>
-                                @if(Auth::user()->permissions >= 4)
-                                    <li class="mb-2">
-                                        <a href="{{route('tickets.staff')}}" style="text-decoration:none;"><span
-                                                class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                            <span
-                                                class="black-text">View staff ticket inbox</span></a>
-                                    </li>
-                            @endif
-                            <!--<li class="mb-2">
-                            <a href="https://kb.ganderoceanic.com" target="_blank" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="black-text">CZWG Knowledge Base</span></a>
-                        </li>-->
                             </ul>
                         </div>
                     </div>
@@ -707,22 +599,10 @@
                                 <h3 class="font-weight-bold blue-text pb-2">Staff</h3>
                                 <ul class="list-unstyled mt-2 mb-0">
                                     <li class="mb-2">
-                                        <a href="{{route('training.index')}}" style="text-decoration:none;"><span
-                                                class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                            <span
-                                                class="black-text">1Winnipeg Training System</span></a>
-                                    </li>
-                                    <li class="mb-2">
                                         <a href="{{route('roster.index')}}" style="text-decoration:none;"><span
                                                 class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
                                             <span
                                                 class="black-text">Manage Controller Roster</span></a>
-                                    </li>
-                                    <li class="mb-2">
-                                        <a href="{{route('events.admin.index')}}" style="text-decoration:none;"><span
-                                                class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                            <span
-                                                class="black-text">Manage Events</span></a>
                                     </li>
                                     <li class="mb-2">
                                         <a href="{{route('news.index')}}" style="text-decoration:none;"><span
@@ -803,7 +683,7 @@
         panel.style.maxHeight = null;
         } else {
         panel.style.maxHeight = panel.scrollHeight + "px";
-        } 
+        }
     });
     }
     </script>
@@ -878,7 +758,7 @@
     </div>
     <!-- End Rating Change modal -->
     <!--Change display name modal-->
-    
+
     <!--End change display name modal-->
 
     <!--Link/unlink Discord modal-->
@@ -896,7 +776,7 @@
                     <div class="modal-body">
                         <img style="height: 50px;" src="{{asset('/img/discord/CZWGplusdiscord.png')}}"
                              class="img-fluid mb-2" alt="">
-                        <p>Linking your Discord account with Winnipeg FIR allows you to:</p>
+                        <p>Linking your Discord account with Vancouver FIR allows you to:</p>
                         <ul>
                             <li>Join our Discord community</li>
                             <li>Receive notifications for ticket replies, training updates, and more</li>
@@ -947,13 +827,13 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Join the Winnipeg FIR Discord server</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Join the Vancouver FIR Discord server</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Joining the Winnipeg FIR Discord server allows you to join the Winnipeg FIR controller and pilot
+                    <p>Joining the Vancouver FIR Discord server allows you to join the Vancouver FIR controller and pilot
                         community.</p>
                     <h5>Rules</h5>
                     <ul>

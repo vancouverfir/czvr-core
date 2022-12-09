@@ -122,7 +122,7 @@
                             @endif
                         </li>
                         <li class="nav-item {{ Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
-                            @if(Auth::check() && Auth::user()->permissions >= 4)
+                          <!--  @if(Auth::check() && Auth::user()->permissions >= 4)
                             <li class="nav-item dropdown {{ Request::is('events') || Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -131,6 +131,8 @@
                             @else
                                 <a href="{{route('events.index')}}" class="nav-link">Events</a>
                             @endif
+                                                Hide as we will try and automatically fetch events-->
+                            <a href="{{route('events.index')}}" class="nav-link">Events</a>
                         </li>
                         <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
@@ -151,7 +153,7 @@
                         <li class="nav-item dropdown {{ Request::is('airports') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                                <a class="dropdown-item" href="{{route('airports')}}">Airports</a>
+                              <!--  <a class="dropdown-item" href="{{route('airports')}}">Airports</a> Remove until updated -->
                                 <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
                                 <a class="dropdown-item" href="https://www.vatsim.net/pilots/resources" target="_blank">VATSIM Resources</a>
                                 <a class="dropdown-item" href="https://simaware.ca" target="_blank">Live Map</a>
@@ -197,11 +199,6 @@
                                 <a class="dropdown-item {{ Request::is('dashboard') || Request::is('dashboard/*')}}" href="{{route('dashboard.index')}}">
                                     <i class="fa fa-tachometer-alt mr-2"></i>Dashboard
                                 </a>
-                                @if(!Auth::check() || Auth::user()->permissions >= 2)
-                                <a class="dropdown-item {{ Request::is('training.index') || Request::is('training.index/*')}}" "dropdown-item" href="{{route('training.index')}}">
-                                    <i class="fa fa-graduation-cap mr-2" style="margin-left: -1px"></i>1Winnipeg
-                                </a>
-                                @endif
                                 <a class="dropdown-item red-text" href="{{route('auth.logout')}}">
                                     <i class="fa fa-sign-out-alt mr-2"></i>&nbsp;Logout
                                 </a>
@@ -391,7 +388,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                <img style="height: 90px;" src="{{asset('/img/discord/winnipegdiscord.png')}}" class="img-fluid mb-2" alt=""></img>
                     <p>To link your Discord account and join our Discord community, please head to your <a href="{{route('dashboard.index')}}">dashboard.</a></p>
                     <p>VATCAN has a Discord too! You can join the VATCAN discord by clicking <a href="https://vatcan.ca/my/discord/join" rel="noopener noreferrer" target="_blank">here!</a>
                 </div>
