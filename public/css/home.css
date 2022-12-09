@@ -1,13 +1,29 @@
 .main-colour {
-    background-color: #424242;
+    background-color: #191919;
+}
+
+.background {
+    background-color: #191919;
+}
+
+.text-colour {
+    color: #E6E8E6;
+    /* color:#2E2F2F; */
+}
+
+.vancouver-text{
+    color: #E6E8E6;
+    /* color:#2E2F2F; */
 }
 
 .card {
-    background: #CBCBC8;
+    background: #2E2F2F ;
+    /* background: #E6E8E6; */
 }
 
 .card-body {
-    background-color: #CBCBC8;
+    background-color: #2E2F2F;
+    /* background-color: #E6E8E6; */
 }
 
 .corner {
@@ -15,17 +31,17 @@
 }
 
 .VFR {
-    background-color: green;
+    background-color: #6CC24A;
 }
 
 .IFR {
-    background-color: red;
+    background-color: #E3B031;
 }
 
 .MVFR {
-    background-color: lightskyblue;
+    background-color: #B2D33C;
 }
 
 .LIFR {
-    background-color: lightpink;
+    background-color: #F15025;
 }
