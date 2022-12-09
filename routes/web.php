@@ -233,7 +233,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/atcresources', 'Publications\AtcResourcesController@index')->middleware('atc')->name('atcresources.index');
 
     //Upload and Delete ATC Resources
-    Route::group(['middleware' => 'staff', function () {
+    Route::group(['middleware' => 'staff'], function () {
         Route::post('/atcresources', 'Publications\AtcResourcesController@uploadResource')->name('atcresources.upload');
         Route::get('/atcresources/delete/{id}', 'Publications\AtcResourcesController@deleteResource')->name('atcresources.delete');
     });
