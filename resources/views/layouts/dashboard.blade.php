@@ -11,7 +11,7 @@
         For Flight Simulation Use Only - Not to be used for real-world navigation. All content on this web site may not be shared, copied, reproduced or used in any way without prior express written consent of Gander Oceanic. © Copyright {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->copyright_year}} Gander Oceanic, All Rights Reserved.
         -->
         <!--Metadata-->
-            
+
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="{{ asset('winnipeg.ico') }}" type="image/x-icon">
@@ -149,7 +149,7 @@
                         <li class="nav-item dropdown {{ Request::is('airports') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer; color: #013162" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                                <a class="dropdown-item" href="{{route('airports')}}">Airports</a>
+                              <!--  <a class="dropdown-item" href="{{route('airports')}}">Airports</a> Hide Until Updated with CZVR airports -->
                                 <a class="dropdown-item" href="https://www.vatsim.net/pilots/resources" target="_blank">VATSIM Resources</a>
                                 <a class="dropdown-item" href="https://simaware.ca" target="_blank">Live Map</a>
                             </div>
@@ -158,7 +158,7 @@
                             <a class="nav-link dropdown-toggle" style="cursor:pointer; color: #013162" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Publications</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                                 <a class="dropdown-item {{ Request::is('policies') ? 'active white-text' : '' }}" href="{{route('policies')}}">Policies</a>
-                                <a class="dropdown-item {{ Request::is('meetingminutes') ? 'active white-text' : '' }}" href="{{route('meetingminutes')}}">Meeting Minutes</a>
+                              <!--  <a class="dropdown-item {{ Request::is('meetingminutes') ? 'active white-text' : '' }}" href="{{route('meetingminutes')}}">Meeting Minutes</a> Hide until we decide if we wish to use it-->
                                 <a class="dropdown-item {{ Request::is('privacy') ? 'active white-text' : '' }}" href="{{route('privacy')}}">Privacy Policy</a>
                             </div>
                         </li>
@@ -194,11 +194,6 @@
                                 <a class="dropdown-item {{ Request::is('dashboard') || Request::is('dashboard/*')}}" href="{{route('dashboard.index')}}">
                                     <i class="fa fa-tachometer-alt mr-2"></i>Dashboard
                                 </a>
-                                @if(!Auth::check() || Auth::user()->permissions >= 2)
-                                <a class="dropdown-item {{ Request::is('training.index') || Request::is('training.index/*')}}" "dropdown-item" href="{{route('training.index')}}">
-                                    <i class="fa fa-graduation-cap mr-2" style="margin-left: -1px"></i>1Winnipeg
-                                </a>
-                                @endif
                                 <a class="dropdown-item red-text" href="{{route('auth.logout')}}">
                                     <i class="fa fa-sign-out-alt mr-2"></i>&nbsp;Logout
                                 </a>
