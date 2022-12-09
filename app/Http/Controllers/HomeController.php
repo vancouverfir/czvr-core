@@ -24,7 +24,7 @@ class HomeController extends Controller
         $finalPositions = [];
 
         $prefixes = [
-            'WPG_',
+
             'CZVR_',
             'ZVR_',
             'CYVR_',
