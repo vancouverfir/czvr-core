@@ -36,7 +36,7 @@
                         </div>
                         <div class="card-body" style="padding-bottom:2%">
                             @foreach($news as $n)
-                                <h5><span class="badge main-colour text-colour">{{$n->posted_on_pretty()}}</span>&nbsp;&nbsp;<a href="{{url('/news').'/'.$n->slug}}" style="color: black;"><text class="align-middle">{{$n->title}}</text></h5></a>
+                                <h5><span class="badge text-colour">{{$n->posted_on_pretty()}}</span>&nbsp;&nbsp;<a href="{{url('/news').'/'.$n->slug}}" class="text-colour"><text class="align-middle">{{$n->title}}</text></h5></a>
                             @endforeach
                         </div>
                         <div class="card-footer blue-text pb-1">
@@ -55,7 +55,7 @@
                                 <h5 class="text-colour" style="text-align: center;">Stay tuned here for upcoming events!</h5>
                             @endif
                             @foreach($nextEvents as $e)
-                                <h5 class="text-colour"><a href="{{url('/events').'/'.$e->slug}}" style="color: black;"><text class="align-middle">{{$e->name}}</text></a>&nbsp;&nbsp;<span class="float-right badge main-colour">{{$e->start_timestamp_pretty()}}</span></h5>
+                                <h5 class="text-colour"><a href="{{url('/events').'/'.$e->slug}}" class="text-colour"><text class="align-middle">{{$e->name}}</text></a>&nbsp;&nbsp;<span class="float-right badge main-colour">{{$e->start_timestamp_pretty()}}</span></h5>
                             @endforeach
                         </div>
                         <div class="card-footer blue-text pb-1">
@@ -105,7 +105,7 @@
                             @foreach($finalPositions as $p)
                                 <h5 class="text-colour">
                                     <div style="float: left;">
-                                        <a href="https://stats.vatsim.net/search_id.php?id={{$p->cid}}" target="_blank" style="color: black;">
+                                        <a href="https://stats.vatsim.net/search_id.php?id={{$p->cid}}" target="_blank" class="text-colour">
                                             @if($p->name == $p->cid)
                                                 <i class="fas fa-user-circle"></i>&nbsp;{{$p->name}}
                                             @else
