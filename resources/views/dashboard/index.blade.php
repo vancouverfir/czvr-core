@@ -40,28 +40,16 @@
 }
 
 .panel {
-  background-color: white;
+  background-color: #444;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.1s ease-out;
 }
 
-  .feedback {
-    font-family: inherit;
-    position: relative;
-    top: 0px;
-    right: -10px;
-    padding: 5px 15px;
-    border-radius: 20px;
-    border-radius: 50%;
-    background-color: #6CC24A;
-    color: #fff;
-  }
 
-}
 </style>
 
-<div style="background-color: #444">
+<div style="background-color: #222">
     <div class="container py-4">
         <h1 data-step="1"
             data-intro="Welcome to your Dashboard! This is your central hub for all things Vancouver. Here you can interact with our FIR, and manage your account."

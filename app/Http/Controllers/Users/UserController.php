@@ -40,7 +40,7 @@ class UserController extends Controller
         }
         $user->init = 1;
         $user->save();
-        $user->notify(new WelcomeNewUser($user));
+        //$user->notify(new WelcomeNewUser($user));
 
         return redirect('/dashboard')->with('success', 'Welcome to Vancouver, '.$user->fname.'! We are glad to have you on board.');
     }

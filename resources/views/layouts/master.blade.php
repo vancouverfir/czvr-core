@@ -306,11 +306,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Welcome to CZWG!</b></h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Welcome to CZVR!</b></h5>
                 </div>
                 <div class="modal-body">
-                    Welcome to the Winnipeg FIR Core system. Here you can apply to become a visiting controller (if not a home controller), organize your
-                    training, and access important pilot and controller resources! Before
+                    Welcome to the Vancouver FIR Website. Here you can access important pilot and controller resources! Before
                     we allow you to use the system, we require you to accept our Privacy Policy. The Policy is available
                     <a target="_blank" href="{{url('/privacy')}}">here.</a>
                     By default, you are <b>not</b> subscribed to non-essential email notifications. Head to the Dashboard and click on "Manage my preferences" to

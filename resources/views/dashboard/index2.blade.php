@@ -1,18 +1,18 @@
 @extends('layouts.master')
 @section('content')
     <div class="container py-4">
-        <h1 data-step="1" data-intro="Welcome to the CZWG Dashboard! This is your central hub for all things Winnipeg. Here you can interact with our FIR, and manage your account." class="blue-text font-weight-bold">Dashboard</h1>
+        <h1 data-step="1" data-intro="Welcome to the CZVR Dashboard! This is your central hub for all things Winnipeg. Here you can interact with our FIR, and manage your account." class="blue-text font-weight-bold">Dashboard</h1>
         <br class="my-2">
         <div class="row">
             <div class="col">
                 <div data-step="2"
-                     data-intro="Here is where you manage and view the data we store on you and your CZWG profile."
+                     data-intro="Here is where you manage and view the data we store on you and your CZVR profile."
                      class="card ">
                     <div class="card-body">
                         <h3 class="font-weight-bold blue-text pb-2">Your Account</h3>
                         <div class="row">
                             <div class="col" data-step="3"
-                                 data-intro="Here is an overview of your profile, including your CZWG roles. You can change the way your name is displayed by clicking on the 'Change display name' button. (CoC A4(b))">
+                                 data-intro="Here is an overview of your profile, including your CZVR roles. You can change the way your name is displayed by clicking on the 'Change display name' button. (CoC A4(b))">
                                 <h5 class="card-title">
                                     {{ Auth::user()->fullName('FLC') }}
                                 </h5>
@@ -22,7 +22,7 @@
                                 <p><a class="font-italic" style="color: blue;" data-toggle="modal" data-target="#ratingChange">Rating incorrect?</a></p>
                                 Role: {{Auth::user()->permissions()}}<br/>
                                 <br/>
-                                <div data-step="4" data-intro="Here you can link your Discord account to receive reminders for training sessions, and gain access to the CZWG Discord.">
+                                <div data-step="4" data-intro="Here you can link your Discord account to receive reminders for training sessions, and gain access to the CZVR Discord.">
                                     <h5 class="mt-2">Discord</h5>
                                     @if (!Auth::user()->hasDiscord())
                                         <p class="mt-1">You don't have a linked Discord account.</p>
@@ -34,7 +34,7 @@
                                         </p>
                                         @if(!Auth::user()->memberOfCZWGGuild())
                                             <a href="#" data-toggle="modal" data-target="#joinDiscordServerModal"
-                                               class="mt-1">Join The CZWG Discord</a><br/>
+                                               class="mt-1">Join The CZVR Discord</a><br/>
                                         @endif
                                         <a href="#" data-toggle="modal" data-target="#discordModal"
                                            class="mt-1">Unlink</a>
@@ -325,7 +325,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <img style="height: 50px;" src="{{asset('/img/discord/CZWGplusdiscord.png')}}"
+                        <img style="height: 50px;" src="{{asset('/img/discord/CZVRplusdiscord.png')}}"
                              class="img-fluid mb-2" alt="">
                         <p>Linking your Discord account with Winnipeg FIR allows you to:</p>
                         <ul>
@@ -354,7 +354,7 @@
                     <div class="modal-body">
                         <p>Fair Warning: Unlinking your account will:</p>
                         <ul>
-                            <li>Remove you from the CZWG Discord, if you're a member</li>
+                            <li>Remove you from the CZVR Discord, if you're a member</li>
                             <li>Remove a Discord avatar if you have it selected</li>
                             <li>Stop sending you notifications via Discord</li>
                         </ul>

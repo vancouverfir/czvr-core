@@ -44,7 +44,7 @@
                             <h3>
                             <span class="badge  badge-success rounded shadow-none">
                                 <i class="fa fa-check"></i>&nbsp;
-                                CZWG Certified
+                                CZVR Certified
                             </span>
                             </h3>
                         @elseif ($certification == "not_certified")
@@ -65,21 +65,21 @@
                             <h3>
                             <span class="badge rounded shadow-none" style="background-color:#013162">
                                 <i class="fa fa-user-check"></i>&nbsp;
-                                CZWG Controller
+                                CZVR Controller
                             </span>
                             </h3>
                         @elseif ($certification == "visit")
                             <h3>
                             <span class="badge badge-info rounded shadow-none">
                                 <i class="fa fa-plane"></i>&nbsp;
-                                    CZWG Visiting Controller
+                                    CZVR Visiting Controller
                             </span>
                             </h3>
                         @elseif ($certification == "instructor")
                             <h3>
                             <span class="badge badge-info rounded shadow-none">
                                 <i class="fa fa-chalkboard-teacher"></i>&nbsp;
-                                        CZWG Instructor
+                                        CZVR Instructor
                             </span>
                             </h3>
                         @else
