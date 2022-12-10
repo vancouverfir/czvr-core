@@ -103,49 +103,49 @@
                                     <td align="center" class="bg-danger text-white">ERROR</td>
                                 @endif
                                 <!--Delivery-->
-                                @if ($visitcontroller->del == "1")
+                                @if ($controller->del == "1")
                                     <td align="center" class="bg-danger text-white">Not Certified</td>
-                                @elseif ($visitcontroller->del == "2")
+                                @elseif ($controller->del == "2")
                                     <td align="center" style="background-color:#ffe401" class="text-black">Minor w/Mentor</td>
-                                @elseif ($visitcontroller->del == "3")
+                                @elseif ($controller->del == "3")
                                     <td align="center" style="background-color:#e29500" class="text-white">Minor Solo</td>
-                                @elseif ($visitcontroller->del == "4")
+                                @elseif ($controller->del == "4")
                                     <td align="center" class="bg-success text-white">Major W/Mentor</td>
-                                @elseif ($visitcontroller->del == "5")
+                                @elseif ($controller->del == "5")
                                     <td align="center" class="bg-success text-white">Major Solo</td>
-                                @elseif ($visitcontroller->del == "6")
+                                @elseif ($controller->del == "6")
                                     <td align="center" class="bg-success text-white">Certified</td>
                                 @else
                                     <td align="center" class="bg-danger text-white">ERROR</td>
                                 @endif
                             <!--Ground-->
-                                @if ($visitcontroller->gnd == "1")
+                                @if ($controller->gnd == "1")
                                     <td align="center" class="bg-danger text-white">Not Certified</td>
-                                @elseif ($visitcontroller->gnd == "2")
+                                @elseif ($controller->gnd == "2")
                                     <td align="center" style="background-color:#ffe401" class="text-black">Minor W/ Mentor</td>
-                                @elseif ($visitcontroller->gnd == "3")
+                                @elseif ($controller->gnd == "3")
                                     <td align="center" style="background-color:#e29500" class="text-white">Minor Solo</td>
-                                @elseif ($visitcontroller->gnd == "4")
+                                @elseif ($controller->gnd == "4")
                                     <td align="center" class="bg-success text-white">Major W/Mentor</td>
-                                @elseif ($visitcontroller->gnd == "5")
+                                @elseif ($controller->gnd == "5")
                                     <td align="center" class="bg-success text-white">Major Solo</td>
-                                @elseif ($visitcontroller->gnd == "6")
+                                @elseif ($controller->gnd == "6")
                                     <td align="center" class="bg-success text-white">Certified</td>
                                 @else
                                     <td align="center" class="bg-danger text-white">ERROR</td>
                                 @endif
                             <!--Tower-->
-                                @if ($visitcontroller->twr == "1")
+                                @if ($controller->twr == "1")
                                     <td align="center" class="bg-danger text-white">Not Certified</td>
-                                @elseif ($visitcontroller->twr == "2")
+                                @elseif ($controller->twr == "2")
                                     <td align="center" style="background-color:#ffe401" class="text-black">Minor W/ Mentor</td>
-                                @elseif ($visitcontroller->twr == "3")
+                                @elseif ($controller->twr == "3")
                                     <td align="center" style="background-color:#e29500" class="text-white">Minor Solo</td>
-                                @elseif ($visitcontroller->twr == "4")
+                                @elseif ($controller->twr == "4")
                                     <td align="center" class="bg-success text-white">Major W/Mentor</td>
-                                @elseif ($visitcontroller->twr == "5")
+                                @elseif ($controller->twr == "5")
                                     <td align="center" class="bg-success text-white">Major Solo</td>
-                                @elseif ($visitcontroller->twr == "6")
+                                @elseif ($controller->twr == "6")
                                     <td align="center" class="bg-success text-white">Certified</td>
                                 @else
                                     <td align="center" class="bg-danger text-white">ERROR</td>
@@ -163,17 +163,17 @@
                                     <td align="center" class="bg-danger text-white">ERROR</td>
                                 @endif
                             <!--Approach-->
-                                @if ($visitcontroller->app == "1")
+                                @if ($controller->app == "1")
                                     <td align="center" class="bg-danger text-white">Not Certified</td>
-                                @elseif ($visitcontroller->app == "2")
+                                @elseif ($controller->app == "2")
                                     <td align="center" style="background-color:#ffe401" class="text-black">Minor W/Menotr</td>
-                                @elseif ($visitcontroller->app == "3")
+                                @elseif ($controller->app == "3")
                                     <td align="center" style="background-color:#e29500" class="text-white">Minor Solo</td>
-                                @elseif ($visitcontroller->app == "4")
+                                @elseif ($controller->app == "4")
                                     <td align="center" class="bg-success text-white">Major W/Mentor</td>
-                                @elseif ($visitcontroller->app == "5")
+                                @elseif ($controller->app == "5")
                                     <td align="center" class="bg-success text-white">Major Solo</td>
-                                @elseif ($visitcontroller->app == "6")
+                                @elseif ($controller->app == "6")
                                     <td align="center" class="bg-success text-white">Certified</td>
                                 @else
                                     <td align="center" class="bg-danger text-white">ERROR</td>
