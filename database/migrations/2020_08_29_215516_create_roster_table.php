@@ -31,6 +31,7 @@ class CreateRosterTable extends Migration
             $table->integer('dep')->default(1);
             $table->integer('app')->default(1);
             $table->integer('ctr')->default(1);
+            $table->integer('fss')->default(1);
             $table->text('remarks')->nullable();
             $table->integer('visit');
         });

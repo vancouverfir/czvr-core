@@ -61,11 +61,25 @@
   <label class="control-label" for="del">Delivery</label>
     <select name="del" class="form-control">
       <option value="1"{{ $roster->del == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->del == "2" ? "selected=selected" : ""}}>Training</option>
-      <option value="3"{{ $roster->del == "3" ? "selected=selected" : ""}}>Solo</option>
-      <option value="4"{{ $roster->del == "4" ? "selected=selected" : ""}}>Certified</option>
+      <option value="2"{{ $roster->del == "2" ? "selected=selected" : ""}}>Minor Mentor</option>
+      <option value="3"{{ $roster->del == "3" ? "selected=selected" : ""}}>Minor Solo</option>
+      <option value="4"{{ $roster->del == "4" ? "selected=selected" : ""}}>Major Mentor</option>
+      <option value="5"{{ $roster->del == "5" ? "selected=selected" : ""}}>Major Solo</option>
+      <option value="6"{{ $roster->del == "6" ? "selected=selected" : ""}}>Certified</option>
     </select>
 </div>
+</div>
+
+<!-- AAS/RAAS -->
+<div class="form-group col-md-2">
+  <label class="control-label" for="gnd">AAS/RAAS</label>
+
+    <select name="gnd" class="form-control">
+      <option value="1"{{ $roster->fss == "1" ? "selected=selected" : ""}}>Not Certified</option>
+      <option value="2"{{ $roster->fss == "2" ? "selected=selected" : ""}}>Training</option>
+      <option value="3"{{ $roster->fss == "3" ? "selected=selected" : ""}}>Solo</option>
+      <option value="4"{{ $roster->fss == "4" ? "selected=selected" : ""}}>Certified</option>
+    </select>
 </div>
 
 
@@ -75,9 +89,11 @@
 
     <select name="gnd" class="form-control">
       <option value="1"{{ $roster->gnd == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->gnd == "2" ? "selected=selected" : ""}}>Training</option>
-      <option value="3"{{ $roster->gnd == "3" ? "selected=selected" : ""}}>Solo</option>
-      <option value="4"{{ $roster->gnd == "4" ? "selected=selected" : ""}}>Certified</option>
+      <option value="2"{{ $roster->gnd == "2" ? "selected=selected" : ""}}>Minor Mentor</option>
+      <option value="3"{{ $roster->gnd == "3" ? "selected=selected" : ""}}>Minor Solo</option>
+      <option value="4"{{ $roster->gnd == "4" ? "selected=selected" : ""}}>Major Mentor</option>
+      <option value="5"{{ $roster->gnd == "5" ? "selected=selected" : ""}}>Major Solo</option>
+      <option value="6"{{ $roster->gnd == "6" ? "selected=selected" : ""}}>Certified</option>
     </select>
 </div>
 
@@ -88,9 +104,11 @@
   <label class="control-label" for="twr">Tower</label>
     <select name="twr" class="form-control">
       <option value="1"{{ $roster->twr == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->twr == "2" ? "selected=selected" : ""}}>Training</option>
-      <option value="3"{{ $roster->twr == "3" ? "selected=selected" : ""}}>Solo</option>
-      <option value="4"{{ $roster->twr == "4" ? "selected=selected" : ""}}>Certified</option>
+      <option value="2"{{ $roster->twr == "2" ? "selected=selected" : ""}}>Minor Mentor</option>
+      <option value="3"{{ $roster->twr == "3" ? "selected=selected" : ""}}>Minor Solo</option>
+      <option value="4"{{ $roster->twr == "4" ? "selected=selected" : ""}}>Major Mentor</option>
+      <option value="5"{{ $roster->twr == "5" ? "selected=selected" : ""}}>Major Solo</option>
+      <option value="6"{{ $roster->twr == "6" ? "selected=selected" : ""}}>Certified</option>
     </select>
 
 </div>
@@ -118,9 +136,11 @@
   <label class="control-label" for="app">Arrival</label>
     <select name="app" class="form-control">
       <option value="1"{{ $roster->app == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->app == "2" ? "selected=selected" : ""}}>Training</option>
-      <option value="3"{{ $roster->app == "3" ? "selected=selected" : ""}}>Solo</option>
-      <option value="4"{{ $roster->app == "4" ? "selected=selected" : ""}}>Certified</option>
+      <option value="2"{{ $roster->app == "2" ? "selected=selected" : ""}}>Minor Mentor</option>
+      <option value="3"{{ $roster->app == "3" ? "selected=selected" : ""}}>Minor Solo</option>
+      <option value="4"{{ $roster->app == "4" ? "selected=selected" : ""}}>Major Mentor</option>
+      <option value="5"{{ $roster->app == "5" ? "selected=selected" : ""}}>Major Solo</option>
+      <option value="6"{{ $roster->app == "6" ? "selected=selected" : ""}}>Certified</option>
     </select>
   </div>
 
@@ -133,7 +153,6 @@
       <option value="2"{{ $roster->ctr == "2" ? "selected=selected" : ""}}>Training</option>
       <option value="3"{{ $roster->ctr == "3" ? "selected=selected" : ""}}>Solo</option>
       <option value="4"{{ $roster->ctr == "4" ? "selected=selected" : ""}}>Certified</option>
-
     </select>
   </div>
 </div>
