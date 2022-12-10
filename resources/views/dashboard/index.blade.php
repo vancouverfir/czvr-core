@@ -628,7 +628,6 @@
                                         <a href="{{route('staff.feedback.index')}}" style="text-decoration:none;"><span
                                                 class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
                                             <span class="black-text">Manage Feedback</span>
-                                            <span class="feedback">{{count($controller_feedback_attention)}}</span>
                                               </a>
                                     </li>
                                     <li class="mb-2">
