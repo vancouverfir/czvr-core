@@ -100,7 +100,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark p-0 main-colour" style="min-height:59px">
             <div class="container">
-                <a class="navbar-brand" href="{{route('index')}}"><img style="height: 40px; width:auto;" src="https://cdn.discordapp.com/attachments/800588233570123776/1050211830821302302/CZVR_Colour_Long.png" alt=""></a>
+                <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto;" src="https://cdn.discordapp.com/attachments/800588233570123776/1050211830821302302/CZVR_Colour_Long.png" alt=""></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -306,11 +306,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Welcome to CZWG!</b></h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Welcome to CZVR!</b></h5>
                 </div>
                 <div class="modal-body">
-                    Welcome to the Winnipeg FIR Core system. Here you can apply to become a visiting controller (if not a home controller), organize your
-                    training, and access important pilot and controller resources! Before
+                    Welcome to the Vancouver FIR Website. Here you can access important pilot and controller resources! Before
                     we allow you to use the system, we require you to accept our Privacy Policy. The Policy is available
                     <a target="_blank" href="{{url('/privacy')}}">here.</a>
                     By default, you are <b>not</b> subscribed to non-essential email notifications. Head to the Dashboard and click on "Manage my preferences" to

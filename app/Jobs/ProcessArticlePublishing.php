@@ -48,7 +48,7 @@ class ProcessArticlePublishing implements ShouldQueue
             /*
              * The image location for the senders image
              */
-            'avatar_url' => 'https://cdn.discordapp.com/attachments/695849973585149962/714264313388335196/W_okay1.png',
+            'avatar_url' => 'https://cdn.discordapp.com/attachments/1050204166859001906/1050971323079335936/Wordmark_Colour.png',
             /*
              * Whether or not to read the message in Text-to-speech
              */

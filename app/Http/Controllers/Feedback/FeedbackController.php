@@ -173,7 +173,7 @@ class FeedbackController extends Controller
                     'content' => $request->get('content'),
                 ]);
                 $feedback->save();
-                Notification::route('mail', CoreSettings::find(1)->emailwebmaster)->notify(new NewWebsiteFeedback($feedback));
+              //  Notification::route('mail', CoreSettings::find(1)->emailwebmaster)->notify(new NewWebsiteFeedback($feedback));
                 break;
             case 'operations':
                 $feedback = new OperationsFeedback([
@@ -182,7 +182,7 @@ class FeedbackController extends Controller
                     'content' => $request->get('content'),
                 ]);
                 $feedback->save();
-                Notification::route('mail', CoreSettings::find(1)->emailfacilitye)->notify(new NewOperationsFeedback($feedback));
+              //  Notification::route('mail', CoreSettings::find(1)->emailfacilitye)->notify(new NewOperationsFeedback($feedback));
                 break;
             case 'controller':
                 $feedback = new ControllerFeedback([
@@ -192,8 +192,8 @@ class FeedbackController extends Controller
                     'content' => $request->get('content'),
                 ]);
                 $feedback->save();
-                Notification::route('mail', CoreSettings::find(1)->emailfirchief)->notify(new NewControllerFeedback($feedback));
-                Notification::route('mail', CoreSettings::find(1)->emaildepfirchief)->notify(new NewControllerFeedback($feedback));
+            //    Notification::route('mail', CoreSettings::find(1)->emailfirchief)->notify(new NewControllerFeedback($feedback));
+              //  Notification::route('mail', CoreSettings::find(1)->emaildepfirchief)->notify(new NewControllerFeedback($feedback));
                 break;
         }
 

@@ -14,15 +14,15 @@
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="{{ asset('winnipeg.ico') }}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <!--Rich Preview Meta-->
-        <title>@yield('title', 'Winnipeg FIR')</title>
+        <title>@yield('title', 'Vancouver FIR')</title>
         <meta name="description" content="@yield('description', '')">
-        <meta name="theme-color" content="#013162">
-        <meta name="og:title" content="@yield('title', 'Winnipeg FIR')">
+        <meta name="theme-color" content="#6CC24A">
+        <meta name="og:title" content="@yield('title', 'Vancouver FIR')">
         <meta name="og:description" content="@yield('description', '')">
-        <meta name="og:image" content="@yield('image','https://winnipegfir.ca/storage/files/uploads/1612961752.png')">
+        <meta name="og:image" content="@yield('image','https://i.imgur.com/7Rz1DOr.png')">
         <link rel="shortcut icon" href="{{ asset('winnipeg.ico') }}" type="image/x-icon">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
@@ -58,7 +58,7 @@
         <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
         <script src="{{asset('/js/leaflet.rotatedMarker.js')}}"></script>
         <!--TinyMCE-->
-        <script src='https://cloud.tinymce.com/5/tinymce.min.js?apiKey=k2zv68a3b4m423op71lnifx4a9lm0a2ee96o58zafhrdnddb'></script>
+            <script src="https://cdn.tiny.cloud/1/iz7e8hg00dm8miggx7tpbcws8glzakaodu6y0i3t3sc59u42/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
         <!--DataTables-->
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css"/>
         <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
@@ -84,8 +84,10 @@
         <script src="{{asset('js/dropzone.js')}}"></script>
         <!--JqueryValidate-->
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+        <!---->
+        <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
     </head>
-    <body>
+    <body class="background">
     <!--Header-->
     @include('maintenancemode::notification')
     @if (\App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->banner)
@@ -96,9 +98,9 @@
         </div>
     @endif
     <header>
-        <nav id="czwgHeader" class="navbar navbar-expand-lg navbar-dark p-0" style="min-height:59px; background-color: #fff">
+        <nav class="navbar navbar-expand-lg navbar-dark p-0 main-colour" style="min-height:59px">
             <div class="container">
-                <a class="navbar-brand" href="{{route('index')}}"><img style="height: 40px; width:auto;" src="https://winnipegfir.ca/storage/files/uploads/1612961752.png" alt=""></a>
+                <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto;" src="https://cdn.discordapp.com/attachments/800588233570123776/1050211830821302302/CZVR_Colour_Long.png" alt=""></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -111,7 +113,7 @@
                         <li class="nav-item {{ Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
                             @if(Auth::check() && Auth::user()->permissions >= 4)
                             <li class="nav-item dropdown {{ Request::is('news') || Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer; color: #013162" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">News</a>
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">News</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                             <a class="dropdown-item" href="{{route('news')}}">News</a>
                                 <a class="dropdown-item {{ Request::is('news') ? 'active white-text' : '' }}" href="{{route('news.index')}}">Manage News</a>
@@ -120,25 +122,27 @@
                             @endif
                         </li>
                         <li class="nav-item {{ Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
-                            @if(Auth::check() && Auth::user()->permissions >= 4)
+                          <!--  @if(Auth::check() && Auth::user()->permissions >= 4)
                             <li class="nav-item dropdown {{ Request::is('events') || Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer; color: #013162" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                             <a class="dropdown-item" href="{{route('events.index')}}">Events</a>
                                 <a class="dropdown-item {{ Request::is('events') ? 'active white-text' : '' }}" href="{{route('events.admin.index')}}">Manage Events</a>
                             @else
                                 <a href="{{route('events.index')}}" class="nav-link">Events</a>
                             @endif
+                                                Hide as we will try and automatically fetch events-->
+                            <a href="{{route('events.index')}}" class="nav-link">Events</a>
                         </li>
                         <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources') ? 'active' : '' }}">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer; color: #013162" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                             <a class="dropdown-item" href="{{route('roster.public')}}">Roster</a>
                             @if(Auth::check() && Auth::user()->permissions >= 4)
                                 <a class="dropdown-item {{ Request::is('roster') ? 'active white-text' : '' }}" href="{{route('roster.index')}}">Manage Roster</a>
                             @endif
                             @if(!Auth::check() || Auth::user()->permissions == 0)
-                                <a class="dropdown-item {{ Request::is('join') ? 'active white-text' : '' }}" href="{{url ('/join')}}">How to Become a Winnipeg Controller</a>
+                                <a class="dropdown-item {{ Request::is('join') ? 'active white-text' : '' }}" href="{{url ('/join')}}">How to Become a Vancouver Controller</a>
                                 @auth
                                 <a class="dropdown-item {{ Request::is('dashboard/application/list') ? 'active white-text' : '' }}" href="{{url ('/dashboard/application/list')}}">Your Applications</a>
                                 @endauth
@@ -147,27 +151,27 @@
                             </div>
                         </li>
                         <li class="nav-item dropdown {{ Request::is('airports') ? 'active' : '' }}">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer; color: #013162" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                              <!--  <a class="dropdown-item" href="{{route('airports')}}">Airports</a> Hide Until Updated with CZVR airports -->
+                              <!--  <a class="dropdown-item" href="{{route('airports')}}">Airports</a> Remove until updated -->
                                 <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
                                 <a class="dropdown-item" href="https://www.vatsim.net/pilots/resources" target="_blank">VATSIM Resources</a>
                                 <a class="dropdown-item" href="https://simaware.ca" target="_blank">Live Map</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer; color: #013162" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Publications</a>
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Publications</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                                 <a class="dropdown-item {{ Request::is('policies') ? 'active white-text' : '' }}" href="{{route('policies')}}">Policies</a>
-                              <!--  <a class="dropdown-item {{ Request::is('meetingminutes') ? 'active white-text' : '' }}" href="{{route('meetingminutes')}}">Meeting Minutes</a> Hide until we decide if we wish to use it-->
+                                <a class="dropdown-item {{ Request::is('meetingminutes') ? 'active white-text' : '' }}" href="{{route('meetingminutes')}}">Meeting Minutes</a>
                                 <a class="dropdown-item {{ Request::is('privacy') ? 'active white-text' : '' }}" href="{{route('privacy')}}">Privacy Policy</a>
                             </div>
                         </li>
                         <li class="nav-item  {{ Request::is('staff') ? 'active' : '' }}">
-                            <a style="color: #013162" class="nav-link" href="{{url ('/staff')}}" aria-expanded="false">Staff</a>
+                            <a class="nav-link" href="{{url ('/staff')}}" aria-expanded="false">Staff</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer; color: #013162" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Feedback</a>
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Feedback</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                                 <a class="dropdown-item {{ Request::is('feedback') ? 'active white-text' : '' }}" href="{{route('feedback.create')}}">Submit Feedback</a>
                                 <a class="dropdown-item {{ Request::is('yourfeedback') ? 'active white-text' : '' }}" href="{{route('yourfeedback')}}">Your Feedback</a>
@@ -181,13 +185,13 @@
                                 <i class="fas fa-sign-in-alt"></i>&nbsp;Login
                             </a> --}}
                             <a href="{{route('auth.connect.login')}}" class="nav-link waves-effect waves-light">
-                                <i class="fas fa-sign-in-alt" style="color: #013162"></i>&nbsp;Login
+                                <i class="fas fa-sign-in-alt"></i>&nbsp;Login
                             </a>
                         </li>
                         @endunless
                         @auth
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown" style="color: #013162" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="{{Auth::user()->avatar()}}" style="height: 27px; width: 27px; margin-right: 7px; margin-bottom: 3px; border-radius: 50%;">&nbsp;<span class="font-weight-bold">{{Auth::user()->fullName("F")}}</span>
                             </a>
 
@@ -202,13 +206,13 @@
                         </li>
                         @endauth
                         <li class="nav-item d-flex align-items-center">
-                            <a href="https://twitter.com/vancouverfir" class="nav-link waves-effect waves-light" target="_BLANK" >
-                                <i style="font-size: 1.7em; color: #013162" class="fab fa-twitter"></i>
+                            <a href="https://mobile.twitter.com/vancouverfir" class="nav-link waves-effect waves-light" target="_BLANK" >
+                                <i style="font-size: 1.7em;" class="fab fa-twitter"></i>
                             </a>
                         </li>
                         <li class="nav-item d-flex align-items-center">
                             <a class="nav-link waves-effect waves-light" data-toggle="modal" data-target="#discordTopModal" target="_BLANK" >
-                                <i style="height: 22px; font-size: 1.7em; width: 28px; padding-left: 5px; padding-top: 2px; color: #013162" class="fab fa-discord"></i>
+                                <i style="height: 22px; font-size: 1.7em;width: 28px;padding-left: 5px;padding-top: 2px;" class="fab fa-discord"></i>
                             </a>
                         </li>
                     </ul>
@@ -256,10 +260,10 @@
     </div>
     <!-- Footer -->
     <!-- Footer -->
-    <footer class="page-footer text-light font-small py-4 bg-dark {{Request::is('/dashboard') ? 'mt-5' : ''}}">
+    <footer class="page-footer text-light font-small py-4 {{Request::is('/dashboard') ? 'mt-5' : ''}}">
         <div class="container">
             <p style="color:white">For Flight Simulation Use Only - Not to be used for real-world navigation. By using this site, you agree to hold harmless and indemnify the owners and authors of these web pages, those listed on these pages, and all pages that this site that may be pointed to (i.e. external links).</p>
-            <p style="color:white">Copyright © {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->copyright_year}} Winnipeg FIR | All Rights Reserved.</p>
+            <p style="color:white">Copyright © {{ date('Y') }} Vancouver FIR | All Rights Reserved.</p>
             <div class="flex-left mt-3">
             <a href="{{route('about')}}">Github</a>
                 &nbsp;
@@ -285,8 +289,12 @@
             </div>
 
             <div class="mt-3">
-                <p>The Winnipeg FIR stands with the LGBTQIA+ community on VATSIM.</p>
-                <a href="{{route('about')}}"><small class="text-muted">{{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->sys_name}} {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->release}} ({{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->sys_build}})</small></a> <small>- <a target="_blank" href="https://blog.winnipegfir.ca" class="text-muted">The Winnipeg FIR Blog</a></small>
+              <div>
+                                <img style="height: 20px;" src="https://upload.wikimedia.org/wikipedia/commons/8/8a/LGBT_Rainbow_Flag.png" alt="">
+                                <img style="height: 20px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Transgender_Pride_flag.svg/1280px-Transgender_Pride_flag.svg.png" alt="">
+                                <img src="https://cdn.discordapp.com/attachments/482817676067209217/695255571623837837/220px-Bisexual_Pride_Flag.png" style="height:20px;" alt="">
+                </div>
+                <p>The Vancover FIR stands with the LGBTQIA+ community on VATSIM.</p>
             </div>
         </div>
     </footer>
@@ -298,11 +306,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Welcome to CZWG!</b></h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Welcome to CZVR!</b></h5>
                 </div>
                 <div class="modal-body">
-                    Welcome to the Winnipeg FIR Core system. Here you can apply to become a visiting controller (if not a home controller), organize your
-                    training, and access important pilot and controller resources! Before
+                    Welcome to the Vancouver FIR Website. Here you can access important pilot and controller resources! Before
                     we allow you to use the system, we require you to accept our Privacy Policy. The Policy is available
                     <a target="_blank" href="{{url('/privacy')}}">here.</a>
                     By default, you are <b>not</b> subscribed to non-essential email notifications. Head to the Dashboard and click on "Manage my preferences" to
