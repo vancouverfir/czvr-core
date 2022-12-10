@@ -35,6 +35,7 @@
                     <th style="text-align:center" scope="col"><b>CID</b></th>
                     <th style="text-align:center" scope="col">Controller Name</th>
                     <th style="text-align:center" scope="col">Rating</th>
+                    <th style="text-align:center" scope="col">FSS</th>
                     <th style="text-align:center" scope="col">DEL</th>
                     <th style="text-align:center" scope="col">GND</th>
                     <th style="text-align:center" scope="col">TWR</th>
@@ -54,6 +55,18 @@
                     </td>
 
 <!--Vancouver Controller Position Ratings from Db -->
+<!--AAS/RAAS-->
+                    @if ($controller->fss == "1")
+                        <td align="center" class="bg-danger text-white">Not Certified</td>
+                    @elseif ($controller->fss == "2")
+                        <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                    @elseif ($controller->fss == "3")
+                        <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                    @elseif ($controller->fss == "4")
+                        <td align="center" class="bg-success text-white">Certified</td>
+                    @else
+                        <td align="center" class="bg-danger text-white">ERROR</td>
+                    @endif
 <!--Delivery-->
                     @if ($controller->del == "1")
                         <td align="center" class="bg-danger text-white">Not Certified</td>
@@ -143,6 +156,7 @@
                     <th style="text-align:center" scope="col"><b>CID</b></th>
                     <th style="text-align:center" scope="col">Controller Name</th>
                     <th style="text-align:center" scope="col">Rating</th>
+                    <th style="text-align:center" scope="col">FSS</th>
                     <th style="text-align:center" scope="col">DEL</th>
                     <th style="text-align:center" scope="col">GND</th>
                     <th style="text-align:center" scope="col">TWR</th>
@@ -163,14 +177,30 @@
                     </td>
 
 <!--Vancouver Controller Position Ratings from Db -->
+<!--AAS/RAAS-->
+                    @if ($controller->fss == "1")
+                        <td align="center" class="bg-danger text-white">Not Certified</td>
+                    @elseif ($controller->fss == "2")
+                        <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                    @elseif ($controller->fss == "3")
+                        <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                    @elseif ($controller->fss == "4")
+                        <td align="center" class="bg-success text-white">Certified</td>
+                    @else
+                        <td align="center" class="bg-danger text-white">ERROR</td>
+                    @endif
 <!--Delivery-->
                     @if ($visitcontroller->del == "1")
                         <td align="center" class="bg-danger text-white">Not Certified</td>
                     @elseif ($visitcontroller->del == "2")
-                        <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                        <td align="center" style="background-color:#ffe401" class="text-black">Minor w/Mentor</td>
                     @elseif ($visitcontroller->del == "3")
-                        <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                        <td align="center" style="background-color:#e29500" class="text-white">Minor Solo</td>
                     @elseif ($visitcontroller->del == "4")
+                        <td align="center" class="bg-success text-white">Major W/Mentor</td>
+                    @elseif ($visitcontroller->del == "5")
+                        <td align="center" class="bg-success text-white">Major Solo</td>
+                    @elseif ($visitcontroller->del == "6")
                         <td align="center" class="bg-success text-white">Certified</td>
                     @else
                         <td align="center" class="bg-danger text-white">ERROR</td>
@@ -179,10 +209,14 @@
                     @if ($visitcontroller->gnd == "1")
                         <td align="center" class="bg-danger text-white">Not Certified</td>
                     @elseif ($visitcontroller->gnd == "2")
-                        <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                        <td align="center" style="background-color:#ffe401" class="text-black">Minor W/ Mentor</td>
                     @elseif ($visitcontroller->gnd == "3")
-                        <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                        <td align="center" style="background-color:#e29500" class="text-white">Minor Solo</td>
                     @elseif ($visitcontroller->gnd == "4")
+                        <td align="center" class="bg-success text-white">Major W/Mentor</td>
+                    @elseif ($visitcontroller->gnd == "5")
+                        <td align="center" class="bg-success text-white">Major Solo</td>
+                    @elseif ($visitcontroller->gnd == "6")
                         <td align="center" class="bg-success text-white">Certified</td>
                     @else
                         <td align="center" class="bg-danger text-white">ERROR</td>
@@ -191,10 +225,14 @@
                     @if ($visitcontroller->twr == "1")
                       <td align="center" class="bg-danger text-white">Not Certified</td>
                     @elseif ($visitcontroller->twr == "2")
-                      <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                      <td align="center" style="background-color:#ffe401" class="text-black">Minor W/ Mentor</td>
                     @elseif ($visitcontroller->twr == "3")
-                      <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                      <td align="center" style="background-color:#e29500" class="text-white">Minor Solo</td>
                     @elseif ($visitcontroller->twr == "4")
+                      <td align="center" class="bg-success text-white">Major W/Mentor</td>
+                    @elseif ($visitcontroller->twr == "5")
+                      <td align="center" class="bg-success text-white">Major Solo</td>
+                    @elseif ($visitcontroller->twr == "6")
                       <td align="center" class="bg-success text-white">Certified</td>
                     @else
                         <td align="center" class="bg-danger text-white">ERROR</td>
@@ -215,10 +253,14 @@
                     @if ($visitcontroller->app == "1")
                         <td align="center" class="bg-danger text-white">Not Certified</td>
                     @elseif ($visitcontroller->app == "2")
-                        <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                        <td align="center" style="background-color:#ffe401" class="text-black">Minor W/Menotr</td>
                     @elseif ($visitcontroller->app == "3")
-                        <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                        <td align="center" style="background-color:#e29500" class="text-white">Minor Solo</td>
                     @elseif ($visitcontroller->app == "4")
+                        <td align="center" class="bg-success text-white">Major W/Mentor</td>
+                    @elseif ($visitcontroller->app == "5")
+                        <td align="center" class="bg-success text-white">Major Solo</td>
+                    @elseif ($visitcontroller->app == "6")
                         <td align="center" class="bg-success text-white">Certified</td>
                     @else
                         <td align="center" class="bg-danger text-white">ERROR</td>

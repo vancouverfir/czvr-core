@@ -98,6 +98,7 @@ class RosterController extends Controller
             $roster->dep = $request->input('dep');
             $roster->app = $request->input('app');
             $roster->ctr = $request->input('ctr');
+            $roster->ctr = $request->input('fss');
             $roster->remarks = $request->input('remarks');
             if ($request->input('rating_hours') == 'true') {
                 $roster->rating_hours = 0;
