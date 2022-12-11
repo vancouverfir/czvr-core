@@ -169,7 +169,7 @@ class UserController extends Controller
         //$xml['return'] = file_get_contents('https://cert.vatsim.net/cert/vatsimnet/idstatus.php?cid=' . $user->id);
         $auditLog = AuditLogEntry::where('affected_id', $id)->get();
         $allroles = Role::all();
-        $roles = $user->getRoleNames();
+        //$roles = $user->getRoleNames();
 
         return view('admin.users.profile', compact('user', 'xml', 'certification', 'active', 'auditLog', 'userNotes', 'roles', 'allroles'));
     }
