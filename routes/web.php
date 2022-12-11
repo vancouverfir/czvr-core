@@ -206,23 +206,25 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     //Users View/Edit
-    Route::group(['prefix' => 'admin/users', 'middleware' => 'staff'], function () {
-        Route::get('/', 'Users\UserController@viewAllUsers')->name('users.viewall');
-        Route::post('/search/ajax', 'Users\UserController@searchUsers')->name('users.search.ajax');
-        Route::get('{id}', 'Users\UserController@adminViewUserProfile')->name('users.viewprofile');
-        Route::post('/{id}', 'Users\UserController@createUserNote')->name('users.createnote');
-        Route::post('/edit/{id}', 'Users\UserController@editPermissions')->name('edit.userpermissions');
-        Route::get('/{user_id}/note/{note_id}/delete', 'Users\UserController@deleteUserNote')->name('users.deletenote');
-        Route::post('/func/avatarchange', 'Users\UserController@changeUsersAvatar')->name('users.changeusersavatar');
-        Route::post('/func/avatarreset', 'Users\UserController@resetUsersAvatar')->name('users.resetusersavatar');
-        Route::post('/func/bioreset', 'Users\UserController@resetUsersBio')->name('users.resetusersbio');
-        Route::get('/{id}/delete', 'Users\UserController@deleteUser');
-        Route::get('/{id}/edit', 'Users\UserController@editUser')->name('users.edit.create');
-        Route::post('/{id}/edit', 'Users\UserController@storeEditUser')->name('users.edit.store');
-        Route::post('/{id}/bookingban/create', 'Users\UserController@createBookingBan')->name('users.bookingban.create');
-        Route::post('/{id}/bookingban/remove', 'Users\UserController@removeBookingBan')->name('users.bookingban.remove');
-        Route::get('/{id}/email', 'Users\UserController@emailCreate')->name('users.email.create');
-        Route::get('/{id}/email', 'Users\UserController@emailStore')->name('users.email.store');
+    Route::group(['middleware' => 'staff'], function() {
+        Route::prefix('admin/users')->Group(function () {
+            Route::get('/', 'Users\UserController@viewAllUsers')->name('users.viewall');
+            Route::post('/search/ajax', 'Users\UserController@searchUsers')->name('users.search.ajax');
+            Route::get('{id}', 'Users\UserController@adminViewUserProfile')->name('users.viewprofile');
+            Route::post('/{id}', 'Users\UserController@createUserNote')->name('users.createnote');
+            Route::post('/edit/{id}', 'Users\UserController@editPermissions')->name('edit.userpermissions');
+            Route::get('/{user_id}/note/{note_id}/delete', 'Users\UserController@deleteUserNote')->name('users.deletenote');
+            Route::post('/func/avatarchange', 'Users\UserController@changeUsersAvatar')->name('users.changeusersavatar');
+            Route::post('/func/avatarreset', 'Users\UserController@resetUsersAvatar')->name('users.resetusersavatar');
+            Route::post('/func/bioreset', 'Users\UserController@resetUsersBio')->name('users.resetusersbio');
+            Route::get('/{id}/delete', 'Users\UserController@deleteUser');
+            Route::get('/{id}/edit', 'Users\UserController@editUser')->name('users.edit.create');
+            Route::post('/{id}/edit', 'Users\UserController@storeEditUser')->name('users.edit.store');
+            Route::post('/{id}/bookingban/create', 'Users\UserController@createBookingBan')->name('users.bookingban.create');
+            Route::post('/{id}/bookingban/remove', 'Users\UserController@removeBookingBan')->name('users.bookingban.remove');
+            Route::get('/{id}/email', 'Users\UserController@emailCreate')->name('users.email.create');
+            Route::get('/{id}/email', 'Users\UserController@emailStore')->name('users.email.store');
+        });
     });
 
     //Feedback
