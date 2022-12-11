@@ -74,7 +74,7 @@
 <div class="form-group col-md-2">
   <label class="control-label" for="gnd">AAS/RAAS</label>
 
-    <select name="gnd" class="form-control">
+    <select name="fss" class="form-control">
       <option value="1"{{ $roster->fss == "1" ? "selected=selected" : ""}}>Not Certified</option>
       <option value="2"{{ $roster->fss == "2" ? "selected=selected" : ""}}>Training</option>
       <option value="3"{{ $roster->fss == "3" ? "selected=selected" : ""}}>Solo</option>
