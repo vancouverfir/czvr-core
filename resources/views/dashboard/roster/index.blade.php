@@ -92,31 +92,31 @@
                                 <!--Vancouver Controller Position Ratings from Db -->
                                 <!--AAS/RAAS-->
                                 @if ($controller->fss == "1")
-                                    <td align="center" class="fa fa-times icon-no-cert"></td>
+                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
                                 @elseif ($controller->fss == "2")
-                                    <td align="center" class="fa fa-check-circle icon-mentor"></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
                                 @elseif ($controller->fss == "3")
-                                    <td align="center" class="fa fa-check-circle icon-solo"></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
                                 @elseif ($controller->fss == "4")
-                                    <td align="center" class="fa fa-star icon-certified"></td>
+                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
                                 @else
-                                    <td align="center" class="fa fa-exclamation-triangle icon-error"></td>
+                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
                                 <!--Delivery-->
                                 @if ($controller->del == "1")
-                                    <td align="center" class="fa fa-times icon-no-cert"></td>
+                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
                                 @elseif ($controller->del == "2")
-                                    <td align="center" style="fa fa-check-circle-o icon-mentor"></td>
+                                    <td align="center" ><i class="fa fa-check-circle-o icon-mentor"></i></td>
                                 @elseif ($controller->del == "3")
-                                    <td align="center" style="fa fa-check-circle-o icon-solo"></td>
+                                    <td align="center" ><i class="fa fa-check-circle-o icon-solo"></i></td>
                                 @elseif ($controller->del == "4")
-                                    <td align="center" class="fa fa-check-circle icon-mentor"></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
                                 @elseif ($controller->del == "5")
-                                    <td align="center" class="fa fa-check-circle icon-solo"></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
                                 @elseif ($controller->del == "6")
-                                    <td align="center" class="fa fa-star icon-certified"></td>
+                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
                                 @else
-                                    <td align="center" class="fa fa-exclamation-triangle icon-error"></td>
+                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
                             <!--Ground-->
                                 @if ($controller->gnd == "1")
@@ -124,7 +124,7 @@
                                 @elseif ($controller->gnd == "2")
                                     <td align="center" style="fa fa-check-circle-o icon-mentor"></td>
                                 @elseif ($controller->gnd == "3")
-                                    <td align="center" style="fa fa-check-circle-o icon-mentor"></td>
+                                    <td align="center" style="fa fa-check-circle-o icon-solo"></td>
                                 @elseif ($controller->gnd == "4")
                                     <td align="center" class="fa fa-check-circle icon-mentor"></td>
                                 @elseif ($controller->gnd == "5")
