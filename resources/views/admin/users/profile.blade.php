@@ -290,10 +290,10 @@
                     This user does not have a linked Discord account.
                     @endif
                 </div><br>
-                <h2 class="font-weight-bold blue-text pb-2">User Notes</h2>
+                <h2 class="font-weight-bold blue-text pb-2">User Notes -- Coming Soon!</h2>
                 <div class="card p-3">
-                    <a href="#" data-toggle="modal" data-target="#addNoteModal" class="btn btn-sm bg-czqo-blue-light">Add Note</a>
-                    <a href="#" data-toggle="modal" data-target="#viewNotesModal" class="btn btn-sm bg-primary text-light">View Notes</a>
+                    <!--<a href="#" data-toggle="modal" data-target="#addNoteModal" class="btn btn-sm bg-czqo-blue-light">Add Note</a>  Hidden until vatsim integration completed-->
+                    <!-- <a href="#" data-toggle="modal" data-target="#viewNotesModal" class="btn btn-sm bg-primary text-light">View Notes</a> -->
                 </div>
             </div>
         </div>
