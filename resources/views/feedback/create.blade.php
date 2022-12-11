@@ -5,7 +5,7 @@
 @section('content')
     <div class="container py-4">
         <h1 class="font-weight-bold blue-text">Submit Feedback</h1>
-        <p style="font-size: 1.2em;">
+        <p class="content-font-color" style="font-size: 1.2em;">
             Have feedback for the Winnipeg FIR? This is the place to submit it!
         </p>
         <hr>
@@ -24,10 +24,10 @@
             <ul class="mt-0 pt-0 pl-0 stepper stepper-vertical">
                 <li class="active">
                     <a href="#!">
-                        <span class="circle">1</span>
-                        <span class="label">Type of feedback</span>
+                        <span class="circle circle-color">1</span>
+                        <span class="label content-font-color">Type of feedback</span>
                     </a>
-                    <div class="step-content w-75 grey lighten-3">
+                    <div class="step-content w-75 box-colour content-font-color">
                         <p>Please select the type of feedback you are submitting.</p>
                         <select name="feedbackType" id="feedbackTypeSelect" class="form-control">
                             <option value="0" hidden>Please select one...</option>
@@ -38,13 +38,13 @@
                 </li>
                 <li class="active">
                     <a href="#!">
-                        <span class="circle">2</span>
-                        <span class="label">Your message</span>
+                        <span class="circle circle-color">2</span>
+                        <span class="label content-font-color">Your message</span>
                     </a>
-                    <div id="typeNotSelected" class="step-content w-75 grey lighten-3">
+                    <div id="typeNotSelected" class="step-content w-75 box-colour content-font-color">
                         Please select a feedback type first!
                     </div>
-                    <div id="typeSelected" class="step-content w-75 grey lighten-3" style="display:none">
+                    <div id="typeSelected" class="step-content w-75 box-colour content-font-color" style="display:none">
                         <div class="md-form" id="controllerCidGroup" style="display:none">
                             <div>
                                 <p>Controller's Name/CID</p>
@@ -63,7 +63,7 @@
                         </div>
                         <div class="md-form" id="positionGroup" style="display:none">
                             <p>Position</p>
-                            <input type="name" name="position" class="form-control" placeholder="CZWG_CTR">
+                            <input type="name" name="position" class="form-control" placeholder="CZVR_CTR">
                         </div>
                         <div class="md-form" id="subjectGroup" style="display:none">
                             <p>Subject</p>
