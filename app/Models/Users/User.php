@@ -267,7 +267,7 @@ class User extends Authenticatable
                     ->background('#3A6F26')
                     ->color('#6CC24A')
                     ->font('lato')
-                    ->fontsize(125)
+                    ->fontsize('125px')
                     ->generate();
                 Storage::put('public/files/avatars/'.$this->id.'/initials.png', (string) $image->encode('png'));
 
