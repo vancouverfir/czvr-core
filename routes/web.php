@@ -250,11 +250,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('exam/grade/{id}', 'AtcTraining\CBTController@gradeExam')->name('cbt.exam.grade');
         Route::get('exam/results/{id}/{sid}', 'AtcTraining\CBTController@examResults')->name('cbt.exam.results');
         //Mentor
-        Route::group(['middleware' => ['role:Administrator|Instructor|Mentor']], function () {
             Route::get('/moduleadmin', 'AtcTraining\CBTController@moduleindexadmin')->name('cbt.module.admin');
         });
         //Instructor
-        Route::group(['middleware' => ['role:Administrator|Instructor']], function () {
+        Route::group(['middleware' => 'instructor'], function () {
             Route::post('/exam/assign', 'AtcTraining\TrainingController@assignExam')->name('cbt.exam.assign');
             Route::post('/module/assign', 'AtcTraining\TrainingController@assignModule')->name('cbt.module.assign');
             Route::get('/module/unassign/{id}', 'AtcTraining\TrainingController@ModuleUnassign')->name('cbt.module.unassign');
@@ -264,7 +263,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/module/edit/{id}', 'AtcTraining\CBTController@editModule')->name('cbt.module.edit');
         });
         //Staff/Admin
-        Route::group(['middleware' => ['role:Administrator|Chief-Instructor']], function () {
+        Route::group(['middleware' => 'instructor'], function () {
             Route::post('/addexam', 'AtcTraining\CBTController@addExam')->name('cbt.exam.add');
             Route::get('/deleteexam/{id}', 'AtcTraining\CBTController@deleteExam')->name('cbt.exam.delete');
             Route::post('/module/add', 'AtcTraining\CBTController@addModule')->name('cbt.module.add');
@@ -339,7 +338,7 @@ Route::group(['middleware' => 'auth'], function () {
 //AtcTraining
 Route::get('/dashboard/training', 'AtcTraining\TrainingController@index')->name('training.index');
 Route::post('/training', 'AtcTraining\TrainingController@editTrainingTime')->middleware('staff')->name('waittime.edit');
-Route::group(['middleware' => ['role:Administrator|Instructor']], function () {
+Route::group(['middleware' => 'instructor'], function () {
     Route::get('/dashboard/training/sessions', 'AtcTraining\TrainingController@instructingSessionsIndex')->name('training.instructingsessions.index');
     Route::get('/dashboard/training/sessions/{id}', 'AtcTraining\TrainingController@viewInstructingSession')->name('training.instructingsessions.viewsession');
     Route::view('/dashboard/training/sessions/create', 'dashboard.training.instructingsessions.create')->name('training.instructingsessions.createsessionindex');
@@ -362,7 +361,7 @@ Route::group(['middleware' => ['role:Administrator|Instructor']], function () {
     Route::post('/dashboard/training/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
 });
 //Admin and CI
-Route::group(['middleware' => ['role:Administrator|Chief-Instructor']], function () {
+Route::group(['middleware' => 'executive'], function () {
     Route::get('/training/solo/approve/{id}', 'AtcTraining\TrainingController@approveSoloRequest')->name('training.solo.approve');
     Route::get('/training/solo/deny/{id}', 'AtcTraining\TrainingController@denySoloRequest')->name('training.solo.deny');
 });
