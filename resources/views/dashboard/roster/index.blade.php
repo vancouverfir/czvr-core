@@ -90,11 +90,10 @@
                                 </td>
 
                                 <!--Vancouver Controller Position Ratings from Db -->
-                                <!--AAS/RAAS-->
                                 @if ($controller->fss == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->fss == "2")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->fss == "3")
                                     <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
                                 @elseif ($controller->fss == "4")
@@ -102,91 +101,91 @@
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                                <!--Delivery-->
+<!--Delivery-->
                                 @if ($controller->del == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->del == "2")
-                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
                                 @elseif ($controller->del == "3")
-                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($controller->del == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->del == "5")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->del == "6")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                            <!--Ground-->
+<!--Ground-->
                                 @if ($controller->gnd == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->gnd == "2")
-                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
                                 @elseif ($controller->gnd == "3")
-                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($controller->gnd == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->gnd == "5")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->gnd == "6")
-                                   <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                   <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                            <!--Tower-->
+<!--Tower-->
                                 @if ($controller->twr == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->twr == "2")
-                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
                                 @elseif ($controller->twr == "3")
-                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($controller->twr == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->twr == "5")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->twr == "6")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                            <!--Departure-->
+<!--Departure-->
                                  @if ($controller->dep == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->dep == "2")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->dep == "3")
-                                   <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                   <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->dep == "4")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circl icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                            <!--Approach-->
+<!--Approach-->
                                 @if ($controller->app == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->app == "2")
-                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
                                 @elseif ($controller->app == "3")
-                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($controller->app == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->app == "5")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->app == "6")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                            <!--Centre-->
+<!--Centre-->
                                 @if ($controller->ctr == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->ctr == "2")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->ctr == "3")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->ctr == "4")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -310,104 +309,102 @@
                             </td>
 
                             <!--AAS/RAAS-->
-                                @if ($visitcontroller->fss == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                            @if ($visitcontroller->fss == "1")
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->fss == "2")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->fss == "3")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->fss == "4")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-
-                            <!--Vancouver Controller Position Ratings from Db -->
-                            <!--Delivery-->
+<!--Delivery-->
                                 @if ($visitcontroller->del == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->del == "2")
-                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
                                 @elseif ($visitcontroller->del == "3")
-                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->del == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->del == "5")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->del == "6")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                        <!--Ground-->
+<!--Ground-->
                                 @if ($visitcontroller->gnd == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->gnd == "2")
-                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
                                 @elseif ($visitcontroller->gnd == "3")
-                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->gnd == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->gnd == "5")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->gnd == "6")
-                                   <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                   <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                        <!--Tower-->
+<!--Tower-->
                                 @if ($visitcontroller->twr == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->twr == "2")
-                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
                                 @elseif ($visitcontroller->twr == "3")
-                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->twr == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->twr == "5")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->twr == "6")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                        <!--Departure-->
+<!--Departure-->
                                  @if ($visitcontroller->dep == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->dep == "2")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->dep == "3")
-                                   <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                   <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->dep == "4")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                        <!--Approach-->
+<!--Approach-->
                                 @if ($visitcontroller->app == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->app == "2")
-                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
                                 @elseif ($visitcontroller->app == "3")
-                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->app == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->app == "5")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->app == "6")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                        <!--Centre-->
+<!--Centre-->
                                 @if ($visitcontroller->ctr == "1")
-                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->ctr == "2")
-                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
                                 @elseif ($visitcontroller->ctr == "3")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->ctr == "4")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
