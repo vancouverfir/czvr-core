@@ -31,15 +31,15 @@
             <div class="row py-3" style="padding-bottom: 0px !important;">
                 <div class="col-md-6 card-padding">
                     <div class="card card-background" style="min-height: 100%">
-                        <div class="card-header blue-text">
-                            <h2 class="font-weight-bold" style="text-align: center; padding-top:1%"><i class="fas fa-newspaper"></i>&nbsp;&nbsp;Recent News</h2>
+                        <div class="card-header card-hf-padding blue-text">
+                            <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-newspaper"></i>&nbsp;&nbsp;Recent News</h2>
                         </div>
                         <div class="card-body" style="padding-bottom:2%">
                             @foreach($news as $n)
                                 <h5><span class="badge text-colour">{{$n->posted_on_pretty()}}</span>&nbsp;&nbsp;<a href="{{url('/news').'/'.$n->slug}}" class="text-colour"><text class="align-middle">{{$n->title}}</text></h5></a>
                             @endforeach
                         </div>
-                        <div class="card-footer blue-text pb-1">
+                        <div class="card-footer card-hf-padding blue-text">
                             <a href="{{url('/news')}}"><h6 style="text-align: center;"><i class="fas fa-eye"></i>&nbsp;View all news</h6></a>
                         </div>
                     </div>
@@ -47,8 +47,8 @@
                 <br>
                 <div class="col-md-6 card-padding">
                     <div class="card card-background" style="min-height: 100%">
-                        <div class="card-header blue-text">
-                            <h2 class="font-weight-bold" style="text-align: center; padding-top:1%"><i class="fas fa-calendar"></i>&nbsp;&nbsp;Upcoming Events</h2>
+                        <div class="card-header card-hf-padding blue-text">
+                            <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-calendar"></i>&nbsp;&nbsp;Upcoming Events</h2>
                         </div>
                         <div class="card-body" style="padding-bottom:2%">
                             @if(count($nextEvents) == 0)
@@ -58,7 +58,7 @@
                                 <h5 class="text-colour"><a href="{{url('/events').'/'.$e->slug}}" class="text-colour"><text class="align-middle">{{$e->name}}</text></a>&nbsp;&nbsp;<span class="float-right badge main-colour">{{$e->start_timestamp_pretty()}}</span></h5>
                             @endforeach
                         </div>
-                        <div class="card-footer blue-text pb-1">
+                        <div class="card-footer card-hf-padding blue-text">
                             <a href="{{url('/events')}}"><h6 style="text-align: center;"><i class="fas fa-eye"></i>&nbsp;View all events</h6></a>
                         </div>
                     </div>
@@ -67,8 +67,8 @@
             <div class="row py-3" style="padding-bottom: 0px !important; min-height: 100%">
                 <div class="col-md-6 card-padding">
                     <div class="card card-background" style="min-height: 100%">
-                        <div class="card-header blue-text">
-                            <h2 class="font-weight-bold" style="text-align: center; padding-top:1%"><i class="fas fa-award"></i>&nbsp;&nbsp;Top Controllers this Month</h2>
+                        <div class="card-header card-hf-padding blue-text">
+                            <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-award"></i>&nbsp;&nbsp;Top Controllers this Month</h2>
                         </div>
                         <div class="card-body" style="padding-bottom:2%">
                             @if(count($topControllersArray) == 0)
@@ -95,8 +95,8 @@
                 </div>
                 <div class="col-md-6 card-padding">
                     <div class="card card-background" style="min-height: 100%">
-                        <div class="card-header blue-text">
-                            <h2 class="font-weight-bold" style="text-align: center; padding-top:1%"><i class="fas fa-user"></i>&nbsp;&nbsp;Online Controllers</h2>
+                        <div class="card-header card-hf-padding blue-text">
+                            <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-user"></i>&nbsp;&nbsp;Online Controllers</h2>
                         </div>
                         <div class="card-body" style="padding-bottom:2%">
                             @if(count($finalPositions) == 0)
@@ -122,7 +122,7 @@
                                 <br>
                             @endforeach
                         </div>
-                        <div class="card-footer blue-text pb-1">
+                        <div class="card-footer card-hf-padding blue-text">
                             <a href="https://map.vatsim.net" target="_blank"><h6 style="text-align: center;"><i class="fas fa-map"></i>&nbsp;Live VATSIM Map</h6></a>
                         </div>
                     </div>
@@ -131,8 +131,8 @@
             <div class="row py-3">
                 <div class="col-md-12 card-padding">
                     <div class="card card-background" style="width: 100%">
-                        <div class="card-header blue-text">
-                            <h2 class="font-weight-bold" style="text-align: center; padding-top:1%"><i class="fas fa-sun"></i>&nbsp;&nbsp;Weather</h2>
+                        <div class="card-header card-hf-padding blue-text">
+                            <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-sun"></i>&nbsp;&nbsp;Weather</h2>
                         </div>
                         <div class="card-body" style="padding-bottom:0%">
                             <div class="text-colour" style="float: left;">
