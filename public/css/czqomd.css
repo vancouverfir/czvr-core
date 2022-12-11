@@ -246,27 +246,27 @@ div.notes{
 
 .icon-no-cert {
 
-    color: #F15025;
-    font-size: 3em;
+    color: #444;
+    font-size: 1.5em;
 
 }
 
 .icon-mentor {
-    color: #E3B031;
+    color: #fcbc8d;
     font-size: 3em;
 }
 
 .icon-solo {
-    color: #B2D33C;
+    color: #8dfc9a;
     font-size: 3em;
 }
 
 .icon-certified {
-    color: #6CC24A;
+    color: #6dfcf0;
     font-size: 3em;
 }
 
 .icon-error {
     color: #9d0000;
-    font-size: 3em;
+    font-size: 1.5em;
 }
