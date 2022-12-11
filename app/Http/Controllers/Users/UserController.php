@@ -168,10 +168,10 @@ class UserController extends Controller
         $userNotes = UserNote::where('user_id', $user->id)->orderBy('timestamp', 'desc')->get();
         //$xml['return'] = file_get_contents('https://cert.vatsim.net/cert/vatsimnet/idstatus.php?cid=' . $user->id);
         $auditLog = AuditLogEntry::where('affected_id', $id)->get();
-        $allroles = Role::all();
-        $roles = $user->getRoleNames();
+        //$allroles = Role::all();
+        //$roles = $user->getRoleNames();
 
-        return view('admin.users.profile', compact('user', 'xml', 'certification', 'active', 'auditLog', 'userNotes', 'roles', 'allroles'));
+        return view('admin.users.profile', compact('user', 'xml', 'certification', 'active', 'auditLog', 'userNotes'));
     }
 
     public function addRole(Request $request)

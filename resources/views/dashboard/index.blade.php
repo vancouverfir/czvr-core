@@ -17,7 +17,7 @@
 }
 
 .accordion:hover {
-  background-color: #272727;
+  background-color: #444;
   color: #fff;
 }
 
@@ -91,7 +91,7 @@
                                 <h6 class="card-subtitle mb-2 text-muted">
                                     {{Auth::user()->rating_GRP}} ({{Auth::user()->rating_short}})
                                 </h6>
-                                <p><a class="font-italic" style="color: blue;" data-toggle="modal" data-target="#ratingChange">Rating incorrect?</a></p>
+                                <p><a class="font-italic" style="color: #fff;" data-toggle="modal" data-target="#ratingChange">Rating incorrect?</a></p>
                                 Role: {{Auth::user()->permissions()}}<br/>
                                 @if(Auth::user()->staffProfile)
                                     Staff Role: {{Auth::user()->staffProfile->position}}
@@ -110,7 +110,7 @@
                                         </p>
                                         @if(!Auth::user()->memberOfCZWGGuild())
                                             <a href="#" data-toggle="modal" data-target="#joinDiscordServerModal"
-                                               class="mt-1">Join The CZWG Discord</a><br/>
+                                               class="mt-1">Join The CZVR Discord</a><br/>
                                         @endif
                                         <a href="#" class="btn-sm btn-danger m-0" data-toggle="modal" data-target="#discordModal" class="mt-1">Unlink</a>
                                         <hr>
@@ -355,7 +355,7 @@
                                         <h3>
                             <span class="badge  badge-success rounded shadow-none">
                                 <i class="fa fa-check"></i>&nbsp;
-                                CZWG Certified
+                                CZVR Certified
                             </span>
                                         </h3>
                                     @elseif ($certification == "not_certified")
@@ -374,23 +374,23 @@
                                         </h3>
                                     @elseif ($certification == "home")
                                         <h3>
-                            <span class="badge rounded shadow-none" style="background-color:#013162">
+                            <span class="badge rounded shadow-none" style="background-color:#444">
                                 <i class="fa fa-user-check"></i>&nbsp;
-                                CZWG Controller
+                                CZVR Controller
                             </span>
                                         </h3>
                                     @elseif ($certification == "visit")
                                         <h3>
                             <span class="badge badge-info rounded shadow-none">
                                 <i class="fa fa-plane"></i>&nbsp;
-                                    CZWG Visiting Controller
+                                    CZVR Visiting Controller
                             </span>
                                         </h3>
                                     @elseif ($certification == "instructor")
                                         <h3>
                             <span class="badge badge-info rounded shadow-none">
                                 <i class="fa fa-chalkboard-teacher"></i>&nbsp;
-                                        CZWG Instructor
+                                        CZVR Instructor
                             </span>
                                         </h3>
                                     @else
@@ -776,8 +776,6 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <img style="height: 50px;" src="{{asset('/img/discord/CZWGplusdiscord.png')}}"
-                             class="img-fluid mb-2" alt="">
                         <p>Linking your Discord account with Vancouver FIR allows you to:</p>
                         <ul>
                             <li>Join our Discord community</li>
@@ -805,7 +803,7 @@
                     <div class="modal-body">
                         <p>Fair Warning: Unlinking your account will:</p>
                         <ul>
-                            <li>Remove you from the CZWG Discord, if you're a member</li>
+                            <li>Remove you from the CZVR Discord, if you're a member</li>
                             <li>Remove a Discord avatar if you have it selected</li>
                             <li>Stop sending you notifications via Discord</li>
                         </ul>

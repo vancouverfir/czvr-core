@@ -206,23 +206,25 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     //Users View/Edit
-    Route::group(['prefix' => 'admin/users', 'middleware' => 'staff'], function () {
-        Route::get('/', 'Users\UserController@viewAllUsers')->name('users.viewall');
-        Route::post('/search/ajax', 'Users\UserController@searchUsers')->name('users.search.ajax');
-        Route::get('{id}', 'Users\UserController@adminViewUserProfile')->name('users.viewprofile');
-        Route::post('/{id}', 'Users\UserController@createUserNote')->name('users.createnote');
-        Route::post('/edit/{id}', 'Users\UserController@editPermissions')->name('edit.userpermissions');
-        Route::get('/{user_id}/note/{note_id}/delete', 'Users\UserController@deleteUserNote')->name('users.deletenote');
-        Route::post('/func/avatarchange', 'Users\UserController@changeUsersAvatar')->name('users.changeusersavatar');
-        Route::post('/func/avatarreset', 'Users\UserController@resetUsersAvatar')->name('users.resetusersavatar');
-        Route::post('/func/bioreset', 'Users\UserController@resetUsersBio')->name('users.resetusersbio');
-        Route::get('/{id}/delete', 'Users\UserController@deleteUser');
-        Route::get('/{id}/edit', 'Users\UserController@editUser')->name('users.edit.create');
-        Route::post('/{id}/edit', 'Users\UserController@storeEditUser')->name('users.edit.store');
-        Route::post('/{id}/bookingban/create', 'Users\UserController@createBookingBan')->name('users.bookingban.create');
-        Route::post('/{id}/bookingban/remove', 'Users\UserController@removeBookingBan')->name('users.bookingban.remove');
-        Route::get('/{id}/email', 'Users\UserController@emailCreate')->name('users.email.create');
-        Route::get('/{id}/email', 'Users\UserController@emailStore')->name('users.email.store');
+    Route::group(['middleware' => 'staff'], function() {
+        Route::prefix('admin/users')->Group(function () {
+            Route::get('/', 'Users\UserController@viewAllUsers')->name('users.viewall');
+            Route::post('/search/ajax', 'Users\UserController@searchUsers')->name('users.search.ajax');
+            Route::get('{id}', 'Users\UserController@adminViewUserProfile')->name('users.viewprofile');
+            Route::post('/{id}', 'Users\UserController@createUserNote')->name('users.createnote');
+            Route::post('/edit/{id}', 'Users\UserController@editPermissions')->name('edit.userpermissions');
+            Route::get('/{user_id}/note/{note_id}/delete', 'Users\UserController@deleteUserNote')->name('users.deletenote');
+            Route::post('/func/avatarchange', 'Users\UserController@changeUsersAvatar')->name('users.changeusersavatar');
+            Route::post('/func/avatarreset', 'Users\UserController@resetUsersAvatar')->name('users.resetusersavatar');
+            Route::post('/func/bioreset', 'Users\UserController@resetUsersBio')->name('users.resetusersbio');
+            Route::get('/{id}/delete', 'Users\UserController@deleteUser');
+            Route::get('/{id}/edit', 'Users\UserController@editUser')->name('users.edit.create');
+            Route::post('/{id}/edit', 'Users\UserController@storeEditUser')->name('users.edit.store');
+            Route::post('/{id}/bookingban/create', 'Users\UserController@createBookingBan')->name('users.bookingban.create');
+            Route::post('/{id}/bookingban/remove', 'Users\UserController@removeBookingBan')->name('users.bookingban.remove');
+            Route::get('/{id}/email', 'Users\UserController@emailCreate')->name('users.email.create');
+            Route::get('/{id}/email', 'Users\UserController@emailStore')->name('users.email.store');
+        });
     });
 
     //Feedback
@@ -250,11 +252,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('exam/grade/{id}', 'AtcTraining\CBTController@gradeExam')->name('cbt.exam.grade');
         Route::get('exam/results/{id}/{sid}', 'AtcTraining\CBTController@examResults')->name('cbt.exam.results');
         //Mentor
-        Route::group(['middleware' => ['role:Administrator|Instructor|Mentor']], function () {
+        Route::group(['middleware' => 'mentor'], function () {
             Route::get('/moduleadmin', 'AtcTraining\CBTController@moduleindexadmin')->name('cbt.module.admin');
         });
         //Instructor
-        Route::group(['middleware' => ['role:Administrator|Instructor']], function () {
+        Route::group(['middleware' => 'instructor'], function () {
             Route::post('/exam/assign', 'AtcTraining\TrainingController@assignExam')->name('cbt.exam.assign');
             Route::post('/module/assign', 'AtcTraining\TrainingController@assignModule')->name('cbt.module.assign');
             Route::get('/module/unassign/{id}', 'AtcTraining\TrainingController@ModuleUnassign')->name('cbt.module.unassign');
@@ -264,7 +266,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/module/edit/{id}', 'AtcTraining\CBTController@editModule')->name('cbt.module.edit');
         });
         //Staff/Admin
-        Route::group(['middleware' => ['role:Administrator|Chief-Instructor']], function () {
+        Route::group(['middleware' => 'instructor'], function () {
             Route::post('/addexam', 'AtcTraining\CBTController@addExam')->name('cbt.exam.add');
             Route::get('/deleteexam/{id}', 'AtcTraining\CBTController@deleteExam')->name('cbt.exam.delete');
             Route::post('/module/add', 'AtcTraining\CBTController@addModule')->name('cbt.module.add');
@@ -339,7 +341,7 @@ Route::group(['middleware' => 'auth'], function () {
 //AtcTraining
 Route::get('/dashboard/training', 'AtcTraining\TrainingController@index')->name('training.index');
 Route::post('/training', 'AtcTraining\TrainingController@editTrainingTime')->middleware('staff')->name('waittime.edit');
-Route::group(['middleware' => ['role:Administrator|Instructor']], function () {
+Route::group(['middleware' => 'instructor'], function () {
     Route::get('/dashboard/training/sessions', 'AtcTraining\TrainingController@instructingSessionsIndex')->name('training.instructingsessions.index');
     Route::get('/dashboard/training/sessions/{id}', 'AtcTraining\TrainingController@viewInstructingSession')->name('training.instructingsessions.viewsession');
     Route::view('/dashboard/training/sessions/create', 'dashboard.training.instructingsessions.create')->name('training.instructingsessions.createsessionindex');
@@ -362,7 +364,7 @@ Route::group(['middleware' => ['role:Administrator|Instructor']], function () {
     Route::post('/dashboard/training/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
 });
 //Admin and CI
-Route::group(['middleware' => ['role:Administrator|Chief-Instructor']], function () {
+Route::group(['middleware' => 'executive'], function () {
     Route::get('/training/solo/approve/{id}', 'AtcTraining\TrainingController@approveSoloRequest')->name('training.solo.approve');
     Route::get('/training/solo/deny/{id}', 'AtcTraining\TrainingController@denySoloRequest')->name('training.solo.deny');
 });
