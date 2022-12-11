@@ -250,6 +250,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('exam/grade/{id}', 'AtcTraining\CBTController@gradeExam')->name('cbt.exam.grade');
         Route::get('exam/results/{id}/{sid}', 'AtcTraining\CBTController@examResults')->name('cbt.exam.results');
         //Mentor
+        Route::group(['middleware' => 'mentor'], function () {
             Route::get('/moduleadmin', 'AtcTraining\CBTController@moduleindexadmin')->name('cbt.module.admin');
         });
         //Instructor
