@@ -114,7 +114,7 @@ a {
 }
 
 a:hover {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 div.d-flex.flex-row > i {
@@ -240,4 +240,28 @@ div.notes{
     border-color: red;
     margin:1px; padding:1px;
     word-wrap:break-word;
+}
+
+/* Style for Roster Icons */
+
+.icon-no-cert {
+
+    color: #444;
+    font-size: 3em;
+
+}
+
+.icon-mentor {
+    color: #fcbc8d;
+    font-size: 3em;
+}
+
+.icon-solo {
+    color: #8dfc9a;
+    font-size: 3em;
+}
+
+.icon-certified {
+    color: #6dfcf0;
+    font-size: 3em;
 }
