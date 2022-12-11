@@ -105,7 +105,7 @@
                                 @if ($controller->del == "1")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->del == "2")
-                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
+                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->del == "3")
                                     <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($controller->del == "4")
@@ -121,7 +121,7 @@
                                 @if ($controller->gnd == "1")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->gnd == "2")
-                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
+                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->gnd == "3")
                                     <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($controller->gnd == "4")
@@ -137,7 +137,7 @@
                                 @if ($controller->twr == "1")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->twr == "2")
-                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
+                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->twr == "3")
                                     <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($controller->twr == "4")
@@ -165,7 +165,7 @@
                                 @if ($controller->app == "1")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->app == "2")
-                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
+                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->app == "3")
                                     <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($controller->app == "4")
@@ -324,7 +324,7 @@
                                 @if ($visitcontroller->del == "1")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->del == "2")
-                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
+                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->del == "3")
                                     <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->del == "4")
@@ -340,7 +340,7 @@
                                 @if ($visitcontroller->gnd == "1")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->gnd == "2")
-                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
+                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->gnd == "3")
                                     <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->gnd == "4")
@@ -356,7 +356,7 @@
                                 @if ($visitcontroller->twr == "1")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->twr == "2")
-                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
+                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->twr == "3")
                                     <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->twr == "4")
@@ -384,7 +384,7 @@
                                 @if ($visitcontroller->app == "1")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->app == "2")
-                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
+                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->app == "3")
                                     <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->app == "4")
@@ -400,7 +400,7 @@
                                 @if ($visitcontroller->ctr == "1")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($visitcontroller->ctr == "2")
-                                    <td align="center" ><i class="fa fa-user-circle-o icon-mentor"></i></td>
+                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                                 @elseif ($visitcontroller->ctr == "3")
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->ctr == "4")
