@@ -92,7 +92,7 @@
                                 <!--Vancouver Controller Position Ratings from Db -->
                                 <!--AAS/RAAS-->
                                 @if ($controller->fss == "1")
-                                    <td align="center" class="bg-danger text-white">Not Certified</td>
+                                    <td align="center" class="fa fa-times icon-no-cert"></td>
                                 @elseif ($controller->fss == "2")
                                     <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
                                 @elseif ($controller->fss == "3")
