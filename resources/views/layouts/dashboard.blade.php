@@ -100,7 +100,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark p-0 main-colour" style="min-height:59px">
             <div class="container">
-                <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto;" src="https://cdn.discordapp.com/attachments/800588233570123776/1050211830821302302/CZVR_Colour_Long.png" alt=""></a>
+                <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="https://cdn.discordapp.com/attachments/800588233570123776/1050211830821302302/CZVR_Colour_Long.png" alt=""></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -380,13 +380,13 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Join the Winnipeg Discord!</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Join the Vancouver FIR Discord!</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>To link your Discord account and join our Discord community by clicking <a href="https://discord.gg/nYKEMSKXW4">here.</a></p>
+                    <p>To join our Discord community click <a href="https://discord.gg/nYKEMSKXW4">here.</a></p>
                     <p>VATCAN has a Discord too! You can join the VATCAN discord by clicking <a href="https://vatcan.ca/my/discord/join" rel="noopener noreferrer" target="_blank">here!</a>
                 </div>
             </div>
