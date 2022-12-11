@@ -146,7 +146,6 @@
                                 @auth
                                 <a class="dropdown-item {{ Request::is('dashboard/application/list') ? 'active white-text' : '' }}" href="{{url ('/dashboard/application/list')}}">Your Applications</a>
                                 @endauth
-                                <a class="dropdown-item" href="{{route('training')}}">Training</a>
                             @endif
                             </div>
                         </li>
@@ -155,7 +154,7 @@
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                               <!--  <a class="dropdown-item" href="{{route('airports')}}">Airports</a> Remove until updated -->
                                 <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
-                                <a class="dropdown-item" href="https://www.vatsim.net/pilots/resources" target="_blank">VATSIM Resources</a>
+                                <a class="dropdown-item" href="https://vatsim.net/docs/pilots/pilots" target="_blank">VATSIM Resources</a>
                                 <a class="dropdown-item" href="https://simaware.ca" target="_blank">Live Map</a>
                             </div>
                         </li>
@@ -387,7 +386,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>To link your Discord account and join our Discord community, please head to your <a href="{{route('dashboard.index')}}">dashboard.</a></p>
+                    <p>To link your Discord account and join our Discord community by clicking <a href="https://discord.gg/nYKEMSKXW4">here.</a></p>
                     <p>VATCAN has a Discord too! You can join the VATCAN discord by clicking <a href="https://vatcan.ca/my/discord/join" rel="noopener noreferrer" target="_blank">here!</a>
                 </div>
             </div>

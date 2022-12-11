@@ -97,8 +97,12 @@
                                     Staff Role: {{Auth::user()->staffProfile->position}}
                                 @endif
                                 <hr>
-                                <div data-step="4" data-intro="Here you can link your Discord account to receive reminders for training sessions, and gain access to the CZWG Discord.">
+                                <div data-step="4" data-intro="Here you can link your Discord account to receive reminders for training sessions, and gain access to the CZVR Discord.">
                                     <h5 class="mt-2 font-weight-bold blue-text">Discord</h5>
+                                    
+                                    <a href="https://discord.gg/nYKEMSKXW4" class="btn-sm btn-primary m-0" data-toggle="modal" class="mt-1">Link Discord account</a>
+
+                                    {{-- Hidden for future CZVR discord integration, for inital laucnh we will use a dumb link
                                     @if (!Auth::user()->hasDiscord())
                                         <p class="mt-1"><i class="fa fa-times-circle" style="color:red"></i> You don't have a linked Discord account.</p>
                                         <a href="#" class="btn-sm btn-primary m-0" data-toggle="modal" data-target="#discordModal" class="mt-1">Link Discord account</a>
@@ -114,7 +118,7 @@
                                         @endif
                                         <a href="#" class="btn-sm btn-danger m-0" data-toggle="modal" data-target="#discordModal" class="mt-1">Unlink</a>
                                         <hr>
-                                    @endif
+                                    @endif--}}
                                 </div>
                             </div>
 
