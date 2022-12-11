@@ -8,7 +8,7 @@
         <h1 class="font-weight-bold blue-text"><strong>VFR in CZVR</strong></h1>
         <p class="text-colour content-paragraph">CZVR is home to some of the most beautiful landscapes to navigate visually. 
         With increasing flight sim fidelity and distinct landscapes, CZVR provides easy visual navigation 
-        nd world class sight seeing.  Both new and seasoned VFR pilots are welcome. No need to be intimidated, 
+        and world class sight seeing.  Both new and seasoned VFR pilots are welcome. No need to be intimidated, 
         our friendly controllers  are happy to help learn when possible. </p>
         <hr>
         <h2 class="font-weight-bold blue-text">VFR Charts and Procedures</h2>

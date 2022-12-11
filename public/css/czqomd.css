@@ -286,3 +286,19 @@ div.notes{
 .content-paragraph {
     font-size: 1.2em;
 }
+
+.content-font-color {
+    color: #fff !important;
+}
+
+/* Style for content boxes */
+
+.box-colour {
+    background-color: #222;
+}
+
+/* Style for numbered step circles */
+
+.circle-color {
+    background-color:#6CC24A !important;
+}
