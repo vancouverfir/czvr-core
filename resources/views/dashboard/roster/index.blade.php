@@ -308,79 +308,108 @@
                                 {{$visitcontroller->user->rating_short}}
                             </td>
 
+                            <!--AAS/RAAS-->
+                                @if ($visitcontroller->fss == "1")
+                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                @elseif ($visitcontroller->fss == "2")
+                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->fss == "3")
+                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->fss == "4")
+                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                @else
+                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                                @endif
+
                             <!--Vancouver Controller Position Ratings from Db -->
                             <!--Delivery-->
-                            @if ($visitcontroller->del == "1")
-                                <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
-                            @elseif ($visitcontroller->del == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-white">Training</td>
-                            @elseif ($visitcontroller->del == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
-                            @elseif ($visitcontroller->del == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
-                            @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
-                            @endif
+                                @if ($visitcontroller->del == "1")
+                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                @elseif ($visitcontroller->del == "2")
+                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->del == "3")
+                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->del == "4")
+                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->del == "5")
+                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->del == "6")
+                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                @else
+                                    <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                                @endif
                         <!--Ground-->
-                            @if ($visitcontroller->gnd == "1")
-                                <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
-                            @elseif ($visitcontroller->gnd == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
-                            @elseif ($visitcontroller->gnd == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
-                            @elseif ($visitcontroller->gnd == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
-                            @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
-                            @endif
+                                @if ($visitcontroller->gnd == "1")
+                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                @elseif ($visitcontroller->gnd == "2")
+                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->gnd == "3")
+                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->gnd == "4")
+                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->gnd == "5")
+                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->gnd == "6")
+                                   <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                @else
+                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                                @endif
                         <!--Tower-->
-                            @if ($visitcontroller->twr == "1")
-                                <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
-                            @elseif ($visitcontroller->twr == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
-                            @elseif ($visitcontroller->twr == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
-                            @elseif ($visitcontroller->twr == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
-                            @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
-                            @endif
+                                @if ($visitcontroller->twr == "1")
+                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                @elseif ($visitcontroller->twr == "2")
+                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->twr == "3")
+                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->twr == "4")
+                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->twr == "5")
+                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->twr == "6")
+                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                @else
+                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                                @endif
                         <!--Departure-->
-                            @if ($visitcontroller->dep == "1")
-                                <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
-                            @elseif ($visitcontroller->dep == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
-                            @elseif ($visitcontroller->dep == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
-                            @elseif ($visitcontroller->dep == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
-                            @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
-                            @endif
+                                 @if ($visitcontroller->dep == "1")
+                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                @elseif ($visitcontroller->dep == "2")
+                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->dep == "3")
+                                   <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->dep == "4")
+                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                @else
+                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                                @endif
                         <!--Approach-->
-                            @if ($visitcontroller->app == "1")
-                                <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
-                            @elseif ($visitcontroller->app == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
-                            @elseif ($visitcontroller->app == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
-                            @elseif ($visitcontroller->app == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
-                            @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
-                            @endif
+                                @if ($visitcontroller->app == "1")
+                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                @elseif ($visitcontroller->app == "2")
+                                    <td align="center" ><i class="fa fa-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->app == "3")
+                                    <td align="center" ><i class="fa fa-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->app == "4")
+                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->app == "5")
+                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->app == "6")
+                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                @else
+                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                                @endif
                         <!--Centre-->
-                            @if ($visitcontroller->ctr == "1")
-                                <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
-                            @elseif ($visitcontroller->ctr == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
-                            @elseif ($visitcontroller->ctr == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
-                            @elseif ($visitcontroller->ctr == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
-                            @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
-                            @endif
+                                @if ($visitcontroller->ctr == "1")
+                                    <td align="center"><i class="fa fa-times icon-no-cert"></i></td>
+                                @elseif ($visitcontroller->ctr == "2")
+                                    <td align="center" ><i class="fa fa-check-circle icon-mentor"></i></td>
+                                @elseif ($visitcontroller->ctr == "3")
+                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                @elseif ($visitcontroller->ctr == "4")
+                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                @else
+                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                                @endif
                         <!--Remarks-->
                             <td align="center">
                                 {{$visitcontroller->remarks}}
