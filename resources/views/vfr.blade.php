@@ -12,12 +12,12 @@
         our friendly controllers  are happy to help learn when possible. </p>
         <hr>
         <h2 class="font-weight-bold blue-text">VFR Charts and Procedures</h2>
-        <p class="text-colour">Within the FIR we have been implementing the use of real world VFR procedures. 
+        <p class="text-colour content-paragraph">Within the FIR we have been implementing the use of real world VFR procedures. 
         Procedures may be assigned based on destination and traffic. The most up to date of these can be found here:</p>
             <h5 class="text-colour content-link"><a href="http://imageserver.fltplan.com/legends/VTA_BACK_VANCOUVER.PDF" class="text-colour"><text>VTA Back Vancouver</text></a></h5>
             <h5 class="text-colour content-link"><a href="https://imageserver.fltplan.com/legends/BC_VFR_TERMINAL_PROCEDURES_10-07-2021.PDF" class="text-colour"><text>Canadian Flight Supplement - BC VFR Terminal Procedures</text></a></h5>
         <hr>
-        <p class ="text-warning">It is likely these procedures may be new to many Vatsim pilots.  
+        <p class ="content-warning">It is likely these procedures may be new to many Vatsim pilots.  
         Although the procedures may be enforced it is important not to accept a procedure if you do not understand it.
          If you do not understand ask the controller for assistance or clarity as needed, we are here to help and learn together. 
          For example, as controller loads permit we may instead assign a heading or altitude to emulate the procedure. </p>
