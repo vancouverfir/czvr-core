@@ -273,16 +273,16 @@ div.notes{
 
 /*Syle for articles*/
 
-.text-warning {
+.content-warning {
     color: #F15025;
-    font-size: 1.1em:
+    font-size: 1.2em:
 }
 
 .content-link {
-    font-size:1.1em;
+    font-size:1.2em;
     text-decoration: underline;
 }
 
 .content-paragraph {
-    font-size: 1.1em;
+    font-size: 1.2em;
 }
