@@ -284,6 +284,7 @@
                         <th style="text-align:center" scope="col"><b>CID</b></th>
                         <th style="text-align:center" scope="col">Controller Name</th>
                         <th style="text-align:center" scope="col">Rating</th>
+                        <th style="text-align:center" scope="col">FSS</th>
                         <th style="text-align:center" scope="col">DEL</th>
                         <th style="text-align:center" scope="col">GND</th>
                         <th style="text-align:center" scope="col">TWR</th>
