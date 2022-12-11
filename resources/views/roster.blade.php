@@ -61,9 +61,9 @@
                                 @elseif ($controller->fss == "2")
                                     <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @elseif ($controller->fss == "3")
-                                    <td align="center" ><i class="fa fa-check-circle icon-solo"></i></td>
+                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->fss == "4")
-                                    <td align="center" ><i class="fa fa-star icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -123,7 +123,7 @@
                                 @elseif ($controller->dep == "3")
                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->dep == "4")
-                                    <td align="center" ><i class="fa fa-check-circl icon-certified"></i></td>
+                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
