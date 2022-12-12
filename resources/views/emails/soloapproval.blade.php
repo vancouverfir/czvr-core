@@ -12,5 +12,5 @@
 @stop
 
 @section('footer-reason-line')
-    automated email from winnipegfir.
+    automated email from Vancouverfir.
 @endsection

@@ -17,7 +17,7 @@
 }
 
 .accordion:hover {
-  background-color: #444;
+  background-color: #2E2F2F;
   color: #fff;
 }
 
@@ -40,7 +40,7 @@
 }
 
 .panel {
-  background-color: #444;
+  background-color: #2E2F2F;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.1s ease-out;
@@ -378,7 +378,7 @@
                                         </h3>
                                     @elseif ($certification == "home")
                                         <h3>
-                            <span class="badge rounded shadow-none" style="background-color:#444">
+                            <span class="badge rounded shadow-none" style="background-color:#2E2F2F">
                                 <i class="fa fa-user-check"></i>&nbsp;
                                 CZVR Controller
                             </span>

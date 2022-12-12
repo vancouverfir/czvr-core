@@ -17,5 +17,5 @@ Your student {{$student->user->fullName('FLC')}} has failed the {{$exam->name}} 
 @stop
 
 @section('footer-reason-line')
-This is your student within the WinnipegFIR.
+This is your student within the VancouverFIR.
 @endsection

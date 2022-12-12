@@ -2,7 +2,7 @@
 @section('to-line', 'Hi '. $application->user->fullName('FLC') . ',')
 
 @section('message-content')
-    <p>Congratulations, your visitor application for Winnipeg FIR has been accepted by {{\App\Models\Users\User::find($application->processed_by)->fullName('FLC')}}  at {{$application->processed_at}} (Zulu)!</p>
+    <p>Congratulations, your visitor application for Vancouver FIR has been accepted by {{\App\Models\Users\User::find($application->processed_by)->fullName('FLC')}}  at {{$application->processed_at}} (Zulu)!</p>
     <b>Staff Comments:</b>
     <p>
         @if (!$application->staff_comment)
@@ -21,5 +21,5 @@
 @section('footer-to-line', $application->user->fullName('FLC').' ('.$application->user->email.')')
 
 @section('footer-reason-line')
-they hold an account an account on the Winnipeg FIR website and submitted an application to become a visitor.
+they hold an account an account on the Vancouver FIR website and submitted an application to become a visitor.
 @endsection

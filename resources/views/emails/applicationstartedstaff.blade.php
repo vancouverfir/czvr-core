@@ -6,7 +6,7 @@
 @stop
 
 @section('message-content')
-    <p>A controller has submitted an application for the Winnipeg FIR.</p>
+    <p>A controller has submitted an application for the Vancouver FIR.</p>
     <b>Details</b>
     <ul>
         <li>Application ID: {{$application->application_id}}</li>
@@ -22,5 +22,5 @@
     You can view their application <a href="{{route('training.viewapplication', $application->application_id)}}">here.</a>
 @stop
 @section('footer-reason-line')
-    you are a Winnipeg FIR Executive.
+    you are a Vancouver FIR Executive.
 @endsection

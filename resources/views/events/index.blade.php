@@ -1,6 +1,6 @@
 @extends('layouts.master')
-@section('title', 'Events - Winnipeg FIR')
-@section('description', 'Check out the Winnipeg FIR events!')
+@section('title', 'Events - Vancouver FIR')
+@section('description', 'Check out the Vancouver FIR events!')
 @section('content')
     <div class="container py-4">
         <div class="d-flex flex-row justify-content-between align-items-center mb-1">

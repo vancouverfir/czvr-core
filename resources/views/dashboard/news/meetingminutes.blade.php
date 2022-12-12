@@ -5,8 +5,8 @@
     @parent
 
 @stop
-@section('title', 'Meeting Minutes - Winnipeg FIR')
-@section('description', 'View Winnipeg FIR staff meeting minutes')
+@section('title', 'Meeting Minutes - Vancouver FIR')
+@section('description', 'View Vancouver FIR staff meeting minutes')
 @section('content')
     <div class="container" style="margin-top: 1%">
         <h1 class="font-weight-bold blue-text">Meeting Minutes</h1>

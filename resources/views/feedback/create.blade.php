@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Submit Feedback - Winnipeg FIR')
+@section('title', 'Submit Feedback - Vancouver FIR')
 @section('description', 'Submit feedback for our controllers')
 
 @section('content')

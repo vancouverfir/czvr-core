@@ -7,7 +7,7 @@
 @stop
 
 @section('title', 'Edit User')
-@section('description', "Winnipeg FIR's Controller Roster")
+@section('description', "Vancouver FIR's Controller Roster")
 
 @section('content')
 

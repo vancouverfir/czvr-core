@@ -13,5 +13,5 @@
 @section('footer-to-line', $user->fullName('FLC').' ('.$user->email.')')
 
 @section('footer-reason-line')
-they are a staff member of the Winnipeg FIR.
+they are a staff member of the Vancouver FIR.
 @endsection

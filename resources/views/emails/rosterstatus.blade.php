@@ -4,7 +4,7 @@
 
 
 @section('message-content')
-    The Winnipeg FIR Staff have changed your status on the controller roster to:<br/>
+    The Vancouver FIR Staff have changed your status on the controller roster to:<br/>
     @switch ($controller->status)
         @case ('training')
             <b>Certification:</b>&nbsp;In Training
@@ -34,5 +34,5 @@
 @section('footer-to-line', $user->fullName('FLC').' ('.$user->email.')')
 
 @section('footer-reason-line')
-your status with the Winnipeg FIR has been changed.
+your status with the Vancouver FIR has been changed.
 @endsection

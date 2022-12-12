@@ -19,7 +19,7 @@
     <br/>
     <h4>What does this mean?</h4>
     <p>
-        When you subscribe to our email service, you allow the Winnipeg FIR to send you 'promotional' emails as defined by the European Union GDPR.
+        When you subscribe to our email service, you allow the Vancouver FIR to send you 'promotional' emails as defined by the European Union GDPR.
         These emails are typically not necessary to your continued participation in the FIR or holding an account with us on our system.<br/>
         Some examples would include:
     </p>

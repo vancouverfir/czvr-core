@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @section('content')
     <div class="container py-4">
-        <h1 data-step="1" data-intro="Welcome to the CZVR Dashboard! This is your central hub for all things Winnipeg. Here you can interact with our FIR, and manage your account." class="blue-text font-weight-bold">Dashboard</h1>
+        <h1 data-step="1" data-intro="Welcome to the CZVR Dashboard! This is your central hub for all things Vancouver. Here you can interact with our FIR, and manage your account." class="blue-text font-weight-bold">Dashboard</h1>
         <br class="my-2">
         <div class="row">
             <div class="col">
@@ -328,7 +328,7 @@
                     <div class="modal-body">
                         <img style="height: 50px;" src="{{asset('/img/discord/CZVRplusdiscord.png')}}"
                              class="img-fluid mb-2" alt="">
-                        <p>Linking your Discord account with Winnipeg FIR allows you to:</p>
+                        <p>Linking your Discord account with Vancouver FIR allows you to:</p>
                         <ul>
                             <li>Join our Discord community</li>
                             <li>Receive notifications for ticket replies, training updates, and more</li>
@@ -379,13 +379,13 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Join the Winnipeg FIR Discord server</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Join the Vancouver FIR Discord server</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Joining the Winnipeg FIR Discord server allows you to join the Winnipeg FIR controller and pilot
+                    <p>Joining the Vancouver FIR Discord server allows you to join the Vancouver FIR controller and pilot
                         community.</p>
                     <h5>Rules</h5>
                     <ul>

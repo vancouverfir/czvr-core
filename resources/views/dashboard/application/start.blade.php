@@ -28,8 +28,8 @@
     @if ($allowed == 'true')
         <div class="alert alert-warning" role="alert">
             <h4 class="alert-heading">You are eligibile to apply!</h4>
-            <p class="font-weight-bold">Winnipeg is currently pausing all training for visiting controllers as we are busy with home students. However, we are always accepting applications to visit! One of our staff members will be in touch when we are able to accommodate your training. Thank you for your patience.</p>
-            <p>Please note the following is also required to visit Winnipeg:</p>
+            <p class="font-weight-bold">Vancouver is currently pausing all training for visiting controllers as we are busy with home students. However, we are always accepting applications to visit! One of our staff members will be in touch when we are able to accommodate your training. Thank you for your patience.</p>
+            <p>Please note the following is also required to visit Vancouver:</p>
             <ul>
                 <li>Approval by your home FIR/vACC/ARTCC Chief/ATM.</li>
             </ul>
@@ -49,7 +49,7 @@
             <li class="active">
                 <a href="">
                     <span class="circle">1</span>
-                    <span class="label">Why would you like to control in Winnipeg?</span>
+                    <span class="label">Why would you like to control in Vancouver?</span>
                 </a>
                 <div class="step-content w-75 grey lighten-3">
                     <p>Please type here (minimum 50 words):</p>
@@ -66,7 +66,7 @@
                 </a>
                 <div class="step-content w-75 grey lighten-3">
                     <h5>Activity requirements</h5>
-                    <p>By applying to be a visitor in the Winnipeg FIR you acknowledge that you agree to abide by the Winnipeg FIR General Policies, Standard Operating Prodecures, and any other relevant FIR documents as a controller..</p>
+                    <p>By applying to be a visitor in the Vancouver FIR you acknowledge that you agree to abide by the Vancouver FIR General Policies, Standard Operating Prodecures, and any other relevant FIR documents as a controller..</p>
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" required name="agreeActivity" id="agreeActivity">
                         <label class="custom-control-label" for="agreeActivity">I Understand</label>
@@ -80,7 +80,7 @@
         <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading">You are not eligible to apply.</h4>
             <p>You are not yet a S2 controller or higher. Please check back when you have a S2 rating.</p>
-            <p>We look forward to working with you!<br>-Winnipeg FIR</p>
+            <p>We look forward to working with you!<br>-Vancouver FIR</p>
             <p>If you believe there is an error, please <a href="{{route('tickets.index', ['create' => 'yes', 'department' => 'firchief', 'title' => 'Issue with requirement check on application system'])}}">start a support ticket.</a></p>
         </div>
     @elseif ($allowed == "pendingApplication")

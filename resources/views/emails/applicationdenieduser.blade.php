@@ -22,5 +22,5 @@
 @section('footer-to-line', $application->user->fullName('FLC').' ('.$application->user->email.')')
 
 @section('footer-reason-line')
-they hold an account an account on the Winnipeg FIR website and submitted an application to become a visitor.
+they hold an account an account on the Vancouver FIR website and submitted an application to become a visitor.
 @endsection

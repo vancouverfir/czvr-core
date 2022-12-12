@@ -6,7 +6,7 @@
 @stop
 
 @section('message-content')
-    <p>{{$application->user->fullName('FLC')}}'s visitor application for Winnipeg FIR has been accepted by {{\App\Models\Users\User::find($application->processed_by)->fullName('FLC')}} at {{$application->processed_at}} (Zulu).</p>
+    <p>{{$application->user->fullName('FLC')}}'s visitor application for Vancouver FIR has been accepted by {{\App\Models\Users\User::find($application->processed_by)->fullName('FLC')}} at {{$application->processed_at}} (Zulu).</p>
     <b>Staff Comments:</b>
     <p>
         @if (!$application->staff_comment)

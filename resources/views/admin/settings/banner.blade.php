@@ -26,7 +26,7 @@
             <input name="bannerMessage" class="form-control" value="{{$banner->banner}}" placeholder="We are breaking the website!">
             <br>
             <p class="font-weight-bold">Banner Link</p>
-            <input name="bannerLink" class="form-control" value="{{$banner->bannerLink}}" placeholder="https://winnipegfir.ca/rip (optional)">
+            <input name="bannerLink" class="form-control" value="{{$banner->bannerLink}}" placeholder="https://czvr.ca/rip (optional)">
             <br>
             <button class="btn btn-success">Submit</button>
         </form>
