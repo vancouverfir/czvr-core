@@ -20,7 +20,7 @@
                             </h6>
                             <br>
                             <h4 class="text-colour" style="font-size: 2em;">
-                                <span style="padding: 0.5%"><a href="#mid" id="discoverMore" class="blue-text">Come explore the left of Canada.&nbsp;&nbsp;<i class="fas fa-arrow-down"></i></a></span>
+                                <span class="corner" style="padding: 0.5% background-color: #00000066"><a href="#mid" id="discoverMore" class="blue-text">Come explore the left of Canada.&nbsp;&nbsp;<i class="fas fa-arrow-down"></i></a></span>
                             </h4>
                         </div>
                     </div>
