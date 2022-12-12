@@ -52,6 +52,7 @@
                 </thead>
             </table>
         </div>
+        <hr>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
@@ -76,7 +77,7 @@
                             <i class="fas fa-chevron-right"></i>
                         </span>
                                         &nbsp;
-                                        <span class="black-text">
+                                        <span class="text-colour">
                             Add a controller to roster
                         </span>
                                     </a>
@@ -308,7 +309,7 @@
                             <a href="" data-target="#addVisitController" data-toggle="modal"
                                style="text-decoration:none;">
                                 <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
-                                    class="black-text">Add controller to roster</span></a>
+                                    class="text-colour">Add controller to roster</span></a>
                         </li>
 
                     </ul>
