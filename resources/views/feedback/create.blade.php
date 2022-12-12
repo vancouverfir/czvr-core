@@ -6,7 +6,7 @@
     <div class="container py-4">
         <h1 class="font-weight-bold blue-text">Submit Feedback</h1>
         <p class="content-font-color" style="font-size: 1.2em;">
-            Have feedback for the Winnipeg FIR? This is the place to submit it!
+            Have feedback for the Vancouver FIR? This is the place to submit it!
         </p>
         <hr>
         @if($errors->createFeedbackErrors->any())

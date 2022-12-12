@@ -66,6 +66,7 @@
       <option value="4"{{ $roster->del == "4" ? "selected=selected" : ""}}>Major Mentor</option>
       <option value="5"{{ $roster->del == "5" ? "selected=selected" : ""}}>Major Solo</option>
       <option value="6"{{ $roster->del == "6" ? "selected=selected" : ""}}>Certified</option>
+      <option value="7"{{ $roster->del == "7" ? "selected=selected" : ""}}>Minor Solo + Major W/ Sup</option>
     </select>
 </div>
 </div>
@@ -94,6 +95,7 @@
       <option value="4"{{ $roster->gnd == "4" ? "selected=selected" : ""}}>Major Mentor</option>
       <option value="5"{{ $roster->gnd == "5" ? "selected=selected" : ""}}>Major Solo</option>
       <option value="6"{{ $roster->gnd == "6" ? "selected=selected" : ""}}>Certified</option>
+      <option value="7"{{ $roster->gnd == "7" ? "selected=selected" : ""}}>Minor Solo + Major W/ Sup</option>
     </select>
 </div>
 
@@ -109,6 +111,7 @@
       <option value="4"{{ $roster->twr == "4" ? "selected=selected" : ""}}>Major Mentor</option>
       <option value="5"{{ $roster->twr == "5" ? "selected=selected" : ""}}>Major Solo</option>
       <option value="6"{{ $roster->twr == "6" ? "selected=selected" : ""}}>Certified</option>
+      <option value="7"{{ $roster->twr == "7" ? "selected=selected" : ""}}>Minor Solo + Major W/ Sup</option>
     </select>
 
 </div>
@@ -141,6 +144,7 @@
       <option value="4"{{ $roster->app == "4" ? "selected=selected" : ""}}>Major Mentor</option>
       <option value="5"{{ $roster->app == "5" ? "selected=selected" : ""}}>Major Solo</option>
       <option value="6"{{ $roster->app == "6" ? "selected=selected" : ""}}>Certified</option>
+      <option value="7"{{ $roster->app == "7" ? "selected=selected" : ""}}>Minor Solo + Major W/ Sup</option>
     </select>
   </div>
 
