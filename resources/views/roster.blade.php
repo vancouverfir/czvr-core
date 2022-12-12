@@ -15,7 +15,7 @@
         <hr>
         <h3 class="font-weight-bold blue-text">Legend</h3>
         <hr>
-        <div class="roster-legend corners">
+        <div class="roster-legend corner">
             <table id="rosterLegend" class="table table-hover">
                 <thead>
                     <tr>
