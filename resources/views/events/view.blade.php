@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', $event->name.' - Winnipeg FIR')
+@section('title', $event->name.' - Vancouver FIR')
 @section('description', 'View the upcoming event: '.$event->name)
 @if($event->image_url)
 @section('image')
@@ -9,7 +9,7 @@
 @endif
 
 @section('content')
-    <div class="text-white text-left py-1 px-4" style="background-color:#013162">
+    <div class="text-white text-left py-1 px-4" style="background-color:#fff">
           <div class="container">
               <div align="center" class="py-5">
                   <h1 align="center" class="h1" style="font-size: 4em;">{{$event->name}}</h1>
@@ -36,9 +36,9 @@
                 <h4>Share This</h4>
                 <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u{{Request::url()}}"><i class="fab blue-text fa-facebook fa-3x"></i></a>
                 &nbsp;
-                <a target="_blank" href="https://twitter.com/intent/tweet?text={{$event->name}} - Winnipeg FIR VATSIM {{Request::url()}}"><i class="fab blue-text fa-twitter fa-3x"></i></a>
+                <a target="_blank" href="https://twitter.com/intent/tweet?text={{$event->name}} - Vancouver FIR VATSIM {{Request::url()}}"><i class="fab blue-text fa-twitter fa-3x"></i></a>
                 &nbsp;
-                <a target="_blank" href="http://www.reddit.com/submit?url={{Request::url()}}&title={{$event->name}} - Winnipeg FIR VATSIM"><i class="fab blue-text fa-reddit fa-3x"></i></a>
+                <a target="_blank" href="http://www.reddit.com/submit?url={{Request::url()}}&title={{$event->name}} - Vancouver FIR VATSIM"><i class="fab blue-text fa-reddit fa-3x"></i></a>
                 <hr>
                 <h4 class="mt-2">Start Time</h4>
                 <p>{{$event->start_timestamp_pretty()}}</p>

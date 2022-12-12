@@ -60,15 +60,15 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Need ATC? We've Got You.</h5>
+                    <h5 class="modal-title content-font-color" id="exampleModalLongTitle">Need ATC? We've Got You.</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Winnipeg is happy to provide ATC for many events within our airspace!</p>
-                    <p>To request ATC for your event, we recommend contacting Winnipeg's Events Coordinator by submitting a <a href="{{route('tickets.index')}}">ticket</a> or via <a href="{{route('staff')}}">email.</a> If the position is vacant, instead contact the FIR Chief.</p>
-                    <p>Thank you for choosing Winnipeg!</p>
+                    <p>Vancouver is happy to provide ATC for many events within our airspace!</p>
+                    <p>To request ATC for your event, we recommend contacting Winnipeg's Events Coordinator by email <a href="{{route('staff')}}">.</a> If the position is vacant, instead contact the FIR Chief.</p>
+                    <p>Thank you for choosing Vancouver!</p>
                 </div>
             </div>
         </div>
