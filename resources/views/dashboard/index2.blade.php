@@ -19,7 +19,7 @@
                                 <h6 class="card-subtitle mb-2 text-muted">
                                     {{Auth::user()->rating_GRP}} ({{Auth::user()->rating_short}})
                                 </h6>
-                                <p><a class="font-italic" style="color: blue;" data-toggle="modal" data-target="#ratingChange">Rating incorrect?</a></p>
+                                <p><a class="font-italic" data-toggle="modal" data-target="#ratingChange">Rating incorrect?</a></p>
                                 Role: {{Auth::user()->permissions()}}<br/>
                                 <br/>
                                 <div data-step="4" data-intro="Here you can link your Discord account to receive reminders for training sessions, and gain access to the CZVR Discord.">
