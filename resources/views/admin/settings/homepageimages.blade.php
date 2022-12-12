@@ -42,10 +42,10 @@
                     @csrf
                     <div class="modal-body">
                         <p class="font-weight-bold">URL</p>
-                        <input name="URL" class="form-control" placeholder="https://winnipegfir.ca/path/to/very/good/picture">
+                        <input name="URL" class="form-control" placeholder="https://czvr.ca/path/to/very/good/picture">
                         <br>
                         <p class="font-weight-bold">Credit for Picture</p>
-                        <input name="nameCredit" class="form-control" placeholder="Nate Power">
+                        <input name="nameCredit" class="form-control" placeholder="CZVR One">
                         <br>
                         <p class="font-weight-bold">Extra CSS (optional)</p>
                         <input name="CSS" class="form-control" value="{{$i->css}}" placeholder="background-position: bottom;">
@@ -72,10 +72,10 @@
                         @csrf
                         <div class="modal-body">
                             <p class="font-weight-bold">URL</p>
-                            <input name="URL" class="form-control" value="{{$i->url}}" placeholder="https://winnipegfir.ca/path/to/very/good/picture">
+                            <input name="URL" class="form-control" value="{{$i->url}}" placeholder="https://czvr.ca/path/to/very/good/picture">
                             <br>
                             <p class="font-weight-bold">Credit for Picture</p>
-                            <input name="nameCredit" class="form-control" value="{{$i->credit}}" placeholder="Nate Power">
+                            <input name="nameCredit" class="form-control" value="{{$i->credit}}" placeholder="CZVR One">
                             <br>
                             <p class="font-weight-bold">Extra CSS (optional)</p>
                             <input name="CSS" class="form-control" value="{{$i->css}}" placeholder="background-position: bottom;">
