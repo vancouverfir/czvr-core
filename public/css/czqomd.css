@@ -247,24 +247,24 @@ div.notes{
 
 .icon-no-cert {
 
-    color: #444;
+    color: #F15025;
     font-size: 1.5em;
 
 }
 
 .icon-mentor {
-    color: #fcbc8d;
-    font-size: 3em;
+    color: #E3B031;
+    font-size: 1.5em;
 }
 
 .icon-solo {
-    color: #8dfc9a;
-    font-size: 3em;
+    color: #B2D33C;
+    font-size: 1.5em;
 }
 
 .icon-certified {
-    color: #6dfcf0;
-    font-size: 3em;
+    color: #6CC24A;
+    font-size: 1.5em;
 }
 
 .icon-error {
