@@ -1,0 +1,11 @@
+[VatcanAPI]
+Events: https://vatcan.ca/api/v2/facility/events?api_key=
+Users: https://vatcan.ca/api/v2/facility/roster?api_key=
+APIkey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+[ServerDB]
+Address: 127.0.0.1
+Port: 1433
+ID: User
+Password: Password
+DBName: MyDB
