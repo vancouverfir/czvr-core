@@ -9,7 +9,7 @@
 @endif
 
 @section('content')
-    <div class="text-white text-left py-1 px-4" style="background-color:#fff">
+    <div class="text-white text-left py-1 px-4" style="background-color:#444">
           <div class="container">
               <div align="center" class="py-5">
                   <h1 align="center" class="h1" style="font-size: 4em;">{{$event->name}}</h1>
