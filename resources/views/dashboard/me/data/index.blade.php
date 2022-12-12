@@ -54,8 +54,8 @@
                               <span class="label content-font-color">or export specific data</span>
                             </a>
                             <div class="step-content box-colour">
-                              <p>Please open a support ticket to the Web Team or email them to request specific pieces of data.</p>
-                                <button onclick="location.href='{{route('tickets.index', ['create' => 'yes', 'department' => 'firchief', 'title' => 'Data request'])}}'" class="btn btn-primary">Open Support Ticket</button>
+                              <p>Please email our websupport team to request specific pieces of data.</p>
+                                <button onclick="location.href='mailto:webmaster@czvr.ca'" class="btn btn-primary">Email our Support</button>
                             </div>
                           </li>
                       </ul>
@@ -66,8 +66,8 @@
             <div class="card">
                 <div class="card-header">Delete Data</div>
                 <div class="card-body">
-                    <p>Please open a support ticket to the Web Team or email them to request deletion of your data.</p>
-                    <button onclick="location.href='{{route('tickets.index', ['create' => 'yes', 'department' => 'firchief', 'title' => 'Data request'])}}'" class="btn btn-primary">Support Ticket</button>
+                    <p>Please email our websupport team to request deletion of your data.</p>
+                    <button onclick="location.href='mailto:webmaster@czvr.ca'" class="btn btn-primary">Email our Support</button>
                 </div>
             </div>
             <div class="card mt-3">
