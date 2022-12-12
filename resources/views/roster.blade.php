@@ -13,6 +13,35 @@
 <div class="container" style="margin-top: 20px;">
         <h1 class="blue-text font-weight-bold">Controller Roster</h1>
         <hr>
+        <div class="roster-legend">
+            <table id="rosterLegend" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col"><b>Airports</b></th>
+                        <th style="text-align:center" scope="col"><b>Not Authorised</b></th>
+                        <th style="text-align:center" scope="col"><b>With Supervision</b></th>
+                        <th style="text-align:center" scope="col"><b>Solo Approved</b></th>
+                        <th style="text-align:center" scope="col"><b>Certified</b></th>
+                        </tr>
+                </thead>
+                <tr>
+                    <th scope="row">CYVR - Vancouver International</th>
+                        <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
+                        <td class="text-center align-middle"><i class="fa fa-user-circle icon-mentor"></td>
+                        <td class="text-center align-middle"><i class="fa fa-plus-circle icon-solo"></td>
+                        <td class="text-center align-middle"><i class="fa fa-check-circle icon-certified"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Minor Airports</th>
+                        <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
+                        <td class="text-center align-middle"><i class="far fa-user-circle icon-mentor"></td>
+                        <td class="text-center align-middle"><i class="fa fa-minus-circle icon-solo"></td>
+                        <td class="text-center align-middle"></td>
+                </tr>
+                </thead>
+            </table>
+        </div>
+
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home Controllers</a>
@@ -80,6 +109,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->del == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($controller->del == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -96,6 +127,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->gnd == "6")
                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($controller->gnd == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -112,6 +145,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->twr == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($controller->twr == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -140,6 +175,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->app == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($controller->app == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -218,6 +255,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->del == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($visitcontroller->del == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -234,6 +273,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->gnd == "6")
                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($visitcontroller->gnd == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -250,6 +291,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->twr == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($visitcontroller->twr == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -278,6 +321,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->app == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($visitcontroller->app == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif

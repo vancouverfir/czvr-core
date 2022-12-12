@@ -114,6 +114,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->del == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($controller->del == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -130,6 +132,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->gnd == "6")
                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($controller->gnd == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -146,6 +150,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->twr == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($controller->twr == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -174,6 +180,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($controller->app == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($controller->app == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -333,6 +341,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->del == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($visitcontroller->del == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -349,6 +359,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->gnd == "6")
                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($visitcontroller->gnd == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -365,6 +377,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->twr == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($visitcontroller->twr == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
@@ -393,6 +407,8 @@
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                                 @elseif ($visitcontroller->app == "6")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @elseif ($visitcontroller->app == "7")
+                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
