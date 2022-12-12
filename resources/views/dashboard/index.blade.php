@@ -532,10 +532,10 @@
                                         <a href="{{route('application.list')}}" style="text-decoration:none;"><span
                                                 class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
                                             <span
-                                                class="black-text">View Your Applications</span></a>
+                                                class="text-colour">View Your Applications</span></a>
                                     </li>{{--
                             <li class="mb-2">
-                                <a href="{{route('application.list')}}" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="black-text">Training Centre</span></a>
+                                <a href="{{route('application.list')}}" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-colour">Training Centre</span></a>
                             </li> --}}
                                     @endif
                                     @if ($certification == "training")
@@ -582,7 +582,7 @@
                                 <li class="mb-2">
                                     <a href="{{route('feedback.create')}}" style="text-decoration:none;"><span
                                             class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
-                                            class="black-text">Send feedback</span></a>
+                                            class="text-colour">Send feedback</span></a>
                                 </li>
                                 <li class="mb-2">
                                     <a href="{{route('me.data')}}" style="text-decoration:none;">
@@ -590,7 +590,7 @@
                                             <i class="fas fa-chevron-right"></i>
                                         </span>
                                     &nbsp;
-                                    <span class="black-text">
+                                    <span class="text-colour">
                                     Manage your data
                                 </span>
                                 </a>
@@ -608,18 +608,18 @@
                                         <a href="{{route('roster.index')}}" style="text-decoration:none;"><span
                                                 class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
                                             <span
-                                                class="black-text">Manage Controller Roster</span></a>
+                                                class="text-colour">Manage Controller Roster</span></a>
                                     </li>
                                     <li class="mb-2">
                                         <a href="{{route('news.index')}}" style="text-decoration:none;"><span
                                                 class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
                                             <span
-                                                class="black-text">Manage News</span></a>
+                                                class="text-colour">Manage News</span></a>
                                     </li>
                                     <li class="mb-2">
                                         <a href="{{route('staff.feedback.index')}}" style="text-decoration:none;"><span
                                                 class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                            <span class="black-text">Manage Feedback</span>
+                                            <span class="text-colour">Manage Feedback</span>
                                               </a>
                                     </li>
                                     <li class="mb-2">
@@ -628,7 +628,7 @@
                                         <i class="fas fa-chevron-right"></i>
                                     </span>
                                             &nbsp;
-                                            <span class="black-text">Manage Users</span>
+                                            <span class="text-colour">Manage Users</span>
                                         </a>
                                     </li>
                                     <li class="mb-2">
@@ -637,7 +637,7 @@
                                         <i class="fas fa-chevron-right"></i>
                                     </span>
                                             &nbsp;
-                                            <span class="black-text">File Uploader</span>
+                                            <span class="text-colour">File Uploader</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -654,7 +654,7 @@
                                         <a href="{{route('settings.index')}}" style="text-decoration:none;"><span
                                                 class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
                                             <span
-                                                class="black-text">Settings</span></a>
+                                                class="text-colour">Settings</span></a>
                                     </li>
                                     <li class="mb-2">
                                         <a href="{{route('network.index')}}" style="text-decoration:none;">
@@ -662,7 +662,7 @@
                                     <i class="fas fa-chevron-right"></i>
                                 </span>
                                             &nbsp;
-                                            <span class="black-text">
+                                            <span class="text-colour">
                                     View network data
                                 </span>
                                         </a>
