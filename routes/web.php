@@ -44,12 +44,9 @@ Route::prefix('instructors')->group(function () {
 });
 
 //Redirects
-Route::get('/merch', function () {
-    return redirect()->to('https://www.designbyhumans.com/shop/WinnipegFIR');
-});
 
 Route::get('/github', function () {
-    return redirect()->to('https://github.com/winnipegfir/CZWG-core');
+    return redirect()->to('https://github.com/vancouverfir/czvr-core');
 });
 
 //Authentication

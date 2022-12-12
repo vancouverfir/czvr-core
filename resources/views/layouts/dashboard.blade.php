@@ -274,10 +274,10 @@
                 &nbsp;
                 <a href="{{route('privacy')}}">Privacy Policy</a>
                 &nbsp;
-                •
+                {{--•
                 &nbsp;
                 <a href="{{route('branding')}}">Branding</a>
-                &nbsp;
+                &nbsp;--}}
                 •
                 &nbsp;
                 <a href="https://www.vatcan.ca">VATCAN</a>
