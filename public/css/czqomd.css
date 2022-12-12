@@ -316,3 +316,8 @@ div.notes{
     flex: 1 1 auto;
     background-color: #444;
 }
+
+.form-control{
+    color: #E6E8E6;
+}
+
