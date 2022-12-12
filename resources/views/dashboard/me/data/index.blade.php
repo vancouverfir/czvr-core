@@ -53,7 +53,7 @@
                               <span class="circle">2</span>
                               <span class="label content-font-color">or export specific data</span>
                             </a>
-                            <div class="step-content grey lighten-3">
+                            <div class="step-content box-colour">
                               <p>Please open a support ticket to the Web Team or email them to request specific pieces of data.</p>
                                 <button onclick="location.href='{{route('tickets.index', ['create' => 'yes', 'department' => 'firchief', 'title' => 'Data request'])}}'" class="btn btn-primary">Open Support Ticket</button>
                             </div>
