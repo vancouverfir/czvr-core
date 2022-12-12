@@ -292,14 +292,27 @@ div.notes{
     color: #fff !important;
 }
 
+.content-font-color-dark {
+    color: #222 !important;
+}
 /* Style for content boxes */
 
 .box-colour {
     background-color: #222;
 }
 
+.placeholder-font-color {
+    color:#666;
+}
+
 /* Style for numbered step circles */
 
 .circle-color {
     background-color:#6CC24A !important;
+}
+
+.roster-legend {
+    padding: 1.25rem;
+    flex: 1 1 auto;
+    background-color: #444;
 }
