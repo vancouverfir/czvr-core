@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="container" id="mid">
-            <div class="row py-3" style="padding-bottom: 0px !important;">
+            <div class="row">
                 <div class="col-md-6 card-padding">
                     <div class="card card-background" style="min-height: 100%">
                         <div class="card-header card-hf-padding blue-text">
@@ -67,7 +67,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row py-3" style="padding-bottom: 0px !important; min-height: 100%">
+            <div class="row" style=" min-height: 100%">
                 <div class="col-md-6 card-padding">
                     <div class="card card-background" style="min-height: 100%">
                         <div class="card-header card-hf-padding blue-text">
@@ -131,7 +131,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row py-3">
+            <div class="row">
                 <div class="col-md-12 card-padding">
                     <div class="card card-background" style="width: 100%">
                         <div class="card-header card-hf-padding blue-text">

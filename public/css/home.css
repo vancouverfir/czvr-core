@@ -26,7 +26,7 @@
 .card-padding {
     padding-right: 0.5% !important;
     padding-left: 0.5% !important;
-    padding-top: 0% !important;
+    padding-top: 1rem !important;
 }
 
 .card-header-size {
