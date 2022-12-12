@@ -153,7 +153,6 @@
                             </li>
                     </div>
                 </div>--}}
-                <br>
                 <div class="card">
                     <div class="card-body">
                         <h3 class="font-weight-bold blue-text pb-2">Upcoming Events</h3>
