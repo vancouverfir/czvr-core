@@ -39,7 +39,7 @@ print("|"+DBServer+"|")
 
 print("Connecting to MySQL Sevrer...")
 
-connectSQL = ("Driver={SQL Server}"+";Server={};Database={};Port={};UID={};Pwd={}".format(DBServer,DBName,DBUser,DBPass))
+connectSQL = ("Driver={SQL Server}"+";Server={};Database={};Port={};UID={};Pwd={}".format(DBServer,DBName,DBPort,DBUser,DBPass))
 
 pyodbc.connect(connectSQL)
 
