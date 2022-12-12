@@ -17,7 +17,7 @@
                                 <img src="{{$instructor->user->avatar()}}" style="border-radius: 50%; width: 100px; height: 100px; margin-right: 4%;">
                                 <div class="d-flex flex-column">
                                     <h3 class="mb-1 font-weight-bold blue-text">{{$instructor->user->fullName('FL')}}</h3>
-                                    <a href="mailto:{{$instructor->user->email}}"><h5 class="blue-text">{{$instructor->user->email}}</h5></a>
+                                    <!-- <a href="mailto:{{$instructor->user->email}}"><h5 class="blue-text">{{$instructor->user->email}}</h5></a> -->
                                     <div class="row pl-3">
                                         @if($instructor->is_local)
                                             <button class="btn btn-sm btn-local ml-0">Local</button>
