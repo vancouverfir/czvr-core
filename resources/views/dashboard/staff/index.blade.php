@@ -105,7 +105,7 @@
                                 @endif
                                 <label class="form-control">Position Title</label>
                                 <input type="text" class="form-control" name="position">
-                                <label class="form-control">Staff Number (ZWG_)</label>
+                                <label class="form-control">Staff Number (ZVR_)</label>
                                 <input type="text" class="form-control" name="shortform">
                                 <label class="form-control">Select a group</label>
                                 <select class="custom-select form-group" name="group">
