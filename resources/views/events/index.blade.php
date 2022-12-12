@@ -5,7 +5,7 @@
     <div class="container py-4">
         <div class="d-flex flex-row justify-content-between align-items-center mb-1">
             <h1 class="blue-text font-weight-bold">Upcoming Events</h1>
-            <a href="#" class="btn btn-link float-right mx-0 px-0" data-toggle="modal" data-target="#requestModal">Need ATC Coverage? Click Here!</a>
+            <a href="#" class="btn btn-link float-right mx-0 px-0 content-font-color" data-toggle="modal" data-target="#requestModal">Need ATC Coverage? Click Here!</a>
         </div>
         <hr>
         <ul class="list-unstyled">
@@ -31,29 +31,6 @@
             </div>
             @endforeach
         </ul>
-        <h5><a data-toggle="collapse" data-target="#pastEvents">Show Past Events <i class="fas fa-caret-down"></i></a></h5>
-        <div class="collapse" id="pastEvents">
-            <ul class="list-unstyled">
-                @if (count($pastEvents) == 0)
-                <li>No past events.</li>
-                @endif
-                @foreach($pastEvents as $e)
-                <div class="card my-2">
-                    <div class="d-flex flex-row justify-content-between">
-                        <div class="p-3">
-                            <a href="{{route('events.view', $e->slug)}}">
-                                <h3 style="color: #013162">{{$e->name}}</h3>
-                            </a>
-                            <h5>{{$e->start_timestamp_pretty()}} to {{$e->end_timestamp_pretty()}}</h5>                       
-                            @if ($e->departure_icao && $e->arrival_icao)
-                                <h5 class="font-weight-bold">{{$e->departure_icao_data()['name']}} ({{$e->departure_icao_data()['icao']}})&nbsp;&nbsp;<i class="fas fa-plane"></i>&nbsp;&nbsp;{{$e->arrival_icao_data()['name']}} ({{$e->arrival_icao_data()['icao']}})</h5>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </ul>
-        </div>
     </div>
     <!-- ATC coverage request modal-->
     <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -67,7 +44,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Vancouver is happy to provide ATC for many events within our airspace!</p>
-                    <p>To request ATC for your event, we recommend contacting Winnipeg's Events Coordinator by email <a href="{{route('staff')}}">.</a> If the position is vacant, instead contact the FIR Chief.</p>
+                    <p>To request ATC for your event, we recommend contacting Vancouvers's Events Coordinator by email <a href="{{route('staff')}}">.</a> If the position is vacant, instead contact the FIR Chief.</p>
                     <p>Thank you for choosing Vancouver!</p>
                 </div>
             </div>
