@@ -13,6 +13,8 @@
 <div class="container" style="margin-top: 20px;">
         <h1 class="blue-text font-weight-bold">Controller Roster</h1>
         <hr>
+        <h3 class="font-weight-bold blue-text">Legend</h3>
+        <hr>
         <div class="roster-legend">
             <table id="rosterLegend" class="table table-hover">
                 <thead>

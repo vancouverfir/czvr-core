@@ -19,11 +19,11 @@
                         <li class="active">
                           <a href="#!">
                             <span class="circle">1</span>
-                            <span class="label">Export all data</span>
+                            <span class="label content-font-color">Export all data</span>
                           </a>
-                          <div class="step-content grey lighten-3">
-                            <p>To export all data, please fill out the form below. We require your email address for verification purposes.</p>
-                            <form action="{{route('me.data.export.all')}}" method="POST">
+                          <div class="step-content box-colour">
+                            <p>To export all data, please email webmaster@czvr.ca</p>
+                            {{--<form action="{{route('me.data.export.all')}}" method="POST">
                                 @csrf
                                 <div class="md-form">
                                     <input name="email" type="email" id="inputMDEx" class="form-control">
@@ -45,13 +45,13 @@
                                 </div>
                                 @endif
                                 <input type="submit" value="Request Data" class="btn btn-primary">
-                            </form>
-                          </div>
+                            </form>--}}
+                          </div> 
                         </li>
                         <li class="active">
                             <a href="#!">
                               <span class="circle">2</span>
-                              <span class="label">or export specific data</span>
+                              <span class="label content-font-color">or export specific data</span>
                             </a>
                             <div class="step-content grey lighten-3">
                               <p>Please open a support ticket to the Web Team or email them to request specific pieces of data.</p>
