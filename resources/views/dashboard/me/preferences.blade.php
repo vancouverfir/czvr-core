@@ -5,7 +5,7 @@
     <a href="{{route('dashboard.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Dashboard</a>
     <h1 class="blue-text font-weight-bold mt-2">Preferences</h1>
     <hr>
-    <p>Customise your Winnipeg web experience.</p>
+    <p>Customise your Vancouver web experience.</p>
     <h3 class="font-weight-bold blue-text">Current email subscription status</h3>
     @if (Auth::user()->gdpr_subscribed_emails == 0)
         <h3>

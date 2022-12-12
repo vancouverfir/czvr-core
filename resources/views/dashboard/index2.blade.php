@@ -24,7 +24,9 @@
                                 <br/>
                                 <div data-step="4" data-intro="Here you can link your Discord account to receive reminders for training sessions, and gain access to the CZVR Discord.">
                                     <h5 class="mt-2">Discord</h5>
-                                    @if (!Auth::user()->hasDiscord())
+                                    <hr>
+                                    <a href="https://discord.gg/nYKEMSKXW4" class="btn-sm btn-primary m-0" data-toggle="modal" class="mt-1">Join Our Discord</a>
+                                   {{-- @if (!Auth::user()->hasDiscord())
                                         <p class="mt-1">You don't have a linked Discord account.</p>
                                         <a href="#" data-toggle="modal" data-target="#discordModal" class="mt-1">Link a
                                             Discord account</a>
@@ -38,7 +40,7 @@
                                         @endif
                                         <a href="#" data-toggle="modal" data-target="#discordModal"
                                            class="mt-1">Unlink</a>
-                                    @endif
+                                    @endif --}}
                                 </div>
 
                             </div>
@@ -105,10 +107,10 @@
                 <br/>
             </div>
             <div class="col">
-                {{-- Tickets --}}
+                {{-- Tickets
                 <div data-step="6" data-intro="If you have any enquires or issues for the staff, feel free to make a ticket via the ticketing system." class="card">
                     <div class="card-body">
-                        <h3 class="font-weight-bold blue-text pb-2">Support</h3>
+                     <h3 class="font-weight-bold blue-text pb-2">Support</h3>
                         @if (count($openTickets) < 1)
                             You have no open support tickets
                             <br>
@@ -150,7 +152,7 @@
                                         class="text-colour">View previous support tickets</span></a>
                             </li>
                     </div>
-                </div>
+                </div>--}}
                 <br>
                 <div class="card">
                     <div class="card-body">
