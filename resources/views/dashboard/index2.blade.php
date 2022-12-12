@@ -72,7 +72,7 @@
                                     <i class="fas fa-chevron-right"></i>
                                 </span>
                                     &nbsp;
-                                    <span class="black-text">
+                                    <span class="text-colour">
                                     Your biography
                                 </span>
                                 </a>
@@ -83,7 +83,7 @@
                                     <i class="fas fa-chevron-right"></i>
 
                                     &nbsp;
-                                    <span class="black-text">
+                                    <span class="text-colour">
                                     Manage preferences
                                 </span>
                                 </a>
@@ -94,7 +94,7 @@
                                     <i class="fas fa-chevron-right"></i>
                                 </span>
                                     &nbsp;
-                                    <span class="black-text">
+                                    <span class="text-colour">
                                     Manage your data
                                 </span>
                                 </a>
@@ -113,7 +113,7 @@
                             You have no open support tickets
                             <br>
                         @else
-                            <h5 class="black-text" style="font-weight: bold">
+                            <h5 class="text-colour" style="font-weight: bold">
                                 @if (count($openTickets) == 1)
                                     1 open ticket
                                 @else
@@ -123,7 +123,7 @@
                             <div class="list-group">
                                 @foreach ($openTickets as $ticket)
                                     <a href="{{url('/dashboard/tickets/'.$ticket->ticket_id)}}"
-                                       class="list-group-item list-group-item-action black-text rounded-0 "
+                                       class="list-group-item list-group-item-action text-colour rounded-0 "
                                        style="background-color:#d9d9d9">{{$ticket->title}}<br/>
                                         <small title="{{$ticket->updated_at}} (GMT+0, Zulu)">Last
                                             updated {{$ticket->updated_at_pretty()}}</small>
@@ -136,18 +136,18 @@
                             <li class="mb-2">
                                 <a href="{{route('feedback.create')}}" style="text-decoration:none;"><span
                                         class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
-                                        class="black-text">Send feedback</span></a>
+                                        class="text-colour">Send feedback</span></a>
                             </li>
                             <li class="mb-2">
                                 <a href="{{route('tickets.index', ['create' => 'yes'])}}"
                                    style="text-decoration:none;"><span
                                         class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
-                                        class="black-text">Start a support ticket</span></a>
+                                        class="text-colour">Start a support ticket</span></a>
                             </li>
                             <li class="mb-2">
                                 <a href="{{route('tickets.index')}}" style="text-decoration:none;"><span
                                         class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
-                                        class="black-text">View previous support tickets</span></a>
+                                        class="text-colour">View previous support tickets</span></a>
                             </li>
                     </div>
                 </div>
