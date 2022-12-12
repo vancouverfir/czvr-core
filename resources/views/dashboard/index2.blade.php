@@ -61,7 +61,7 @@
                                     <i class="fas fa-chevron-right"></i>
                                 </span>
                                     &nbsp;
-                                    <span class="black-text">
+                                    <span class="text-colour">
                                     Change display name
                                 </span>
                                 </a>
