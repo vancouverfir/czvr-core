@@ -5,6 +5,7 @@
 
 body, html {
     height: 100vh;
+    color:#E0E0DC;
     scroll-behavior: smooth;
 }
 
@@ -269,4 +270,36 @@ div.notes{
 .icon-error {
     color: #9d0000;
     font-size: 1.5em;
+}
+
+/*Syle for articles*/
+
+.content-warning {
+    color: #F15025;
+    font-size: 1.2em;
+}
+
+.content-link {
+    font-size:1.2em;
+    text-decoration: underline;
+}
+
+.content-paragraph {
+    font-size: 1.2em;
+}
+
+.content-font-color {
+    color: #fff !important;
+}
+
+/* Style for content boxes */
+
+.box-colour {
+    background-color: #222;
+}
+
+/* Style for numbered step circles */
+
+.circle-color {
+    background-color:#6CC24A !important;
 }

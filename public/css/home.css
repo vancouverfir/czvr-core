@@ -19,12 +19,28 @@
 
 .card {
     background: #2E2F2F ;
+    border-radius: 2px !important;
     /* background: #E6E8E6; */
+}
+
+.card-padding {
+    padding-right: 0.5% !important;
+    padding-left: 0.5% !important;
+    padding-top: 0% !important;
+}
+
+.card-header-size {
+    font-size:1.6em;
 }
 
 .card-body {
     background-color: #2E2F2F;
     /* background-color: #E6E8E6; */
+}
+
+.card-hf-padding {
+    padding: 0.2rem 0.1rem !important;
+    padding-bottom: 0.1rem !important;
 }
 
 .corner {
