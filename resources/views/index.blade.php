@@ -35,6 +35,9 @@
                             <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-newspaper"></i>&nbsp;&nbsp;Recent News</h2>
                         </div>
                         <div class="card-body" style="padding-bottom:2%">
+                            @if(count($news) == 0)
+                            <h5 class="text-colour" style="text-align: center;">No current News.</h5>
+                            @endif
                             @foreach($news as $n)
                                 <h5><span class="badge text-colour">{{$n->posted_on_pretty()}}</span>&nbsp;&nbsp;<a href="{{url('/news').'/'.$n->slug}}" class="text-colour"><text class="align-middle">{{$n->title}}</text></h5></a>
                             @endforeach
@@ -136,6 +139,9 @@
                         </div>
                         <div class="card-body" style="padding-bottom:0%">
                             <div class="text-colour" style="float: left;">
+                                @if(count($weather) == 0)
+                                <h5 class="text-colour" style="text-align: center;">No weather data.</h5>
+                                @endif
                                 @foreach($weather as $w)
                                     <h5 class="text-colour"><text class="align-middle font-weight-bold">{{$w->icao}} - {{$w->station->name}}&nbsp;&nbsp;</text>
                                         <span class="badge {{$w->flight_category}}">{{$w->flight_category}}</span>
