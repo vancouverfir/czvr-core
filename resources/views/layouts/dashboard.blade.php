@@ -22,7 +22,7 @@
         <meta name="theme-color" content="#6CC24A">
         <meta name="og:title" content="@yield('title', 'Vancouver FIR')">
         <meta name="og:description" content="@yield('description', '')">
-        <meta name="og:image" content="@yield('image','https://i.imgur.com/7Rz1DOr.png')">
+        <meta name="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
         <link rel="shortcut icon" href="{{ asset('winnipeg.ico') }}" type="image/x-icon">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
@@ -342,7 +342,7 @@
                     <ol>
                         <li>Login and open a <a href="{{route('tickets.index')}}">support ticket.</a></li>
                         <li>Head to the <a href="{{route('staff')}}">staff page</a> and email the relevant staff member.</li>
-                        <li>Join our <a href="https://discord.gg/WYQjbxv">Discord server</a> and ask in the #general channel.</li>
+                        <li>Join our <a href="https://discord.gg/nYKEMSKXW4">Discord server</a> and ask in the #general channel.</li>
                     </ol>
                     <b>If your query is related to ATC coverage for your event, please visit <a href="{{route('events.index')}}">this page.</a></b>
                 </div>
