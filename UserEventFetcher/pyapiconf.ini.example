@@ -5,7 +5,7 @@ APIkey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 [ServerDB]
 Address: 127.0.0.1
-Port: 1433
+Port: 3306
 ID: User
 Password: Password
 DBName: MyDB
