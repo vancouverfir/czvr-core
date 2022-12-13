@@ -23,7 +23,7 @@
         <meta name="og:title" content="@yield('title', 'Vancouver FIR')">
         <meta name="og:description" content="@yield('description', '')">
         <meta name="og:image" content="@yield('image','https://i.imgur.com/7Rz1DOr.png')">
-        <link rel="shortcut icon" href="{{ asset('Vancouver.ico') }}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('winnipeg.ico') }}" type="image/x-icon">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
         <!-- Bootstrap core CSS -->
