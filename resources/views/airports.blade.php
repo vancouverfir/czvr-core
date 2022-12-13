@@ -43,9 +43,9 @@
         <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYVR') == true)
                     <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 25%; float:left; min-height: 100%;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <div class="CYWG" style="text-align: center;">
                                     <div class="ATIS">
                                         <h5>ATIS</h5>
@@ -56,9 +56,9 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 175%; float: right;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYVR')}}
                             </div>
@@ -66,8 +66,8 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card corner">
-                            <div class="card-body">
+                        <div class="card">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYVR')}}
                             </div>
@@ -98,9 +98,9 @@
         <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYYJ') == true)
                 <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 25%; float:left; min-height: 100%;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <div class="CYPG" style="text-align: center;">
                                     <div class="ATIS">
                                         <h5>ATIS</h5>
@@ -111,9 +111,9 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 175%; float: right;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYYJ')}}
                             </div>
@@ -121,8 +121,8 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card corner">
-                            <div class="card-body">
+                        <div class="card">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYYJ')}}
                             </div>
@@ -143,9 +143,9 @@
         <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYLW') == true)
                 <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 25%; float:left; min-height: 100%;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <div class="CYXE" style="text-align: center;">
                                     <div class="ATIS">
                                         <h5>ATIS</h5>
@@ -156,9 +156,9 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 175%; float: right;">
-                            <div class="card-body">
+                            <div class="card-body corners">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYLW')}}
                             </div>
@@ -166,8 +166,8 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card corner">
-                            <div class="card-body">
+                        <div class="card">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYLW')}}
                             </div>
@@ -198,9 +198,9 @@
             <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYXS') == true)
                 <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 25%; float:left; min-height: 100%;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <div class="CYQT" style="text-align: center;">
                                     <div class="ATIS">
                                         <h5>ATIS</h5>
@@ -211,9 +211,9 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 175%; float: right;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYXS')}}
                             </div>
@@ -221,8 +221,8 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card corner">
-                            <div class="card-body">
+                        <div class="card">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYXS')}}
                             </div>
@@ -264,9 +264,9 @@
         <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYXX') == true)
                 <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 25%; float:left; min-height: 100%;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <div class="CYQR" style="text-align: center;">
                                     <div class="ATIS">
                                         <h5>ATIS</h5>
@@ -277,9 +277,9 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 175%; float: right;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYXX')}}
                             </div>
@@ -287,8 +287,8 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card corner">
-                            <div class="card-body">
+                        <div class="card">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYXX')}}
                             </div>
@@ -319,9 +319,9 @@
         <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYCD') == true)
                 <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 25%; float:left; min-height: 100%;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <div class="CYMJ" style="text-align: center;">
                                     <div class="ATIS">
                                         <h5>ATIS</h5>
@@ -332,9 +332,9 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card corner"
+                        <div class="card"
                              style="width: 175%; float: right;">
-                            <div class="card-body">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYCD')}}
                             </div>
@@ -342,8 +342,8 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card corner">
-                            <div class="card-body">
+                        <div class="card">
+                            <div class="card-body corner">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYCD')}}
                             </div>
