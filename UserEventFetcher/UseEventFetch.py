@@ -43,7 +43,8 @@ print("Connecting to MySQL Sevrer...")
 
 #connectSQL = ("Driver={SQL Server}"+";Server={};Database={};Port={};UID={};Pwd={}".format(DBServer,DBName,DBPort,DBUser,DBPass)) old version relying on pyODBC
 
-
+cidStor = []
+visitCidStor = []
 
 try:
     connectSQL = mariadb.connect(user=DBUser,password=DBPass,host=DBServer,port=int(DBPort),database=DBName,autocommit=True)
@@ -198,16 +199,48 @@ def rmEvent(): #Removing stale events from the server
 
 def fetchRoster():
     #Using the vatsium API to fetch the user roster
+
     print("Fetching Users...")
     try:
         req = requests.get(APIUsers+simKey)
     except:
         print("User Fetch Failed!")
         exit()
-    print("Fetched Events")
-    resp = req.json()
-    trimRoster(resp)
+    resp=req.json()
+    for i in resp["data"]["controllers"]:
+        print("CID =", i["cid"])
+        rating_short=convRating(i["rating"])
+        fullname=i["first_name"]+" "+i["last_name"]
+        print("Users Full Name:", fullname)
+        stowRoster(i["cid"],i["first_name"],i["last_name"],i["rating"],i["email"],fullname,rating_short)
+        cidStor.append(i["cid"])
+        
+        
+
+    #resp = req.json()
+   # ratingshort=convRating(i["data"]["controller"]["rating"])
+    #stowRoster(i["data"]["controller"]["cid"],i["data"]["controller"]["first_name"],i["data"]["controller"]["last_name"],i["data"]["controller"]["rating"],ratingshort)
     
+def fetchVisitRoster():
+    #Using the vatsium API to fetch the user roster
+
+    print("Fetching Visitors...")
+    try:
+        req = requests.get(APIUsers+simKey)
+    except:
+        print("Visitor Fetch Failed!")
+        exit()
+    resp=req.json()
+    for i in resp["data"]["visitors"]:
+        print("CID =", i["cid"])
+        rating_short=convRating(i["rating"])
+        fullname=i["first_name"]+" "+i["last_name"]
+        print("Users Full Name:", fullname)
+        stowVisitRoster(i["cid"],i["first_name"],i["last_name"],i["rating"],i["email"],fullname,rating_short)
+        cidStor.append(i["cid"])
+        
+        
+    trimRoster()
 
 def convRating(rating):
     if rating == 0:
@@ -217,7 +250,7 @@ def convRating(rating):
     elif rating == 2:
         return "S1"
     elif rating == 3:
-        return "s2"
+        return "S2"
     elif rating == 4:
         return "S3"
     elif rating == 5:
@@ -240,20 +273,85 @@ def convRating(rating):
         print("not a valid rating!")
         exit
    
-def trimRoster(data):
-    #Removes users from the roster if they are removed from the vatcan roster
-    
-    #CDfor i in data:
-        
-    
-    
-    
-    stowRoster(data)
+
+def trimRoster():
+    print("Cleaning up roster")
+    cur = connectSQL.cursor()
+    bye = connectSQL.cursor()
+    cur.execute("SELECT cid FROM roster")
+    for i in cur:
+        strCid = str(i)[1:-2]
+        dbCid = int(strCid)
+        if dbCid not in cidStor:
+            print("invalid CID:", dbCid)
+            bye.execute("DELETE FROM roster WHERE cid=?",(dbCid,))
+            print("Invalid CID Removed from DB... BUH BYE")
+
 
  
-def stowRoster(CID,FNAME,LNAME,RATING_ID,RATING_SHORT):
+def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
     #stores new users in the roster
     print("Stowing users in DB...")
+    cur = connectSQL.cursor()
+    
+    try:
+        print("Searching for ID's to update...")
+        cur.execute("SELECT id FROM users WHERE id=?",(CID,))
+        try:
+            cur.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,CID))
+            cur.execute("UPDATE roster SET full_name = ?, status = ?, active = ?  WHERE user_id = ?",(FULLNAME,"home","1",CID,))
+        except mariadb.Error as a:
+            print(f" Iterative Error: {a}")
+            print("He's dead, Jim...")
+            sys.exit(1)
+    except mariadb.error as e: 
+        print(f"Update Error: {e}") 
+        sys.exit(1)
+
+    try:
+        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short) VALUES (?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT))
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+    try:
+        print("Now adding to Roster")
+        cur.execute("INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",(CID,CID,FULLNAME,"home","1","0"))
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+    print("complete!")
+
+def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
+    #stores new users in the roster
+    print("Stowing visitors in DB...")
+    cur = connectSQL.cursor()
+    
+    try:
+        print("Searching for Visitor ID's to update...")
+        cur.execute("SELECT id FROM users WHERE id=?",(CID,))
+        try:
+            cur.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,CID))
+            cur.execute("UPDATE roster SET full_name = ?, status = ?, active = ?  WHERE user_id = ?",(FULLNAME,"home","1",CID,))
+        except mariadb.Error as a:
+            print(f" Iterative Error: {a}")
+            print("He's dead, Jim...")
+            sys.exit(1)
+    except mariadb.error as e: 
+        print(f"Update Error: {e}") 
+        sys.exit(1)
+
+    try:
+        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, visitor) VALUES (?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,"1"))
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+    try:
+        print("Now adding to Visitor Roster")
+        cur.execute("INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",(CID,CID,FULLNAME,"visit","1","1"))
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+    print("complete!")
+
+
+
+
     
 
 try:
@@ -261,6 +359,7 @@ try:
         fetchEvent()
     elif isMode == "roster" or isMode == "rosters" or isMode == "users" or isMode == "user":
         fetchRoster()
+        fetchVisitRoster()
     else:
         print("You need to state either Events or Roster")
 except Exception as e:
