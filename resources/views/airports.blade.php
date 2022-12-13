@@ -43,8 +43,8 @@
         <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYVR') == true)
                     <div class="col">
-                        <div class="card"
-                             style="background-color:#013162; color:#ffffff; width: 25%; float:left; min-height: 100%;">
+                        <div class="card corner"
+                             style="width: 25%; float:left; min-height: 100%;">
                             <div class="card-body">
                                 <div class="CYWG" style="text-align: center;">
                                     <div class="ATIS">
@@ -56,8 +56,8 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card"
-                             style="background-color:#9f9f9f; color:#ffffff; width: 175%; float: right;">
+                        <div class="card corner"
+                             style="width: 175%; float: right;">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYVR')}}
@@ -66,7 +66,7 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card" style="background-color:#9f9f9f; color:#ffffff;">
+                        <div class="card corner">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYVR')}}
@@ -76,13 +76,12 @@
                 @endif
             </div>
             <br>
-                <li>Tower/Terminal at Vancouver International (CYVR) is open 24/7.</li>
             <hr>
                 <h2 class="font-weight-bold blue-text">Scenery</h2>
-                    <h4>MapleSim - for XPlane 11+</h4>
-                    <h5>Freeware</h5>
+                    <h4>FSDreamTean - for FSX and P3D</h4>
+                    <h5>Payware</h5>
                     <p>MapleSim's Winnipeg 2020 is brand new, and looks stunning (especially in snowy weather - something we are used to in winnipeg.) Developed by one of Winnipeg's own controllers, this is some of the best free XP11 scenery on the market.</p>
-                    <a style="margin-left: -0.1%" target=”_blank” href="https://forum.thresholdx.net/files/file/875-maplesim-winnipeg-international-airport-cywg/"class="btn btn-primary">View More</a>
+                    <a style="margin-left: -0.1%" target=”_blank” href="https://www.fsdreamteam.com/products_cyvr.html"class="btn btn-primary">View More</a>
                 <br></br>
                     <h4>SimAddons - For FSX, P3Dv4, v5 & MSFS</h4>
                     <h5>Payware</h5>
@@ -99,8 +98,8 @@
         <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYYJ') == true)
                 <div class="col">
-                        <div class="card"
-                             style="background-color:#013162; color:#ffffff; width: 25%; float:left; min-height: 100%;">
+                        <div class="card corner"
+                             style="width: 25%; float:left; min-height: 100%;">
                             <div class="card-body">
                                 <div class="CYPG" style="text-align: center;">
                                     <div class="ATIS">
@@ -112,8 +111,8 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card"
-                             style="background-color:#9f9f9f; color:#ffffff; width: 175%; float: right;">
+                        <div class="card corner"
+                             style="width: 175%; float: right;">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYYJ')}}
@@ -122,7 +121,7 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card" style="background-color:#9f9f9f; color:#ffffff;">
+                        <div class="card corner">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYYJ')}}
@@ -132,7 +131,6 @@
                 @endif
             </div>
             <br>
-            <li>Tower open Mon - Fri from 1400Z - 2300Z, excluding holidays.</li>
             <hr>
             <h2 class="font-weight-bold blue-text">Scenery</h2>
                 <h4>Orbx - for FSX & P3D</h4>
@@ -145,8 +143,8 @@
         <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYLW') == true)
                 <div class="col">
-                        <div class="card"
-                             style="background-color:#013162; color:#ffffff; width: 25%; float:left; min-height: 100%;">
+                        <div class="card corner"
+                             style="width: 25%; float:left; min-height: 100%;">
                             <div class="card-body">
                                 <div class="CYXE" style="text-align: center;">
                                     <div class="ATIS">
@@ -158,8 +156,8 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card"
-                             style="background-color:#9f9f9f; color:#ffffff; width: 175%; float: right;">
+                        <div class="card corner"
+                             style="width: 175%; float: right;">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYLW')}}
@@ -168,7 +166,7 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card" style="background-color:#9f9f9f; color:#ffffff;">
+                        <div class="card corner">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYLW')}}
@@ -178,9 +176,6 @@
                 @endif
             </div>
             <br>
-            <li>Tower open Mon - Fri between March 9th - October 31st, from 1200Z - 0445Z.</li>
-            <li>Tower open Sat - Sun between March 9th - October 31st, from 1245Z - 0445Z.</li>
-            <li>Tower open between November 1st - March 8th, from 1245Z - 0445Z.</li>
             <hr>
                 <h2 class="font-weight-bold blue-text">Scenery</h2>
                 <h4>SimAddons - For FSX, P3Dv4, v5 & MSFS</h4>
@@ -203,8 +198,8 @@
             <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYXS') == true)
                 <div class="col">
-                        <div class="card"
-                             style="background-color:#013162; color:#ffffff; width: 25%; float:left; min-height: 100%;">
+                        <div class="card corner"
+                             style="width: 25%; float:left; min-height: 100%;">
                             <div class="card-body">
                                 <div class="CYQT" style="text-align: center;">
                                     <div class="ATIS">
@@ -216,8 +211,8 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card"
-                             style="background-color:#9f9f9f; color:#ffffff; width: 175%; float: right;">
+                        <div class="card corner"
+                             style="width: 175%; float: right;">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYXS')}}
@@ -226,7 +221,7 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card" style="background-color:#9f9f9f; color:#ffffff;">
+                        <div class="card corner">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYXS')}}
@@ -236,7 +231,6 @@
                 @endif
             </div>
             <br>
-            <li>Tower open daily from 1200Z - 0400Z.</li>
             <hr>
             <h2 class="font-weight-bold blue-text">Scenery</h2>
                 <h4>Jim Kanold - For XP11+</h4>
@@ -270,8 +264,8 @@
         <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYXX') == true)
                 <div class="col">
-                        <div class="card"
-                             style="background-color:#013162; color:#ffffff; width: 25%; float:left; min-height: 100%;">
+                        <div class="card corner"
+                             style="width: 25%; float:left; min-height: 100%;">
                             <div class="card-body">
                                 <div class="CYQR" style="text-align: center;">
                                     <div class="ATIS">
@@ -283,8 +277,8 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card"
-                             style="background-color:#9f9f9f; color:#ffffff; width: 175%; float: right;">
+                        <div class="card corner"
+                             style="width: 175%; float: right;">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYXX')}}
@@ -293,7 +287,7 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card" style="background-color:#9f9f9f; color:#ffffff;">
+                        <div class="card corner">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYXX')}}
@@ -303,8 +297,6 @@
                 @endif
             </div>
             <br>
-            <li>Tower open between April 1st - October 31st, from 1200Z - 0400Z.</li>
-            <li>Tower open between November 1st - March 31st, from 1200Z - 0500Z.</li>
             <hr>
             <h2 class="font-weight-bold blue-text">Scenery</h2>
                 <h4>Canada4XPlane - For XP10 & XP11+</h4>
@@ -327,8 +319,8 @@
         <div class="row">
                 @if(\App\Classes\WeatherHelper::getAtisLetter('CYCD') == true)
                 <div class="col">
-                        <div class="card"
-                             style="background-color:#013162; color:#ffffff; width: 25%; float:left; min-height: 100%;">
+                        <div class="card corner"
+                             style="width: 25%; float:left; min-height: 100%;">
                             <div class="card-body">
                                 <div class="CYMJ" style="text-align: center;">
                                     <div class="ATIS">
@@ -340,8 +332,8 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card"
-                             style="background-color:#9f9f9f; color:#ffffff; width: 175%; float: right;">
+                        <div class="card corner"
+                             style="width: 175%; float: right;">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYCD')}}
@@ -350,7 +342,7 @@
                     </div>
                 @else
                     <div class="col">
-                        <div class="card" style="background-color:#9f9f9f; color:#ffffff;">
+                        <div class="card corner">
                             <div class="card-body">
                                 <h3>Current ATIS/METAR</h3>
                                 {{\App\Classes\WeatherHelper::getAtis('CYCD')}}
@@ -360,9 +352,6 @@
                 @endif
             </div>
             <br>
-            <li>Tower/Terminal open between February 16st - October 31st, from 1400Z - 0030Z.</li>
-            <li>Tower/Terminal open between November 1st - Februaty 15th, from 1430Z - 0100Z.</li>
-            <li>Tower/Terminal also frequenty closed on weekends.</li>
             <hr>
             <h2 class="font-weight-bold blue-text">Scenery</h2>
                 <h4>Orbx - for FSX & P3D</h4>
