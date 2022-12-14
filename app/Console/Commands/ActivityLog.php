@@ -72,7 +72,7 @@ class ActivityLog extends Command
 
             if (! $identFound) {
                 //Check to see if we need to make a new position, also check to make sure it isn't an ATIS, or an observer
-                if (Str::contains($controller->callsign, ['CZVR', 'CYVR', 'CYYJ', 'CYXS', 'CYLW', 'CYXX', 'CZBB', 'CYCD', 'CYAZ', 'CYQQ']) &&
+                if (Str::contains($controller->callsign, ['CZVR', 'CYVR', 'CYYJ', 'CYXS', 'CYLW', 'CYXX', 'CZBB', 'CYCD', 'CYAZ', 'CYQQ', 'CYZT', 'CYXC', 'CYCG', 'CYHC', 'CYNJ', 'CYPK']) &&
                     ! Str::endsWith($controller->callsign, ['ATIS', 'OBS']) &&
                     $controller->facility != 0) {
                     // Add position to table if so
