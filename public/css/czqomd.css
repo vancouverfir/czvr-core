@@ -121,6 +121,7 @@ a {
 
 a:hover {
     text-decoration: none;
+    color: #6CC24A;
 }
 
 div.d-flex.flex-row > i {
