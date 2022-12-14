@@ -229,6 +229,7 @@
             </thead>
             <tbody>
             @foreach ($visitroster as $visitcontroller)
+            @if($visitcontroller->active == "0")
                 <tr>
                     <th style="text-align: center" scope="row"><a href="{{url('/roster/'.$visitcontroller->cid)}}" class="blue-text"><b>{{$visitcontroller->cid}}</b></a></th>
                     <td align="center" >
@@ -353,6 +354,7 @@
                                     {{$visitcontroller->remarks}}
                                 </td>
                 </tr>
+                @endif
             @endforeach
             </tbody>
         </table><br>
