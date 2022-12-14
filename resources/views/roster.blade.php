@@ -78,6 +78,7 @@
             </thead>
             <tbody>
             @foreach ($roster as $controller)
+            @if($controller->active == "1")
                     <th style="text-align: center" scope="row"><a href="{{url('/roster/'.$controller->cid)}}" class="blue-text"><b>{{$controller->cid}}</b></a></th>
                     <td align="center" >
                         {{$controller->user->fullName('FL')}}
@@ -203,6 +204,7 @@
 
 <!--Active Status-->
                 </tr>
+                @endif
             @endforeach
             </tbody>
         </table>
@@ -229,7 +231,7 @@
             </thead>
             <tbody>
             @foreach ($visitroster as $visitcontroller)
-            @if($visitcontroller->active == "0")
+            @if($visitcontroller->active == "1")
                 <tr>
                     <th style="text-align: center" scope="row"><a href="{{url('/roster/'.$visitcontroller->cid)}}" class="blue-text"><b>{{$visitcontroller->cid}}</b></a></th>
                     <td align="center" >
