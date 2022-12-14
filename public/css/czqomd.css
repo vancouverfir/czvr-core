@@ -3,6 +3,11 @@
     font-family: 'Lato', sans-serif;
 }
 
+
+p {
+    font-size: 17px !important;
+}
+
 body, html {
     height: 100vh;
     color:#E0E0DC;
