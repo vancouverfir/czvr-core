@@ -109,6 +109,7 @@
 
                         <!-- Tower -->
                         <tr>
+                            <th scope="row" style="text-align: center;"><b>Tower</b></th>
                             @if ($rosterMember->twr == "1")
                                 <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                             @elseif ($rosterMember->twr == "2")
