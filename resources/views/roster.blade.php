@@ -230,7 +230,7 @@
             <tbody>
             @foreach ($visitroster as $visitcontroller)
                 <tr>
-                    <th style="text-align: center" scope="row"><a href="{{url('/roster/'.$visitcontroller->cid)}}" class="blue-text;"><b>{{$visitcontroller->cid}}</b></a></th>
+                    <th style="text-align: center" scope="row"><a href="{{url('/roster/'.$visitcontroller->cid)}}" class="blue-text"><b>{{$visitcontroller->cid}}</b></a></th>
                     <td align="center" >
                         {{$visitcontroller->user->fullName('FL')}}
                     </td>
