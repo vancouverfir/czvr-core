@@ -309,7 +309,7 @@ def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
         sys.exit(1)
 
     try:
-        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short) VALUES (?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT))
+        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, display_fname) VALUES (?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,FNAME))
     except mariadb.Error as e:
         print(f"Error: {e}")
     try:
@@ -339,7 +339,7 @@ def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
         sys.exit(1)
 
     try:
-        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, visitor) VALUES (?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,"1"))
+        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, display_fname, visitor) VALUES (?,?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,FNAME,"1"))
     except mariadb.Error as e:
         print(f"Error: {e}")
     try:
