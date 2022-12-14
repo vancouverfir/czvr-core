@@ -133,7 +133,7 @@ class PoliciesController extends Controller
         //    'time' => date('Y-m-d H:i:s'),
         //    'private' => 0,
         //]);
-        $entry->save();
+        //$entry->save();
 
         return redirect()->route('policies')->with('success', 'Policy '.$policy->name.' added!');
     }
@@ -169,7 +169,7 @@ class PoliciesController extends Controller
         //    'time' => date('Y-m-d H:i:s'),
         //    'private' => 0,
         //]);
-        $entry->save();
+        //$entry->save();
 
         return redirect()->route('policies')->with('success', 'Policy <text class="font-weight-bold">'.$request->get('name').'</text> edited!');
     }
@@ -184,7 +184,7 @@ class PoliciesController extends Controller
          //   'time' => date('Y-m-d H:i:s'),
          //   'private' => 0,
         //]);
-        $entry->save();
+        //$entry->save();
         $policy->delete();
 
         return redirect()->route('policies')->with('success', 'Policy deleted.');
