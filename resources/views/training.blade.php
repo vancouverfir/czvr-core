@@ -5,17 +5,8 @@
 
     <div class="container" style="margin-top: 20px;">
         <h1 class="blue-text font-weight-bold">Training</h1>
-            <p>Vancouver always holds training to the highest standards. As a Vancouver FIR student, the training we provide is always extremely professional and precise.</p>
-        <hr>
-        <div>
-            <h3 class="font-weight-bold blue-text">The 1Vancouver System</h3>
-                <p>Over the past year, the Vancouver FIR has been busy working on building a brand new training system from scratch - the 1Vancouver. Once completed, Vancouver students
-                will have the ability to study for their ratings without the need for Instructors or Mentors - and can request help from their Instructor with the click of a button.
-                It also includes a brand new, state-of-the-art Computer-Based Training System.</p>
-                <h5 class="font-weight-bold blue-text">All In One Place.</h5>
-                <p>1Vancouver has the benefit for students and instructors/mentors of all being in one place - always a click away on the menu.</p>
-                <p>For updates on the 1Vancouver Training & CBT System, keep an eye on the <a href="https://blog.cyvr.ca">Vancouver FIR Blog</a> where we post live updates on the status of this project.
-            </div>
+            <p>Vancouver FIR holds training to the highest standards, the training we provide is always extremely professional and precise. And cultivate a culture of teaching and learning between all ratings.
+            Our most successful students are those who engage in the community and contribute their unique skills and perspectives.</p>
         <hr>
         <h3 class="font-weight-bold blue-text">Current Wait Time</h3>
         <div class="row" style="padding-left:8px">
