@@ -8,7 +8,6 @@
 <br>
 <h5 class="text-center"><a href="https://github.com/vancouverfir/czvr-core">View our GitHub</a></h5>
 <br>
-<img src="https://resources.ganderoceanic.com/media/img/brand/sqr/ZQO_SQ_TSPBLUE.png" style="width: 125px">
 <br>
 <h5 class="text-center"><a href="https://github.com/winnipegfir/CZWG-core">Based on the website by the Winnipeg FIR</a></h5>
 <h5 class="text-center"><a href="https://github.com/gander-oceanic-fir-vatsim/czqo-core">Based on the core built by the Gander Oceanic OCA</a></h5>
