@@ -31,10 +31,10 @@
             <h5 class="font-weight-bold">{{$s->section_name}}</h5>
             @foreach ($s->policies as $policy)
                 <div id="accordion">
-                    <div aria-expanded="true"  class="card" style="background-color: lightgray">
+                    <div aria-expanded="true"  class="card">
                         <div class="card-header" id="headingOne">
                             <h5 class="mb-0">
-                                <button class="btn btn-link" data-toggle="collapse" data-target="#policy{{$policy->id}}" aria-expanded="true" aria-controls="policy{{$policy->id}}">
+                                <button class="text-colour btn btn-link" data-toggle="collapse" data-target="#policy{{$policy->id}}" aria-expanded="true" aria-controls="policy{{$policy->id}}">
                                     {{ $policy->name }}
                                     @if($policy->staff_only == 1)
                                         - <b class="text-danger">This is a private staff-only policy.</b>

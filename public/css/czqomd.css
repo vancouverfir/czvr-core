@@ -325,3 +325,11 @@ div.notes{
 .modal-content{
     background: #2E2F2F;
 }
+
+.pagination .page-item .page-link{
+    color: #E6E8E6;
+}
+
+.nav-tabs .nav-link{
+    color: #E6E8E6;
+}
