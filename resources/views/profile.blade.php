@@ -30,8 +30,8 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card corner" style="color: #ffffff; float: right;">
-                    <div class="flex-container card-body" style="padding-top: 10%;">
+                <div class="card" style="color: #ffffff; float: right;">
+                    <div class="flex-container card-body corner" style="padding-top: 10%;">
                         <h3 style="text-align: center;">&nbsp;Monthly Hours: <b>{{$monthlyHours}}&nbsp;</b></h3>
                     </div>
                 </div>
@@ -193,8 +193,8 @@
             <div class="col-md-6" style="padding-top: 29px;">
             @endif
                 @if($user->bio)
-                    <div class="card corner" style="text-align: center; width: 100%;{{$rosterMember ? 'float:right;' : 'float:left;'}}">
-                        <div class="flex-container card-body" style="padding-top: 4%;">
+                    <div class="card" style="text-align: center; width: 100%;{{$rosterMember ? 'float:right;' : 'float:left;'}}">
+                        <div class="flex-container card-body corner" style="padding-top: 4%;">
                             <h5 class="font-italic">{{$user->bio}}</h5>
                         </div>
                     </div>
