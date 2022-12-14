@@ -50,106 +50,136 @@
                             <th style="text-align:center;" scope="col"><b>Time this Month</b></th>
                         </tr>
 
+<!--AAS/RAAS-->         <tr>
+                            <th scope="row" style="text-align: center;"><b>AAS/RAAS</b></th>
+                            @if ($rosterMember->fss == "1")
+                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
+                            @elseif ($rosterMember->fss == "2")
+                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
+                            @elseif ($rosterMember->fss == "3")
+                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
+                            @elseif ($rosterMember->fss == "4")
+                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                            @else
+                                <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                            @endif
                         <!-- Delivery -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Delivery</b></th>
                             @if ($rosterMember->del == "1")
-                                <td align="center" class="bg-danger text-white">Not Certified</td>
+                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                             @elseif ($rosterMember->del == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                                <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                             @elseif ($rosterMember->del == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                             @elseif ($rosterMember->del == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
+                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
+                            @elseif ($rosterMember->del == "5")
+                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
+                            @elseif ($rosterMember->del == "6")
+                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                            @elseif ($rosterMember->del == "7")
+                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i> <i class="fa fa-user-circle icon-mentor"></i></td>
                             @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
+                                <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
                             @endif
-                            <td align="center">{{$time['del']}}</td>
                         </tr>
 
                         <!-- Ground -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Ground</b></th>
                             @if ($rosterMember->gnd == "1")
-                                <td align="center" class="bg-danger text-white">Not Certified</td>
+                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                             @elseif ($rosterMember->gnd == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                                <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                             @elseif ($rosterMember->gnd == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                             @elseif ($rosterMember->gnd == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
+                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
+                            @elseif ($rosterMember->gnd == "5")
+                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
+                            @elseif ($rosterMember->gnd == "6")
+                               <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                            @elseif ($rosterMember->gnd == "7")
+                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i> <i class="fa fa-user-circle icon-mentor"></i></td>
                             @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
+                                <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                             @endif
-                            <td align="center">{{$time['gnd']}}</td>
                         </tr>
 
                         <!-- Tower -->
                         <tr>
-                            <th scope="row" style="text-align: center;"><b>Tower</b></th>
                             @if ($rosterMember->twr == "1")
-                                <td align="center" class="bg-danger text-white">Not Certified</td>
+                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                             @elseif ($rosterMember->twr == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                                <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                             @elseif ($rosterMember->twr == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                             @elseif ($rosterMember->twr == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
+                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
+                            @elseif ($rosterMember->twr == "5")
+                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
+                            @elseif ($rosterMember->twr == "6")
+                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                            @elseif ($rosterMember->twr == "7")
+                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i> <i class="fa fa-user-circle icon-mentor"></i></td>
                             @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
+                                <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                             @endif
-                            <td align="center">{{$time['twr']}}</td>
                         </tr>
 
                         <!-- Departure -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Departure</b></th>
                             @if ($rosterMember->dep == "1")
-                                <td align="center" class="bg-danger text-white">Not Certified</td>
+                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                             @elseif ($rosterMember->dep == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
                             @elseif ($rosterMember->dep == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                               <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                             @elseif ($rosterMember->dep == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
+                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                             @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
+                                <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                             @endif
-                            <td align="center">{{$time['dep']}}</td>
                         </tr>
 
                         <!-- Arrival -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Arrival</b></th>
                             @if ($rosterMember->app == "1")
-                                <td align="center" class="bg-danger text-white">Not Certified</td>
+                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                             @elseif ($rosterMember->app == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                                <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                             @elseif ($rosterMember->app == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
                             @elseif ($rosterMember->app == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
+                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
+                            @elseif ($rosterMember->app == "5")
+                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
+                            @elseif ($rosterMember->app == "6")
+                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                            @elseif ($rosterMember->app == "7")
+                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i> <i class="fa fa-user-circle icon-mentor"></i></td>
                             @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
+                                <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                             @endif
-                            <td align="center">{{$time['app']}}</td>
                         </tr>
 
                         <!-- Centre -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Centre</b></th>
                             @if ($rosterMember->ctr == "1")
-                                <td align="center" class="bg-danger text-white">Not Certified</td>
+                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                             @elseif ($rosterMember->ctr == "2")
-                                <td align="center" style="background-color:#ffe401" class="text-black">Training</td>
+                                <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
                             @elseif ($rosterMember->ctr == "3")
-                                <td align="center" style="background-color:#e29500" class="text-white">Solo</td>
+                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
                             @elseif ($rosterMember->ctr == "4")
-                                <td align="center" class="bg-success text-white">Certified</td>
+                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                             @else
-                                <td align="center" class="bg-danger text-white">ERROR</td>
+                                <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                             @endif
-                            <td align="center">{{$time['ctr']}}</td>
                         </tr>
                         </thead>
                     </table>
