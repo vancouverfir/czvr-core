@@ -51,7 +51,7 @@
             <li class="nav-item">
                 <a class="nav-link" id="visit-tab" data-toggle="tab" href="#visit" role="tab" aria-controls="visit" aria-selected="false">Visiting Controllers</a>
             </li>
-            @if (Auth::check() && Auth::user()->permissions >= 4)
+            @if (Auth::check() && Auth::user()->permissions >= 3)
             <li class="nav-item">
                 <a class="nav-link" href="{{route('roster.index')}}" style="color:brown">Edit Roster</a>
             @endif

@@ -138,7 +138,7 @@
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                             <a class="dropdown-item" href="{{route('roster.public')}}">Roster</a>
-                            @if(Auth::check() && Auth::user()->permissions >= 4)
+                            @if(Auth::check() && Auth::user()->permissions >= 3)
                                 <a class="dropdown-item {{ Request::is('roster') ? 'active white-text' : '' }}" href="{{route('roster.index')}}">Manage Roster</a>
                             @endif
                             @if(!Auth::check() || Auth::user()->permissions == 0)
