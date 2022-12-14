@@ -22,7 +22,7 @@
 }
 
 .active {
-  background-color: #013162;
+  background-color: #444;
   color: #fff;
 }
 
@@ -270,7 +270,7 @@
                                                 <span class="blue-text">
                                                     <i class="fas fa-chevron-right"></i>
                                                 </span>
-                                        <span style="color: #013162">
+                                        <span>
                                                     You have <text
                                                 class="text-success"><b>{{count($unconfirmedapp)}}</b></text> active event application
                                                 </span>
@@ -281,7 +281,7 @@
                                              <span class="blue-text">
                                                  <i class="fas fa-chevron-right"></i>
                                              </span>
-                                        <span style="color: #013162">You have <text
+                                        <span>You have <text
                                                 class="text-success"><b>{{count($unconfirmedapp)}}</b></text> active event applications</span>
                                     </a>
                                 @endif
