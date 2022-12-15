@@ -74,7 +74,7 @@ class HomeController extends Controller
         //Weather
         $weather = Cache::remember('weather.data', 900, function () {
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://api.checkwx.com/metar/CYVR,CYYJ,CYLW,CYXS,CYXX,CYCD/decoded?pretty=1');
+            curl_setopt($ch, CURLOPT_URL, 'https://api.checkwx.com/metar/CYVR,CYYJ,CYLW,CYXS,CYXX,CYQQ/decoded?pretty=1');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-API-Key: '.env('AIRPORT_API_KEY')]);
 
@@ -102,7 +102,7 @@ class HomeController extends Controller
                         case 'CYXX':
                             $weatherArray[4] = $w;
                             break;
-                        case 'CYCD':
+                        case 'CYQQ':
                             $weatherArray[5] = $w;
                             break;
                     }
