@@ -52,10 +52,10 @@ class HomeController extends Controller
 
         $colourArray = [
             0 => '#6CC24A',
-            1 => '#6cc24a',
-            2 => '#6cc24a',
-            3 => '#666',
-            4 => '#555',
+            1 => '#B2D33C',
+            2 => '#E3B031',
+            3 => '#F15025',
+            4 => '#666',
         ];
 
         $topControllers = RosterMember::where('currency', '!=', 0)->get()->sortByDesc('currency')->take(5);
