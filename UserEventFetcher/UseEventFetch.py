@@ -299,7 +299,7 @@ def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
         cur.execute("SELECT id FROM users WHERE id=?",(CID,))
         try:
             cur.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,CID))
-            cur.execute("UPDATE roster SET full_name = ?, status = ?, active = ?  WHERE user_id = ?",(FULLNAME,"home","1",CID,))
+            cur.execute("UPDATE roster SET full_name = ?, status = ?  WHERE user_id = ?",(FULLNAME,"home",CID,))
         except mariadb.Error as a:
             print(f" Iterative Error: {a}")
             print("He's dead, Jim...")
@@ -309,7 +309,7 @@ def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
         sys.exit(1)
 
     try:
-        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, display_fname) VALUES (?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,FNAME))
+        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname) VALUES (?,?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,"1",FNAME))
     except mariadb.Error as e:
         print(f"Error: {e}")
     try:
@@ -329,7 +329,7 @@ def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
         cur.execute("SELECT id FROM users WHERE id=?",(CID,))
         try:
             cur.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,CID))
-            cur.execute("UPDATE roster SET full_name = ?, status = ?, active = ?  WHERE user_id = ?",(FULLNAME,"home","1",CID,))
+            cur.execute("UPDATE roster SET full_name = ?, status = ?  WHERE user_id = ?",(FULLNAME,"home",CID,))
         except mariadb.Error as a:
             print(f" Iterative Error: {a}")
             print("He's dead, Jim...")
@@ -339,7 +339,7 @@ def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
         sys.exit(1)
 
     try:
-        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, display_fname, visitor) VALUES (?,?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,FNAME,"1"))
+        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname, visitor) VALUES (?,?,?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,"1",FNAME,"1"))
     except mariadb.Error as e:
         print(f"Error: {e}")
     try:
