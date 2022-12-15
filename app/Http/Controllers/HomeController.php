@@ -55,7 +55,7 @@ class HomeController extends Controller
             1 => '#B2D33C',
             2 => '#E3B031',
             3 => '#F15025',
-            4 => '#666',
+            4 => '#8C8C8C',
         ];
 
         $topControllers = RosterMember::where('currency', '!=', 0)->get()->sortByDesc('currency')->take(5);
