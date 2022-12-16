@@ -22,7 +22,7 @@
          If you do not understand ask the controller for assistance or clarity as needed, we are here to help and learn together. 
          For example, as controller loads permit we may instead assign a heading or altitude to emulate the procedure. </p>
         <hr>
-        <h3 class="font-weight-bold blue-text">Inner/Outter Tower</h3>
+        <h3 class="font-weight-bold blue-text">Inner/Outer Tower</h3>
         <hr>
         <p class="text-colour content-paragraph">Many of the following procedures indicated points to report/frequency change from inner to outer tower. 
         In the case both inner and outer tower are online no modifications are needed. However, if only inner tower is online this 
