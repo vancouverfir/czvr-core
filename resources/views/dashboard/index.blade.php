@@ -460,17 +460,7 @@
                           </span></h3>
                                         @endif
                                     @endif
-                                    @if (Auth::user()->permissions = 1)
                                     <p>You require <b>2 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 2)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 3)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 4)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 5)
-                                    <p>You require <b>2 hours</b> of activity every month!</p>
-                                    @endif
                                 @endif
 
                             <!--End Vancouver Training Hours-->
@@ -488,17 +478,7 @@
                                         @endif
                                     @endif
 
-                                    @if (Auth::user()->permissions = 1)
                                     <p>You require <b>2 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 2)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 3)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 4)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 5)
-                                    <p>You require <b>2 hours</b> of activity every month!</p>
-                                    @endif
                                 @endif
                             <!--End Vancouver Cntrlr Hours-->
 
@@ -515,17 +495,8 @@
                           </span></h3>
                                         @endif
                                     @endif
-                                    @if (Auth::user()->permissions = 1)
-                                    <p>You require <b>2 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 2)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 3)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 4)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 5)
-                                    <p>You require <b>2 hours</b> of activity every month!</p>
-                                    @endif
+                                    @if 
+                                    <p>You require <b>2 hour</b> of activity every month!</p>
                                 @endif
 
                             <!--End Vancouver Cntrlr Hours-->
@@ -543,17 +514,7 @@
                                             </span></h3>
                                         @endif
                                     @endif
-                                    @if (Auth::user()->permissions = 1)
-                                    <p>You require <b>2 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 2)
                                     <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 3)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 4)
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
-                                    @elseif(Auth::user()->permissions = 5)
-                                    <p>You require <b>2 hours</b> of activity every month!</p>
-                                    @endif
                                 @endif
                             <!--End Vancouver Instrctr Hours-->
                                 @if (Auth::user()->rosterProfile->rating == 'S1' || Auth::user()->rosterProfile->rating == 'S2' || Auth::user()->rosterProfile->rating == 'S3')
