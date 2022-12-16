@@ -356,11 +356,12 @@
                               <input type="text" name="airport" class="form-control" id="airport">
                               <label class="mt-2" for="">Position</label>
                               <select name="position" class="form-control" id="position">
+                                <option value="FSS">RAAS/AAS</option>
                                 <option value="Delivery">Delivery</option>
                                 <option value="Ground">Ground</option>
                                 <option value="Tower">Tower</option>
                                 <option value="Departure">Departure</option>
-                                <option value="Arrival">Arrival</option>
+                                <option value="Arrivals">Arrival</option>
                                 <option value="Centre">Centre</option>
                                 <option value="Relief">Relief</option>
                               </select>
