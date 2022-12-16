@@ -461,11 +461,8 @@
                                         @endif
                                     @endif
                                     <p>You require <b>2 hours</b> of activity every month!</p>
-                                @endif
 
-                            <!--End Vancouver Training Hours-->
-                                <!--Vancouver Cntrlr Hrs-->
-                                @if (Auth::user()->permissions = 2)
+                                @elseif (Auth::user()->permissions = 2)
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
                                             <h3><span class="badge rounded shadow-none blue">
@@ -479,11 +476,7 @@
                                     @endif
 
                                     <p>You require <b>3 hours</b> of activity every month!</p>
-                                @endif
-                            <!--End Vancouver Cntrlr Hours-->
-
-                                <!--Vancouver Vstr Cntrlr Hrs-->
-                                @if (Auth::user()->permissions = 3)
+                                @elseif (Auth::user()->permissions = 3)
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
                                             <h3><span class="badge rounded shadow-none blue">
@@ -496,9 +489,7 @@
                                         @endif
                                     @endif
                                     <p>You require <b>3 hour</b> of activity every month!</p>
-                                @endif
-
-                                 @if (Auth::user()->permissions = 4)
+                                @elseif (Auth::user()->permissions = 4)
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
                                             <h3><span class="badge rounded shadow-none blue">
@@ -511,9 +502,7 @@
                                         @endif
                                     @endif
                                     <p>You require <b>3 hour</b> of activity every month!</p>
-                                @endif
-
-                                 @if (Auth::user()->permissions = 5)
+                                @elseif (Auth::user()->permissions = 5)
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 5.0)
                                             <h3><span class="badge rounded shadow-none blue">
