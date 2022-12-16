@@ -352,7 +352,7 @@
                               <input type="datetime" name="start_timestamp" class="form-control flatpickr" value="" id="start_timestamp">
                               <label class="mt-2" for="">End Time (zulu)</label>
                               <input type="datetime" name="end_timestamp" class="form-control flatpickr" value="" id="end_timestamp">
-                              <label class="mt-2" for="">Airport (ex. CYWG)</label>
+                              <label class="mt-2" for="">Airport Callsign (ex. CYVR_APP)</label>
                               <input type="text" name="airport" class="form-control" id="airport">
                               <label class="mt-2" for="">Position</label>
                               <select name="position" class="form-control" id="position">
