@@ -513,7 +513,7 @@
                                         @endif
                                     @endif
                                     <p>You require <b>3 hours</b> of activity every month!</p>
-                            
+                                @endif
                                
                                 
                             <!--End Vancouver Instrctr Hours-->
