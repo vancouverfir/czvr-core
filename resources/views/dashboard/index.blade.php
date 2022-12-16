@@ -477,7 +477,6 @@
                           </span></h3>
                                         @endif
                                     @endif
-
                                     <p>You require <b>2 hours</b> of activity every month!</p>
                                 @endif
                             <!--End Vancouver Cntrlr Hours-->
@@ -494,8 +493,7 @@
                               {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                           </span></h3>
                                         @endif
-                                    @endif
-                                    @if 
+                                    @endif 
                                     <p>You require <b>2 hour</b> of activity every month!</p>
                                 @endif
 
@@ -515,7 +513,9 @@
                                         @endif
                                     @endif
                                     <p>You require <b>3 hours</b> of activity every month!</p>
-                                @endif
+                            
+                                @if 
+                                
                             <!--End Vancouver Instrctr Hours-->
                                 @if (Auth::user()->rosterProfile->rating == 'S1' || Auth::user()->rosterProfile->rating == 'S2' || Auth::user()->rosterProfile->rating == 'S3')
                                     <b>Rating:</b>
