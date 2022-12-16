@@ -448,7 +448,7 @@
                                 @endif
 
                             <!--Vancouver Training Hrs-->
-                                @if (Auth::user()->permissions = 1)
+                                @if (Auth::user()->rosterProfile->status == "training")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 2.0)
                                             <h3><span class="badge rounded shadow-none blue">
@@ -460,65 +460,102 @@
                           </span></h3>
                                         @endif
                                     @endif
+                                    @if (Auth::user()->permissions = 1)
                                     <p>You require <b>2 hours</b> of activity every month!</p>
-
-                                @elseif (Auth::user()->permissions = 2)
-                                    @if (!Auth::user()->rosterProfile->currency == 0)
-                                        @if (Auth::user()->rosterProfile->currency < 3.0)
-                                            <h3><span class="badge rounded shadow-none blue">
-                            {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
-                          </span></h3>
-                                        @elseif (Auth::user()->rosterProfile->currency >= 3.0)
-                                            <h3><span class="badge rounded shadow-none green">
-                            {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
-                          </span></h3>
-                                        @endif
-                                    @endif
-
+                                    @elseif(Auth::user()->permissions = 2)
                                     <p>You require <b>3 hours</b> of activity every month!</p>
-                                @elseif (Auth::user()->permissions = 3)
-                                    @if (!Auth::user()->rosterProfile->currency == 0)
-                                        @if (Auth::user()->rosterProfile->currency < 3.0)
-                                            <h3><span class="badge rounded shadow-none blue">
-                              {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
-                          </span></h3>
-                                        @elseif (Auth::user()->rosterProfile->currency >= 3.0)
-                                            <h3><span class="badge rounded shadow-none green">
-                              {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
-                          </span></h3>
-                                        @endif
+                                    @elseif(Auth::user()->permissions = 3)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 4)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 5)
+                                    <p>You require <b>2 hours</b> of activity every month!</p>
                                     @endif
-                                    <p>You require <b>3 hour</b> of activity every month!</p>
-                                @elseif (Auth::user()->permissions = 4)
-                                    @if (!Auth::user()->rosterProfile->currency == 0)
-                                        @if (Auth::user()->rosterProfile->currency < 3.0)
-                                            <h3><span class="badge rounded shadow-none blue">
-                              {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
-                          </span></h3>
-                                        @elseif (Auth::user()->rosterProfile->currency >= 3.0)
-                                            <h3><span class="badge rounded shadow-none green">
-                              {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
-                          </span></h3>
-                                        @endif
-                                    @endif
-                                    <p>You require <b>3 hour</b> of activity every month!</p>
-                                @elseif (Auth::user()->permissions = 5)
-                                    @if (!Auth::user()->rosterProfile->currency == 0)
-                                        @if (Auth::user()->rosterProfile->currency < 5.0)
-                                            <h3><span class="badge rounded shadow-none blue">
-                              {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
-                          </span></h3>
-                                        @elseif (Auth::user()->rosterProfile->currency >= 5.0)
-                                            <h3><span class="badge rounded shadow-none green">
-                              {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
-                          </span></h3>
-                                        @endif
-                                    @endif
-                                    <p>You require <b>5 hour</b> of activity every month!</p>
                                 @endif
 
-                                <!-- End hours requirment -->
+                            <!--End Vancouver Training Hours-->
+                                <!--Vancouver Cntrlr Hrs-->
+                                @if (Auth::user()->rosterProfile->status == "home")
+                                    @if (!Auth::user()->rosterProfile->currency == 0)
+                                        @if (Auth::user()->rosterProfile->currency < 2.0)
+                                            <h3><span class="badge rounded shadow-none blue">
+                            {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
+                          </span></h3>
+                                        @elseif (Auth::user()->rosterProfile->currency >= 2.0)
+                                            <h3><span class="badge rounded shadow-none green">
+                            {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
+                          </span></h3>
+                                        @endif
+                                    @endif
 
+                                    @if (Auth::user()->permissions = 1)
+                                    <p>You require <b>2 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 2)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 3)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 4)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 5)
+                                    <p>You require <b>2 hours</b> of activity every month!</p>
+                                    @endif
+                                @endif
+                            <!--End Vancouver Cntrlr Hours-->
+
+                                <!--Vancouver Vstr Cntrlr Hrs-->
+                                @if (Auth::user()->rosterProfile->status == "visit")
+                                    @if (!Auth::user()->rosterProfile->currency == 0)
+                                        @if (Auth::user()->rosterProfile->currency < 2.0)
+                                            <h3><span class="badge rounded shadow-none blue">
+                              {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
+                          </span></h3>
+                                        @elseif (Auth::user()->rosterProfile->currency >= 2.0)
+                                            <h3><span class="badge rounded shadow-none green">
+                              {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
+                          </span></h3>
+                                        @endif
+                                    @endif
+                                    @if (Auth::user()->permissions = 1)
+                                    <p>You require <b>2 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 2)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 3)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 4)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 5)
+                                    <p>You require <b>2 hours</b> of activity every month!</p>
+                                    @endif
+                                @endif
+
+                            <!--End Vancouver Cntrlr Hours-->
+
+                                <!--Vancouver Cntrlr Hrs-->
+                                @if (Auth::user()->rosterProfile->status == "instructor")
+                                    @if (!Auth::user()->rosterProfile->currency == 0)
+                                        @if (Auth::user()->rosterProfile->currency < 3.0)
+                                            <h3><span class="badge rounded shadow-none blue">
+                                                {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
+                                            </span></h3>
+                                        @elseif (Auth::user()->rosterProfile->currency >= 3.0)
+                                            <h3><span class="badge rounded shadow-none green">
+                                                {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
+                                            </span></h3>
+                                        @endif
+                                    @endif
+                                    @if (Auth::user()->permissions = 1)
+                                    <p>You require <b>2 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 2)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 3)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 4)
+                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    @elseif(Auth::user()->permissions = 5)
+                                    <p>You require <b>2 hours</b> of activity every month!</p>
+                                    @endif
+                                @endif
+                            <!--End Vancouver Instrctr Hours-->
                                 @if (Auth::user()->rosterProfile->rating == 'S1' || Auth::user()->rosterProfile->rating == 'S2' || Auth::user()->rosterProfile->rating == 'S3')
                                     <b>Rating:</b>
 
