@@ -12,7 +12,8 @@ class TeachersController extends Controller
     {
         $teacher = new Teacher;
         $teacher->user_cid = $request->input('newteacher');
-        $teacher->is_local = $request->has('is_local');
+        $teacher->is_twr = $request->has('is_twr');
+        $teacher->is_gnd = $request->has('is_gnd');
         $teacher->is_radar = $request->has('is_radar');
         $teacher->is_enroute = $request->has('is_enroute');
         $teacher->is_instructor = $request->has('is_instructor');
