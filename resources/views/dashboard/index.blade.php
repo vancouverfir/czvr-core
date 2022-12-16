@@ -514,7 +514,7 @@
                                     @endif
                                     <p>You require <b>3 hours</b> of activity every month!</p>
                             
-                                @if 
+                               
                                 
                             <!--End Vancouver Instrctr Hours-->
                                 @if (Auth::user()->rosterProfile->rating == 'S1' || Auth::user()->rosterProfile->rating == 'S2' || Auth::user()->rosterProfile->rating == 'S3')
