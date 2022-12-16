@@ -19,15 +19,7 @@
                                     <h3 class="mb-1 font-weight-bold blue-text">{{$instructor->user->fullName('FL')}}</h3>
                                     <!-- <a href="mailto:{{$instructor->user->email}}"><h5 class="blue-text">{{$instructor->user->email}}</h5></a> -->
                                     <div class="row pl-3">
-                                        @if($instructor->is_local)
-                                            <button class="btn btn-sm btn-local ml-0">Local</button>
-                                        @endif
-                                        @if($instructor->is_radar)
-                                            <button class="btn btn-sm btn-radar ml-0">Radar</button>
-                                        @endif
-                                        @if($instructor->is_enroute)
-                                            <button class="btn btn-sm btn-enroute ml-0">En-Route</button>
-                                        @endif
+                                    
                                         @if (Auth::check() && Auth::user()->permissions >= 4)
                                             <a href="{{route('instructors.delete', [$instructor->id]) }}">
                                                 <button class="ml-0 btn btn-sm btn-danger">Delete</button>
@@ -53,11 +45,14 @@
                                     <h3 class="mb-1 font-weight-bold blue-text">{{$instructor->user->fullName('FL')}}</h3>
                                     <!-- <a href="mailto:{{$instructor->user->email}}"><h5 class="blue-text">{{$instructor->user->email}}</h5></a> -->
                                     <div class="row pl-3">
-                                        @if($instructor->is_local)
-                                            <button class="btn btn-sm btn-local ml-0">Local</button>
+                                        @if($instructor->is_gnd)
+                                            <button class="btn btn-sm btn-local ml-0">DEL/GND</button>
+                                        @endif
+                                        @if($instructor->is_twr)
+                                            <button class="btn btn-sm btn-local ml-0">Tower</button>
                                         @endif
                                         @if($instructor->is_radar)
-                                            <button class="btn btn-sm btn-radar ml-0">Radar</button>
+                                            <button class="btn btn-sm btn-radar ml-0">APP/DEP</button>
                                         @endif
                                         @if($instructor->is_enroute)
                                             <button class="btn btn-sm btn-enroute ml-0">En-Route</button>
@@ -100,17 +95,21 @@
                                 </select>
                                 <div class="pt-3 form-check">
                                     <input class="form-check-input" type="checkbox" value="1" name="is_instructor" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">Instructor</label>
+                                    <label class="form-check-label" for="flexCheckDefault">Instructor (De-select if Mentor)</label>
                                 </div>
                                 <br>
-                                <h5 class="font-weight-bold blue-text">Specialties</h5>
+                                <h5 class="font-weight-bold blue-text">Cleared to Monitor:</h5>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="1" name="is_local" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">Local</label>
+                                    <input class="form-check-input" type="checkbox" value="1" name="is_gnd" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">GND/DEL</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="1" name="is_radar" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">Radar</label>
+                                    <input class="form-check-input" type="checkbox" value="1" name="is_twr" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">Tower</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="1" name="is_app" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">Arrivals/Dep</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="1" name="is_enroute" id="flexCheckDefault">
