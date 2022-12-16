@@ -285,6 +285,7 @@ def trimRoster():
         if dbCid not in cidStor:
             print("invalid CID:", dbCid)
             bye.execute("DELETE FROM roster WHERE cid=?",(dbCid,))
+            bye.execute("UPDATE users SET permissions = ? WHERE id = ?",("0",dbCid))
             print("Invalid CID Removed from DB... BUH BYE")
 
 
