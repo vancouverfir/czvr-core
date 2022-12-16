@@ -14,7 +14,6 @@
 //ALL Public Views
 Route::get('/', 'HomeController@view')->name('index');
 Route::view('/airports', 'airports')->name('airports');
-Route::get('/nate', 'HomeController@nate')->name('nate');
 Route::get('/roster', 'AtcTraining\RosterController@showPublic')->name('roster.public');
 Route::get('/roster/{id}', 'Users\UserController@viewProfile');
 Route::get('/roster/{id}/connections', 'Users\UserController@viewConnections');
@@ -31,7 +30,7 @@ Route::view('/branding', 'branding')->name('branding');
 Route::get('/news/{slug}', 'News\NewsController@viewArticlePublic')->name('news.articlepublic');
 Route::get('/news', 'News\NewsController@viewAllPublic')->name('news');
 Route::get('/training', 'AtcTraining\TrainingController@trainingTime')->name('training');
-Route::view('/bill', 'bill')->name('bill');
+Route::view('/mochi', 'mochi')->name('mochi');
 Route::view('/wpg', 'wpg')->name('wpg');
 Route::view('/yearend', 'yearend')->name('yearend');
 Route::view('/pdc', 'pdc')->name('pdc');
