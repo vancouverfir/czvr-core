@@ -36,6 +36,9 @@ Route::view('/wpg', 'wpg')->name('wpg');
 Route::view('/yearend', 'yearend')->name('yearend');
 Route::view('/pdc', 'pdc')->name('pdc');
 Route::view('/vfr', 'vfr')->name('vfr');
+Route::get("sitemap.xml" , function () {
+    return \Illuminate\Support\Facades\Redirect::to('sitemap.xml');
+     });
 
 Route::prefix('instructors')->group(function () {
     Route::view('/', 'instructors')->name('instructors');
