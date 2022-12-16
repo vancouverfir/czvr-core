@@ -515,7 +515,7 @@
                                     <p>You require <b>3 hours</b> of activity every month!</p>
                                 @endif
 
-                                @if (Auth::user()->permissions = 5)
+                                @if (Auth::user()->permissions >= 5)
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 5.0)
                                             <h3><span class="badge rounded shadow-none blue">
