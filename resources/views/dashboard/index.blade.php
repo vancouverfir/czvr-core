@@ -500,7 +500,7 @@
                             <!--End Vancouver Cntrlr Hours-->
 
                                 <!--Vancouver Cntrlr Hrs-->
-                                @if (Auth::user()->rosterProfile->status == "instructor" || Auth::user()->permissions =2 || Auth::user()->permissions = 4 && Auth::user()-> !=5)
+                                @if (Auth::user()->rosterProfile->status == "instructor" || Auth::user()->permissions =2 || Auth::user()->permissions = 4 && Auth::user()->permissions != 5)
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
                                             <h3><span class="badge rounded shadow-none blue">
