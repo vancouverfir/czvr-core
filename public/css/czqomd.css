@@ -339,3 +339,8 @@ div.notes{
 .nav-tabs .nav-link{
     color: #E6E8E6;
 }
+
+.list-group-item {
+    background-color: #444;
+    color: #E6E8E6;
+}
