@@ -10,11 +10,11 @@
         <table id="connectionsTable" class="table dt table-hover">
             <thead>
             <tr>
-                <th style="text-align:center; background-color: lightgray;" scope="col"><b>Date</b></th>
-                <th style="text-align:center; background-color: lightgray;" scope="col"><b>Position</b></th>
-                <th style="text-align:center; background-color: lightgray;" scope="col"><b>Session Start</b></th>
-                <th style="text-align:center; background-color: lightgray;" scope="col"><b>Session End</b></th>
-                <th style="text-align:center; background-color: lightgray;" scope="col"><b>Duration</b></th>
+                <th style="text-align:center;" scope="col"><b>Date</b></th>
+                <th style="text-align:center;" scope="col"><b>Position</b></th>
+                <th style="text-align:center;" scope="col"><b>Session Start</b></th>
+                <th style="text-align:center;" scope="col"><b>Session End</b></th>
+                <th style="text-align:center;" scope="col"><b>Duration</b></th>
             </tr>
             </thead>
             @foreach($connections as $c)
