@@ -80,10 +80,10 @@ class EventController extends Controller
             'submission_timestamp' => date('Y-m-d H:i:s'),
         ]);
         $application->save();
-        $webhook = $application->discord_webhook();
+        /*$webhook = $application->discord_webhook();
         if (! $webhook) {
             AuditLogEntry::insert(Auth::user(), 'Webhook failed', Auth::user(), 0);
-        }
+        }*/
 
         if (Auth::user()->gdpr_subscribed_emails == 1) {
             $application->user->notify(new EventSignup($application, $event_id = $request->get('event_id')));
@@ -316,7 +316,7 @@ class EventController extends Controller
         $event->save();
 
         //Audit it
-        AuditLogEntry::insert(Auth::user(), 'Edited event '.$event->name, User::find(1), 0);
+        /*AuditLogEntry::insert(Auth::user(), 'Edited event '.$event->name, User::find(1), 0);*/
 
         //Redirect
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Event edited!');
