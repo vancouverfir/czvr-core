@@ -231,7 +231,7 @@ class User extends Authenticatable
     {
         $discord = new DiscordClient(['token' => config('services.discord.token')]);
         try {
-            if ($discord->guild->getGuildMember(['guild.id' => 598023748741758976, 'user.id' => $this->discord_user_id])) {
+            if ($discord->guild->getGuildMember(['guild.id' => 589477926961938443, 'user.id' => $this->discord_user_id])) {
                 return true;
             }
         } catch (Exception $ex) {
