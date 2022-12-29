@@ -31,8 +31,6 @@ Route::get('/news/{slug}', 'News\NewsController@viewArticlePublic')->name('news.
 Route::get('/news', 'News\NewsController@viewAllPublic')->name('news');
 Route::get('/training', 'AtcTraining\TrainingController@trainingTime')->name('training');
 Route::view('/mochi', 'mochi')->name('mochi');
-Route::view('/wpg', 'wpg')->name('wpg');
-Route::view('/yearend', 'yearend')->name('yearend');
 Route::view('/pdc', 'pdc')->name('pdc');
 Route::view('/vfr', 'vfr')->name('vfr');
 Route::get("sitemap.xml" , function () {
@@ -66,10 +64,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/privacydeny', 'Users\UserController@privacyDeny');
 
     //Visiting/Join Applications
-    Route::group(['middleware' => 'notcertified'], function () {
-        Route::get('/dashboard/application', 'AtcTraining\ApplicationsController@startApplicationProcess')->name('application.start');
-        Route::post('/dashboard/application', 'AtcTraining\ApplicationsController@submitApplication')->name('application.submit');
-    });
+   // Route::group(['middleware' => 'notcertified'], function () {
+    //    Route::get('/dashboard/application', 'AtcTraining\ApplicationsController@startApplicationProcess')->name('application.start');
+     //   Route::post('/dashboard/application', 'AtcTraining\ApplicationsController@submitApplication')->name('application.submit');
+   // });
 
     //User Tickets
     Route::get('/dashboard/tickets', 'Tickets\TicketsController@index')->name('tickets.index');
