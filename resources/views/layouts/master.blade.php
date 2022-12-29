@@ -381,7 +381,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>To join our Discord community click <a href="https://discord.gg/nYKEMSKXW4">here.</a></p>
+                    <p>To join our Discord community, please head to your <a href="{{route('dashboard.index')}}">dashboard.</a></p>
                     <p>VATCAN has a Discord too! You can join the VATCAN discord by clicking <a href="https://vatcan.ca/my/discord/join" rel="noopener noreferrer" target="_blank">here!</a>
                 </div>
             </div>

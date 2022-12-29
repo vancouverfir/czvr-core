@@ -25,11 +25,9 @@
                                 <div data-step="4" data-intro="Here you can link your Discord account to receive reminders for training sessions, and gain access to the CZVR Discord.">
                                     <h5 class="mt-2">Discord</h5>
                                     <hr>
-                                    <a href="https://discord.gg/nYKEMSKXW4" class="btn-sm btn-primary m-0" data-toggle="modal" class="mt-1">Join Our Discord</a>
-                                   {{-- @if (!Auth::user()->hasDiscord())
+                                   @if (!Auth::user()->hasDiscord())
                                         <p class="mt-1">You don't have a linked Discord account.</p>
-                                        <a href="#" data-toggle="modal" data-target="#discordModal" class="mt-1">Link a
-                                            Discord account</a>
+                                        <a href="#" data-toggle="modal" data-target="#discordModal" class="mt-1">Link a Discord account</a>
                                     @else
                                         <p class="mt-1"><img style="border-radius:50%; height: 30px;" class="img-fluid" src="{{Auth::user()->getDiscordAvatar()}}" alt="">&nbsp;&nbsp;{{Auth::user()->getDiscordUser()->username}}
                                             <span style="color: #d1d1d1;">#{{Auth::user()->getDiscordUser()->discriminator}}</span>
@@ -40,7 +38,7 @@
                                         @endif
                                         <a href="#" data-toggle="modal" data-target="#discordModal"
                                            class="mt-1">Unlink</a>
-                                    @endif --}}
+                                    @endif
                                 </div>
 
                             </div>

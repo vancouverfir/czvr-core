@@ -337,7 +337,7 @@
                     <ol>
                         <li>Login and open a <a href="{{route('tickets.index')}}">support ticket.</a></li>
                         <li>Head to the <a href="{{route('staff')}}">staff page</a> and email the relevant staff member.</li>
-                        <li>Join our <a href="https://discord.gg/nYKEMSKXW4">Discord server</a> and ask in the #general channel.</li>
+                        <li>Join our Discord server and ask in the #general channel.</li>
                     </ol>
                     <b>If your query is related to ATC coverage for your event, please visit <a href="{{route('events.index')}}">this page.</a></b>
                 </div>
@@ -381,7 +381,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>To join our Discord community click <a href="https://discord.gg/nYKEMSKXW4">here.</a></p>
+                    <p>To join our Discord community, please head to your <a href="{{route('dashboard.index')}}">dashboard.</a></p>
                     <p>VATCAN has a Discord too! You can join the VATCAN discord by clicking <a href="https://vatcan.ca/my/discord/join" rel="noopener noreferrer" target="_blank">here!</a>
                 </div>
             </div>
