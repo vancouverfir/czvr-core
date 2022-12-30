@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 #import pandas as pd
 import os
 import mariadb
+import asyncio
 
 #Get current mode to run as
 #Valid modes consist of "event" or "roster"
@@ -108,7 +109,7 @@ def trimEvents(data):
             #print("Departure: ",departure)
             #print("Arrival: ",arrival)
             
-            stowEvent(i["id"],i["name"],str(i["start"])[:16],str(i["end"])[:16],i["description"],i["image_url"],departure,arrival,slug) #the keys for ID, name, start, end, description,imageurl,airports,dept, and arrivals
+            asyncio.run(stowEvent(i["id"],i["name"],str(i["start"])[:16],str(i["end"])[:16],i["description"],i["image_url"],departure,arrival,slug)) #the keys for ID, name, start, end, description,imageurl,airports,dept, and arrivals
         else:
             print("Event is outside of period, ignoring...")
 
@@ -131,7 +132,7 @@ def magicString(stron): #IT SPOOLS FOR MILES AND MILES
         return("YXE") #My hometown, people have to go SOMEWHERE.
     
 
-def stowEvent(ID,NAME,START_TIMESTAMP,END_TIMESTAMP,DESCRIPTION,IMAGE_URL,DEPARTURE_ICAO,ARRIVAL_ICAO, SLUG): #Uploading events to the DB
+async def stowEvent(ID,NAME,START_TIMESTAMP,END_TIMESTAMP,DESCRIPTION,IMAGE_URL,DEPARTURE_ICAO,ARRIVAL_ICAO, SLUG): #Uploading events to the DB
     #stowing the fetched events in the DB
     print("Stowing Events in DB...")
     cur = connectSQL.cursor()
@@ -212,7 +213,7 @@ def fetchRoster():
         rating_short=convRating(i["rating"])
         fullname=i["first_name"]+" "+i["last_name"]
         print("Users Full Name:", fullname)
-        stowRoster(i["cid"],i["first_name"],i["last_name"],i["rating"],i["email"],fullname,rating_short)
+        asyncio.run(stowRoster(i["cid"],i["first_name"],i["last_name"],i["rating"],i["email"],fullname,rating_short))
         cidStor.append(i["cid"])
         
         
@@ -236,7 +237,7 @@ def fetchVisitRoster():
         rating_short=convRating(i["rating"])
         fullname=i["first_name"]+" "+i["last_name"]
         print("Users Full Name:", fullname)
-        stowVisitRoster(i["cid"],i["first_name"],i["last_name"],i["rating"],i["email"],fullname,rating_short)
+        asyncio.run(stowVisitRoster(i["cid"],i["first_name"],i["last_name"],i["rating"],i["email"],fullname,rating_short))
         cidStor.append(i["cid"])
         
         
@@ -290,7 +291,7 @@ def trimRoster():
 
 
  
-def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
+async def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
     #stores new users in the roster
     print("Stowing users in DB...")
     cur = connectSQL.cursor()
@@ -320,7 +321,7 @@ def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
         print(f"Error: {e}")
     print("complete!")
 
-def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
+async def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
     #stores new users in the roster
     print("Stowing visitors in DB...")
     cur = connectSQL.cursor()
