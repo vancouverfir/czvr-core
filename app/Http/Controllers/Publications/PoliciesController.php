@@ -226,7 +226,7 @@ class PoliciesController extends Controller
        //     'time' => date('Y-m-d H:i:s'),
        //     'private' => 0,
         //]);
-        $entry->save();
+        // $entry->save();
         $section->delete();
 
         return redirect()->route('policies')->with('success', 'Policy section '.$section->section_name.' deleted.');
