@@ -351,6 +351,11 @@ async def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT)
         print(f"Error: {e}")
     print("complete!")
 
+def resetActivity():
+    cur = connectSQL.cursor()
+    cur.execute("UPDATE roster SET currency = NULL WHERE cid IS NOT NULL")
+    print("Monthly Currency Reset")
+
 
 
 
@@ -362,6 +367,8 @@ try:
     elif isMode == "roster" or isMode == "rosters" or isMode == "users" or isMode == "user":
         fetchRoster()
         fetchVisitRoster()
+    elif isMode == "activityreset":
+        resetActivity()
     else:
         print("You need to state either Events or Roster")
 except Exception as e:
