@@ -6,8 +6,8 @@
 @endsection
 @section('from-line')
 Thanks,<br/>
-<b>Nate Power</b><br>
-<b>Vancouver FIR Chief (WPG1)</b>
+<b>Emily Wyatt</b><br>
+<b>Vancouver FIR Chief (ZVR1)</b>
 @endsection
 @section('footer-to-line', $user->fullName('FLC').' ('.$user->email.')')
 @section('footer-reason-line', 'as they just logged into the Vancouver FIR website for the first time.')

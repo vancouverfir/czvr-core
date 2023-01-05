@@ -581,6 +581,11 @@
                             <h3 class="font-weight-bold blue-text pb-2">Support</h3>
                             <ul class="list-unstyled mt-2 mb-0">
                                 <li class="mb-2">
+                                    <a href="{{route('tickets.index')}}" style="text-decoration:none;"><span
+                                            class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
+                                            class="text-colour">Open a Support Ticket</span></a>
+                                </li>
+                                <li class="mb-2">
                                     <a href="{{route('feedback.create')}}" style="text-decoration:none;"><span
                                             class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
                                             class="text-colour">Send feedback</span></a>
