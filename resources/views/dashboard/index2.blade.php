@@ -105,7 +105,7 @@
                 <br/>
             </div>
             <div class="col">
-                Tickets
+               {{-- Tickets --}}
                 <div data-step="6" data-intro="If you have any enquires or issues for the staff, feel free to make a ticket via the ticketing system." class="card">
                     <div class="card-body">
                      <h3 class="font-weight-bold blue-text pb-2">Support</h3>
