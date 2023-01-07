@@ -124,7 +124,7 @@
                                 @foreach ($openTickets as $ticket)
                                     <a href="{{url('/dashboard/tickets/'.$ticket->ticket_id)}}"
                                        class="list-group-item list-group-item-action text-colour rounded-0 "
-                                       style="background-color:#d9d9d9">{{$ticket->title}}<br/>
+                                       >{{$ticket->title}}<br/>
                                         <small title="{{$ticket->updated_at}} (GMT+0, Zulu)">Last
                                             updated {{$ticket->updated_at_pretty()}}</small>
                                     </a>

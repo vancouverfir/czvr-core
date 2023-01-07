@@ -348,7 +348,7 @@
             @if(Auth::user()->permissions >= 1)
                 <div class="col">
                     <div class="card" data-step="6"
-                         data-intro="Here you can view your certification status within CZWG.">
+                         data-intro="Here you can view your certification status within CZVR.">
                         <div class="card-body">
                             <h3 class="font-weight-bold blue-text pb-2">Certification and Training</h3>
                             <h5 class="card-title">Status</h5>
@@ -580,12 +580,12 @@
                         <div class="card-body">
                             <h3 class="font-weight-bold blue-text pb-2">Support</h3>
                             <ul class="list-unstyled mt-2 mb-0">
-                            <h5 class="font-weight-bold blue-text">Tickets</h5>
+                            <h5 class="font-weight-bold">Tickets</h5>
                             @if (count($openTickets) < 1)
                                 You have no open support tickets
                                 <br>
                             @else
-                                <h5 class="black-text" style="font-weight: bold">
+                                <h5 style="font-weight: bold">
                                     @if (count($openTickets) == 1)
                                         1 open ticket
                                     @else
@@ -595,8 +595,8 @@
                                 <div class="list-group">
                                     @foreach ($openTickets as $ticket)
                                         <a href="{{url('/dashboard/tickets/'.$ticket->ticket_id)}}"
-                                           class="list-group-item list-group-item-action black-text rounded-0 "
-                                           style="background-color:#d9d9d9">{{$ticket->title}}<br/>
+                                           class="list-group-item list-group-item-action rounded-0 "
+                                           >{{$ticket->title}}<br/>
                                             <small title="{{$ticket->updated_at}} (GMT+0, Zulu)">Last
                                                 updated {{$ticket->updated_at_pretty()}}</small>
                                         </a>
@@ -606,13 +606,13 @@
                             @endif
                             @if(Auth::user()->permissions >= 4)
                                 <br>
-                                <h5 class="font-weight-bold blue-text">Staff Tickets</h5>
+                                <h5 class="font-weight-bold ">Staff Tickets</h5>
 
                                 @if (count($staffTickets) < 1)
                                     You have no open <b>staff</b> tickets
                                     <br>
                                 @else
-                                    <h5 class="black-text" style="font-weight: bold">
+                                    <h5 style="font-weight: bold">
                                         @if (count($staffTickets) == 1)
                                             1 open staff ticket
                                         @else
@@ -622,8 +622,8 @@
                                     <div class="list-group">
                                         @foreach ($staffTickets as $ticket)
                                             <a href="{{url('/dashboard/tickets/'.$ticket->ticket_id)}}"
-                                               class="list-group-item list-group-item-action black-text rounded-0 "
-                                               style="background-color:#d9d9d9">{{$ticket->title}}<br/>
+                                               class="list-group-item list-group-item-action rounded-0 "
+                                               >{{$ticket->title}}<br/>
                                                 <small title="{{$ticket->updated_at}} (GMT+0, Zulu)">Last
                                                     updated {{$ticket->updated_at_pretty()}}</small>
                                             </a>
