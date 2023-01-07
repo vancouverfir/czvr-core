@@ -53,8 +53,8 @@ class EventReminders extends Command
                     return;
                 }
 
-                $positions = EventConfirm::where(['user_id' => $c->user_id, 'event_id' => $e->id])->get();
-                EventConfirm::where(['user_id' => $c->user_id, 'event_id' => $e->id])->update(['email_sent' => 1]);
+                $positions = EventConfirm::where(['user_id' => $c->user_id, 'event_id' => $e->id])->update(['email_sent' => 1])->where(['user_id' => $c->user_id, 'event_id' => $e->id])->get();
+                
 
                 $c->user()->notify(new EventReminder($e, $positions));
             }
