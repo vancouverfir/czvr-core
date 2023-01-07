@@ -348,7 +348,7 @@
             @if(Auth::user()->permissions >= 1)
                 <div class="col">
                     <div class="card" data-step="6"
-                         data-intro="Here you can view your certification status within CZWG.">
+                         data-intro="Here you can view your certification status within CZVR.">
                         <div class="card-body">
                             <h3 class="font-weight-bold blue-text pb-2">Certification and Training</h3>
                             <h5 class="card-title">Status</h5>

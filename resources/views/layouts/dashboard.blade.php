@@ -355,8 +355,8 @@
                 </div>
                 <div class="modal-body">
                     {{\Session::get('error-modal')}}
-                    <div class="alert black-text bg-czqo-blue-light mt-4">
-                        If you believe this is a mistake, please create a <a target="_blank" class="black-text" href="{{route('tickets.index')}}">support ticket.</a>
+                    <div class="alert bg-czqo-blue-light mt-4">
+                        If you believe this is a mistake, please create a <a target="_blank" href="{{route('tickets.index')}}">support ticket.</a>
                     </div>
                 </div>
             </div>
