@@ -42,7 +42,7 @@ class DataExportRequest extends Notification
     {
         return (new MailMessage)->view(
             'emails.dataexportrequest', ['user' => $this->user, 'json' => $this->json]
-        )->subject('Your Data Export Request')->from('chief@czvr.ca', 'Vancouver FIR');
+        )->subject('Your Data Export Request')->from('no-reply@czvr.ca', 'Vancouver FIR');
     }
 
     /**
