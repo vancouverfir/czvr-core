@@ -580,6 +580,63 @@
                         <div class="card-body">
                             <h3 class="font-weight-bold blue-text pb-2">Support</h3>
                             <ul class="list-unstyled mt-2 mb-0">
+                            <h5 class="font-weight-bold blue-text">Tickets</h5>
+                            @if (count($openTickets) < 1)
+                                You have no open support tickets
+                                <br>
+                            @else
+                                <h5 class="black-text" style="font-weight: bold">
+                                    @if (count($openTickets) == 1)
+                                        1 open ticket
+                                    @else
+                                        {{count($openTickets)}} open tickets
+                                    @endif
+                                </h5>
+                                <div class="list-group">
+                                    @foreach ($openTickets as $ticket)
+                                        <a href="{{url('/dashboard/tickets/'.$ticket->ticket_id)}}"
+                                           class="list-group-item list-group-item-action black-text rounded-0 "
+                                           style="background-color:#d9d9d9">{{$ticket->title}}<br/>
+                                            <small title="{{$ticket->updated_at}} (GMT+0, Zulu)">Last
+                                                updated {{$ticket->updated_at_pretty()}}</small>
+                                        </a>
+                                    @endforeach
+                                </div>
+                                <br>
+                            @endif
+                            @if(Auth::user()->permissions >= 4)
+                                <br>
+                                <h5 class="font-weight-bold blue-text">Staff Tickets</h5>
+
+                                @if (count($staffTickets) < 1)
+                                    You have no open <b>staff</b> tickets
+                                    <br>
+                                @else
+                                    <h5 class="black-text" style="font-weight: bold">
+                                        @if (count($staffTickets) == 1)
+                                            1 open staff ticket
+                                        @else
+                                            {{count($staffTickets)}} open staff tickets
+                                        @endif
+                                    </h5>
+                                    <div class="list-group">
+                                        @foreach ($staffTickets as $ticket)
+                                            <a href="{{url('/dashboard/tickets/'.$ticket->ticket_id)}}"
+                                               class="list-group-item list-group-item-action black-text rounded-0 "
+                                               style="background-color:#d9d9d9">{{$ticket->title}}<br/>
+                                                <small title="{{$ticket->updated_at}} (GMT+0, Zulu)">Last
+                                                    updated {{$ticket->updated_at_pretty()}}</small>
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                <br>
+                            @endif
+                                <li class="mb-2">
+                                    <a href="{{route('tickets.index')}}" style="text-decoration:none;"><span
+                                            class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
+                                            class="text-colour">Open a Support Ticket</span></a>
+                                </li>
                                 <li class="mb-2">
                                     <a href="{{route('feedback.create')}}" style="text-decoration:none;"><span
                                             class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span

@@ -41,7 +41,7 @@ class WelcomeNewUser extends Notification
     {
         return (new MailMessage)->view(
             'emails.welcomenewuser', ['user' => $this->user]
-        )->subject('Welcome to Vancouver, '.$this->user->fullName('F').'!')->from('no-reply@czvr.ca', 'Nate Power');
+        )->subject('Welcome to Vancouver, '.$this->user->fullName('F').'!')->from('chief@czvr.ca', 'Emily Wyatt');
     }
 
     /**

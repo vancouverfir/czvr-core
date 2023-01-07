@@ -22,8 +22,8 @@
                             <span class="label content-font-color">Export all data</span>
                           </a>
                           <div class="step-content box-colour">
-                            <p>To export all data, please email webmaster@czvr.ca</p>
-                            {{--<form action="{{route('me.data.export.all')}}" method="POST">
+                            <p>To export all data, please email webmaster@czvr.ca or click the button below</p>
+                            <form action="{{route('me.data.export.all')}}" method="POST">
                                 @csrf
                                 <div class="md-form">
                                     <input name="email" type="email" id="inputMDEx" class="form-control">
@@ -45,7 +45,7 @@
                                 </div>
                                 @endif
                                 <input type="submit" value="Request Data" class="btn btn-primary">
-                            </form>--}}
+                            </form>
                           </div> 
                         </li>
                         <li class="active">
@@ -54,7 +54,7 @@
                               <span class="label content-font-color">or export specific data</span>
                             </a>
                             <div class="step-content box-colour">
-                              <p>Please email our websupport team to request specific pieces of data.</p>
+                              <p>Please email our websupport team or open a ticket on your dashboard to request specific pieces of data.</p>
                                 <button onclick="location.href='mailto:webmaster@czvr.ca'" class="btn btn-primary">Email our Support</button>
                             </div>
                           </li>

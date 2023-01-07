@@ -301,7 +301,7 @@ async def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
         cur.execute("SELECT id FROM users WHERE id=?",(CID,))
         try:
             cur.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,CID))
-            cur.execute("UPDATE roster SET full_name = ?,  WHERE user_id = ?",(FULLNAME,CID,))
+            cur.execute("UPDATE roster SET full_name = ?  WHERE user_id = ?",(FULLNAME,CID,))
         except mariadb.Error as a:
             print(f" Iterative Error: {a}")
             print("He's dead, Jim...")
@@ -351,6 +351,11 @@ async def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT)
         print(f"Error: {e}")
     print("complete!")
 
+def resetActivity():
+    cur = connectSQL.cursor()
+    cur.execute("UPDATE roster SET currency = NULL WHERE cid IS NOT NULL")
+    print("Monthly Currency Reset")
+
 
 
 
@@ -362,6 +367,8 @@ try:
     elif isMode == "roster" or isMode == "rosters" or isMode == "users" or isMode == "user":
         fetchRoster()
         fetchVisitRoster()
+    elif isMode == "activityreset":
+        resetActivity()
     else:
         print("You need to state either Events or Roster")
 except Exception as e:

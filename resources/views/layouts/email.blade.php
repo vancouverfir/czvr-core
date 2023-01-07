@@ -12,6 +12,7 @@
 <!--[if !mso]><!-->
 <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css"/>
+<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css"/>
 <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css"/>
 <!--<![endif]-->
 <style type="text/css">
@@ -115,7 +116,7 @@
 <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;">
 <!--<![endif]-->
 <div align="left" class="img-container left fixedwidth" style="padding-right: 0px;padding-left: 0px;">
-<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr style="line-height:0px"><td style="padding-right: 0px;padding-left: 0px;" align="left"><![endif]--><img alt="Image" border="0" class="left fixedwidth" src="https://i.imgur.com/tF4WbZu.png" style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 100px; display: block;" title="Image" width="100"/>
+<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr style="line-height:0px"><td style="padding-right: 0px;padding-left: 0px;" align="left"><![endif]--><img alt="Image" border="0" class="left fixedwidth" src="https://media.discordapp.net/attachments/1050202973856350288/1060611004364501052/CZVR_Colour_Short.png" style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 100px; display: block;" title="Image" width="100"/>
 <!--[if mso]></td></tr></table><![endif]-->
 </div>
 <!--[if (!mso)&(!IE)]><!-->
