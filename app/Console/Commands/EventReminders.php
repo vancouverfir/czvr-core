@@ -54,7 +54,7 @@ class EventReminders extends Command
                 }
 
                 $positions = EventConfirm::where(['user_id' => $c->user_id, 'event_id' => $e->id])->get();
-                
+                error_log($positions);
 
                 $c->user()->notify(new EventReminder($e, $positions));
             }
