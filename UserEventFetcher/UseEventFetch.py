@@ -174,7 +174,7 @@ async def stowEvent(ID,NAME,START_TIMESTAMP,END_TIMESTAMP,DESCRIPTION,IMAGE_URL,
     #cur.execute("VALUES ('?','?','?','?','?','?','?','?')",(ID,NAME,START_TIMESTAMP,END_TIMESTAMP,DESCRIPTION,IMAGE_URL,DEPARTURE_ICAO,ARRIVAL_ICAO,))
 
     #connectSQL.commit() MariaDB enables auto-commit, so this is no longer necessary
-    rmEvent() #Calls cleanup
+    #rmEvent() #Calls cleanup
 
 #####    
 #####I don't know why I need this code here, but if I remove it, everything breaks. Leave as is.    
@@ -355,9 +355,6 @@ def resetActivity():
     cur = connectSQL.cursor()
     cur.execute("UPDATE roster SET currency = NULL WHERE cid IS NOT NULL")
     print("Monthly Currency Reset")
-
-
-
 
     
 
