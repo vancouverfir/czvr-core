@@ -295,13 +295,20 @@ async def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
     #stores new users in the roster
     print("Stowing users in DB...")
     cur = connectSQL.cursor()
-    
+    sto = connectSQL.cursor()
     try:
         print("Searching for ID's to update...")
         cur.execute("SELECT id FROM users WHERE id=?",(CID,))
         try:
-            cur.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,CID))
-            cur.execute("UPDATE roster SET full_name = ?  WHERE user_id = ?",(FULLNAME,CID,))
+            cur.execute("SELECT permissions FROM users WHERE id=?",(CID,))
+            for i in cur:
+                print(f"Permissions for {CID}: {i[0]}")
+                if i[0] > 0:
+                    sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"0",CID))
+                    sto.execute("UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",(FULLNAME,"0",CID))
+                else:
+                    sto.execute("UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",(FULLNAME,"0",CID))
+                    sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"1","0",CID))
         except mariadb.Error as a:
             print(f" Iterative Error: {a}")
             print("He's dead, Jim...")
@@ -325,13 +332,20 @@ async def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT)
     #stores new users in the roster
     print("Stowing visitors in DB...")
     cur = connectSQL.cursor()
-    
+    sto = connectSQL.cursor()
     try:
         print("Searching for Visitor ID's to update...")
         cur.execute("SELECT id FROM users WHERE id=?",(CID,))
         try:
-            cur.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,CID))
-            cur.execute("UPDATE roster SET full_name = ?, status = ?  WHERE user_id = ?",(FULLNAME,"visit",CID,))
+            cur.execute("SELECT permissions FROM users WHERE id=?",(CID,))
+            for i in cur:
+                print(f"Permissions for {CID}: {i[0]}")
+                if i[0] > 0:
+                    sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"1",CID))
+                    sto.execute("UPDATE roster SET full_name = ?, visit = ? WHERE user_id = ?",(FULLNAME,"1",CID))
+                else:
+                    sto.execute("UPDATE roster SET full_name = ?, visit = ? WHERE user_id = ?",(FULLNAME,"1",CID))
+                    sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"1","1",CID))
         except mariadb.Error as a:
             print(f" Iterative Error: {a}")
             print("He's dead, Jim...")
