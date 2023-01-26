@@ -301,14 +301,18 @@ async def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
         cur.execute("SELECT id FROM users WHERE id=?",(CID,))
         try:
             cur.execute("SELECT permissions FROM users WHERE id=?",(CID,))
-            for i in cur:
-                print(f"Permissions for {CID}: {i[0]}")
-                if i[0] > 0:
-                    sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"0",CID))
-                    sto.execute("UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",(FULLNAME,"0",CID))
-                else:
-                    sto.execute("UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",(FULLNAME,"0",CID))
-                    sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"1","0",CID))
+            permissions = cur.fetchone()
+            print(f"perms {permissions[0]}")
+            if permissions[0] > 0:
+                sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"0",CID))
+                sto.execute("UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",(FULLNAME,"0",CID))
+                sto.execute("SELECT status FROM roster WHERE cid = ?",(CID,))
+                status = sto.fetchone()
+                if status[0] == "visit":
+                    sto.execute(f"UPDATE roster SET status = 'home' WHERE cid = {CID}")
+            else:
+                sto.execute("UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",(FULLNAME,"0",CID))
+                sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"1","0",CID))
         except mariadb.Error as a:
             print(f" Iterative Error: {a}")
             print("He's dead, Jim...")
@@ -342,9 +346,9 @@ async def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT)
                 print(f"Permissions for {CID}: {i[0]}")
                 if i[0] > 0:
                     sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"1",CID))
-                    sto.execute("UPDATE roster SET full_name = ?, visit = ? WHERE user_id = ?",(FULLNAME,"1",CID))
+                    sto.execute("UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",(FULLNAME,"1","visit",CID))
                 else:
-                    sto.execute("UPDATE roster SET full_name = ?, visit = ? WHERE user_id = ?",(FULLNAME,"1",CID))
+                    sto.execute("UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",(FULLNAME,"1","visit",CID))
                     sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"1","1",CID))
         except mariadb.Error as a:
             print(f" Iterative Error: {a}")
