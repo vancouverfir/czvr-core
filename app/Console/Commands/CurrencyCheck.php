@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Network\SessionLog;
 use App\Models\Settings\CoreSettings;
-use App\Notifications\Network\MonthlyInactivity;
+use App\Notifications\network\MonthlyInactivity;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
