@@ -320,6 +320,34 @@ async def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
     except mariadb.error as e: 
         print(f"Update Error: {e}") 
         sys.exit(1)
+    
+    try:
+        print("Updating users role...")
+        cur.execute(f"SELECT permissions FROM users WHERE id={CID}")
+        perm = cur.fetchall()[0][0]
+        print(f"permissions for {CID}={perm}")
+        if perm <= 1 or permissions[0] == "NULL":
+            print(f"{CID}: Guest or Controller, moving on")
+        elif perm == 2:
+            print(f"{CID}: Mentor")
+            m = "mentor"
+            cur.execute(f"UPDATE roster SET staff = '{m}' WHERE cid = {CID}")
+        elif perm == 3:
+            print(f"{CID}: Instructor")
+            ins = "ins"
+            cur.execute(f"UPDATE roster SET staff = '{ins}' WHERE cid = {CID}")
+        elif perm == 4:
+            print(f"{CID}: Staff")
+            s = "staff"
+            cur.execute(f"UPDATE roster SET staff = '{s}' WHERE cid = {CID}")
+        elif perm == 5:
+            print(f"{CID}: Executive")
+            e = "exec"
+            cur.execute(f"UPDATE roster SET staff = '{e}' WHERE cid = {CID}")
+    except mariadb.Error as e:
+        print(f" Iterative Error: {e}")
+        sys.exit(1)
+
 
     try:
         cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname) VALUES (?,?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,"1",FNAME))

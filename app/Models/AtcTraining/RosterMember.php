@@ -13,7 +13,7 @@ class RosterMember extends Model
     protected $table = 'roster';
 
     protected $fillable = [
-        'cid', 'user_id', 'status', 'full_name', 'rating', 'del', 'gnd', 'twr', 'dep', 'app', 'ctr', 'fss', 'currency', 'rating_hours', 'remarks', 'active', 'home_fir', 'visit',
+        'cid', 'user_id', 'status', 'full_name', 'rating', 'del', 'gnd', 'twr', 'dep', 'app', 'ctr', 'fss', 'currency', 'rating_hours', 'remarks', 'active', 'home_fir', 'visit', 'staff',
 
     ];
 
@@ -29,9 +29,19 @@ class RosterMember extends Model
 
     public function meetsActivityRequirement()
     {
-        if ($this->status == 'visit' && $this->active == '1' && $this->currency >= 1.0) {
+        if ($this->status == 'visit' && $this->active == '1' && $this->currency >= 2.0) {
+            return true;
+        } elseif ($this->status == 'home' && $this->staff == 'mentor' && $this->active == '1' && $this->currency >= 3.0) {
+            return true;
+        } elseif ($this->status == 'home' && $this->staff == 'staff' && $this->active == '1' && $this->currency >= 3.0) {
+            return true;
+        } elseif ($this->status == 'home' && $this->staff == 'exec' && $this->active == '1' && $this->currency >= 5.0) {
             return true;
         } elseif ($this->status == 'home' && $this->active == '1' && $this->currency >= 2.0) {
+            return true;
+        } elseif ($this->status == 'instructor' && $this->staff == 'exec' && $this->active == '1' && $this->currency >= 5.0) {
+            return true;
+        } elseif ($this->status == 'instructor' && $this->active == '1' && $this->currency >= 3.0) {
             return true;
         } elseif ($this->status == 'instructor' && $this->active == '1' && $this->currency >= 3.0) {
             return true;

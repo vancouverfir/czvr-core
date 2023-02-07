@@ -41,3 +41,5 @@ training.yaml
 .editorconfig
 UserEventFetcher/pyapiconf.ini
 
+UserEventFetcher/pyapiconf-live.ini
+UserEventFetcher/pyapiconf-stage.ini
