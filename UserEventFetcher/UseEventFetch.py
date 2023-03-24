@@ -1,249 +1,263 @@
 #!/usr/bin/python
-#Written by Austin Abbey for Vancouver FIR 
+# Written by Austin Abbey for Vancouver FIR
 
-
+from datetime import datetime, timedelta
 import configparser
 import sys
-import requests
-from datetime import datetime, timedelta
-#import pyodbc
-#import pandas as pd
 import os
-import mariadb
 import asyncio
+import requests
+import mariadb
 
-#Get current mode to run as
-#Valid modes consist of "event" or "roster"
-isMode = str(sys.argv[1]).lower()
-print(isMode)
 
-#getting our config file
+# Get current mode to run as
+# Valid modes consist of "event" or "roster"
+ISMODE = str(sys.argv[1]).lower()
+print(ISMODE)
+
+# getting our config file
 config = configparser.RawConfigParser()
 assert os.path.exists('./pyapiconf.ini')
-configFilePath = './pyapiconf.ini'
-config.read(configFilePath)
+CONFIGFILEPATH = './pyapiconf.ini'
+config.read(CONFIGFILEPATH)
 
-simKey = config.get('VatcanAPI','APIkey') #this is our Vatsim API key, edit to match what is in use
-APIEvent = config.get('VatcanAPI','Events') #This is for getting the request URL for the API, in case of future changes
-APIUsers = config.get('VatcanAPI','Users') #This is for getting the request URL for the API, in case of future changes
+# this is our Vatsim API key, edit to match what is in use
+simKey = config.get('VatcanAPI', 'APIkey')
+# This is for getting the request URL for the API, in case of future changes
+APIEvent = config.get('VatcanAPI', 'Events')
+# This is for getting the request URL for the API, in case of future changes
+APIUsers = config.get('VatcanAPI', 'Users')
 
-#Establish connection to SQL server
+# Establish connection to SQL server
 
-dsn = "SQL Server Native Client 11.0"
-DBUser= config.get('ServerDB','ID')
-DBServer = config.get('ServerDB','Address')
-DBPort = config.get('ServerDB','Port')
-DBPass = config.get('ServerDB','Password')
-DBName = config.get('ServerDB','DBName')
+DSN = "SQL Server Native Client 11.0"
+DBUser = config.get('ServerDB', 'ID')
+DBServer = config.get('ServerDB', 'Address')
+DBPort = config.get('ServerDB', 'Port')
+DBPass = config.get('ServerDB', 'Password')
+DBName = config.get('ServerDB', 'DBName')
 
-print("|"+DBName+"|")
-print("|"+DBUser+"|")
-print("|"+DBServer+"|")
+print("|" + DBName + "|")
+print("|" + DBUser + "|")
+print("|" + DBServer + "|")
 
 print("Connecting to MySQL Sevrer...")
 
-#connectSQL = ("Driver={SQL Server}"+";Server={};Database={};Port={};UID={};Pwd={}".format(DBServer,DBName,DBPort,DBUser,DBPass)) old version relying on pyODBC
-
-cidStor = []
-visitCidStor = []
+CIDSTOR = []
+VISITCIDSTOR = []
 
 try:
-    connectSQL = mariadb.connect(user=DBUser,password=DBPass,host=DBServer,port=int(DBPort),database=DBName,autocommit=True)
+    connectSQL = mariadb.connect(user=DBUser, password=DBPass, host=DBServer, port=int(
+        DBPort), database=DBName, autocommit=True)
 except mariadb.Error as e:
     print(f"Error connecting to MariaDB Platform: {e}")
     sys.exit(1)
 
 
-#pyodbc.connect(connectSQL) old version relying on pyODBC
+def fetch_event():
+    """Using the vatsim API to fetch events"""
 
-
-
-
-
-
-def fetchEvent():
-    
-    #Using the vatsim API to fetch events
-    
     print("Fetching Events...")
     try:
-        
-        req = requests.get(APIEvent+simKey)
-    except:
-        print("Event Fetch Failed!")
-        exit()
-    print("Fetched Events")
-    resp = req.json() #take json output formatted as a dict
-    trimEvents(resp)
 
-def trimEvents(data):
+        req = requests.get(APIEvent + simKey, timeout=5)
+    except requests.exceptions.RequestException as request_exception:
+        print("Event Fetch Failed! ", request_exception)
+        sys.exit()
+    print("Fetched Events")
+    resp = req.json()  # take json output formatted as a dict
+    trim_events(resp)
+
+
+def trim_events(data):
+    """
+    trimming the DB of any old events. Date/Time format is YYYY-MM-DD HH:MM:SS
+    """
     print("Trimming events")
-    #trimming the DB of any old events. Date/Time format is YYYY-MM-DD HH:MM:SS
-    
+
     for i in data["data"]:
-        print("End time ",i["end"])
-        #End time ex. is YYYY-MM-DD HH:MM:SS
-        #Example: 2021-04-04 01:00:00
-        
+        print("End time ", i["end"])
+        # End time ex. is YYYY-MM-DD HH:MM:SS
+        # Example: 2021-04-04 01:00:00
+
         past = datetime.strptime(str(i["end"])[:16], "%Y-%m-%d %H:%M")
 
-        #past = datetime.strftime(i["end"], "%Y-%m-%d")
-        #print("past time: ",past)
-        
-        #get current time in YYYY-MM-DD format
+        # get current time in YYYY-MM-DD format
         present = datetime.now()
         present = present.strftime("%Y-%m-%d %H:%M")
         present = datetime.strptime(present, "%Y-%m-%d %H:%M")
-        
-        slug = magicSlug(i["start"],i["name"])
-        
-        
-#        present = datetime.strftime(str(datetime.now()), "%Y-%m-%d")
-        #print("present time: ",present)
+
+        slug = magic_slug(i["start"], i["name"])
+
         if past.date() > present.date():
             print("Event is within period")
-            
-            arrival=magicString(i["airports"]["arrival"])
-            departure=magicString(i["airports"]["departure"])
-            
-            #print("Departure: ",departure)
-            #print("Arrival: ",arrival)
-            
-            asyncio.run(stowEvent(i["id"],i["name"],str(i["start"])[:16],str(i["end"])[:16],i["description"],i["image_url"],departure,arrival,slug)) #the keys for ID, name, start, end, description,imageurl,airports,dept, and arrivals
+
+            arrival = magic_string(i["airports"]["arrival"])
+            departure = magic_string(i["airports"]["departure"])
+
+            # the keys for ID, name, start, end, description,imageurl,airports,dept, and arrivals
+            asyncio.run(stow_event(i["id"], i["name"], str(i["start"])[:16], str(i["end"])[
+                :16], i["description"], i["image_url"],
+                departure, arrival, slug))
         else:
             print("Event is outside of period, ignoring...")
 
 
-def magicSlug(date,name): #I'm a slug
-    storDate = str(date)[:16]
-    storName = name.replace(" ", "-") #convert spaces to dashes
-    storName=storName[:30]
-    return storName+"-"+storDate #it just returns title (with a 30 character limit) plus - plus date
+def magic_slug(date, name):
+    """
+    I'm a slug
+    But in all seriousness, it just formats the date and time as needed.
+    """
+    store_date = str(date)[:16]
+    store_name = name.replace(" ", "-")  # convert spaces to dashes
+    store_name = store_name[:30]
+    # it just returns title (with a 30-character limit) plus - plus date
+    return store_name + "-" + store_date
 
-def magicString(stron): #IT SPOOLS FOR MILES AND MILES
+
+def magic_string(stron):
+    """
+    IT SPOOLS FOR MILES AND MILES
+    But in all seriousness, it just formats any lists of ICAO's into a single string
+    """
     if isinstance(stron, str):
-        #it unwounds!
+        # it unwounds!
         return stron
     elif isinstance(stron, list):
         spool = ", "
-        return(spool.join(stron)) # it just makes it easier to submit multiple 
+        # it just makes it easier to submit multiple
+        return spool.join(stron)
     else:
-        print("do not make a mockery of this string. why did you pass something not a string or a list?")
-        return("YXE") #My hometown, people have to go SOMEWHERE.
-    
+        return "YXE"  # My hometown, people have to go SOMEWHERE.
 
-async def stowEvent(ID,NAME,START_TIMESTAMP,END_TIMESTAMP,DESCRIPTION,IMAGE_URL,DEPARTURE_ICAO,ARRIVAL_ICAO, SLUG): #Uploading events to the DB
-    #stowing the fetched events in the DB
+
+async def stow_event(
+    id, name, start_timestamp, end_timestamp, description, image_url, departure_icao, arrival_icao, slug
+):
+    """
+    Uploading events to the DB
+    """
+
+    # stowing the fetched events in the DB
     print("Stowing Events in DB...")
     cur = connectSQL.cursor()
-    try: #writing the DB update
+    try:  # writing the DB update
         print("selecting ID's to update")
-        cur.execute("SELECT id FROM events WHERE id=?",(ID,))
+        cur.execute("SELECT id FROM events WHERE id=?", (id,))
         print("Captain, we found something!")
-        try: #attempting to update the DB
-            cur.execute("UPDATE events SET name = ?, start_timestamp = ?, end_timestamp = ?, description = ?, image_url = ?, departure_icao = ?, arrival_icao = ?, slug = ? WHERE id = ?",(NAME,START_TIMESTAMP,END_TIMESTAMP,DESCRIPTION,IMAGE_URL,DEPARTURE_ICAO,ARRIVAL_ICAO,SLUG, ID,))
+        try:  # attempting to update the DB
+            cur.execute("UPDATE events SET name = ?, start_timestamp = ?, end_timestamp = ?, description = ?, "
+                        "image_url = ?, departure_icao = ?, arrival_icao = ?, slug = ? WHERE id = ?",
+                        (name, start_timestamp, end_timestamp, description, image_url, departure_icao, arrival_icao,
+                         slug, id,))
             print("Execute complete!")
-        except mariadb.Error as a:
-            print(f" Iterative Error: {a}")
+        except mariadb.Error as db_error:
+            print(f" Iterative Error: {db_error}")
             print("He's dead, Jim...")
             sys.exit(1)
-    except mariadb.Error as e: #if anything fails, we can still just re-add everything.
-        print(f"Update Error: {e}") 
+    # if anything fails, we can still just re-add everything.
+    except mariadb.Error as db_error:
+        print(f"Update Error: {db_error}")
         sys.exit(1)
-    
+
     print(" On the off chance we get this far...")
-    print(SLUG)
-    
-    print(type(ID))
-    print("id = ", ID)
-    
+    print(slug)
+
+    print(type(id))
+    print("id = ", id)
+
     try:
-        print(ID)
-        print(NAME)
-        print(START_TIMESTAMP)
-        print(END_TIMESTAMP)
-        print(DESCRIPTION)
-        print(IMAGE_URL)
-        print(DEPARTURE_ICAO)
-        print(ARRIVAL_ICAO)
-        print(SLUG)
-        cur.execute("INSERT INTO events (id, name, Start_timestamp, end_timestamp, description, image_url, departure_icao, arrival_icao, slug) VALUES (?,?,?,?,?,?,?,?,?)",(ID,NAME,START_TIMESTAMP,END_TIMESTAMP,DESCRIPTION,IMAGE_URL,DEPARTURE_ICAO,ARRIVAL_ICAO,SLUG,))
-    except mariadb.Error as e:
-        print(f"Error: {e}")
+        print(id)
+        print(name)
+        print(start_timestamp)
+        print(end_timestamp)
+        print(description)
+        print(image_url)
+        print(departure_icao)
+        print(arrival_icao)
+        print(slug)
+        cur.execute("INSERT INTO events (id, name, Start_timestamp, end_timestamp, description, image_url, "
+                    "departure_icao, arrival_icao, slug) VALUES (?,?,?,?,?,?,?,?,?)",
+                    (id, name, start_timestamp, end_timestamp, description, image_url, departure_icao, arrival_icao,
+                     slug,))
+    except mariadb.Error as db_error:
+        print(f"Error: {db_error}")
     print("complete!")
-    #cur.execute("VALUES ('?','?','?','?','?','?','?','?')",(ID,NAME,START_TIMESTAMP,END_TIMESTAMP,DESCRIPTION,IMAGE_URL,DEPARTURE_ICAO,ARRIVAL_ICAO,))
 
-    #connectSQL.commit() MariaDB enables auto-commit, so this is no longer necessary
-    #rmEvent() #Calls cleanup
 
-#####    
-#####I don't know why I need this code here, but if I remove it, everything breaks. Leave as is.    
-#####    
 
-def rmEvent(): #Removing stale events from the server
+def rm_event():
+    """
+    Removing stale events from the server
+    """
     print("Removing old events")
-    date = datetime.today() - timedelta(days=1) # Today - 1 day
-    
+    date = datetime.today() - timedelta(days=1)  # Today - 1 day
+
     date = date.strftime("%Y-%m-%d %H:%M")
     cur = connectSQL.cursor()
-    
+
     date = datetime.strptime(date, "%Y-%m-%d %H:%M")
-    
-    #cur.execute("DELETE * FROM events WHERE end_timestamp <= ?",(date,))
-    cur.execute("DELETE FROM events WHERE end_timestamp < DATE_ADD(CURDATE(), interval -1 day)")
-    #connectSQL.commit() MariaDB uses autocommit, so this is no longer necessary
-    
-     #close connection with SQL server
 
-    
-    
+    cur.execute(
+        "DELETE FROM events WHERE end_timestamp < DATE_ADD(CURDATE(), interval -1 day)")
 
-def fetchRoster():
-    #Using the vatsium API to fetch the user roster
+
+def fetch_roster():
+    """
+    # Using the vatsium API to fetch the user roster
+    """
 
     print("Fetching Users...")
     try:
-        req = requests.get(APIUsers+simKey)
-    except:
-        print("User Fetch Failed!")
+        req = requests.get(APIUsers + simKey, timeout=5)
+    except requests.exceptions.RequestException as request_exception:
+        print("User Fetch Failed!", request_exception)
         exit()
-    resp=req.json()
+    resp = req.json()
     for i in resp["data"]["controllers"]:
         print("CID =", i["cid"])
-        rating_short=convRating(i["rating"])
-        fullname=i["first_name"]+" "+i["last_name"]
+        rating_short = conv_rating(i["rating"])
+        fullname = i["first_name"] + " " + i["last_name"]
         print("Users Full Name:", fullname)
-        asyncio.run(stowRoster(i["cid"],i["first_name"],i["last_name"],i["rating"],i["email"],fullname,rating_short))
-        cidStor.append(i["cid"])
-        
-        
+        asyncio.run(stow_roster(i["cid"], i["first_name"], i["last_name"],
+                                i["rating"], i["email"], fullname, rating_short))
+        CIDSTOR.append(i["cid"])
 
-    #resp = req.json()
-   # ratingshort=convRating(i["data"]["controller"]["rating"])
-    #stowRoster(i["data"]["controller"]["cid"],i["data"]["controller"]["first_name"],i["data"]["controller"]["last_name"],i["data"]["controller"]["rating"],ratingshort)
-    
-def fetchVisitRoster():
-    #Using the vatsium API to fetch the user roster
+
+def fetch_visit_roster():
+    """
+    Fetches the visitor roster
+    """
+    # Using the vatsium API to fetch the user roster
 
     print("Fetching Visitors...")
     try:
-        req = requests.get(APIUsers+simKey)
-    except:
-        print("Visitor Fetch Failed!")
+        req = requests.get(APIUsers + simKey, timeout=5)
+    except requests.exceptions.RequestException as request_exception:
+        print("Visitor Fetch Failed!", request_exception)
         exit()
-    resp=req.json()
+    resp = req.json()
     for i in resp["data"]["visitors"]:
         print("CID =", i["cid"])
-        rating_short=convRating(i["rating"])
-        fullname=i["first_name"]+" "+i["last_name"]
+        rating_short = conv_rating(i["rating"])
+        fullname = i["first_name"] + " " + i["last_name"]
         print("Users Full Name:", fullname)
-        asyncio.run(stowVisitRoster(i["cid"],i["first_name"],i["last_name"],i["rating"],i["email"],fullname,rating_short))
-        cidStor.append(i["cid"])
-        
-        
-    trimRoster()
+        asyncio.run(stow_visit_roster(
+            i["cid"], i["first_name"], i["last_name"], i["rating"], i["email"], fullname, rating_short))
+        CIDSTOR.append(i["cid"])
 
-def convRating(rating):
+    trim_roster()
+
+
+def conv_rating(rating):
+    """Converts the rating to match the rating system
+
+    Args:
+        rating (int): the input integer rating
+
+    Returns:
+        Str: the output rating string
+    """
     if rating == 0:
         print("Not a valid Rating!")
     elif rating == 1:
@@ -272,151 +286,188 @@ def convRating(rating):
         return "ADM"
     else:
         print("not a valid rating!")
-        exit
-   
+        sys.exit()
 
-def trimRoster():
+
+def trim_roster():
+    """
+    Cleans up the roster and returns a list of players
+    """
     print("Cleaning up roster")
     cur = connectSQL.cursor()
     bye = connectSQL.cursor()
     cur.execute("SELECT cid FROM roster")
     for i in cur:
-        strCid = str(i)[1:-2]
-        dbCid = int(strCid)
-        if dbCid not in cidStor:
-            print("invalid CID:", dbCid)
-            bye.execute("DELETE FROM roster WHERE cid=?",(dbCid,))
-            bye.execute("UPDATE users SET permissions = ? WHERE id = ?",("0",dbCid))
+        str_cid = str(i)[1:-2]
+        db_cid = int(str_cid)
+        if db_cid not in CIDSTOR:
+            print("invalid CID:", db_cid)
+            bye.execute("DELETE FROM roster WHERE cid=?", (db_cid,))
+            bye.execute(
+                "UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
             print("Invalid CID Removed from DB... BUH BYE")
 
 
- 
-async def stowRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
-    #stores new users in the roster
+async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_short):
+    """
+    stores new users in the roster
+    """
     print("Stowing users in DB...")
     cur = connectSQL.cursor()
     sto = connectSQL.cursor()
     try:
         print("Searching for ID's to update...")
-        cur.execute("SELECT id FROM users WHERE id=?",(CID,))
+        cur.execute("SELECT id FROM users WHERE id=?", (cid,))
         try:
-            cur.execute("SELECT permissions FROM users WHERE id=?",(CID,))
+            cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
             permissions = cur.fetchone()
             print(f"perms {permissions[0]}")
             if permissions[0] > 0:
-                sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"0",CID))
-                sto.execute("UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",(FULLNAME,"0",CID))
-                sto.execute("SELECT status FROM roster WHERE cid = ?",(CID,))
+                sto.execute(
+                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
+                    (email, lname, rating_id, rating_short, "0", cid))
+                sto.execute(
+                    "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?", (fullname, "0", cid))
+                sto.execute("SELECT status FROM roster WHERE cid = ?", (cid,))
                 status = sto.fetchone()
                 if status[0] == "visit":
-                    sto.execute(f"UPDATE roster SET status = 'home' WHERE cid = {CID}")
+                    sto.execute(
+                        f"UPDATE roster SET status = 'home' WHERE cid = {cid}")
             else:
-                sto.execute("UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",(FULLNAME,"0",CID))
-                sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"1","0",CID))
-        except mariadb.Error as a:
-            print(f" Iterative Error: {a}")
+                sto.execute(
+                    "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?", (fullname, "0", cid))
+                sto.execute(
+                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = "
+                    "? WHERE id = ?",
+                    (email, lname, rating_id, rating_short, "1", "0", cid))
+        except mariadb.Error as db_error:
+            print(" Iterative Error:", db_error)
             print("He's dead, Jim...")
             sys.exit(1)
-    except mariadb.error as e: 
-        print(f"Update Error: {e}") 
+    except mariadb.Error as db_error:
+        print("Update Error:", db_error)
         sys.exit(1)
-    
+
     try:
         print("Updating users role...")
-        cur.execute(f"SELECT permissions FROM users WHERE id={CID}")
+        cur.execute(f"SELECT permissions FROM users WHERE id={cid}")
         perm = cur.fetchall()[0][0]
-        print(f"permissions for {CID}={perm}")
+        print(f"permissions for {cid}={perm}")
         if perm <= 1 or permissions[0] == "NULL":
-            print(f"{CID}: Guest or Controller, moving on")
+            print(f"{cid}: Guest or Controller, moving on")
         elif perm == 2:
-            print(f"{CID}: Mentor")
+            print(f"{cid}: Mentor")
             m = "mentor"
-            cur.execute(f"UPDATE roster SET staff = '{m}' WHERE cid = {CID}")
+            cur.execute(f"UPDATE roster SET staff = '{m}' WHERE cid = {cid}")
         elif perm == 3:
-            print(f"{CID}: Instructor")
+            print(f"{cid}: Instructor")
             ins = "ins"
-            cur.execute(f"UPDATE roster SET staff = '{ins}' WHERE cid = {CID}")
+            cur.execute(f"UPDATE roster SET staff = '{ins}' WHERE cid = {cid}")
         elif perm == 4:
-            print(f"{CID}: Staff")
+            print(f"{cid}: Staff")
             s = "staff"
-            cur.execute(f"UPDATE roster SET staff = '{s}' WHERE cid = {CID}")
+            cur.execute(f"UPDATE roster SET staff = '{s}' WHERE cid = {cid}")
         elif perm == 5:
-            print(f"{CID}: Executive")
+            print(f"{cid}: Executive")
             e = "exec"
-            cur.execute(f"UPDATE roster SET staff = '{e}' WHERE cid = {CID}")
-    except mariadb.Error as e:
-        print(f" Iterative Error: {e}")
+            cur.execute(f"UPDATE roster SET staff = '{e}' WHERE cid = {cid}")
+    except mariadb.Error as db_error:
+        print(" Iterative Error: ", db_error)
         sys.exit(1)
 
-
     try:
-        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname) VALUES (?,?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,"1",FNAME))
-    except mariadb.Error as e:
-        print(f"Error: {e}")
+        cur.execute(
+            "INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname) VALUES "
+            "(?,?,?,?,?,?,?,?)",
+            (cid, email, fname, lname, rating_id, rating_short, "1", fname))
+    except mariadb.Error as db_error:
+        print("Error: ", db_error)
     try:
         print("Now adding to Roster")
-        cur.execute("INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",(CID,CID,FULLNAME,"home","1","0"))
-    except mariadb.Error as e:
-        print(f"Error: {e}")
+        cur.execute("INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",
+                    (cid, cid, fullname, "home", "1", "0"))
+    except mariadb.Error as db_error:
+        print("Error: ", db_error)
     print("complete!")
 
-async def stowVisitRoster(CID,FNAME,LNAME,RATING_ID,EMAIL,FULLNAME,RATING_SHORT):
-    #stores new users in the roster
+
+async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, rating_short):
+    """
+    stores new users in the roster
+    """
     print("Stowing visitors in DB...")
     cur = connectSQL.cursor()
     sto = connectSQL.cursor()
     try:
         print("Searching for Visitor ID's to update...")
-        cur.execute("SELECT id FROM users WHERE id=?",(CID,))
+        cur.execute("SELECT id FROM users WHERE id=?", (cid,))
         try:
-            cur.execute("SELECT permissions FROM users WHERE id=?",(CID,))
+            cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
             for i in cur:
-                print(f"Permissions for {CID}: {i[0]}")
+                print(f"Permissions for {cid}: {i[0]}")
                 if i[0] > 0:
-                    sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"1",CID))
-                    sto.execute("UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",(FULLNAME,"1","visit",CID))
+                    sto.execute(
+                        "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
+                        (
+                            email, lname, rating_id, rating_short, "1", cid))
+                    sto.execute(
+                        "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
+                        (fullname, "1", "visit", cid))
                 else:
-                    sto.execute("UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",(FULLNAME,"1","visit",CID))
-                    sto.execute("UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",(EMAIL,LNAME,RATING_ID,RATING_SHORT,"1","1",CID))
-        except mariadb.Error as a:
-            print(f" Iterative Error: {a}")
+                    sto.execute(
+                        "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
+                        (fullname, "1", "visit", cid))
+                    sto.execute(
+                        "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, "
+                        "visitor = ? WHERE id = ?",
+                        (
+                            email, lname, rating_id, rating_short, "1", "1", cid))
+        except mariadb.Error as db_error:
+            print(" Iterative Error: ", db_error)
             print("He's dead, Jim...")
             sys.exit(1)
-    except mariadb.error as e: 
-        print(f"Update Error: {e}") 
+    except mariadb.Error as db_error:
+        print(f"Update Error: {db_error}")
         sys.exit(1)
 
     try:
-        cur.execute("INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname, visitor) VALUES (?,?,?,?,?,?,?,?,?)",(CID,EMAIL,FNAME,LNAME,RATING_ID,RATING_SHORT,"1",FNAME,"1"))
-    except mariadb.Error as e:
-        print(f"Error: {e}")
+        cur.execute(
+            "INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname, "
+            "visitor) VALUES (?,?,?,?,?,?,?,?,?)",
+            (cid, email, fname, lname, rating_id, rating_short, "1", fname, "1"))
+    except mariadb.Error as db_error:
+        print("Error: ", db_error)
     try:
         print("Now adding to Visitor Roster")
-        cur.execute("INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",(CID,CID,FULLNAME,"visit","1","1"))
-    except mariadb.Error as e:
-        print(f"Error: {e}")
+        cur.execute("INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",
+                    (cid, cid, fullname, "visit", "1", "1"))
+    except mariadb.Error as db_error:
+        print("Error: ", db_error)
     print("complete!")
 
-def resetActivity():
+
+def reset_activity():
+    """
+    Monthly Currency Reset
+    """
     cur = connectSQL.cursor()
     cur.execute("UPDATE roster SET currency = NULL WHERE cid IS NOT NULL")
     print("Monthly Currency Reset")
 
-    
 
 try:
-    if isMode == "events" or isMode == "event":
-        fetchEvent()
-    elif isMode == "roster" or isMode == "rosters" or isMode == "users" or isMode == "user":
-        fetchRoster()
-        fetchVisitRoster()
-    elif isMode == "activityreset":
-        resetActivity()
+    if ISMODE == "events" or ISMODE == "event":
+        fetch_event()
+    elif ISMODE == "roster" or ISMODE == "rosters" or ISMODE == "users" or ISMODE == "user":
+        fetch_roster()
+        fetch_visit_roster()
+    elif ISMODE == "activityreset":
+        reset_activity()
     else:
         print("You need to state either Events or Roster")
 except Exception as e:
-    print(f"Something went wrong: {e}")
-    exit()
-    
+    print("Something went wrong: ", e)
+    sys.exit()
+
 
 connectSQL.close()
