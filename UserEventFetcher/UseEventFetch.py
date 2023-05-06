@@ -318,28 +318,33 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
     try:
         print("Searching for ID's to update...")
         cur.execute("SELECT id FROM users WHERE id=?", (cid,))
+        
         try:
             cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
             permissions = cur.fetchone()
-            print(f"perms {permissions[0]}")
-            if permissions[0] > 0:
-                sto.execute(
-                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
-                    (email, lname, rating_id, rating_short, "0", cid))
-                sto.execute(
-                    "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?", (fullname, "0", cid))
-                sto.execute("SELECT status FROM roster WHERE cid = ?", (cid,))
-                status = sto.fetchone()
-                if status[0] == "visit":
+            
+            if permissions is not None:
+                print(f"perms {permissions[0]}")
+                if permissions[0] > 0:
                     sto.execute(
-                        f"UPDATE roster SET status = 'home' WHERE cid = {cid}")
+                        "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
+                        (email, lname, rating_id, rating_short, "0", cid))
+                    sto.execute(
+                        "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?", (fullname, "0", cid))
+                    sto.execute("SELECT status FROM roster WHERE cid = ?", (cid,))
+                    status = sto.fetchone()
+                    if status[0] == "visit":
+                        sto.execute(
+                            f"UPDATE roster SET status = 'home' WHERE cid = {cid}")
+                else:
+                    sto.execute(
+                        "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?", (fullname, "0", cid))
+                    sto.execute(
+                        "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = "
+                        "? WHERE id = ?",
+                        (email, lname, rating_id, rating_short, "1", "0", cid))
             else:
-                sto.execute(
-                    "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?", (fullname, "0", cid))
-                sto.execute(
-                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = "
-                    "? WHERE id = ?",
-                    (email, lname, rating_id, rating_short, "1", "0", cid))
+                print("Not in DB Moving on...")
         except mariadb.Error as db_error:
             print(" Iterative Error:", db_error)
             print("He's dead, Jim...")
@@ -351,26 +356,30 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
     try:
         print("Updating users role...")
         cur.execute(f"SELECT permissions FROM users WHERE id={cid}")
-        perm = cur.fetchall()[0][0]
-        print(f"permissions for {cid}={perm}")
-        if perm <= 1 or permissions[0] == "NULL":
-            print(f"{cid}: Guest or Controller, moving on")
-        elif perm == 2:
-            print(f"{cid}: Mentor")
-            m = "mentor"
-            cur.execute(f"UPDATE roster SET staff = '{m}' WHERE cid = {cid}")
-        elif perm == 3:
-            print(f"{cid}: Instructor")
-            ins = "ins"
-            cur.execute(f"UPDATE roster SET staff = '{ins}' WHERE cid = {cid}")
-        elif perm == 4:
-            print(f"{cid}: Staff")
-            s = "staff"
-            cur.execute(f"UPDATE roster SET staff = '{s}' WHERE cid = {cid}")
-        elif perm == 5:
-            print(f"{cid}: Executive")
-            e = "exec"
-            cur.execute(f"UPDATE roster SET staff = '{e}' WHERE cid = {cid}")
+        #perm = cur.fetchall()[0][0]
+        perm = cur.fetchone()
+        if perm is not None:
+            print(f"permissions for {cid}={perm}")
+            if perm[0] <= 1:
+                print(f"{cid}: Guest or Controller, moving on")
+            elif perm[0] == 2:
+                print(f"{cid}: Mentor")
+                m = "mentor"
+                cur.execute(f"UPDATE roster SET staff = '{m}' WHERE cid = {cid}")
+            elif perm[0] == 3:
+                print(f"{cid}: Instructor")
+                ins = "ins"
+                cur.execute(f"UPDATE roster SET staff = '{ins}' WHERE cid = {cid}")
+            elif perm[0] == 4:
+                print(f"{cid}: Staff")
+                s = "staff"
+                cur.execute(f"UPDATE roster SET staff = '{s}' WHERE cid = {cid}")
+            elif perm[0] == 5:
+                print(f"{cid}: Executive")
+                e = "exec"
+                cur.execute(f"UPDATE roster SET staff = '{e}' WHERE cid = {cid}")
+        else:
+            print("Not in DB Moving on...")
     except mariadb.Error as db_error:
         print(" Iterative Error: ", db_error)
         sys.exit(1)
@@ -404,24 +413,27 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, ratin
         try:
             cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
             for i in cur:
-                print(f"Permissions for {cid}: {i[0]}")
-                if i[0] > 0:
-                    sto.execute(
-                        "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
-                        (
-                            email, lname, rating_id, rating_short, "1", cid))
-                    sto.execute(
-                        "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
-                        (fullname, "1", "visit", cid))
+                if i is not None:
+                    print(f"Permissions for {cid}: {i[0]}")
+                    if i[0] > 0:
+                        sto.execute(
+                            "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
+                            (
+                                email, lname, rating_id, rating_short, "1", cid))
+                        sto.execute(
+                            "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
+                            (fullname, "1", "visit", cid))
+                    else:
+                        sto.execute(
+                            "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
+                            (fullname, "1", "visit", cid))
+                        sto.execute(
+                            "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, "
+                            "visitor = ? WHERE id = ?",
+                            (
+                                email, lname, rating_id, rating_short, "1", "1", cid))
                 else:
-                    sto.execute(
-                        "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
-                        (fullname, "1", "visit", cid))
-                    sto.execute(
-                        "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, "
-                        "visitor = ? WHERE id = ?",
-                        (
-                            email, lname, rating_id, rating_short, "1", "1", cid))
+                    print("not in visitor DB moving on...")
         except mariadb.Error as db_error:
             print(" Iterative Error: ", db_error)
             print("He's dead, Jim...")
