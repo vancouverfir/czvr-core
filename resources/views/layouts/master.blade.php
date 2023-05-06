@@ -285,7 +285,7 @@
             </div>
 
             <div class="mt-3">
-                <p><img style="height: 20px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Intersex-inclusive_pride_flag.svg/1920px-Intersex-inclusive_pride_flag.svg.png" alt="">  The Vancover FIR stands with the LGBTQIA+ community on VATSIM.</p>
+                <p><img style="height: 20px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Intersex-inclusive_pride_flag.svg/1920px-Intersex-inclusive_pride_flag.svg.png" alt="">  The Vancouver FIR stands with the LGBTQIA+ community on VATSIM.</p>
             </div>
         </div>
     </footer>
