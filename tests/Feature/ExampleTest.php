@@ -17,6 +17,7 @@ class ExampleTest extends TestCase
     public function testBasicTest()
     {
         $this->seed();
+        $this->withoutExceptionHandling();
         $response = $this->get('/');
 
         $response->assertStatus(200);
