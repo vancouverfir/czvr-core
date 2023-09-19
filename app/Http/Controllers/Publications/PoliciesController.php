@@ -178,11 +178,11 @@ class PoliciesController extends Controller
     {
         $policy = Policy::where('id', $id)->firstOrFail();
         //$entry = new AuditLogEntry([
-         //   'user_id' => Auth::user()->id,
-         //   'affected_id' => 1,
-         //   'action' => 'DELETE POLICY '.$policy->name.'('.$policy->id.')',
-         //   'time' => date('Y-m-d H:i:s'),
-         //   'private' => 0,
+        //   'user_id' => Auth::user()->id,
+        //   'affected_id' => 1,
+        //   'action' => 'DELETE POLICY '.$policy->name.'('.$policy->id.')',
+        //   'time' => date('Y-m-d H:i:s'),
+        //   'private' => 0,
         //]);
         //$entry->save();
         $policy->delete();
@@ -219,7 +219,7 @@ class PoliciesController extends Controller
             }
         }
 
-       // $entry = new AuditLogEntry([
+        // $entry = new AuditLogEntry([
        //     'user_id' => Auth::user()->id,
        //     'affected_id' => 1,
        //     'action' => 'DELETE POLICY SECTION '.$section->section_name.'('.$section->id.')',

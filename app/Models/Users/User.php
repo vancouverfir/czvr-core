@@ -48,7 +48,6 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-
     public function news()
     {
         return $this->hasMany(News\News::class);
@@ -118,13 +117,13 @@ class User extends Authenticatable
         switch ($this->permissions) {
             case 0:
                 return 'Guest';
-            break;
+                break;
             case 1:
                 return 'Controller/Trainee';
-            break;
+                break;
             case 2:
                 return 'Mentor';
-            break;
+                break;
             case 3:
                 return 'Instructor';
             case 4:

@@ -150,7 +150,7 @@ class FeedbackController extends Controller
                     $validator->errors()->add('position', 'You need to specify the Controller\'s position.');
                 });
             }
-        } else /*Otherwise*/ {
+        } else { /*Otherwise*/
             //No subject
             if ($request->get('subject') == null) {
                 $validator->after(function ($validator) {
@@ -173,7 +173,7 @@ class FeedbackController extends Controller
                     'content' => $request->get('content'),
                 ]);
                 $feedback->save();
-                  Notification::route('mail', CoreSettings::find(1)->emailwebmaster)->notify(new NewWebsiteFeedback($feedback));
+                Notification::route('mail', CoreSettings::find(1)->emailwebmaster)->notify(new NewWebsiteFeedback($feedback));
                 break;
             case 'operations':
                 $feedback = new OperationsFeedback([
