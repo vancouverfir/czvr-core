@@ -2,18 +2,19 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ExampleTest extends TestCase
+
+class TaskTest extends TestCase
 {
+    use RefreshDatabase;
     /**
-     * A basic test example.
+     * @test
      */
-    public function test_the_application_returns_a_successful_response(): void
+    public function a_user_can_browse_tasks()
     {
-        $this->seed();
-        $response = $this->get('/');
+        $response = $this->get('/info');
 
         $response->assertStatus(200);
     }
