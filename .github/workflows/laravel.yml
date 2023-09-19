@@ -31,11 +31,12 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
-        php artisan migrate --seed
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
+    - name: Seed Database
       env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+      run: php artisan migrate --seed
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: |
         php artisan config:cache
         vendor/bin/phpunit
