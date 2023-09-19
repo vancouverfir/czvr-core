@@ -47,15 +47,16 @@ class LoginController extends Controller
             session()->put('secret', $secret);
             session()->save();
             header('Location: '.$url);
-            exit();
+            exit;
         });
     }
 
     /**
      * Validate the login and access protected resources, create the user if they don't exist, update them if they do, and log them in.
      *
-     * @param Request $get
+     * @param  Request  $get
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     *
      * @throws \Vatsim\OAuth\SSOException
      */
     public $newUser;
@@ -130,7 +131,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function validateConnectLogin(Request $request)

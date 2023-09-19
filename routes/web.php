@@ -33,9 +33,9 @@ Route::get('/training', 'AtcTraining\TrainingController@trainingTime')->name('tr
 Route::view('/mochi', 'mochi')->name('mochi');
 Route::view('/pdc', 'pdc')->name('pdc');
 Route::view('/vfr', 'vfr')->name('vfr');
-Route::get("sitemap.xml" , function () {
+Route::get('sitemap.xml', function () {
     return \Illuminate\Support\Facades\Redirect::to('sitemap.xml');
-     });
+});
 
 Route::prefix('instructors')->group(function () {
     Route::view('/', 'instructors')->name('instructors');
@@ -64,10 +64,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/privacydeny', 'Users\UserController@privacyDeny');
 
     //Visiting/Join Applications
-   // Route::group(['middleware' => 'notcertified'], function () {
+    // Route::group(['middleware' => 'notcertified'], function () {
     //    Route::get('/dashboard/application', 'AtcTraining\ApplicationsController@startApplicationProcess')->name('application.start');
-     //   Route::post('/dashboard/application', 'AtcTraining\ApplicationsController@submitApplication')->name('application.submit');
-   // });
+    //   Route::post('/dashboard/application', 'AtcTraining\ApplicationsController@submitApplication')->name('application.submit');
+    // });
 
     //User Tickets
     Route::get('/dashboard/tickets', 'Tickets\TicketsController@index')->name('tickets.index');
@@ -203,7 +203,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     //Users View/Edit
-    Route::group(['middleware' => 'staff'], function() {
+    Route::group(['middleware' => 'staff'], function () {
         Route::prefix('admin/users')->Group(function () {
             Route::get('/', 'Users\UserController@viewAllUsers')->name('users.viewall');
             Route::post('/search/ajax', 'Users\UserController@searchUsers')->name('users.search.ajax');
