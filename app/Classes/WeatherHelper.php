@@ -10,7 +10,8 @@ class WeatherHelper
 {
     /**
      * Gets ATIS Letter for Vancouver Airports Page.
-     * @param $icao
+     *
+     * @param  $icao
      * @return string|null
      */
     public static function getAtisLetter($icao)
@@ -32,7 +33,8 @@ class WeatherHelper
 
     /**
      * Gets ATIS Letter for Vancouver Airports Page.
-     * @param $icao
+     *
+     * @param  $icao
      * @return string
      */
     public static function getAtis($icao)
