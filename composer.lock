@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a54ff69d56517aafd526a94f2deef0f8",
+    "content-hash": "8cae0445eec2dec703375715436eb12d",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -6627,16 +6627,16 @@
         },
         {
             "name": "spatie/laravel-permission",
-            "version": "4.4.3",
+            "version": "5.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-permission.git",
-                "reference": "779797a47689d0bc1666e26f566cca44603e56fa"
+                "reference": "10d4c14dd66f82ce777ab76f5708bd14ff5a1ef8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/779797a47689d0bc1666e26f566cca44603e56fa",
-                "reference": "779797a47689d0bc1666e26f566cca44603e56fa",
+                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/10d4c14dd66f82ce777ab76f5708bd14ff5a1ef8",
+                "reference": "10d4c14dd66f82ce777ab76f5708bd14ff5a1ef8",
                 "shasum": ""
             },
             "require": {
@@ -6657,6 +6657,10 @@
                     "providers": [
                         "Spatie\\Permission\\PermissionServiceProvider"
                     ]
+                },
+                "branch-alias": {
+                    "dev-main": "5.x-dev",
+                    "dev-master": "5.x-dev"
                 }
             },
             "autoload": {
@@ -6693,7 +6697,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-permission/issues",
-                "source": "https://github.com/spatie/laravel-permission/tree/4.4.3"
+                "source": "https://github.com/spatie/laravel-permission/tree/5.3.2"
             },
             "funding": [
                 {
@@ -6701,7 +6705,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-10-28T07:33:49+00:00"
+            "time": "2021-11-17T10:45:32+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
