@@ -38,7 +38,6 @@ jobs:
       run: php artisan migrate --seed
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: |
-        php artisan config:cache
         vendor/bin/phpunit
     - name: Show Laravel Log
       if: ${{ failure() }}
