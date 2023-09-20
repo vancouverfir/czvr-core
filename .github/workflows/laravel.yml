@@ -19,7 +19,7 @@ jobs:
         php-version: '7.4'
     - name: Copy .env
       run: |
-        php -r "file_exists('.env') || copy('.env.example', '.env');"
+        php -r "file_exists('.env') || copy('.env.testing', '.env');"
         echo AIRPORT_API_KEY=${{ secrets.AIRPORT_API_KEY }} >> .env
 
     - name: Install Dependencies
