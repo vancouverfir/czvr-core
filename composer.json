@@ -10,7 +10,7 @@
     "require": {
         "php": "^7.2",
         "aws/aws-sdk-php": "^3.168",
-        "doctrine/dbal": "2.12.*",
+        "doctrine/dbal": "2.13.*",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3.3",
         "intervention/image": "^2.5",
