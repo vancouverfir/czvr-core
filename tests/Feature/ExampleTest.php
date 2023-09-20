@@ -8,7 +8,7 @@ use Tests\TestCase;
 class TaskTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     /**
      * @test
      */
