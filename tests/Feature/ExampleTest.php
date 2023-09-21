@@ -15,7 +15,7 @@ class TaskTest extends TestCase
     public function a_user_can_browse_tasks()
     {
         $this->withoutExceptionHandling();
-        $response = $this->get('/airports');
+        $response = $this->get('/vfr');
 
         $response->assertStatus(200);
     }
