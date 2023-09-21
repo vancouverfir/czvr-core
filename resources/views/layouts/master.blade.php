@@ -151,6 +151,7 @@
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                                 <a class="dropdown-item" href="{{route('airports')}}">Airports</a>
                                 <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
+                                <a class="dropdown-item" href="https://www.fltplan.com/" target="_blank">Charts</a>
                                 <a class="dropdown-item" href="https://vatsim.net/docs/pilots/pilots" target="_blank">VATSIM Resources</a>
                                 <a class="dropdown-item" href="https://simaware.ca" target="_blank">Live Map</a>
                             </div>
