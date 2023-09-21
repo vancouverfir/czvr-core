@@ -36,13 +36,12 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
-    - name: Seed Database
-      env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-      run: php artisan migrate --seed
     - name: Execute tests (Unit and Feature tests) via PHPUnit
+      env:
+            DB_CONNECTION: sqlite
+            DB_DATABASE: database/database.sqlite
       run: |
+        php artisan migrate --seed
         vendor/bin/phpunit
     - name: Show Laravel Log
       if: ${{ failure() }}
