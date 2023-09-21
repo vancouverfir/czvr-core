@@ -14,7 +14,7 @@ class TaskTest extends TestCase
      */
     public function a_user_can_browse_tasks()
     {
-        $response = $this->get('/');
+        $response = $this->get('/airports');
 
         $response->assertStatus(200);
     }
