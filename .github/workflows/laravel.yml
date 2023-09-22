@@ -24,25 +24,20 @@ jobs:
 
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-    - name: Clear Artisan Cache
-      run: |
-        php artisan cache:clear
-        php artisan route:clear
-    - name: Generate key
-      run: php artisan key:generate --env=testing
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
       run: |
         mkdir -p database
         touch database/database.sqlite
-    - name: Seed Database
-      env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-      run: php artisan migrate --seed
+    - name: Generate key
+      run: php artisan key:generate --env=testing
     - name: Execute tests (Unit and Feature tests) via PHPUnit
+      env:
+            DB_CONNECTION: sqlite
+            DB_DATABASE: database/database.sqlite
       run: |
+        php artisan migrate --seed
         vendor/bin/phpunit
     - name: Show Laravel Log
       if: ${{ failure() }}

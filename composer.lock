@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f8ddc2852dc9d64005cbfd2d39a6355",
+    "content-hash": "5c6fc5738ad63ed82dccae6d6f98a111",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.281.10",
+            "version": "3.281.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "049604298f769fa218549d8ff5cac1981f0a349a"
+                "reference": "9d466efae67d5016ed132fd4ffa1566a7d4cab98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/049604298f769fa218549d8ff5cac1981f0a349a",
-                "reference": "049604298f769fa218549d8ff5cac1981f0a349a",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9d466efae67d5016ed132fd4ffa1566a7d4cab98",
+                "reference": "9d466efae67d5016ed132fd4ffa1566a7d4cab98",
                 "shasum": ""
             },
             "require": {
@@ -151,9 +151,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.281.10"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.281.11"
             },
-            "time": "2023-09-19T18:33:42+00:00"
+            "time": "2023-09-20T19:16:24+00:00"
         },
         {
             "name": "bonroyage/oauth",
@@ -260,16 +260,16 @@
         },
         {
             "name": "doctrine/cache",
-            "version": "1.13.0",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "56cd022adb5514472cb144c087393c1821911d09"
+                "reference": "1ca8f21980e770095a31456042471a57bc4c68fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/56cd022adb5514472cb144c087393c1821911d09",
-                "reference": "56cd022adb5514472cb144c087393c1821911d09",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/1ca8f21980e770095a31456042471a57bc4c68fb",
+                "reference": "1ca8f21980e770095a31456042471a57bc4c68fb",
                 "shasum": ""
             },
             "require": {
@@ -279,18 +279,12 @@
                 "doctrine/common": ">2.2,<2.4"
             },
             "require-dev": {
-                "alcaeus/mongo-php-adapter": "^1.1",
                 "cache/integration-tests": "dev-master",
                 "doctrine/coding-standard": "^9",
-                "mongodb/mongodb": "^1.1",
                 "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
-                "predis/predis": "~1.0",
                 "psr/cache": "^1.0 || ^2.0 || ^3.0",
                 "symfony/cache": "^4.4 || ^5.4 || ^6",
                 "symfony/var-exporter": "^4.4 || ^5.4 || ^6"
-            },
-            "suggest": {
-                "alcaeus/mongo-php-adapter": "Required to use legacy MongoDB driver"
             },
             "type": "library",
             "autoload": {
@@ -339,7 +333,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/cache/issues",
-                "source": "https://github.com/doctrine/cache/tree/1.13.0"
+                "source": "https://github.com/doctrine/cache/tree/2.2.0"
             },
             "funding": [
                 {
@@ -355,36 +349,39 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-20T20:06:54+00:00"
+            "time": "2022-05-20T20:07:39+00:00"
         },
         {
             "name": "doctrine/dbal",
-            "version": "2.12.1",
+            "version": "2.13.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "adce7a954a1c2f14f85e94aed90c8489af204086"
+                "reference": "c480849ca3ad6706a39c970cdfe6888fa8a058b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/adce7a954a1c2f14f85e94aed90c8489af204086",
-                "reference": "adce7a954a1c2f14f85e94aed90c8489af204086",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/c480849ca3ad6706a39c970cdfe6888fa8a058b8",
+                "reference": "c480849ca3ad6706a39c970cdfe6888fa8a058b8",
                 "shasum": ""
             },
             "require": {
-                "doctrine/cache": "^1.0",
+                "doctrine/cache": "^1.0|^2.0",
+                "doctrine/deprecations": "^0.5.3|^1",
                 "doctrine/event-manager": "^1.0",
                 "ext-pdo": "*",
-                "php": "^7.3 || ^8"
+                "php": "^7.1 || ^8"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^8.1",
-                "jetbrains/phpstorm-stubs": "^2019.1",
-                "phpstan/phpstan": "^0.12.40",
-                "phpunit/phpunit": "^9.4",
-                "psalm/plugin-phpunit": "^0.10.0",
+                "doctrine/coding-standard": "9.0.0",
+                "jetbrains/phpstorm-stubs": "2021.1",
+                "phpstan/phpstan": "1.4.6",
+                "phpunit/phpunit": "^7.5.20|^8.5|9.5.16",
+                "psalm/plugin-phpunit": "0.16.1",
+                "squizlabs/php_codesniffer": "3.6.2",
+                "symfony/cache": "^4.4",
                 "symfony/console": "^2.0.5|^3.0|^4.0|^5.0",
-                "vimeo/psalm": "^3.17.2"
+                "vimeo/psalm": "4.22.0"
             },
             "suggest": {
                 "symfony/console": "For helpful console commands such as SQL execution and import of files."
@@ -393,11 +390,6 @@
                 "bin/doctrine-dbal"
             ],
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.0.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Doctrine\\DBAL\\": "lib/Doctrine/DBAL"
@@ -450,7 +442,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/2.12.1"
+                "source": "https://github.com/doctrine/dbal/tree/2.13.9"
             },
             "funding": [
                 {
@@ -466,7 +458,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-14T20:26:58+00:00"
+            "time": "2022-05-02T20:28:55+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -2501,30 +2493,30 @@
         },
         {
             "name": "laravelcollective/html",
-            "version": "v6.2.1",
+            "version": "v6.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LaravelCollective/html.git",
-                "reference": "ae15b9c4bf918ec3a78f092b8555551dd693fde3"
+                "reference": "64ddfdcaeeb8d332bd98bef442bef81e39c3910b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LaravelCollective/html/zipball/ae15b9c4bf918ec3a78f092b8555551dd693fde3",
-                "reference": "ae15b9c4bf918ec3a78f092b8555551dd693fde3",
+                "url": "https://api.github.com/repos/LaravelCollective/html/zipball/64ddfdcaeeb8d332bd98bef442bef81e39c3910b",
+                "reference": "64ddfdcaeeb8d332bd98bef442bef81e39c3910b",
                 "shasum": ""
             },
             "require": {
-                "illuminate/http": "^6.0|^7.0|^8.0",
-                "illuminate/routing": "^6.0|^7.0|^8.0",
-                "illuminate/session": "^6.0|^7.0|^8.0",
-                "illuminate/support": "^6.0|^7.0|^8.0",
-                "illuminate/view": "^6.0|^7.0|^8.0",
+                "illuminate/http": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/routing": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/session": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/view": "^6.0|^7.0|^8.0|^9.0|^10.0",
                 "php": ">=7.2.5"
             },
             "require-dev": {
-                "illuminate/database": "^6.0|^7.0|^8.0",
+                "illuminate/database": "^6.0|^7.0|^8.0|^9.0|^10.0",
                 "mockery/mockery": "~1.0",
-                "phpunit/phpunit": "~8.5"
+                "phpunit/phpunit": "~8.5|^9.5.10"
             },
             "type": "library",
             "extra": {
@@ -2570,7 +2562,7 @@
                 "source": "https://github.com/LaravelCollective/html"
             },
             "abandoned": "spatie/laravel-html",
-            "time": "2020-12-15T20:20:05+00:00"
+            "time": "2023-04-25T02:46:11+00:00"
         },
         {
             "name": "lasserafn/php-initial-avatar-generator",
@@ -6073,16 +6065,16 @@
         },
         {
             "name": "restcord/restcord",
-            "version": "0.4.1",
+            "version": "0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/restcord/restcord.git",
-                "reference": "ace3cd8f91df66c3f994791dc57ecae37151d029"
+                "reference": "e79722fc74b15773a8b58237f678d004038f3529"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/restcord/restcord/zipball/ace3cd8f91df66c3f994791dc57ecae37151d029",
-                "reference": "ace3cd8f91df66c3f994791dc57ecae37151d029",
+                "url": "https://api.github.com/repos/restcord/restcord/zipball/e79722fc74b15773a8b58237f678d004038f3529",
+                "reference": "e79722fc74b15773a8b58237f678d004038f3529",
                 "shasum": ""
             },
             "require": {
@@ -6090,13 +6082,13 @@
                 "guzzlehttp/guzzle-services": "^1.0",
                 "monolog/monolog": "^1.22|^2.0",
                 "netresearch/jsonmapper": "^1.4",
-                "php": "^5.6|^7.0",
-                "symfony/options-resolver": "^2.6|^3.0|^4.0|^5.0"
+                "php": "^7.3|^8.0",
+                "symfony/options-resolver": "^3.4|^4.4|^5.1"
             },
             "require-dev": {
                 "beberlei/assert": "^2.7",
-                "gossi/php-code-generator": "^0.4.1",
-                "phpunit/phpunit": "^6.0|^5.0",
+                "gossi/php-code-generator": "^0.5.0",
+                "phpunit/phpunit": "^8.0|^9.0",
                 "symfony/console": "^2.6|^3.0|^4.0",
                 "symfony/process": "^2.6|^3.0|^4.0",
                 "symfony/var-dumper": "^2.6|^3.0|^4.0",
@@ -6121,9 +6113,9 @@
             "description": "REST Library for the Discord API",
             "support": {
                 "issues": "https://github.com/restcord/restcord/issues",
-                "source": "https://github.com/restcord/restcord/tree/0.4.1"
+                "source": "https://github.com/restcord/restcord/tree/0.5.0"
             },
-            "time": "2020-10-29T16:47:58+00:00"
+            "time": "2020-12-24T04:37:14+00:00"
         },
         {
             "name": "ringcentral/psr7",
@@ -6635,16 +6627,16 @@
         },
         {
             "name": "spatie/laravel-permission",
-            "version": "4.4.3",
+            "version": "5.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-permission.git",
-                "reference": "779797a47689d0bc1666e26f566cca44603e56fa"
+                "reference": "10d4c14dd66f82ce777ab76f5708bd14ff5a1ef8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/779797a47689d0bc1666e26f566cca44603e56fa",
-                "reference": "779797a47689d0bc1666e26f566cca44603e56fa",
+                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/10d4c14dd66f82ce777ab76f5708bd14ff5a1ef8",
+                "reference": "10d4c14dd66f82ce777ab76f5708bd14ff5a1ef8",
                 "shasum": ""
             },
             "require": {
@@ -6665,6 +6657,10 @@
                     "providers": [
                         "Spatie\\Permission\\PermissionServiceProvider"
                     ]
+                },
+                "branch-alias": {
+                    "dev-main": "5.x-dev",
+                    "dev-master": "5.x-dev"
                 }
             },
             "autoload": {
@@ -6701,7 +6697,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-permission/issues",
-                "source": "https://github.com/spatie/laravel-permission/tree/4.4.3"
+                "source": "https://github.com/spatie/laravel-permission/tree/5.3.2"
             },
             "funding": [
                 {
@@ -6709,7 +6705,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-10-28T07:33:49+00:00"
+            "time": "2021-11-17T10:45:32+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

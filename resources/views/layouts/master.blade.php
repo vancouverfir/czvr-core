@@ -8,7 +8,7 @@
 
         Written by Liesel D... edited by a hundred Vancouverers.
 
-        For Flight Simulation Use Only - Not to be used for real-world navigation. All content on this web site may not be shared, copied, reproduced or used in any way without prior express written consent of Gander Oceanic. © Copyright {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->copyright_year}} Gander Oceanic, All Rights Reserved.
+        For Flight Simulation Use Only - Not to be used for real-world navigation. All content on this web site may not be shared, copied, reproduced or used in any way without prior express written consent of Gander Oceanic. © Copyright {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->copyright_year}} Vancouver FIR , All Rights Reserved.
         -->
         <!--Metadata-->
 
@@ -151,6 +151,7 @@
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                                 <a class="dropdown-item" href="{{route('airports')}}">Airports</a>
                                 <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
+                                <a class="dropdown-item" href="https://www.fltplan.com/" target="_blank">Charts</a>
                                 <a class="dropdown-item" href="https://vatsim.net/docs/pilots/pilots" target="_blank">VATSIM Resources</a>
                                 <a class="dropdown-item" href="https://simaware.ca" target="_blank">Live Map</a>
                             </div>
