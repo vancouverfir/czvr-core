@@ -22,7 +22,7 @@
         <meta name="theme-color" content="#6CC24A">
         <meta name="og:title" content="@yield('title', 'Vancouver FIR')">
         <meta name="og:description" content="@yield('description', '')">
-        <meta name="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
+        <meta name="og:image" content="@yield('image','https://media.discordapp.net/attachments/528107420593946624/1155207947174027384/CZVR_Website_Long.webp')">
         <link rel="shortcut icon" href="{{ asset('winnipeg.ico') }}" type="image/x-icon">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
@@ -286,7 +286,7 @@
             </div>
 
             <div class="mt-3">
-                <p><img style="height: 20px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Intersex-inclusive_pride_flag.svg/1920px-Intersex-inclusive_pride_flag.svg.png" alt="">  The Vancouver FIR stands with the LGBTQIA+ community on VATSIM.</p>
+                <p><img style="height: 20px;" src="https://media.discordapp.net/attachments/528107420593946624/1155198121245159444/Intersex-inclusive_pride_flag_small.svg.webp" alt="">  The Vancouver FIR stands with the LGBTQIA+ community on VATSIM.</p>
             </div>
         </div>
     </footer>
