@@ -15,7 +15,7 @@
                                 <span class="main-colour corner" style="padding: 1%">We Are Vancouver.</span>
                             </h1>
                             <h6 class="vancouver-text" style="font-size: 1.25em;">
-                                <span class="main-colour corner" style="padding: 0.5%">Screenshot by {{$background->credit}}</span>
+                                <span class="main-colour corner" style="padding: 0.5%">Screenshot by {{$image->credit}}</span>
                             </h6>
                             <br>
                             <h4 class="text-colour" style="font-size: 2em;">
