@@ -366,7 +366,7 @@
 </div>
 <script>
         $(document).ready(function() {
-            $.fn.dataTable.enum(['C1', 'C3', 'I1', 'I3', 'SUP', 'ADM'])
+            $.fn.dataTable.enum(['S1', 'S2', 'S3', 'C1', 'C3', 'I1', 'I3', 'SUP', 'ADM'])
             $('#rosterTable').DataTable( {
                 "order": [[ 0, "asc" ]]
             } );
