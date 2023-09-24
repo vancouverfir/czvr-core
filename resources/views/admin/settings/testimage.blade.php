@@ -6,7 +6,7 @@
     <div class="winnipeg-blue">
         <div data-jarallax data-speed="0.2" class="jarallax" style="height: min(calc(100vh - 59px), 1080px)">
             <div class="mask flex-center flex-column"
-                 style="z-index: 1; width: 100%; background-image: url({{$background->url}}); {{$background->css}}">
+                 style="z-index: 1; width: 100%; background-image: url({{$image->url}}); {{$image->css}}">
                 <div class="container" style="padding-bottom: 20em">
                     <div class="py-5">
                         <div>
