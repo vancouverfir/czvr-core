@@ -19,8 +19,8 @@
         "laravel-mix": "^6.0",
         "lodash": "^4.17.19",
         "popper.js": "^1.12",
-        "react": "^16.2.0",
-        "react-dom": "^16.2.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
         "semantic-ui-css": "^2.3.3"
     },
     "dependencies": {
