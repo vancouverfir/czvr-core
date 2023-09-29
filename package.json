@@ -24,7 +24,7 @@
         "semantic-ui-css": "^2.3.3"
     },
     "dependencies": {
-        "dotenv": "^8.2.0",
+        "dotenv": "^16.3.1",
         "npm": "^10.1.0"
     }
 }
