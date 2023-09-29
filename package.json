@@ -15,7 +15,7 @@
         "babel-preset-react": "^6.24.1",
         "bootstrap": "^4.6.2",
         "cross-env": "^7.0",
-        "jquery": "^3.5",
+        "jquery": "^3.7",
         "laravel-mix": "^6.0",
         "lodash": "^4.17.19",
         "popper.js": "^1.12",
