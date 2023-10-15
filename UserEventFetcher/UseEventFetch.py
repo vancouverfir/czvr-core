@@ -75,6 +75,8 @@ def trim_events(data):
     """
     print("Trimming events")
 
+    rm_deleted_events(data)
+
     for i in data["data"]:
         print("End time ", i["end"])
         # End time ex. is YYYY-MM-DD HH:MM:SS
@@ -185,21 +187,24 @@ async def stow_event(
     print("complete!")
 
 
-
-def rm_event():
+def rm_deleted_events(data):
     """
-    Removing stale events from the server
+    Removing deleted events from the server
     """
-    print("Removing old events")
-    date = datetime.today() - timedelta(days=1)  # Today - 1 day
-
-    date = date.strftime("%Y-%m-%d %H:%M")
+    print("Removing deleted events")
     cur = connectSQL.cursor()
 
-    date = datetime.strptime(date, "%Y-%m-%d %H:%M")
+    cur.execute("SELECT id FROM events")
 
-    cur.execute(
-        "DELETE FROM events WHERE end_timestamp < DATE_ADD(CURDATE(), interval -1 day)")
+    events = cur.fetchall()
+
+    for id in events:
+        if id not in data:
+            cur.execute(
+                "DELETE FROM events WHERE id = (?)", id)
+
+
+
 
 
 def fetch_roster():
@@ -318,11 +323,11 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
     try:
         print("Searching for ID's to update...")
         cur.execute("SELECT id FROM users WHERE id=?", (cid,))
-        
+
         try:
             cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
             permissions = cur.fetchone()
-            
+
             if permissions is not None:
                 print(f"perms {permissions[0]}")
                 if permissions[0] > 0:
