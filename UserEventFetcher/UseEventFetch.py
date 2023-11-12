@@ -2,6 +2,7 @@
 # Written by Austin Abbey for Vancouver FIR
 
 from datetime import datetime, timedelta
+from slugify import slugify
 import configparser
 import sys
 import os
@@ -110,6 +111,7 @@ def magic_slug(date, name):
     I'm a slug
     But in all seriousness, it just formats the date and time as needed.
     """
+    return slugify(name + "-" + date)
     store_date = str(date)[:16]
     store_name = name.replace(" ", "-")  # convert spaces to dashes
     store_name = store_name[:30]
