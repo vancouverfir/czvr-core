@@ -30,7 +30,7 @@ class FeedbackController extends Controller
 
     public function yourFeedback()
     {
-        $feedback = ControllerFeedback::where('approval', 2)->get();
+        $feedback = ControllerFeedback::where('approval', 2)->orderByDesc('updated_at')->get();
 
         return view('feedback.yourfeedback', compact('feedback'));
     }
