@@ -5706,16 +5706,16 @@
         },
         {
             "name": "sentry/sentry-laravel",
-            "version": "4.0.0",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-laravel.git",
-                "reference": "b6fbabbcb6623fc37a0bb373c4883dabfdda8026"
+                "reference": "638a9ebcec8b23ea75dfdc83e2877d16dc51658b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/b6fbabbcb6623fc37a0bb373c4883dabfdda8026",
-                "reference": "b6fbabbcb6623fc37a0bb373c4883dabfdda8026",
+                "url": "https://api.github.com/repos/getsentry/sentry-laravel/zipball/638a9ebcec8b23ea75dfdc83e2877d16dc51658b",
+                "reference": "638a9ebcec8b23ea75dfdc83e2877d16dc51658b",
                 "shasum": ""
             },
             "require": {
@@ -5779,7 +5779,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-laravel/issues",
-                "source": "https://github.com/getsentry/sentry-laravel/tree/4.0.0"
+                "source": "https://github.com/getsentry/sentry-laravel/tree/4.1.0"
             },
             "funding": [
                 {
@@ -5791,7 +5791,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-11-16T12:33:52+00:00"
+            "time": "2023-11-23T14:07:16+00:00"
         },
         {
             "name": "socialiteproviders/discord",
@@ -10660,16 +10660,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.24.2",
+            "version": "1.24.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "bcad8d995980440892759db0c32acae7c8e79442"
+                "reference": "12f01d214f1c73b9c91fdb3b1c415e4c70652083"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/bcad8d995980440892759db0c32acae7c8e79442",
-                "reference": "bcad8d995980440892759db0c32acae7c8e79442",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/12f01d214f1c73b9c91fdb3b1c415e4c70652083",
+                "reference": "12f01d214f1c73b9c91fdb3b1c415e4c70652083",
                 "shasum": ""
             },
             "require": {
@@ -10701,9 +10701,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.24.2"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.24.3"
             },
-            "time": "2023-09-26T12:28:12+00:00"
+            "time": "2023-11-18T20:15:32+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
