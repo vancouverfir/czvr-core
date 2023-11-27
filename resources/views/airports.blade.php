@@ -50,7 +50,7 @@
             <div class='row'>
                 <div class='col' style="justify-items: auto">
                     <h4 class="blue-text">From CYVR</h4>
-                    <h6>CYYJ - YVR APASS6 (EVEN ALT)</h6>
+                    <h6>CYYJ - YVR APASS7 (EVEN ALT)</h6>
                     <h6>CYCD - YVR TREEL (EVEN ALT)</h6>
                     <h6>CYLW - JANEK SEKAB SEKAB4 (ODD ALT)</h6>
                     <h6>CYXS - EMPOV (EVEN ALT)</h6>
@@ -100,9 +100,9 @@
                  <br></br>
                  <div class='col'>
                     <h4 class="blue-text">To CYYJ</h4>
-                    <h6>CYYC - BOTAG Q894 BOOTH APASS6 (EVEN ALT)</h6>
-                    <h6>CYEG - ANDIE Q860 MERYT BOOTH APASS6 (EVEN ALT)</h6>
-                    <h6>CYXS - YXS YVR AP APASS6 (EVEN ALT)</h6>
+                    <h6>CYYC - BOTAG Q894 BOOTH APASS7 (EVEN ALT)</h6>
+                    <h6>CYEG - ANDIE Q860 MERYT BOOTH APASS7 (EVEN ALT)</h6>
+                    <h6>CYXS - YXS YVR AP APASS7 (EVEN ALT)</h6>
                     <h6>KSEA - ARRIE DISCO DISCO4 (EVEN ALT)</h6>
                     <h6>KPDX - BTG OLM DISCO DISCO4 (EVEN ALT)</h6>
                  </div>
@@ -113,7 +113,7 @@
             <div class='row'>
                 <div class='col'>
                     <h4 class="blue-text">From CYLW</h4>
-                    <h6>CYYJ - MERYT BOOTH APASS6 (EVEN ALT)</h6>
+                    <h6>CYYJ - MERYT BOOTH APASS7 (EVEN ALT)</h6>
                     <h6>CYYC - WHATS MENBO Q983 IGVEP IGVEP6 (ODD ALT)</h6>
                     <h6>CYEG - ROMRA Q949 ELLKS ELLKS3 (ODD ALT)</h6>
                     <h6>CYXS - YWB YXS (EVEN ALT)</h6>
