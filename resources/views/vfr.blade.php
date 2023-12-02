@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'VFR -Vancouver FIR')
+@section('title', 'VFR - Vancouver FIR')
 @section('content')
 
 <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
