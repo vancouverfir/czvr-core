@@ -5,7 +5,7 @@
 
     <div class="container" style="margin-top: 20px;">
         <h1 class="blue-text font-weight-bold">Training</h1>
-            <p>Vancouver FIR holds training to the highest standards, the training we provide is always extremely professional and precise. And cultivate a culture of teaching and learning between all ratings.
+            <p>Vancouver FIR holds training to the highest standards, the training we provide is always extremely professional and precise and cultivate a culture of teaching and learning between all ratings.
             Our most successful students are those who engage in the community and contribute their unique skills and perspectives.</p>
         <hr>
         <h3 class="font-weight-bold blue-text">Current Wait Time</h3>

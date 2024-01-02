@@ -2,6 +2,7 @@
 # Written by Austin Abbey for Vancouver FIR
 
 from datetime import datetime, timedelta
+from slugify import slugify
 import configparser
 import sys
 import os
@@ -17,25 +18,25 @@ print(ISMODE)
 
 # getting our config file
 config = configparser.RawConfigParser()
-assert os.path.exists('./pyapiconf.ini')
-CONFIGFILEPATH = './pyapiconf.ini'
+assert os.path.exists("./pyapiconf.ini")
+CONFIGFILEPATH = "./pyapiconf.ini"
 config.read(CONFIGFILEPATH)
 
 # this is our Vatsim API key, edit to match what is in use
-simKey = config.get('VatcanAPI', 'APIkey')
+simKey = config.get("VatcanAPI", "APIkey")
 # This is for getting the request URL for the API, in case of future changes
-APIEvent = config.get('VatcanAPI', 'Events')
+APIEvent = config.get("VatcanAPI", "Events")
 # This is for getting the request URL for the API, in case of future changes
-APIUsers = config.get('VatcanAPI', 'Users')
+APIUsers = config.get("VatcanAPI", "Users")
 
 # Establish connection to SQL server
 
 DSN = "SQL Server Native Client 11.0"
-DBUser = config.get('ServerDB', 'ID')
-DBServer = config.get('ServerDB', 'Address')
-DBPort = config.get('ServerDB', 'Port')
-DBPass = config.get('ServerDB', 'Password')
-DBName = config.get('ServerDB', 'DBName')
+DBUser = config.get("ServerDB", "ID")
+DBServer = config.get("ServerDB", "Address")
+DBPort = config.get("ServerDB", "Port")
+DBPass = config.get("ServerDB", "Password")
+DBName = config.get("ServerDB", "DBName")
 
 print("|" + DBName + "|")
 print("|" + DBUser + "|")
@@ -47,8 +48,14 @@ CIDSTOR = []
 VISITCIDSTOR = []
 
 try:
-    connectSQL = mariadb.connect(user=DBUser, password=DBPass, host=DBServer, port=int(
-        DBPort), database=DBName, autocommit=True)
+    connectSQL = mariadb.connect(
+        user=DBUser,
+        password=DBPass,
+        host=DBServer,
+        port=int(DBPort),
+        database=DBName,
+        autocommit=True,
+    )
 except mariadb.Error as e:
     print(f"Error connecting to MariaDB Platform: {e}")
     sys.exit(1)
@@ -59,7 +66,6 @@ def fetch_event():
 
     print("Fetching Events...")
     try:
-
         req = requests.get(APIEvent + simKey, timeout=5)
     except requests.exceptions.RequestException as request_exception:
         print("Event Fetch Failed! ", request_exception)
@@ -75,6 +81,8 @@ def trim_events(data):
     """
     print("Trimming events")
 
+    rm_deleted_events(data)
+
     for i in data["data"]:
         print("End time ", i["end"])
         # End time ex. is YYYY-MM-DD HH:MM:SS
@@ -87,7 +95,9 @@ def trim_events(data):
         present = present.strftime("%Y-%m-%d %H:%M")
         present = datetime.strptime(present, "%Y-%m-%d %H:%M")
 
-        slug = magic_slug(i["start"], i["name"])
+        slug = slugify(
+            str(i["start"]) + "-" + str(i["name"])
+        )  # nicely formatting our datetime string
 
         if past.date() > present.date():
             print("Event is within period")
@@ -96,23 +106,21 @@ def trim_events(data):
             departure = magic_string(i["airports"]["departure"])
 
             # the keys for ID, name, start, end, description,imageurl,airports,dept, and arrivals
-            asyncio.run(stow_event(i["id"], i["name"], str(i["start"])[:16], str(i["end"])[
-                :16], i["description"], i["image_url"],
-                departure, arrival, slug))
+            asyncio.run(
+                stow_event(
+                    i["id"],
+                    i["name"],
+                    str(i["start"])[:16],
+                    str(i["end"])[:16],
+                    i["description"],
+                    i["image_url"],
+                    departure,
+                    arrival,
+                    slug,
+                )
+            )
         else:
             print("Event is outside of period, ignoring...")
-
-
-def magic_slug(date, name):
-    """
-    I'm a slug
-    But in all seriousness, it just formats the date and time as needed.
-    """
-    store_date = str(date)[:16]
-    store_name = name.replace(" ", "-")  # convert spaces to dashes
-    store_name = store_name[:30]
-    # it just returns title (with a 30-character limit) plus - plus date
-    return store_name + "-" + store_date
 
 
 def magic_string(stron):
@@ -132,7 +140,15 @@ def magic_string(stron):
 
 
 async def stow_event(
-    id, name, start_timestamp, end_timestamp, description, image_url, departure_icao, arrival_icao, slug
+    id,
+    name,
+    start_timestamp,
+    end_timestamp,
+    description,
+    image_url,
+    departure_icao,
+    arrival_icao,
+    slug,
 ):
     """
     Uploading events to the DB
@@ -146,10 +162,21 @@ async def stow_event(
         cur.execute("SELECT id FROM events WHERE id=?", (id,))
         print("Captain, we found something!")
         try:  # attempting to update the DB
-            cur.execute("UPDATE events SET name = ?, start_timestamp = ?, end_timestamp = ?, description = ?, "
-                        "image_url = ?, departure_icao = ?, arrival_icao = ?, slug = ? WHERE id = ?",
-                        (name, start_timestamp, end_timestamp, description, image_url, departure_icao, arrival_icao,
-                         slug, id,))
+            cur.execute(
+                "UPDATE events SET name = ?, start_timestamp = ?, end_timestamp = ?, description = ?, "
+                "image_url = ?, departure_icao = ?, arrival_icao = ?, slug = ? WHERE id = ?",
+                (
+                    name,
+                    start_timestamp,
+                    end_timestamp,
+                    description,
+                    image_url,
+                    departure_icao,
+                    arrival_icao,
+                    slug,
+                    id,
+                ),
+            )
             print("Execute complete!")
         except mariadb.Error as db_error:
             print(f" Iterative Error: {db_error}")
@@ -176,30 +203,40 @@ async def stow_event(
         print(departure_icao)
         print(arrival_icao)
         print(slug)
-        cur.execute("INSERT INTO events (id, name, Start_timestamp, end_timestamp, description, image_url, "
-                    "departure_icao, arrival_icao, slug) VALUES (?,?,?,?,?,?,?,?,?)",
-                    (id, name, start_timestamp, end_timestamp, description, image_url, departure_icao, arrival_icao,
-                     slug,))
+        cur.execute(
+            "INSERT INTO events (id, name, Start_timestamp, end_timestamp, description, image_url, "
+            "departure_icao, arrival_icao, slug) VALUES (?,?,?,?,?,?,?,?,?)",
+            (
+                id,
+                name,
+                start_timestamp,
+                end_timestamp,
+                description,
+                image_url,
+                departure_icao,
+                arrival_icao,
+                slug,
+            ),
+        )
     except mariadb.Error as db_error:
         print(f"Error: {db_error}")
     print("complete!")
 
 
-
-def rm_event():
+def rm_deleted_events(data):
     """
-    Removing stale events from the server
+    Removing deleted events from the server
     """
-    print("Removing old events")
-    date = datetime.today() - timedelta(days=1)  # Today - 1 day
-
-    date = date.strftime("%Y-%m-%d %H:%M")
+    print("Removing deleted events")
     cur = connectSQL.cursor()
 
-    date = datetime.strptime(date, "%Y-%m-%d %H:%M")
+    cur.execute("SELECT id FROM events")
 
-    cur.execute(
-        "DELETE FROM events WHERE end_timestamp < DATE_ADD(CURDATE(), interval -1 day)")
+    events = cur.fetchall()
+
+    for id in events:
+        if id not in data:
+            cur.execute("DELETE FROM events WHERE id = (?)", id)
 
 
 def fetch_roster():
@@ -219,8 +256,17 @@ def fetch_roster():
         rating_short = conv_rating(i["rating"])
         fullname = i["first_name"] + " " + i["last_name"]
         print("Users Full Name:", fullname)
-        asyncio.run(stow_roster(i["cid"], i["first_name"], i["last_name"],
-                                i["rating"], i["email"], fullname, rating_short))
+        asyncio.run(
+            stow_roster(
+                i["cid"],
+                i["first_name"],
+                i["last_name"],
+                i["rating"],
+                i["email"],
+                fullname,
+                rating_short,
+            )
+        )
         CIDSTOR.append(i["cid"])
 
 
@@ -242,8 +288,17 @@ def fetch_visit_roster():
         rating_short = conv_rating(i["rating"])
         fullname = i["first_name"] + " " + i["last_name"]
         print("Users Full Name:", fullname)
-        asyncio.run(stow_visit_roster(
-            i["cid"], i["first_name"], i["last_name"], i["rating"], i["email"], fullname, rating_short))
+        asyncio.run(
+            stow_visit_roster(
+                i["cid"],
+                i["first_name"],
+                i["last_name"],
+                i["rating"],
+                i["email"],
+                fullname,
+                rating_short,
+            )
+        )
         CIDSTOR.append(i["cid"])
 
     trim_roster()
@@ -303,8 +358,7 @@ def trim_roster():
         if db_cid not in CIDSTOR:
             print("invalid CID:", db_cid)
             bye.execute("DELETE FROM roster WHERE cid=?", (db_cid,))
-            bye.execute(
-                "UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
+            bye.execute("UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
             print("Invalid CID Removed from DB... BUH BYE")
 
 
@@ -318,31 +372,38 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
     try:
         print("Searching for ID's to update...")
         cur.execute("SELECT id FROM users WHERE id=?", (cid,))
-        
+
         try:
             cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
             permissions = cur.fetchone()
-            
+
             if permissions is not None:
                 print(f"perms {permissions[0]}")
                 if permissions[0] > 0:
                     sto.execute(
                         "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
-                        (email, lname, rating_id, rating_short, "0", cid))
+                        (email, lname, rating_id, rating_short, "0", cid),
+                    )
                     sto.execute(
-                        "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?", (fullname, "0", cid))
+                        "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",
+                        (fullname, "0", cid),
+                    )
                     sto.execute("SELECT status FROM roster WHERE cid = ?", (cid,))
                     status = sto.fetchone()
                     if status[0] == "visit":
                         sto.execute(
-                            f"UPDATE roster SET status = 'home' WHERE cid = {cid}")
+                            f"UPDATE roster SET status = 'home' WHERE cid = {cid}"
+                        )
                 else:
                     sto.execute(
-                        "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?", (fullname, "0", cid))
+                        "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",
+                        (fullname, "0", cid),
+                    )
                     sto.execute(
                         "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = "
                         "? WHERE id = ?",
-                        (email, lname, rating_id, rating_short, "1", "0", cid))
+                        (email, lname, rating_id, rating_short, "1", "0", cid),
+                    )
             else:
                 print("Not in DB Moving on...")
         except mariadb.Error as db_error:
@@ -356,7 +417,7 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
     try:
         print("Updating users role...")
         cur.execute(f"SELECT permissions FROM users WHERE id={cid}")
-        #perm = cur.fetchall()[0][0]
+        # perm = cur.fetchall()[0][0]
         perm = cur.fetchone()
         if perm is not None:
             print(f"permissions for {cid}={perm}")
@@ -388,19 +449,24 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
         cur.execute(
             "INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname) VALUES "
             "(?,?,?,?,?,?,?,?)",
-            (cid, email, fname, lname, rating_id, rating_short, "1", fname))
+            (cid, email, fname, lname, rating_id, rating_short, "1", fname),
+        )
     except mariadb.Error as db_error:
         print("Error: ", db_error)
     try:
         print("Now adding to Roster")
-        cur.execute("INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",
-                    (cid, cid, fullname, "home", "1", "0"))
+        cur.execute(
+            "INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",
+            (cid, cid, fullname, "home", "1", "0"),
+        )
     except mariadb.Error as db_error:
         print("Error: ", db_error)
     print("complete!")
 
 
-async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, rating_short):
+async def stow_visit_roster(
+    cid, fname, lname, rating_id, email, fullname, rating_short
+):
     """
     stores new users in the roster
     """
@@ -418,20 +484,22 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, ratin
                     if i[0] > 0:
                         sto.execute(
                             "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
-                            (
-                                email, lname, rating_id, rating_short, "1", cid))
+                            (email, lname, rating_id, rating_short, "1", cid),
+                        )
                         sto.execute(
                             "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
-                            (fullname, "1", "visit", cid))
+                            (fullname, "1", "visit", cid),
+                        )
                     else:
                         sto.execute(
                             "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
-                            (fullname, "1", "visit", cid))
+                            (fullname, "1", "visit", cid),
+                        )
                         sto.execute(
                             "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, "
                             "visitor = ? WHERE id = ?",
-                            (
-                                email, lname, rating_id, rating_short, "1", "1", cid))
+                            (email, lname, rating_id, rating_short, "1", "1", cid),
+                        )
                 else:
                     print("not in visitor DB moving on...")
         except mariadb.Error as db_error:
@@ -446,13 +514,16 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, ratin
         cur.execute(
             "INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname, "
             "visitor) VALUES (?,?,?,?,?,?,?,?,?)",
-            (cid, email, fname, lname, rating_id, rating_short, "1", fname, "1"))
+            (cid, email, fname, lname, rating_id, rating_short, "1", fname, "1"),
+        )
     except mariadb.Error as db_error:
         print("Error: ", db_error)
     try:
         print("Now adding to Visitor Roster")
-        cur.execute("INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",
-                    (cid, cid, fullname, "visit", "1", "1"))
+        cur.execute(
+            "INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",
+            (cid, cid, fullname, "visit", "1", "1"),
+        )
     except mariadb.Error as db_error:
         print("Error: ", db_error)
     print("complete!")
@@ -470,7 +541,12 @@ def reset_activity():
 try:
     if ISMODE == "events" or ISMODE == "event":
         fetch_event()
-    elif ISMODE == "roster" or ISMODE == "rosters" or ISMODE == "users" or ISMODE == "user":
+    elif (
+        ISMODE == "roster"
+        or ISMODE == "rosters"
+        or ISMODE == "users"
+        or ISMODE == "user"
+    ):
         fetch_roster()
         fetch_visit_roster()
     elif ISMODE == "activityreset":

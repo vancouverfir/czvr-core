@@ -50,7 +50,6 @@
                 @else
                 <h4>Departure Airport</h4>
                 <ul class="list-unstyled">
-                    <li>{{$event->departure_icao_data()['name']}}</li>
                     <li>{{$event->departure_icao}}</li>
                 </ul>
 
@@ -60,7 +59,6 @@
                 @else
                 <h4>Arrival Airport</h4>
                 <ul class="list-unstyled">
-                    <li>{{$event->arrival_icao_data()['name']}}</li>
                     <li>{{$event->arrival_icao}}</li>
 
                 </ul>
