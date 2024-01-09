@@ -13,8 +13,8 @@
         <p class ="content-warning"> If requesting via text please private message the controller with <q>DEPARTURE CLEARANCE REQUEST</p>
         <p>Pilots should then call ATC when ready for push and start, noting the identifier assigned to their flight in the PDC.
         <blockquote style="font-size: 1em">Vancouver Ground, ACA123, PDC Identifier 999A, ready for push and start.</blockquote></p>
-        <h3 class="font-weight-bold blue-text">If Flight Plan Invalid</h3>
-	<p>If there is an issue with the flight plan (ie: wrong altitude or invalid flight plan) the controller will reply with the following message:</p>
+        <h3 class="font-weight-bold blue-text">Issues and Amendments</h3>
+	<p>If there is an issue with the flight plan (i.e. wrong altitude, non-existant waypoints, or out of date SIDs/STARs) the controller will reply with the following message:</p>
 	<blockquote style="font-size: 1em">PDC UNAVAILABLE, REVERT TO STANDARD VOICE PROCEDURES</blockquote>
-	<p>If you receive this message, the PDC clearance becomes <u>void</u> and you should contact ATC.</p>
+	<p>If you receive this message, the PDC clearance becomes <u>void</u> and you should contact ATC on the normal frequency.</p>
 @endsection
