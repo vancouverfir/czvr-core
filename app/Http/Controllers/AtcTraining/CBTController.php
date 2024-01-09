@@ -568,16 +568,16 @@ class CBTController extends Controller
             //dd($time_taken);
 
             CbtExamAnswer::create([
-                'student_id'=>$student->id,
-                'cbt_exam_question_id'=>$req->get('question_id'),
+                'student_id'=> $student->id,
+                'cbt_exam_question_id'=> $req->get('question_id'),
                 'cbt_exam_id' => $id,
-                'user_answer'=>$req->get('option'),
+                'user_answer'=> $req->get('option'),
                 'question' => $question->question,
                 'option1' => $question->option1,
                 'option2' => $question->option2,
                 'option3' => $question->option3,
                 'option4' => $question->option4,
-                'right_answer'=>$question->answer,
+                'right_answer'=> $question->answer,
             ]);
         }
 
@@ -623,7 +623,7 @@ class CBTController extends Controller
         $subject = Subject::findOrFail($id);
 
         $title = 'Manage questions';
-        $answer = ['1'=>1, '2'=>2, '3'=> 3, '4'=> 4];
+        $answer = ['1'=> 1, '2'=> 2, '3' => 3, '4' => 4];
         $questions = $subject->questions;
         $title_button = 'Save question';
         //dd($questions);

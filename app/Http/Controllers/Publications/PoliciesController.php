@@ -122,7 +122,7 @@ class PoliciesController extends Controller
                 'published' => date('Y-m-d'),
                 'type' => 'NoEmail',
                 'user_id' => Auth::user()->id,
-                'slug' =>$slug,
+                'slug' => $slug,
             ]);
             $news->save();
         }
