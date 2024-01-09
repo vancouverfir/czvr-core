@@ -328,7 +328,6 @@ Route::group(['middleware' => 'auth'], function () {
     });
 });
 
-
 //Bookings
 Route::group(['middleware' => 'certified'], function () {
     Route::get('/dashboard/bookings', 'ControllerBookings\ControllerBookingsController@index')->name('controllerbookings.index');
