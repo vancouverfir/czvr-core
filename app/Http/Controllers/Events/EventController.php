@@ -232,6 +232,7 @@ class EventController extends Controller
         }
         //Save it
         $event->save();
+
         //Redirect
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Event created!');
     }
