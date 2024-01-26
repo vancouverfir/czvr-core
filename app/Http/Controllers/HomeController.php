@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Classes\VatsimHelper;
-use App\Models\AtcTraining\RosterMember;
-use App\Models\Network\SessionLog;
 use App\Models\Events\Event;
+use App\Models\Network\SessionLog;
 use App\Models\News\News;
 use App\Models\Settings\HomepageImages;
 use Carbon\Carbon;
@@ -59,8 +58,8 @@ class HomeController extends Controller
             4 => '#8C8C8C',
         ];
 
-        $monthStart = Carbon::parse("2024-02-10")->startOfMonth()->toISOString();
-        $monthEnd = Carbon::parse("February 10, 2024")->endOfMonth()->toISOString();
+        $monthStart = Carbon::now()->startOfMonth()->toISOString();
+        $monthEnd = Carbon::now()->endOfMonth()->toISOString();
         $topControllers = SessionLog::selectRaw('sum(duration) as duration, cid')
                                         ->whereBetween('session_start', [$monthStart, $monthEnd])
                                         ->groupBy('cid')
