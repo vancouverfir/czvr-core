@@ -32,7 +32,7 @@
             <div class="col-md-4">
                 <div class="card" style="color: #ffffff; float: right;">
                     <div class="flex-container card-body corner" style="padding-top: 10%;">
-                        <h3 style="text-align: center;">&nbsp;Monthly Hours: <b>{{$monthlyHours}}&nbsp;</b></h3>
+                        <h3 style="text-align: center;">&nbsp;Quarterly Hours: <b>{{$quarterlyHours}}&nbsp;</b></h3>
                     </div>
                 </div>
             </div>
