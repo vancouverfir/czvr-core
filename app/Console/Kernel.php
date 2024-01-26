@@ -7,6 +7,7 @@ use App\Console\Commands\CheckVisitHours;
 use App\Console\Commands\CurrencyCheck;
 use App\Console\Commands\EventReminders;
 use App\Console\Commands\RatingUpdate;
+use App\Console\Commands\UpdateEventsFromVatsim;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -30,24 +31,24 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // * * * * * schedulers
-        $schedule->command(ActivityLog::class)->everyMinute()->evenInMaintenanceMode();
-        $schedule->command(EventReminders::class)->everyMinute();
-        $schedule->call(function () {
+        $schedule->command(ActivityLog::class)->everyFiveMinutes()->evenInMaintenanceMode();
+        // $schedule->command(EventReminders::class)->everyMinute();
+/*        $schedule->call(function () {
             file_get_contents(config('cronurls.minute'));
-        })->everyMinute();
+        })->everyMinute();*/
 
         // 0 0 * * * schedulers
-        $schedule->command(RatingUpdate::class)->daily();
-        $schedule->call(function () {
+        // $schedule->command(RatingUpdate::class)->daily();
+/*        $schedule->call(function () {
             file_get_contents(config('cronurls.daily'));
-        })->daily();
+        })->daily();*/
 
         // 0 0 1 * * schedulers
-        $schedule->command(CheckVisitHours::class)->monthly();
-        $schedule->command(CurrencyCheck::class)->monthly();
-        $schedule->call(function () {
+        // $schedule->command(CheckVisitHours::class)->monthly();
+        $schedule->command(CurrencyCheck::class)->quarterly();
+/*        $schedule->call(function () {
             file_get_contents(config('cronurls.monthly'));
-        })->monthly();
+        })->monthly();*/
     }
 
     /**

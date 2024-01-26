@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Classes\VatsimHelper;
 use App\Models\AtcTraining\RosterMember;
+use App\Models\Network\SessionLog;
 use App\Models\Events\Event;
 use App\Models\News\News;
 use App\Models\Settings\HomepageImages;
@@ -58,14 +59,20 @@ class HomeController extends Controller
             4 => '#8C8C8C',
         ];
 
-        $topControllers = RosterMember::where('currency', '!=', 0)->get()->sortByDesc('currency')->take(5);
+        $monthStart = Carbon::parse("2024-02-10")->startOfMonth()->toISOString();
+        $monthEnd = Carbon::parse("February 10, 2024")->endOfMonth()->toISOString();
+        $topControllers = SessionLog::selectRaw('sum(duration) as duration, cid')
+                                        ->whereBetween('session_start', [$monthStart, $monthEnd])
+                                        ->groupBy('cid')
+                                        ->get()->sortByDesc('duration')->take(5);
 
         $n = -1;
         foreach ($topControllers as $top) {
+
             $top = [
                 'id' => $n += 1,
-                'cid' => $top['user_id'],
-                'time' => decimal_to_hm($top['currency']),
+                'cid' => $top['cid'],
+                'time' => decimal_to_hm($top['duration']),
                 'colour' => $colourArray[$n],
             ];
             array_push($topControllersArray, $top);
