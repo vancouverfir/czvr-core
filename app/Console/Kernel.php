@@ -7,7 +7,6 @@ use App\Console\Commands\CheckVisitHours;
 use App\Console\Commands\CurrencyCheck;
 use App\Console\Commands\EventReminders;
 use App\Console\Commands\RatingUpdate;
-use App\Console\Commands\UpdateEventsFromVatsim;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

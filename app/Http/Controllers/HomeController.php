@@ -67,7 +67,6 @@ class HomeController extends Controller
 
         $n = -1;
         foreach ($topControllers as $top) {
-
             $top = [
                 'id' => $n += 1,
                 'cid' => $top['cid'],
