@@ -120,7 +120,7 @@ class UserController extends Controller
             $connections = [];
         }
 
-        return view('profile', compact('id', 'user', 'monthlyHours', 'rosterMember', 'time', 'connections'));
+        return view('profile', compact('id', 'user', 'quarterlyHours', 'rosterMember', 'time', 'connections'));
     }
 
     public function viewConnections($id)
