@@ -210,7 +210,7 @@
                                                     Some examples would include:
                                                 </p>
                                                 <ul style="list-style: square">
-                                                    <li>Controller certifications for the month</li>
+                                                    <li>Controller certifications for the quarter</li>
                                                     <li>News from the FIR Chief about non-critical matters</li>
                                                     <li>Updates from other staff members</li>
                                                     <li>Event notifications</li>
@@ -438,7 +438,7 @@
                                 @else
                                     <h3 class="font-weight-bold blue-text pb-2">Activity</h3>
 
-                                    <b>Monthly:</b>
+                                    <b>quarterly:</b>
                                     @if (Auth::user()->rosterProfile->currency < 0.1)
                                         <h3><span class="badge rounded shadow-none red">
                             No hours recorded
@@ -459,7 +459,7 @@
                           </span></h3>
                                         @endif
                                     @endif
-                                    <p>You require <b>2 hours</b> of activity every month!</p>
+                                    <p>You require <b>3 hours</b> of activity every quarter!</p>
                                 @endif
 
                             <!--End Vancouver Training Hours-->
@@ -476,7 +476,7 @@
                                             </span></h3>
                                         @endif
                                     @endif
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    <p>You require <b>3 hours</b> of activity every quarter!</p>
                                 @elseif (Auth::user()->rosterProfile->status == "home" && Auth::user()->rosterProfile->staff == "staff")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
@@ -489,7 +489,7 @@
                                             </span></h3>
                                         @endif
                                     @endif
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    <p>You require <b>3 hours</b> of activity every quarter!</p>
                                 @elseif (Auth::user()->rosterProfile->status == "home" && Auth::user()->rosterProfile->staff == "exec")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 5.0)
@@ -502,7 +502,7 @@
                                             </span></h3>
                                         @endif
                                     @endif
-                                    <p>You require <b>5 hours</b> of activity every month!</p>
+                                    <p>You require <b>3 hours</b> of activity every quarter!</p>
                                 @elseif (Auth::user()->rosterProfile->status == "home")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 2.0)
@@ -515,7 +515,7 @@
                                             </span></h3>
                                         @endif
                                     @endif
-                                    <p>You require <b>2 hours</b> of activity every month!</p>
+                                    <p>You require <b>3 hours</b> of activity every quarter!</p>
                                 @endif
                             <!--End Vancouver Cntrlr Hours-->
 
@@ -532,7 +532,7 @@
                           </span></h3>
                                         @endif
                                     @endif 
-                                    <p>You require <b>2 hour</b> of activity every month!</p>
+                                    <p>You require <b>3 hour</b> of activity every quarter!</p>
                                 @endif
 
                             <!--End Vancouver Cntrlr Hours-->
@@ -550,7 +550,7 @@
                                             </span></h3>
                                         @endif
                                     @endif
-                                    <p>You require <b>5 hours</b> of activity every month!</p>
+                                    <p>You require <b>3 hours</b> of activity every quarter!</p>
                                 @elseif (Auth::user()->rosterProfile->status == "instructor")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
@@ -563,7 +563,7 @@
                                             </span></h3>
                                         @endif
                                     @endif
-                                    <p>You require <b>3 hours</b> of activity every month!</p>
+                                    <p>You require <b>3 hours</b> of activity every quarter!</p>
                                         
                                 @endif
                                

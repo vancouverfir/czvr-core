@@ -129,7 +129,7 @@
                           </span></h3>
                           @endif
                           @endif
-                              <p>They require <b>2 hours</b> of activity every month.</p>
+                              <p>They require <b>3 hours</b> of activity every quarter.</p>
                         @endif
 <!--End Vancouver Training Hours-->
 
@@ -146,7 +146,7 @@
                           </span></h3>
                           @endif
                           @endif
-                              <p>They require <b>2 hours</b> of activity every month.</p>
+                              <p>They require <b>3 hours</b> of activity every quarter.</p>
                         @endif
 <!--End Vancouver Cntrlr Hours-->
 
@@ -163,7 +163,7 @@
                           </span></h3>
                         @endif
                         @endif
-                        <p>They require <b>1 hour</b> of activity every month.</p>
+                        <p>They require <b>3 hour</b> of activity every quarter.</p>
                         @endif
 
 <!--End Vancouver Cntrlr Hours-->
