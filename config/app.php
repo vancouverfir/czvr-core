@@ -218,7 +218,7 @@ return [
         'User' => App\Models\Users\User::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Form'=> Collective\Html\FormFacade::class,
+        'Form' => Collective\Html\FormFacade::class,
         'GoogleCalendar' => Spatie\GoogleCalendar\GoogleCalendarFacade::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Calendar' => \MaddHatter\LaravelFullcalendar\Facades\Calendar::class,

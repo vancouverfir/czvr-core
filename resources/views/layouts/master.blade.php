@@ -14,7 +14,7 @@
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <!--Rich Preview Meta-->
         <title>@yield('title', 'Vancouver FIR')</title>
@@ -23,7 +23,7 @@
         <meta name="og:title" content="@yield('title', 'Vancouver FIR')">
         <meta name="og:description" content="@yield('description', '')">
         <meta name="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
-        <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
         <!-- Bootstrap core CSS -->
@@ -107,9 +107,6 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        {{-- <li class="nav-item">
-                            <a href="{{route('controllerbookings.public')}}" class="nav-link {{ Request::is('bookings/*') || Request::is('bookings') ? 'active' : '' }}">Bookings</a>
-                        </li> --}}
                         <li class="nav-item {{ Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
                             @if(Auth::check() && Auth::user()->permissions >= 4)
                             <li class="nav-item dropdown {{ Request::is('news') || Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
@@ -137,6 +134,7 @@
                         <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
+                            {{--<a class="dropdown-item" href="{{route('controllerbookings')}}">Bookings</a>--}}
                             <a class="dropdown-item" href="{{route('roster.public')}}">Roster</a>
                             @if(Auth::check() && Auth::user()->permissions >= 3)
                                 <a class="dropdown-item {{ Request::is('roster') ? 'active white-text' : '' }}" href="{{route('roster.index')}}">Manage Roster</a>
@@ -152,6 +150,7 @@
                                 <a class="dropdown-item" href="{{route('airports')}}">Airports</a>
                                 <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
                                 <a class="dropdown-item" href="https://www.fltplan.com/" target="_blank">Charts</a>
+                                <a class="dropdown-item" href="{{route('pdc')}}">PDC</a>
                                 <a class="dropdown-item" href="https://vatsim.net/docs/pilots/pilots" target="_blank">VATSIM Resources</a>
                                 <a class="dropdown-item" href="https://simaware.ca" target="_blank">Live Map</a>
                             </div>
@@ -272,10 +271,10 @@
                 &nbsp;
                 <a href="{{route('privacy')}}">Privacy Policy</a>
                 &nbsp;
-               {{-- •
+                •
                 &nbsp;
                 <a href="{{route('branding')}}">Branding</a>
-                &nbsp;--}}
+                &nbsp;
                 •
                 &nbsp;
                 <a href="https://www.vatcan.ca">VATCAN</a>

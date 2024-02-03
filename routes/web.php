@@ -30,6 +30,7 @@ Route::view('/branding', 'branding')->name('branding');
 Route::get('/news/{slug}', 'News\NewsController@viewArticlePublic')->name('news.articlepublic');
 Route::get('/news', 'News\NewsController@viewAllPublic')->name('news');
 Route::get('/training', 'AtcTraining\TrainingController@trainingTime')->name('training');
+Route::get('/controllerbookings', 'ControllerBookings\ControllerBookingsController@indexPublic')->name('controllerbookings');
 Route::view('/mochi', 'mochi')->name('mochi');
 Route::view('/pdc', 'pdc')->name('pdc');
 Route::view('/vfr', 'vfr')->name('vfr');
@@ -327,13 +328,12 @@ Route::group(['middleware' => 'auth'], function () {
     });
 });
 
-//NOT BEING USED CURRENTLY
 //Bookings
-//Route::group(['middleware' => 'certified'], function () {
-//Route::get('/dashboard/bookings', 'ControllerBookings\ControllerBookingsController@index')->name('controllerbookings.index');
-//Route::get('/dashboard/bookings/create', 'ControllerBookings\ControllerBookingsController@create')->name('controllerbookings.create');
-//Route::post('/dashboard/bookings/create', 'ControllerBookings\ControllerBookingsController@createPost')->name('controllerbookings.create.post');
-//  });
+Route::group(['middleware' => 'certified'], function () {
+    Route::get('/dashboard/bookings', 'ControllerBookings\ControllerBookingsController@index')->name('controllerbookings.index');
+    Route::get('/dashboard/bookings/create', 'ControllerBookings\ControllerBookingsController@create')->name('controllerbookings.create');
+    Route::post('/dashboard/bookings/create', 'ControllerBookings\ControllerBookingsController@createPost')->name('controllerbookings.create.post');
+});
 
 //AtcTraining
 Route::get('/dashboard/training', 'AtcTraining\TrainingController@index')->name('training.index');

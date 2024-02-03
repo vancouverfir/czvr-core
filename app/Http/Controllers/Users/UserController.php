@@ -72,7 +72,7 @@ class UserController extends Controller
         $rosterMember = RosterMember::where('user_id', $id)->first();
         if ($rosterMember) {
             $logs = SessionLog::where('cid', $id)->get();
-            $monthlyHours = decimal_to_hm(RosterMember::where('cid', $id)->firstOrFail()->currency);
+            $quarterlyHours = decimal_to_hm(RosterMember::where('cid', $id)->firstOrFail()->currency);
 
             //Start our array
             $time = [
@@ -115,12 +115,12 @@ class UserController extends Controller
                 $c['duration'] = decimal_to_hm($c['duration']);
             }
         } else {
-            $monthlyHours = 'N/A';
+            $quarterlyHours = 'N/A';
             $rosterMember = null;
             $connections = [];
         }
 
-        return view('profile', compact('id', 'user', 'monthlyHours', 'rosterMember', 'time', 'connections'));
+        return view('profile', compact('id', 'user', 'quarterlyHours', 'rosterMember', 'time', 'connections'));
     }
 
     public function viewConnections($id)

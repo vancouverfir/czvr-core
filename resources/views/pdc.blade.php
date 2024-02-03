@@ -4,16 +4,17 @@
 
     <div class="container py-4">
         <h1 class="font-weight-bold blue-text"><strong>Pre-Departure Clearance</strong></h1>
-        <p>Pre-Departure Clearances (PDCs) are issued when the Vancouver FIR is experiencing high volumes of traffic.</p>
-        <p>VATCAN PDC currently uses the private message (PM) communications protocol, with service currently limited to all VATSIM pilot clients. Airports where PDC service is currently provided in the Toronto FIR are Toronto International, Toronto Island, London International, and Ottawa International. Expansion of the service to additional airports will be notified.</p>
+        <p>Pre-Departure Clearances in the Vancouver FIR are issued upon request by the pilot or during high volumes of traffic.</p>
+        <blockquote style="font-size: 1em">PDC service is currently provided <u>only</u> in CYVR and CYYJ. When available, "PDC Available on request" will be listed in the ATIS NOTAMS.</blockquote></p>
         <hr>
-        <h3 class="font-weight-bold blue-text">Requesting & Issuing of PDC</h3>
-        <p>Pilots can request a Pre-Departure Clearance from ATC by voice or by text - controllers may also elect to only use PDC during high-traffic events, as mentioned above.</p>
-        <p>Each PDC is issued via private message - any VATSIM-approved pilot client can receive these messages. The format to a PDC will note similar information normally sent during a standard IFR clearance, such as an active runway, assigned SID, and more.
-        <blockquote style="font-size: 1em">PDC | ACA123 YWG | A321/L | RORMA SIDPO DEGVA FELTN OTNIK BOXUM5 | USE SID DUXUS1 | DEPARTURE RUNWAY 18 | DESTINATION CYYZ | CONTACT ATC WITH IDENTIFIER - 647A | - END -</blockquote></p>
-        <p>Pilots should then call ATC when ready for push and start, noting the active airport ATIS (if applicable) and the identifier assigned to their flight in the PDC.
-        <blockquote style="font-size: 1em">Vancouver Ground, ACA123, PDC Identifier 647A, ATIS T, ready for push and start.</blockquote></p>
-        <p>In a case where a flight plan is invalid, or a controller requires re-routing or any anmendment to a flight plan, the PDC may also include "AMENDED ROUTE". Pilots are expected to closely read over the PDC, as it is an IFR clearance - it should be treated as such.</p>
-    </div>
-
+        <h3 class="font-weight-bold blue-text">Requesting a PDC</h3>
+        <p>PDCs are issued via private message on all VATSIM pilot clients - pilots may request a PDC via voice or text. The format to a PDC will note similar information to an IFR clearance, as shown in the example below:
+        <blockquote style="font-size: 1em">PDC - ACA123 1234 CYVR - A320 - FL310 - JANEK SEKAB SEKAB4 - USE SID YVR2 - DEPARTURE RUNWAY 26L - DESTINATION CYLW - CONTACT CYVR_GND 121.700 WITH IDENTIFIER 999A - END OF MESSAGE</blockquote></p>
+        <p class ="content-warning"> If requesting via text please private message the controller with <q>DEPARTURE CLEARANCE REQUEST</p>
+        <p>Pilots should then call ATC when ready for push and start, noting the identifier assigned to their flight in the PDC.
+        <blockquote style="font-size: 1em">Vancouver Ground, ACA123, PDC Identifier 999A, ready for push and start.</blockquote></p>
+        <h3 class="font-weight-bold blue-text">Issues and Amendments</h3>
+	<p>If there is an issue with the flight plan (i.e. wrong altitude, non-existant waypoints, or out of date SIDs/STARs) the controller will reply with the following message:</p>
+	<blockquote style="font-size: 1em">PDC UNAVAILABLE, REVERT TO STANDARD VOICE PROCEDURES</blockquote>
+	<p>If you receive this message, the PDC clearance becomes <u>void</u> and you should contact ATC on the normal frequency.</p>
 @endsection

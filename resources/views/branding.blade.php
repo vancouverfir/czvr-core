@@ -1,102 +1,119 @@
 @extends('layouts.master')
 @section('title', 'Branding - Vancouver FIR')
-@section('description', 'Vancouver FIR Branding guidelines and logos')
+@section('description', 'Vancouver FIR Branding')
 @section('content')
 <div class="container py-4">
     <h1 class="font-weight-bold blue-text">Branding</h1>
-    <p>This is the place to find all official Vancouver FIR branding. Please feel free to use this branding for any event postings and publications.</p>
-    Be sure to read up on our <a href="https://cyvr.ca/policies">Branding Guidelines</a> before using any of our brand. Thank you!
-    {{-- <hr>
-    <h4 class="font-weight-bold blue-text">Banners/Wordmarks/Letterheads</h4>
+    We kindly request that you maintain the images in their original, published state without making modifications. Resizing is acceptable, as long as the aspect ratio remains unaltered.
+    <hr>
+    <h4 class="font-weight-bold blue-text">Horizontal Logos</h4>
     <div class="pt-1">
         <div class="row">
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                <img src="https://winnipegfir.ca/storage/files/uploads/1638293555.png" class="img-fluid" alt="">
+                <img src="https://czvr.ca/storage/files/branding/czvr-long-wordmark.png" class="img-fluid" alt="">
                 <br/>
-                <a href="https://winnipegfir.ca/storage/files/uploads/1638293555.png">Blue Wordmark</a>
+                <a href="https://czvr.ca/storage/files/branding/czvr-long-wordmark.png">Color Long Wordmark</a>
             </div>
 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                <img style="background-color: #444444;" src="https://winnipegfir.ca/storage/files/uploads/1612961784.png" class="img-fluid" alt="">
+                <img style="background-color: #fffff" src="https://czvr.ca/storage/files/branding/czvr-short-wordmark.png" class="img-fluid" alt="">
                 <br/>
-                <a href="https://winnipegfir.ca/storage/files/uploads/1612961784.png">White Wordmark</a>
-            </div>
-
-            <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                <img style="background-color: #ffffff" src="https://winnipegfir.ca/storage/files/uploads/1612961824.png" class="img-fluid" alt="">
-                <br/>
-                <a href="https://winnipegfir.ca/storage/files/uploads/1612961824.png">Grey Letterhead</a>
-            </div>
-
-            <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                <img style="background-color: #444444" src="https://winnipegfir.ca/storage/files/uploads/1612961851.png" class="img-fluid" alt="">
-                <br/>
-                <a href="https://winnipegfir.ca/storage/files/uploads/1612961851.png">White Letterhead</a>
+                <a href="https://czvr.ca/storage/files/branding/czvr-short-wordmark.png">Color Short Wordmark</a>
             </div>
 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center" style="padding-top: 2%">
-                <img style="background-color: #ffffff" src="https://winnipegfir.ca/storage/files/uploads/1612961875.png" class="img-fluid" alt="">
+                <img style="background-color: #ffffff" src="https://czvr.ca/storage/files/branding/czvr-bw-inv-long-wordmark.png" class="img-fluid" alt="">
                 <br/>
-                <a href="https://winnipegfir.ca/storage/files/uploads/1612961875.png">Grey Training Wordmark</a>
+                <a href="https://czvr.ca/storage/files/branding/czvr-bw-inv-long-wordmark.png">Inverted Gray Long Wordmark</a>
             </div>
 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center" style="padding-top: 2%">
-                <img style="background-color: #444444" src="https://winnipegfir.ca/storage/files/uploads/1612961895.png" class="img-fluid" alt="">
+                <img style="background-color: #fffff" src="https://czvr.ca/storage/files/branding/czvr-bw-inv-short-wordmark.png" class="img-fluid" alt="">
                 <br/>
-                <a href="https://winnipegfir.ca/storage/files/uploads/1612961895.png">White Training Wordmark</a>
+                <a href="https://czvr.ca/storage/files/branding/czvr-bw-inv-short-wordmark.png">Inverted Gray Short Wordmark</a>
             </div>
 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center" style="padding-top: 2%">
-                <img style="background-color: #ffffff" src="https://winnipegfir.ca/storage/files/uploads/1612961918.png" class="img-fluid" alt="">
+                <img style="background-color: #fffff" src="https://czvr.ca/storage/files/branding/czvr-bw-long-wordmark.png" class="img-fluid" alt="">
                 <br/>
-                <a href="https://winnipegfir.ca/storage/files/uploads/1612961918.png">Blue Shop Logo</a>
+                <a href="https://czvr.ca/storage/files/branding/czvr-bw-long-wordmark.png">Gray Long Wordmark</a>
             </div>
 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center" style="padding-top: 2%">
-                <img style="background-color: #444444" src="https://winnipegfir.ca/storage/files/uploads/1612961940.png" class="img-fluid" alt="">
+                <img style="background-color: #fffff" src="https://czvr.ca/storage/files/branding/czvr-bw-short-wordmark.png" class="img-fluid" alt="">
                 <br/>
-                <a href="https://winnipegfir.ca/storage/files/uploads/1612961940.png">White Shop Logo</a>
+                <a href="https://czvr.ca/storage/files/branding/czvr-bw-short-wordmark.png">Gray Short Wordmark</a>
             </div>
-
         </div>
-    </div>
-    <hr>
-    <h4 class="font-weight-bold blue-text">Squares</h4>
+</div>
+
+<h4 class="font-weight-bold blue-text">Square Logos</h4>
     <div class="pt-1">
         <div class="row">
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                <img src="https://winnipegfir.ca/storage/files/uploads/1612961961.png" class="img-fluid" alt="">
+                <img style="background-color: #fffff; height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-logomark.png" class="img-fluid" alt="">
                 <br/>
-                <a href="https://winnipegfir.ca/storage/files/uploads/1612961961.png">Blue "W"</a>
+                <a href="hhttps://czvr.ca/storage/files/branding/czvr-logomark.png">Color Logo</a>
             </div>
-           <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                <img style="background-color: #444444;" src="https://winnipegfir.ca/storage/files/uploads/1612961985.png" class="img-fluid" alt="">
+        
+        <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
+            <img style="background-color: #ffffff; height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-logo-square.png" class="img-fluid" alt="">
+            <br/>
+            <a href="https://czvr.ca/storage/files/branding/czvr-logo-square.png">Color Logo Square</a>
+        </div>
+
+        <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
+                <img style="height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-bw-logomark.png" class="img-fluid" alt="">
                 <br/>
-                <a href="https://winnipegfir.ca/storage/files/uploads/1612961985.png">White "W"</a>
-            </div>
+                <a href="https://czvr.ca/storage/files/branding/czvr-bw-logomark.png">Gray Logo</a>
+        </div>
+</div>
+
+<style>
+    .color-palette {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+    .color-box {
+        width: 120px;
+        height: 120px;
+        border-radius: 5px;
+        margin: 0 3px 5px 3px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+    }
+    .color-box-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 1px 1px 1px;
+    }
+</style>
+
+<div class="container py-4">
+    <hr>
+    <h4 class="font-weight-bold blue-text">CZVR Colors</h4>
+    <div class="color-palette">
+    	<div class="color-box-container">
+        <div class="color-box" style="background-color: #6cc24a;"></div>
+        <div class="color-name">#6cc24a</div>
+        </div>
+        <div class="color-box-container">
+        <div class="color-box" style="background-color: #817f7c;"></div>
+        <div class="color-name">#817f7c</div>
+        </div>
+        <div class="color-box-container">
+        <div class="color-box" style="background-color: #cbcbc8;"></div>
+        <div class="color-name">#cbcbc8</div>
         </div>
     </div>
-    <hr>
-    <h4 class="font-weight-bold blue-text">Official FIR Colour Palette</h4>
-    <button class="ml-0 btn btn-primary">
-        <strong>Winnipeg Blue:</strong><br>
-        <br>Hex #013162
-        <br>Pantone Type 648C
-        <br>C 38%   M 19%   Y 0%   K 62%
-    </button>
-    <a class="btn" style="color: black; background-color: #fff; border: 1px solid black">
-        <strong>Ice White:</strong><br>
-        <br>Hex #ffffff
-        <br>Pantone Type 115-1 U
-        <br>C 0%   M 0%   Y 0%   K 0%
-    </a>
-    <a class="btn" style="color: black; background-color: #feba00">
-        <strong>Prairie Gold:</strong><br>
-        <br>Hex #feba00
-        <br>Pantone Type 7548 C
-        <br>C 0%   M 27%   Y 100%   K 0%
-    </a>
-    </div>
-</div> --}}
+    
+</div>
 
 @endsection
