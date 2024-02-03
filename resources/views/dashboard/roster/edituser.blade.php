@@ -59,44 +59,32 @@
 <div class="form-group col-md-2">
   <div align="center">
   <label class="control-label" for="del">Delivery</label>
+  <div align="center">
+  <label class="control-label" for="del">Unrestricted</label>
     <select name="del" class="form-control">
-      <option value="1"{{ $roster->del == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->del == "2" ? "selected=selected" : ""}}>Minor Mentor</option>
-      <option value="3"{{ $roster->del == "3" ? "selected=selected" : ""}}>Minor Solo</option>
-            <option value="7"{{ $roster->del == "7" ? "selected=selected" : ""}}>Minor Solo + Major W/ Sup</option>
-      <option value="4"{{ $roster->del == "4" ? "selected=selected" : ""}}>Major Mentor</option>
-      <option value="5"{{ $roster->del == "5" ? "selected=selected" : ""}}>Major Solo</option>
-      <option value="6"{{ $roster->del == "6" ? "selected=selected" : ""}}>Certified</option>
+      <option value="0"{{ $roster->del == "0" ? "selected=selected" : ""}}>Not Certified</option>
+      <option value="1"{{ $roster->del == "1" ? "selected=selected" : ""}}>Mentor</option>
+      <option value="2"{{ $roster->del == "2" ? "selected=selected" : ""}}>Solo</option>
+      <option value="3"{{ $roster->del == "3" ? "selected=selected" : ""}}>Certified</option>
     </select>
+  </div>
 </div>
-</div>
-
-<!-- AAS/RAAS -->
-<div class="form-group col-md-2">
-  <label class="control-label" for="gnd">AAS/RAAS</label>
-
-    <select name="fss" class="form-control">
-      <option value="1"{{ $roster->fss == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->fss == "2" ? "selected=selected" : ""}}>Training</option>
-      <option value="3"{{ $roster->fss == "3" ? "selected=selected" : ""}}>Solo</option>
-      <option value="4"{{ $roster->fss == "4" ? "selected=selected" : ""}}>Certified</option>
-    </select>
 </div>
 
 
 <!-- Ground -->
+
 <div class="form-group col-md-2">
   <label class="control-label" for="gnd">Ground</label>
-
+  <div align="center">
+  <label class="control-label" for="gnd">Unrestricted</label>
     <select name="gnd" class="form-control">
-      <option value="1"{{ $roster->gnd == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->gnd == "2" ? "selected=selected" : ""}}>Minor Mentor</option>
-      <option value="3"{{ $roster->gnd == "3" ? "selected=selected" : ""}}>Minor Solo</option>
-      <option value="7"{{ $roster->gnd == "7" ? "selected=selected" : ""}}>Minor Solo + Major W/ Sup</option>
-      <option value="4"{{ $roster->gnd == "4" ? "selected=selected" : ""}}>Major Mentor</option>
-      <option value="5"{{ $roster->gnd == "5" ? "selected=selected" : ""}}>Major Solo</option>
-      <option value="6"{{ $roster->gnd == "6" ? "selected=selected" : ""}}>Certified</option>
+      <option value="0"{{ $roster->gnd == "0" ? "selected=selected" : ""}}>Not Certified</option>
+      <option value="1"{{ $roster->gnd == "1" ? "selected=selected" : ""}}>Mentor</option>
+      <option value="2"{{ $roster->gnd == "2" ? "selected=selected" : ""}}>Solo</option>
+      <option value="3"{{ $roster->gnd == "3" ? "selected=selected" : ""}}>Certified</option>
     </select>
+  </div>
 </div>
 
 
@@ -104,63 +92,90 @@
 
 <div class="form-group col-md-2">
   <label class="control-label" for="twr">Tower</label>
+  <div align="center">
+  <label class="control-label" for="twr">Unrestricted</label>
     <select name="twr" class="form-control">
-      <option value="1"{{ $roster->twr == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->twr == "2" ? "selected=selected" : ""}}>Minor Mentor</option>
-      <option value="3"{{ $roster->twr == "3" ? "selected=selected" : ""}}>Minor Solo</option>
-      <option value="7"{{ $roster->twr == "7" ? "selected=selected" : ""}}>Minor Solo + Major W/ Sup</option>
-      <option value="4"{{ $roster->twr == "4" ? "selected=selected" : ""}}>Major Mentor</option>
-      <option value="5"{{ $roster->twr == "5" ? "selected=selected" : ""}}>Major Solo</option>
-      <option value="6"{{ $roster->twr == "6" ? "selected=selected" : ""}}>Certified</option>
+      <option value="0"{{ $roster->twr == "0" ? "selected=selected" : ""}}>Not Certified</option>twr
+      <option value="1"{{ $roster->twr == "1" ? "selected=selected" : ""}}>Mentor</option>
+      <option value="2"{{ $roster->twr == "2" ? "selected=selected" : ""}}>Solo</option>
+      <option value="3"{{ $roster->twr == "3" ? "selected=selected" : ""}}>Certified</option>
     </select>
+    <br>
+    <label class="control-label" for="twr">Tier 2</label>
+    <select name="twr_t2" class="form-control">
+      <option value="0"{{ $roster->twr_t2 == "0" ? "selected=selected" : ""}}>Not Certified</option>
+      <option value="1"{{ $roster->twr_t2 == "1" ? "selected=selected" : ""}}>Mentor</option>
+      <option value="2"{{ $roster->twr_t2 == "2" ? "selected=selected" : ""}}>Solo</option>
+      <option value="3"{{ $roster->twr_t2 == "3" ? "selected=selected" : ""}}>Certified</option>
+    </select>
+  </div>
 
 </div>
 </div>
 
 <br><br>
 
+
 <!-- Departure -->
+
 <div class="form-row">
   <div class="col-md-3">
   </div>
 <div class="form-group col-md-2">
   <label class="control-label" for="dep">Departure</label>
-    <select name="dep" class="form-control">
-      <option value="1"{{ $roster->dep == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->dep == "2" ? "selected=selected" : ""}}>Training</option>
-      <option value="3"{{ $roster->dep == "3" ? "selected=selected" : ""}}>Solo</option>
-      <option value="4"{{ $roster->dep == "4" ? "selected=selected" : ""}}>Certified</option>
-    </select>
+  <div align="center">
+      <label class="control-label" for="dep">Tier 2</label>
+      <select name="dep" class="form-control">
+        <option value="0"{{ $roster->dep == "0" ? "selected=selected" : ""}}>Not Certified</option>
+        <option value="1"{{ $roster->dep == "1" ? "selected=selected" : ""}}>Mentor</option>
+        <option value="2"{{ $roster->dep == "2" ? "selected=selected" : ""}}>Solo</option>
+        <option value="3"{{ $roster->dep == "3" ? "selected=selected" : ""}}>Certified</option>
+      </select>
+    </div>
   </div>
 
 <br><br>
+
+
 <!-- Approach -->
+
 <div class="form-group col-md-2">
   <label class="control-label" for="app">Arrival</label>
-    <select name="app" class="form-control">
-      <option value="1"{{ $roster->app == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->app == "2" ? "selected=selected" : ""}}>Minor Mentor</option>
-      <option value="3"{{ $roster->app == "3" ? "selected=selected" : ""}}>Minor Solo</option>
-      <option value="7"{{ $roster->app == "7" ? "selected=selected" : ""}}>Minor Solo + Major W/ Sup</option>
-      <option value="4"{{ $roster->app == "4" ? "selected=selected" : ""}}>Major Mentor</option>
-      <option value="5"{{ $roster->app == "5" ? "selected=selected" : ""}}>Major Solo</option>
-      <option value="6"{{ $roster->app == "6" ? "selected=selected" : ""}}>Certified</option>
-    </select>
+  <div align="center">
+    <label class="control-label" for="app">Unrestricted</label>
+      <select name="app" class="form-control">
+        <option value="0"{{ $roster->app == "0" ? "selected=selected" : ""}}>Not Certified</option>
+        <option value="1"{{ $roster->app == "1" ? "selected=selected" : ""}}>Mentor</option>
+        <option value="2"{{ $roster->app == "2" ? "selected=selected" : ""}}>Solo</option>
+        <option value="3"{{ $roster->app == "3" ? "selected=selected" : ""}}>Certified</option>
+      </select>
+      <br>
+      <label class="control-label" for="app">Tier 2</label>
+      <select name="app_t2" class="form-control">
+        <option value="0"{{ $roster->app_t2 == "0" ? "selected=selected" : ""}}>Not Certified</option>
+        <option value="1"{{ $roster->app_t2 == "1" ? "selected=selected" : ""}}>Mentor</option>
+        <option value="2"{{ $roster->app_t2 == "2" ? "selected=selected" : ""}}>Solo</option>
+        <option value="3"{{ $roster->app_t2 == "3" ? "selected=selected" : ""}}>Certified</option>
+      </select>
+    </div>
   </div>
 
 <br><br>
 <!-- Center -->
 <div class="form-group col-md-2">
   <label class="control-label" for="ctr">Centre</label>
+  <div align="center">
+    <label class="control-label" for="ctr">Tier 2</label>
     <select name="ctr" class="form-control">
-      <option value="1"{{ $roster->ctr == "1" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="2"{{ $roster->ctr == "2" ? "selected=selected" : ""}}>Training</option>
-      <option value="3"{{ $roster->ctr == "3" ? "selected=selected" : ""}}>Solo</option>
-      <option value="4"{{ $roster->ctr == "4" ? "selected=selected" : ""}}>Certified</option>
+      <option value="0"{{ $roster->ctr == "0" ? "selected=selected" : ""}}>Not Certified</option>
+      <option value="1"{{ $roster->ctr == "1" ? "selected=selected" : ""}}>Training</option>
+      <option value="2"{{ $roster->ctr == "2" ? "selected=selected" : ""}}>Solo</option>
+      <option value="3"{{ $roster->ctr == "3" ? "selected=selected" : ""}}>Certified</option>
     </select>
   </div>
+  </div>
 </div>
-
+<br>
 
 <!--Remarks-->
 <div class="form-group">
