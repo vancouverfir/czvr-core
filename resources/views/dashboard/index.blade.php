@@ -436,8 +436,8 @@
                                 @if (Auth::user()->rosterProfile->status == "not_certified")
                                 @else
                                     <h3 class="font-weight-bold blue-text pb-2">Activity</h3>
-
                                     <b>Quarterly:</b>
+
                                     @if (Auth::user()->rosterProfile->currency < 0.1)
                                         <h3><span class="badge rounded shadow-none red">
                             No hours recorded
