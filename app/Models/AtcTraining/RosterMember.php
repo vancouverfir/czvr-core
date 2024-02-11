@@ -13,7 +13,7 @@ class RosterMember extends Model
     protected $table = 'roster';
 
     protected $fillable = [
-        'cid', 'user_id', 'status', 'full_name', 'rating', 'del', 'gnd', 'twr', 'dep', 'app', 'ctr', 'fss', 'currency', 'rating_hours', 'remarks', 'active', 'home_fir', 'visit', 'staff',
+        'cid', 'user_id', 'status', 'full_name', 'rating', 'del', 'gnd', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr', 'currency', 'rating_hours', 'remarks', 'active', 'home_fir', 'visit', 'staff',
 
     ];
 
