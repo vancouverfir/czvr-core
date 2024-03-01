@@ -26,28 +26,28 @@
         <hr>
         <div class="roster-legend">
             <table id="rosterLegend" class="table table-hover">
-                <thead>
+                thead>
                     <tr>
-                        <th scope="col"><b>Airports</b></th>
+                        <th scope="col"><b>Qualification Tier</b></th>
                         <th style="text-align:center" scope="col"><b>Not Authorised</b></th>
                         <th style="text-align:center" scope="col"><b>With Supervision</b></th>
                         <th style="text-align:center" scope="col"><b>Solo Approved</b></th>
                         <th style="text-align:center" scope="col"><b>Certified</b></th>
                         </tr>
                 </thead>
+                 <tr>
+                    <th scope="row">Unrestricted Positions</th>
+                        <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
+                        <td class="text-center align-middle"><i class="far fa-user-circle icon-mentor"></td>
+                        <td class="text-center align-middle"><i class="fa fa-minus-circle icon-solo"></td>
+                        <td class="text-center align-middle"><i class="far fa-check-circle icon-certified"></td>
+                </tr>
                 <tr>
-                    <th scope="row">CYVR - Vancouver International</th>
+                    <th scope="row">Tier 2 Positions: CYVR and FSS</th>
                         <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
                         <td class="text-center align-middle"><i class="fa fa-user-circle icon-mentor"></td>
                         <td class="text-center align-middle"><i class="fa fa-plus-circle icon-solo"></td>
                         <td class="text-center align-middle"><i class="fa fa-check-circle icon-certified"></td>
-                </tr>
-                <tr>
-                    <th scope="row">Minor Airports</th>
-                        <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
-                        <td class="text-center align-middle"><i class="far fa-user-circle icon-mentor"></td>
-                        <td class="text-center align-middle"><i class="fa fa-minus-circle icon-solo"></td>
-                        <td class="text-center align-middle"></td>
                 </tr>
                 </thead>
             </table>
@@ -94,7 +94,7 @@
                             <th style="text-align:center" scope="col"><b>CID</b></th>
                             <th style="text-align:center" scope="col">Controller Name</th>
                             <th style="text-align:center" scope="col">Rating</th>
-                            <th style="text-align:center" scope="col">FSS</th>
+                            {{-- <th style="text-align:center" scope="col">FSS</th> --}}
                             <th style="text-align:center" scope="col">DEL</th>
                             <th style="text-align:center" scope="col">GND</th>
                             <th style="text-align:center" scope="col">TWR</th>
@@ -121,109 +121,92 @@
                                 </td>
 
                                 <!--Vancouver Controller Position Ratings from Db -->
-                                @if ($controller->fss == "1")
+                                <!--Delivery-->
+                                @if ($controller->del == "0")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($controller->fss == "2")
+                                @elseif ($controller->del == "1")
                                     <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->fss == "3")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($controller->fss == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
-<!--Delivery-->
-                                @if ($controller->del == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
                                 @elseif ($controller->del == "2")
-                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->del == "3")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                                @elseif ($controller->del == "4")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->del == "5")
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($controller->del == "6")
+                                @elseif ($controller->del == "3")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @elseif ($controller->del == "7")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
 <!--Ground-->
-                                @if ($controller->gnd == "1")
+                                @if ($controller->gnd == "0")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($controller->gnd == "2")
-                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->gnd == "3")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                                @elseif ($controller->gnd == "4")
+                                @elseif ($controller->gnd == "1")
                                     <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->gnd == "5")
+                                @elseif ($controller->gnd == "2")
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($controller->gnd == "6")
+                                @elseif ($controller->gnd == "3")
                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @elseif ($controller->gnd == "7")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i><i class="fa fa-user-circle icon-mentor"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
 <!--Tower-->
-                                @if ($controller->twr == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($controller->twr == "2")
-                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->twr == "3")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                                @elseif ($controller->twr == "4")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->twr == "5")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($controller->twr == "6")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @elseif ($controller->twr == "7")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
+                                <td align="center">
+                                    @if ($controller->twr == "0")
+                                        <i class="fa fa-times-circle icon-no-cert"></i>
+                                    @elseif ($controller->twr == "1")
+                                        <i class="far fa-user-circle icon-mentor"></i>
+                                    @elseif ($controller->twr == "2")
+                                        <i class="fa fa-minus-circle icon-solo"></i>
+                                    @elseif ($controller->twr == "3")
+                                        @if ($controller->twr_t2 != "3")
+                                            <i class="far fa-check-circle icon-certified"></i>
+                                            @endif
+                                    @endif
+
+                                    @if ($controller->twr_t2 == "1")
+                                        <i class="fa fa-user-circle icon-mentor"></i>
+                                    @elseif ($controller->twr_t2 == "2")
+                                        <i class="fa fa-plus-circle icon-solo"></i>
+                                    @elseif ($controller->twr_t2 == "3")
+                                        <i class="fa fa-check-circle icon-certified"></i>
+                                @endif</td>
+
 <!--Departure-->
-                                 @if ($controller->dep == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($controller->dep == "2")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->dep == "3")
-                                   <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($controller->dep == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
+                                <td align="center">
+                                    @if ($controller->dep == "0")
+                                        <i class="fa fa-times-circle icon-no-cert"></i>
+                                    @elseif ($controller->dep == "1")
+                                        <i class="fa fa-user-circle icon-mentor"></i>
+                                    @elseif ($controller->dep == "2")
+                                        <i class="fa fa-plus-circle icon-solo"></i>
+                                    @elseif ($controller->dep == "3")
+                                        <i class="fa fa-check-circle icon-certified"></i>
+                                    @endif</td>
 <!--Approach-->
-                                @if ($controller->app == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($controller->app == "2")
-                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->app == "3")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                                @elseif ($controller->app == "4")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->app == "5")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($controller->app == "6")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @elseif ($controller->app == "7")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
+                                <td align="center">
+                                    @if ($controller->app == "0")
+                                        <i class="fa fa-times-circle icon-no-cert"></i>
+                                    @elseif ($controller->app == "1")
+                                        <i class="far fa-user-circle icon-mentor"></i>
+                                    @elseif ($controller->app == "2")
+                                        <i class="fa fa-minus-circle icon-solo"></i>
+                                    @elseif ($controller->app == "3")
+                                        @if ($controller->app_t2 != "3")
+                                            <i class="far fa-check-circle icon-certified"></i>
+                                            @endif
+                                    @endif
+
+                                    @if ($controller->app_t2 == "1")
+                                        <i class="fa fa-user-circle icon-mentor"></i>
+                                    @elseif ($controller->app_t2 == "2")
+                                        <i class="fa fa-plus-circle icon-solo"></i>
+                                    @elseif ($controller->app_t2 == "3")
+                                        <i class="fa fa-check-circle icon-certified"></i>
+                                @endif</td>
 <!--Centre-->
-                                @if ($controller->ctr == "1")
+                                @if ($controller->ctr == "0")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($controller->ctr == "2")
+                                @elseif ($controller->ctr == "1")
                                     <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->ctr == "3")
+                                @elseif ($controller->ctr == "2")
                                     <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($controller->ctr == "4")
+                                @elseif ($controller->ctr == "3")
                                     <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                                 @else
                                     <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
@@ -322,7 +305,7 @@
                         <th style="text-align:center" scope="col"><b>CID</b></th>
                         <th style="text-align:center" scope="col">Controller Name</th>
                         <th style="text-align:center" scope="col">Rating</th>
-                        <th style="text-align:center" scope="col">FSS</th>
+                        {{-- <th style="text-align:center" scope="col">FSS</th> --}}
                         <th style="text-align:center" scope="col">DEL</th>
                         <th style="text-align:center" scope="col">GND</th>
                         <th style="text-align:center" scope="col">TWR</th>
@@ -347,114 +330,96 @@
                                 {{$visitcontroller->user->rating_short}}
                             </td>
 
-                            <!--AAS/RAAS-->
-                            @if ($visitcontroller->fss == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($visitcontroller->fss == "2")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->fss == "3")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->fss == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
-<!--Delivery-->
-                                @if ($visitcontroller->del == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($visitcontroller->del == "2")
-                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->del == "3")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->del == "4")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->del == "5")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->del == "6")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @elseif ($visitcontroller->del == "7")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @else
-                                    <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
-<!--Ground-->
-                                @if ($visitcontroller->gnd == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($visitcontroller->gnd == "2")
-                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->gnd == "3")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->gnd == "4")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->gnd == "5")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->gnd == "6")
-                                   <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @elseif ($visitcontroller->gnd == "7")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"><i><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
-<!--Tower-->
-                                @if ($visitcontroller->twr == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($visitcontroller->twr == "2")
-                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->twr == "3")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->twr == "4")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->twr == "5")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->twr == "6")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @elseif ($visitcontroller->twr == "7")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
-<!--Departure-->
-                                 @if ($visitcontroller->dep == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($visitcontroller->dep == "2")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->dep == "3")
-                                   <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->dep == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
-<!--Approach-->
-                                @if ($visitcontroller->app == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($visitcontroller->app == "2")
-                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->app == "3")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->app == "4")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->app == "5")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->app == "6")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @elseif ($visitcontroller->app == "7")
-                                    <td align="center" ><i class="fa fa-minus-circle icon-solo"></i><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
-<!--Centre-->
-                                @if ($visitcontroller->ctr == "1")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($visitcontroller->ctr == "2")
-                                    <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->ctr == "3")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->ctr == "4")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
+                            <!--Delivery-->
+                            @if ($visitcontroller->del == "0")
+                            <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
+                            @elseif ($visitcontroller->del == "1")
+                            <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
+                            @elseif ($visitcontroller->del == "2")
+                            <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
+                            @elseif ($visitcontroller->del == "3")
+                            <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                            @else
+                            <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                            @endif
+                            <!--Ground-->
+                            @if ($visitcontroller->gnd == "0")
+                            <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
+                            @elseif ($visitcontroller->gnd == "1")
+                            <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
+                            @elseif ($visitcontroller->gnd == "2")
+                            <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
+                            @elseif ($visitcontroller->gnd == "3")
+                            <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                            @else
+                            <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                            @endif
+                            <!--Tower-->
+                            <td align="center">
+                            @if ($visitcontroller->twr == "0")
+                                <i class="fa fa-times-circle icon-no-cert"></i>
+                            @elseif ($visitcontroller->twr == "1")
+                                <i class="far fa-user-circle icon-mentor"></i>
+                            @elseif ($visitcontroller->twr == "2")
+                                <i class="fa fa-minus-circle icon-solo"></i>
+                            @elseif ($visitcontroller->twr == "3")
+                                @if ($visitcontroller->twr_t2 != "3")
+                                    <i class="far fa-check-circle icon-certified"></i>
+                                    @endif
+                            @endif
+
+                            @if ($visitcontroller->twr_t2 == "1")
+                                <i class="fa fa-user-circle icon-mentor"></i>
+                            @elseif ($visitcontroller->twr_t2 == "2")
+                                <i class="fa fa-plus-circle icon-solo"></i>
+                            @elseif ($visitcontroller->twr_t2 == "3")
+                                <i class="fa fa-check-circle icon-certified"></i>
+                            @endif</td>
+
+                            <!--Departure-->
+                            <td align="center">
+                            @if ($visitcontroller->dep == "0")
+                                <i class="fa fa-times-circle icon-no-cert"></i>
+                            @elseif ($visitcontroller->dep == "1")
+                                <i class="fa fa-user-circle icon-mentor"></i>
+                            @elseif ($visitcontroller->dep == "2")
+                                <i class="fa fa-plus-circle icon-solo"></i>
+                            @elseif ($visitcontroller->dep == "3")
+                                <i class="fa fa-check-circle icon-certified"></i>
+                            @endif</td>
+                            <!--Approach-->
+                            <td align="center">
+                            @if ($visitcontroller->app == "0")
+                                <i class="fa fa-times-circle icon-no-cert"></i>
+                            @elseif ($visitcontroller->app == "1")
+                                <i class="far fa-user-circle icon-mentor"></i>
+                            @elseif ($visitcontroller->app == "2")
+                                <i class="fa fa-minus-circle icon-solo"></i>
+                            @elseif ($visitcontroller->app == "3")
+                                @if ($visitcontroller->app_t2 != "3")
+                                    <i class="far fa-check-circle icon-certified"></i>
+                                    @endif
+                            @endif
+
+                            @if ($visitcontroller->app_t2 == "1")
+                                <i class="fa fa-user-circle icon-mentor"></i>
+                            @elseif ($visitcontroller->app_t2 == "2")
+                                <i class="fa fa-plus-circle icon-solo"></i>
+                            @elseif ($visitcontroller->app_t2 == "3")
+                                <i class="fa fa-check-circle icon-certified"></i>
+                            @endif</td>
+                            <!--Centre-->
+                            @if ($visitcontroller->ctr == "0")
+                            <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
+                            @elseif ($visitcontroller->ctr == "1")
+                            <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
+                            @elseif ($visitcontroller->ctr == "2")
+                            <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
+                            @elseif ($visitcontroller->ctr == "3")
+                            <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                            @else
+                            <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                            @endif
                         <!--Remarks-->
                             <td align="center">
                                 {{$visitcontroller->remarks}}
@@ -625,186 +590,5 @@
         </div>
     </div>
     <!--End add Visitor controller modal-->
-
-    <!--Edit Controller Modal-->
-    <div class="modal fade" id="editControllerModal" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Edit Controller</h5><br>
-                    <b>Warning:</b><br>May not function correctly, still in development.
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <form method="POST" action="/dashboard/roster" id="editControllerForm">
-                    <div class="modal-body">
-                        <meta name="viewport" content="width=device-width, initial-scale=1">
-                        <style>
-                            * {
-                                box-sizing: border-box;
-                            }
-
-                            /* Create two equal columns that floats next to each other */
-                            .column {
-                                float: left;
-                                width: 50%;
-                                padding: 10px;
-                            }
-
-                            /* Clear floats after the columns */
-                            .row:after {
-                                content: "";
-                                display: table;
-                                clear: both;
-                            }
-                        </style>
-                        </head>
-
-                        <div align="center">
-                            <div class="form-group">
-                                <label for="cid">CID:</label><br>
-                                <input type="text" id="id" class="form-control" readonly>
-                            </div>
-                            <br>
-                            <div align="center" class="row">
-                                <div align="center" class="column">
-                                    <label for="del">Delivery:</label><br>
-                                    <select style="width: 100px;" id="del" name="del">
-                                        <option value="1">Not Certified</option>
-                                        <option value="2">Training</option>
-                                        <option value="3">Solo</option>
-                                        <option value="4">Certified</option>
-                                    </select>
-
-                                    <br><br>
-                                    <label for="gnd">Ground:</label><br>
-                                    <select style="width: 100px;" id="gnd" name="gnd">
-                                        <option value="1">Not Certified</option>
-                                        <option value="2">Training</option>
-                                        <option value="3">Solo</option>
-                                        <option value="4">Certified</option>
-                                    </select>
-                                    <br><br>
-                                    <label for="twr">Tower:</label><br>
-                                    <select style="width: 100px;" id="twr" name="twr" style="width: 120px;">
-                                        <option value="1">Not Certified</option>
-                                        <option value="2">Training</option>
-                                        <option value="3">Solo</option>
-                                        <option value="4">Certified</option>
-                                    </select>
-                                </div>
-                                <div align="center" class="column">
-                                    <label for="dep">Departure:</label><br>
-                                    <select style="width: 100px;" id="dep" name="dep">
-                                        <option value="1">Not Certified</option>
-                                        <option value="2">Training</option>
-                                        <option value="3">Solo</option>
-                                        <option value="4">Certified</option>
-                                    </select>
-                                    <br><br>
-                                    <label for="app">Approach:</label><br>
-                                    <select style="width: 100px;" id="app" name="app">
-                                        <option value="1">Not Certified</option>
-                                        <option value="2">Training</option>
-                                        <option value="3">Solo</option>
-                                        <option value="4">Certified</option>
-                                    </select><br>
-                                    <br>
-                                    <label for="ctr">Center:</label><br>
-                                    <select style="width: 100px;" id="ctr" name="ctr">
-                                        <option value="1">Not Certified</option>
-                                        <option value="2">Training</option>
-                                        <option value="3">Solo</option>
-                                        <option value="4">Certified</option>
-                                    </select><br>
-                                    <br>
-                                </div>
-
-                                <label style="width: 100px;" for="remarks">Remarks</label><br>
-                                <textarea id="remarks" rows="4" cols="30">
-                </textarea>
-                                <br><br><br>
-                                <input type="submit" value="Edit Controller" style="btn btn-info">
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div align="center" class="modal-footer">
-        <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
-        </form>
-    </div>
-    </div>
-    </div>
-    </div>
-
-    <div class="modal fade" id="joinDiscordServerModal" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Confirm Deletion</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body"> 
-                    <p>Joining the Vancouver FIR Discord server allows you to join the Vancouver FIR controller and pilot
-                        community.</p>
-                    <h5>Rules</h5>
-                    <ul>
-                        <li>1. The VATSIM Code of Conduct applies.</li>
-                        <li>2. Always show respect and common decency to fellow members.</li>
-                        <li>3. Do not send server invites to servers unrelated to VATSIM without staff permission. Do
-                            not send ANY invites via DMs unless asked to.
-                        </li>
-                        <li>4. Do not send spam in the server, including images, text, or emotes.</li>
-                    </ul>
-                    <p>Clicking the 'Join' button will redirect you to Discord. We require the Join Server permission to
-                        add your Discord account to the server.</p> 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
-                    <a role="button" type="submit" href="{{route('me.discord.join')}}" class="btn btn-primary">Join</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-    <!--SCRIPTS-->
-
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var table = $('#rosterTable').DataTable();
-
-            //Start Edit Record
-            table.on('click', '.editcontroller', function () {
-                $tr = $(this).closest('tr');
-                if ($(tr).hasClass('child')) {
-                    $tr = $tr.prev('.parent');
-                }
-                var data = table.row($tr).data();
-                console.log(data);
-                $('#remarks').val(data[9]);
-
-                $(#editControllerForm
-                ').attr('
-                action
-                ', ' / dashboard / roster / '+data[0]);
-                $('#editControllerModal').modal('show');
-            });
-            //End Edit Record
-
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('.js-example-basic-single').select2();
-        });
-    </script>
 
 @stop

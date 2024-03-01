@@ -218,22 +218,22 @@ class TrainingController extends Controller
         $solorequest->save();
         $rosterupdate = RosterMember::where('user_id', $solorequest->student->user->id)->first();
         if ($solorequest->position == 'Delivery') {
-            $rosterupdate->del = '3';
+            $rosterupdate->del = '2';
             $rosterupdate->save();
         } elseif ($solorequest->position == 'Ground') {
-            $rosterupdate->gnd = '3';
+            $rosterupdate->gnd = '2';
             $rosterupdate->save();
         } elseif ($solorequest->position == 'Tower') {
-            $rosterupdate->twr = '3';
+            $rosterupdate->twr = '2';
             $rosterupdate->save();
         } elseif ($solorequest->position == 'Departure') {
-            $rosterupdate->dep = '3';
+            $rosterupdate->dep = '2';
             $rosterupdate->save();
         } elseif ($solorequest->position == 'Arrival') {
-            $rosterupdate->app = '3';
+            $rosterupdate->app = '2';
             $rosterupdate->save();
         } elseif ($solorequest->position == 'Centre') {
-            $rosterupdate->ctr = '3';
+            $rosterupdate->ctr = '2';
             $rosterupdate->save();
         }
         CbtNotification::create([

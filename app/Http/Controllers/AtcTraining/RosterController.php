@@ -94,10 +94,11 @@ class RosterController extends Controller
             $roster->del = $request->input('del');
             $roster->gnd = $request->input('gnd');
             $roster->twr = $request->input('twr');
+            $roster->twr_t2 = $request->input('twr_t2');
             $roster->dep = $request->input('dep');
             $roster->app = $request->input('app');
+            $roster->app_t2 = $request->input('app_t2');
             $roster->ctr = $request->input('ctr');
-            $roster->fss = $request->input('fss');
             $roster->remarks = $request->input('remarks');
             if ($request->input('rating_hours') == 'true') {
                 $roster->rating_hours = 0;
