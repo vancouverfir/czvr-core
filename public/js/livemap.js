@@ -90,10 +90,21 @@ async function fetchVatsimData() {
         const data = await response.json();
         return data;
     } catch (error) {
-        throw new Error('Error fetching VATSIM data:', error);
-        alert('Error Fetching VATSIM data, please refresh this page');
-        throw error;
+        displayErrorMessage();
     }
+}
+
+function displayErrorMessage() {
+    const errorMessageElement = document.createElement('p');
+    errorMessageElement.textContent = 'VATSIM data not available, please check back later!';
+    errorMessageElement.classList.add('content-warning');
+    errorMessageElement.style.position = 'fixed';
+    errorMessageElement.style.top = '50%';
+    errorMessageElement.style.left = '50%';
+    errorMessageElement.style.transform = 'translate(-50%, -50%)';
+    errorMessageElement.style.textAlign = 'center';
+    document.body.innerHTML = '';
+    document.body.appendChild(errorMessageElement);
 }
 
 async function checkNearbyUsers(coordinates, vatsimData) {
@@ -221,3 +232,11 @@ function updateLastUpdated(lastUpdatedDate) {
     const formattedDate = lastUpdatedDate.toLocaleString();
     lastUpdatedElement.textContent = "Last Updated: " + formattedDate;
 }
+
+fetchVatsimData()
+    .then(() => {
+        initializeMap();
+    })
+    .catch(error => {
+        console.error(error);
+    });

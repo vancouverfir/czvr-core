@@ -46,6 +46,6 @@
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="{{ asset('js/gates.js') }}"></script>
+<script src="{{ asset('js/livemap.js') }}"></script>
 
 @endsection
