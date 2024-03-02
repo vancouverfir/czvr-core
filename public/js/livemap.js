@@ -181,7 +181,7 @@ async function renderStands() {
                 fillColor: color
             });
             if (stand.taken) {
-                existingStand.setTooltipContent(stand.name + '<br>' + stand.callsign);
+                existingStand.setTooltipContent('<b>' + stand.name + '</b><br>' + stand.annotation + (stand.taken ? '<br><b>' + stand.callsign + '</b>' : ''));
             }
         }
     });
