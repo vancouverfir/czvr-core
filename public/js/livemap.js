@@ -95,16 +95,30 @@ async function fetchVatsimData() {
 }
 
 function displayErrorMessage() {
-    const errorMessageElement = document.createElement('p');
-    errorMessageElement.textContent = 'VATSIM data not available, please check back later!';
-    errorMessageElement.classList.add('content-warning');
-    errorMessageElement.style.position = 'fixed';
-    errorMessageElement.style.top = '50%';
-    errorMessageElement.style.left = '50%';
-    errorMessageElement.style.transform = 'translate(-50%, -50%)';
-    errorMessageElement.style.textAlign = 'center';
-    document.body.innerHTML = '';
-    document.body.appendChild(errorMessageElement);
+    const mapContainer = document.getElementById('map');
+    const overlay = document.createElement('div');
+    overlay.style.position = 'absolute';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.zIndex = '1000';
+    const errorMessageContainer = document.createElement('div');
+    errorMessageContainer.style.position = 'absolute';
+    errorMessageContainer.style.top = '50%';
+    errorMessageContainer.style.left = '50%';
+    errorMessageContainer.style.transform = 'translate(-50%, -50%)';
+    errorMessageContainer.style.padding = '20px';
+    errorMessageContainer.style.borderRadius = '10px';
+    errorMessageContainer.style.textAlign = 'center';
+    const errorMessage = document.createElement('p');
+    errorMessage.textContent = 'Unable to fetch VATSIM data, please check back later!';
+    errorMessage.style.color = 'red';
+    errorMessage.style.fontSize = '18px';
+    errorMessageContainer.appendChild(errorMessage);
+    overlay.appendChild(errorMessageContainer);
+    mapContainer.appendChild(overlay);
 }
 
 async function checkNearbyUsers(coordinates, vatsimData) {
