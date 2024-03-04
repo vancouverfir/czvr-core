@@ -37,6 +37,11 @@ class EventController extends Controller
         return view('events.index', compact('events', 'pastEvents'));
     }
 
+    public function coverage()
+    {
+        return view('events.coverage');
+    }
+
     public function viewEvent($slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
