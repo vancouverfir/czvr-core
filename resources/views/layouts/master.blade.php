@@ -118,18 +118,15 @@
                                 <a href="{{route('news')}}" class="nav-link">News</a>
                             @endif
                         </li>
-                        <li class="nav-item {{ Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
-                          <!--  @if(Auth::check() && Auth::user()->permissions >= 4)
-                            <li class="nav-item dropdown {{ Request::is('events') || Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
+                        <li class="nav-item dropdown {{ Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="{{route('events.index')}}">Events</a>
-                                <a class="dropdown-item {{ Request::is('events') ? 'active white-text' : '' }}" href="{{route('events.admin.index')}}">Manage Events</a>
-                            @else
-                                <a href="{{route('events.index')}}" class="nav-link">Events</a>
-                            @endif
-                                                Hide as we will try and automatically fetch events-->
-                            <a href="{{route('events.index')}}" class="nav-link">Events</a>
+                                <a class="dropdown-item {{ Request::is('events.index') ? 'active white-text' : '' }}" href="{{route('events.index')}}">Upcoming Events</a>
+                                <a class="dropdown-item {{ Request::is('events.coverage') ? 'active white-text' : '' }}" href="{{route('events.coverage')}}">Need Coverage?</a>
+                                @if(Auth::check() && Auth::user()->permissions >= 4)
+                                    <a class="dropdown-item {{ Request::is('events.admin.index') ? 'active white-text' : '' }}" href="{{route('events.admin.index')}}">Manage Events</a>
+                                @endif
+                            </div>
                         </li>
                         <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
@@ -147,6 +144,7 @@
                         <li class="nav-item dropdown {{ Request::is('airports') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
+                                <a class="dropdown-item" href="https://czvr.ca/storage/files/uploads/1709591072.pdf">General/Event Info</a>
                                 <a class="dropdown-item" href="{{route('airports')}}">Airports</a>
                                 <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
                                 <a class="dropdown-item" href="https://www.fltplan.com/" target="_blank">Charts</a>

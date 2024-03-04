@@ -24,6 +24,7 @@ Route::get('/meetingminutes', 'News\NewsController@minutesIndex')->name('meeting
 Route::view('/privacy', 'privacy')->name('privacy');
 Route::get('/yourfeedback', 'Feedback\FeedbackController@yourFeedback')->name('yourfeedback');
 Route::get('/events', 'Events\EventController@index')->name('events.index');
+Route::get('/event-coverage', 'Events\EventController@coverage')->name('events.coverage');
 Route::get('/events/{slug}', 'Events\EventController@viewEvent')->name('events.view');
 Route::view('/about', 'about')->name('about');
 Route::view('/branding', 'branding')->name('branding');
