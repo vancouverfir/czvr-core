@@ -172,7 +172,7 @@
             <h4>Vancouver International Airport is the busiest airport within the FIR on VATSIM and in real life by passenger volume. The airport has won the SkyTrax award for Best North American Airport 12 years in a row. YVR features 2 main parallel runways, one shorter crosswind runway, and a floatplane terminal on the river adjacent to the airport.</h4>
             <hr>
                 <h2 class="font-weight-bold blue-text">Scenery</h2>
-                    <h4>FSDreamTean - for FSX and P3D</h4>
+                    <h4>FSDreamTeam - for FSX and P3D</h4>
                     <h5>Payware</h5>
                     <p></p>
                     <a style="margin-left: -0.1%" target=”_blank” href="https://www.fsdreamteam.com/products_cyvr.html"class="btn btn-primary">View More</a>
