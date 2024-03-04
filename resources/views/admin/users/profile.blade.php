@@ -181,7 +181,7 @@
                                 </span></h3>
                             @endif
                             @endif
-                            <p>They require <b>3 hours</b> of activity every 2 month.</p>
+                            <p>They require <b>3 hours</b> of activity every quarter.</p>
                         @endif
 <!--End Vancouver Instrctr Hours-->
 
