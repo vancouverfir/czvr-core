@@ -101,7 +101,7 @@
                                     <h5 class="mt-2 font-weight-bold blue-text">Discord</h5>
                                     <hr>
 
-                                    
+
                                     @if (!Auth::user()->hasDiscord())
                                         <p class="mt-1"><i class="fa fa-times-circle" style="color:red"></i> You don't have a linked Discord account.</p>
                                         <a href="#" class="btn-sm btn-primary m-0" data-toggle="modal" data-target="#discordModal" class="mt-1">Link Discord account</a>
@@ -109,7 +109,6 @@
                                     @else
                                         <p class="mt-1"><i class="fa fa-check-circle" style="color:green"> </i> <img style="border-radius:50%; height: 30px;" class="img-fluid"
                                             src="{{Auth::user()->getDiscordAvatar()}}" alt="">&nbsp;&nbsp;{{Auth::user()->getDiscordUser()->username}}
-                                            <span style="color: #d1d1d1;">#{{Auth::user()->getDiscordUser()}}</span>
                                         </p>
                                         @if(!Auth::user()->memberOfCZWGGuild())
                                             <a href="#" data-toggle="modal" data-target="#joinDiscordServerModal"
@@ -531,7 +530,7 @@
                               {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                           </span></h3>
                                         @endif
-                                    @endif 
+                                    @endif
                                     <p>You require <b>3 hour</b> of activity every quarter!</p>
                                 @endif
 
@@ -564,10 +563,10 @@
                                         @endif
                                     @endif
                                     <p>You require <b>3 hours</b> of activity every quarter!</p>
-                                        
+
                                 @endif
-                               
-                                
+
+
                             <!--End Vancouver Instrctr Hours-->
                                 @if (Auth::user()->rosterProfile->rating == 'S1' || Auth::user()->rosterProfile->rating == 'S2' || Auth::user()->rosterProfile->rating == 'S3')
                                     <b>Rating:</b>
