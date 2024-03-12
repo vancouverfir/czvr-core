@@ -22,7 +22,10 @@
          If you do not understand ask the controller for assistance or clarity as needed, we are here to help and learn together. 
          For example, as controller loads permit we may instead assign a heading or altitude to emulate the procedure. </p>
         <hr>
-        <h3 class="font-weight-bold blue-text">Inner/Outer Tower</h3>
+        <h2 class="font-weight-bold blue-text">FSS for Pilots</h2>
+        <h5 class="text-colour content-link"><a href="https://czvr.ca/storage/files/fss-handbook.pdf" class="text-colour"><text>Flight Who? - Introduction to FSS for Pilots</text></a></h5>
+        <hr>
+        <h2 class="font-weight-bold blue-text">Inner/Outer Tower</h2>
         <hr>
         <p class="text-colour content-paragraph">Many of the following procedures indicated points to report/frequency change from inner to outer tower. 
         In the case both inner and outer tower are online no modifications are needed. However, if only inner tower is online this 
