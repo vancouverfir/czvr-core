@@ -16,7 +16,6 @@ DBPort = config.get("ServerDB", "Port")
 DBPass = config.get("ServerDB", "Password")
 DBName = config.get("ServerDB", "DBName")
 
-
 # Connect to your SQLite database
 try:
     conn = mariadb.connect(
@@ -117,13 +116,23 @@ center_query = """
     END
 """
 
-# Execute the update query
-cursor.execute(col_query)
-cursor.execute(gnd_del_query)
-cursor.execute(twr_query)
-cursor.execute(dep_app_query)
-cursor.execute(center_query)
+fss_query = """
+    UPDATE roster
+    SET fss = CASE
+        WHEN fss = 4 THEN 3
+        WHEN fss = 3 THEN 2
+        WHEN fss = 2 THEN 1
+        WHEN fss = 1 THEN 0
+    END
+"""
 
+# Execute the update query
+# cursor.execute(col_query)
+# cursor.execute(gnd_del_query)
+# cursor.execute(twr_query)
+# cursor.execute(dep_app_query)
+# cursor.execute(center_query)
+cursor.execute(fss_query)
 # Commit the changes and close the connection
 conn.commit()
 conn.close()

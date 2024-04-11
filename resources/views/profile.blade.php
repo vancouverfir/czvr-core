@@ -52,13 +52,13 @@
 
 <!--AAS/RAAS-->         <tr>
                             <th scope="row" style="text-align: center;"><b>AAS/RAAS</b></th>
-                            @if ($rosterMember->fss == "1")
+                            @if ($rosterMember->fss == "0")
                                 <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                            @elseif ($rosterMember->fss == "2")
+                            @elseif ($rosterMember->fss == "1")
                                 <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->fss == "3")
+                            @elseif ($rosterMember->fss == "2")
                                 <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->fss == "4")
+                            @elseif ($rosterMember->fss == "3")
                                 <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                             @else
                                 <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
@@ -66,20 +66,14 @@
                         <!-- Delivery -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Delivery</b></th>
-                            @if ($rosterMember->del == "1")
+                            @if ($rosterMember->del == "0")
                                 <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                            @elseif ($rosterMember->del == "2")
+                            @elseif ($rosterMember->del == "1")
                                 <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->del == "3")
-                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->del == "4")
-                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->del == "5")
+                            @elseif ($rosterMember->del == "2")
                                 <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->del == "6")
+                            @elseif ($rosterMember->del == "3")
                                 <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                            @elseif ($rosterMember->del == "7")
-                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i> <i class="fa fa-user-circle icon-mentor"></i></td>
                             @else
                                 <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
                             @endif
@@ -88,20 +82,14 @@
                         <!-- Ground -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Ground</b></th>
-                            @if ($rosterMember->gnd == "1")
+                            @if ($rosterMember->gnd == "0")
                                 <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                            @elseif ($rosterMember->gnd == "2")
+                            @elseif ($rosterMember->gnd == "1")
                                 <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->gnd == "3")
-                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->gnd == "4")
-                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->gnd == "5")
+                            @elseif ($rosterMember->gnd == "2")
                                 <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->gnd == "6")
+                            @elseif ($rosterMember->gnd == "3")
                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                            @elseif ($rosterMember->gnd == "7")
-                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i> <i class="fa fa-user-circle icon-mentor"></i></td>
                             @else
                                 <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                             @endif
@@ -110,35 +98,39 @@
                         <!-- Tower -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Tower</b></th>
-                            @if ($rosterMember->twr == "1")
-                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
+                            <td align="center">
+                            @if ($rosterMember->twr == "0")
+                                <i class="fa fa-times-circle icon-no-cert"></i>
+                            @elseif ($rosterMember->twr == "1")
+                                <i class="far fa-user-circle icon-mentor"></i>
                             @elseif ($rosterMember->twr == "2")
-                                <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
+                                <i class="fa fa-minus-circle icon-solo"></i>
                             @elseif ($rosterMember->twr == "3")
-                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->twr == "4")
-                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->twr == "5")
-                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->twr == "6")
-                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                            @elseif ($rosterMember->twr == "7")
-                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i> <i class="fa fa-user-circle icon-mentor"></i></td>
-                            @else
-                                <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                                @if ($rosterMember->twr_t2 != "3")
+                                    <i class="far fa-check-circle icon-certified"></i>
+                                    @endif
                             @endif
+
+                            @if ($rosterMember->twr_t2 == "1")
+                                <i class="fa fa-user-circle icon-mentor"></i>
+                            @elseif ($rosterMember->twr_t2 == "2")
+                                <i class="fa fa-plus-circle icon-solo"></i>
+                            @elseif ($rosterMember->twr_t2 == "3")
+                                <i class="fa fa-check-circle icon-certified"></i>
+                            @endif
+                            </td>
                         </tr>
 
                         <!-- Departure -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Departure</b></th>
-                            @if ($rosterMember->dep == "1")
+                            @if ($rosterMember->dep == "0")
                                 <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                            @elseif ($rosterMember->dep == "2")
+                            @elseif ($rosterMember->dep == "1")
                                 <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->dep == "3")
+                            @elseif ($rosterMember->dep == "2")
                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->dep == "4")
+                            @elseif ($rosterMember->dep == "3")
                                 <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                             @else
                                 <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
@@ -148,35 +140,38 @@
                         <!-- Arrival -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Arrival</b></th>
-                            @if ($rosterMember->app == "1")
-                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                            @elseif ($rosterMember->app == "2")
-                                <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->app == "3")
-                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->app == "4")
-                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->app == "5")
-                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->app == "6")
-                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                            @elseif ($rosterMember->app == "7")
-                                <td align="center" ><i class="fa fa-minus-circle icon-solo"></i> <i class="fa fa-user-circle icon-mentor"></i></td>
-                            @else
-                                <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                            @endif
+                            <td align="center">
+                                @if ($rosterMember->app == "0")
+                                    <i class="fa fa-times-circle icon-no-cert"></i>
+                                @elseif ($rosterMember->app == "1")
+                                    <i class="far fa-user-circle icon-mentor"></i>
+                                @elseif ($rosterMember->app == "2")
+                                    <i class="fa fa-minus-circle icon-solo"></i>
+                                @elseif ($rosterMember->app == "3")
+                                    @if ($rosterMember->app_t2 != "3")
+                                        <i class="far fa-check-circle icon-certified"></i>
+                                        @endif
+                                @endif
+
+                                @if ($rosterMember->app_t2 == "1")
+                                    <i class="fa fa-user-circle icon-mentor"></i>
+                                @elseif ($rosterMember->app_t2 == "2")
+                                    <i class="fa fa-plus-circle icon-solo"></i>
+                                @elseif ($rosterMember->app_t2 == "3")
+                                    <i class="fa fa-check-circle icon-certified"></i>
+                            @endif</td>
                         </tr>
 
                         <!-- Centre -->
                         <tr>
                             <th scope="row" style="text-align: center;"><b>Centre</b></th>
-                            @if ($rosterMember->ctr == "1")
+                            @if ($rosterMember->ctr == "0")
                                 <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                            @elseif ($rosterMember->ctr == "2")
+                            @elseif ($rosterMember->ctr == "1")
                                 <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->ctr == "3")
+                            @elseif ($rosterMember->ctr == "2")
                                 <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->ctr == "4")
+                            @elseif ($rosterMember->ctr == "3")
                                 <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
                             @else
                                 <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
