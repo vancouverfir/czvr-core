@@ -49,7 +49,7 @@
   <label>Controller CID:</label><br>
   {{$roster->full_name." ".$cid}}<br><br>
 
-  <!--Delivery-->
+  <!--FSS-->
 
     <input type="hidden" name="cid" value="{{ $cid }}">
 </div>
@@ -58,6 +58,22 @@
   </div>
 <div class="form-group col-md-2">
   <div align="center">
+  <label class="control-label" for="fss">FSS</label>
+  <div align="center">
+  <label class="control-label" for="fss">Unrestricted</label>
+    <select name="fss" class="form-control">
+      <option value="0"{{ $roster->fss == "0" ? "selected=selected" : ""}}>Not Certified</option>
+      <option value="1"{{ $roster->fss == "1" ? "selected=selected" : ""}}>Mentor</option>
+      <option value="2"{{ $roster->fss == "2" ? "selected=selected" : ""}}>Solo</option>
+      <option value="3"{{ $roster->fss == "3" ? "selected=selected" : ""}}>Certified</option>
+    </select>
+  </div>
+</div>
+  </div>
+
+<!-- Delivery -->
+
+<div class="form-group col-md-2">
   <label class="control-label" for="del">Delivery</label>
   <div align="center">
   <label class="control-label" for="del">Unrestricted</label>
@@ -69,8 +85,6 @@
     </select>
   </div>
 </div>
-</div>
-
 
 <!-- Ground -->
 

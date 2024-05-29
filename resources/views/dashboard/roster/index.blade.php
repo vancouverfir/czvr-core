@@ -94,7 +94,7 @@
                             <th style="text-align:center" scope="col"><b>CID</b></th>
                             <th style="text-align:center" scope="col">Controller Name</th>
                             <th style="text-align:center" scope="col">Rating</th>
-                            {{-- <th style="text-align:center" scope="col">FSS</th> --}}
+                            <th style="text-align:center" scope="col">FSS</th>
                             <th style="text-align:center" scope="col">DEL</th>
                             <th style="text-align:center" scope="col">GND</th>
                             <th style="text-align:center" scope="col">TWR</th>
@@ -121,6 +121,18 @@
                                 </td>
 
                                 <!--Vancouver Controller Position Ratings from Db -->
+                                 <!--AAS/RAAS-->
+                                @if ($controller->fss == "0")
+                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
+                                @elseif ($controller->fss == "1")
+                                <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
+                                @elseif ($controller->fss == "2")
+                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
+                                @elseif ($controller->fss == "3")
+                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                                @else
+                                <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                                @endif
                                 <!--Delivery-->
                                 @if ($controller->del == "0")
                                     <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
@@ -305,7 +317,7 @@
                         <th style="text-align:center" scope="col"><b>CID</b></th>
                         <th style="text-align:center" scope="col">Controller Name</th>
                         <th style="text-align:center" scope="col">Rating</th>
-                        {{-- <th style="text-align:center" scope="col">FSS</th> --}}
+                        <th style="text-align:center" scope="col">FSS</th>
                         <th style="text-align:center" scope="col">DEL</th>
                         <th style="text-align:center" scope="col">GND</th>
                         <th style="text-align:center" scope="col">TWR</th>
@@ -329,6 +341,19 @@
                             <td align="center">
                                 {{$visitcontroller->user->rating_short}}
                             </td>
+
+                            <!--AAS/RAAS-->
+                            @if ($visitcontroller->fss == "0")
+                            <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
+                            @elseif ($visitcontroller->fss == "1")
+                            <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
+                            @elseif ($visitcontroller->fss == "2")
+                            <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
+                            @elseif ($visitcontroller->fss == "3")
+                            <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
+                            @else
+                            <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
+                            @endif
 
                             <!--Delivery-->
                             @if ($visitcontroller->del == "0")
