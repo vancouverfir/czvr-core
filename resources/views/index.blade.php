@@ -13,14 +13,14 @@
                         <div>
                             <br>
                             <h1 class="vancouver-text" style="font-size: 5em">
-                                <span class="main-colour corner" style="padding: 1%">We Are Vancouver.</span>
+                                <span class="main-colour corner" style="padding: 1%">From Sea to Sky.</span>
                             </h1>
                             <h6 class="vancouver-text" style="font-size: 1.25em;">
                                 <span class="main-colour corner" style="padding: 0.5%">Screenshot by {{$background->credit}}</span>
                             </h6>
                             <br>
                             <h4 class="text-colour" style="font-size: 2em;">
-                                <span class="corner" style="padding: 0.5%; background-color: #00000066"><a href="#mid" id="discoverMore" class="blue-text">Come explore the left of Canada.&nbsp;&nbsp;<i class="fas fa-arrow-down"></i></a></span>
+                                <span class="corner" style="padding: 0.5%; background-color: #00000066"><a href="#mid" id="discoverMore" class="blue-text">Come explore Canada's west coast&nbsp;&nbsp;<i class="fas fa-arrow-down"></i></a></span>
                             </h4>
                         </div>
                     </div>
