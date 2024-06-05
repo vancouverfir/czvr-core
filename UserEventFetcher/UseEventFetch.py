@@ -313,9 +313,7 @@ def conv_rating(rating):
     Returns:
         Str: the output rating string
     """
-    if rating == 0:
-        print("Not a valid Rating!")
-    elif rating == 1:
+    if rating == 1:
         return "OBS"
     elif rating == 2:
         return "S1"
@@ -341,7 +339,7 @@ def conv_rating(rating):
         return "ADM"
     else:
         print("not a valid rating!")
-        sys.exit()
+        # sys.exit()
 
 
 def trim_roster():
@@ -358,7 +356,8 @@ def trim_roster():
         if db_cid not in CIDSTOR:
             print("invalid CID:", db_cid)
             bye.execute("DELETE FROM roster WHERE cid=?", (db_cid,))
-            bye.execute("UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
+            bye.execute(
+                "UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
             print("Invalid CID Removed from DB... BUH BYE")
 
 
@@ -388,7 +387,8 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
                         "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",
                         (fullname, "0", cid),
                     )
-                    sto.execute("SELECT status FROM roster WHERE cid = ?", (cid,))
+                    sto.execute(
+                        "SELECT status FROM roster WHERE cid = ?", (cid,))
                     status = sto.fetchone()
                     if status[0] == "visit":
                         sto.execute(
@@ -426,19 +426,23 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
             elif perm[0] == 2:
                 print(f"{cid}: Mentor")
                 m = "mentor"
-                cur.execute(f"UPDATE roster SET staff = '{m}' WHERE cid = {cid}")
+                cur.execute(
+                    f"UPDATE roster SET staff = '{m}' WHERE cid = {cid}")
             elif perm[0] == 3:
                 print(f"{cid}: Instructor")
                 ins = "ins"
-                cur.execute(f"UPDATE roster SET staff = '{ins}' WHERE cid = {cid}")
+                cur.execute(
+                    f"UPDATE roster SET staff = '{ins}' WHERE cid = {cid}")
             elif perm[0] == 4:
                 print(f"{cid}: Staff")
                 s = "staff"
-                cur.execute(f"UPDATE roster SET staff = '{s}' WHERE cid = {cid}")
+                cur.execute(
+                    f"UPDATE roster SET staff = '{s}' WHERE cid = {cid}")
             elif perm[0] == 5:
                 print(f"{cid}: Executive")
                 e = "exec"
-                cur.execute(f"UPDATE roster SET staff = '{e}' WHERE cid = {cid}")
+                cur.execute(
+                    f"UPDATE roster SET staff = '{e}' WHERE cid = {cid}")
         else:
             print("Not in DB Moving on...")
     except mariadb.Error as db_error:
