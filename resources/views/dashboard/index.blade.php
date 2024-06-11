@@ -57,7 +57,7 @@
         <br class="my-2">
         <div class="row">
             <div class="col">
-                @if (Auth::user()->permissions >= 1 | $certification == "training")
+                @if (Auth::user()->permissions >= 1 || $certification == "training")
                     <div class="card">
                         <div class="card-body">
                             <h3 class="font-weight-bold blue-text pb-2">ATC Resources</h3>
