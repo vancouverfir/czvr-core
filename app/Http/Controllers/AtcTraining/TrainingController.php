@@ -487,10 +487,11 @@ class TrainingController extends Controller
 
         return redirect('/dashboard')->withSuccess('Student/Instructor Pairing Removed!');
     }
-    
+
     public function showDeleteForm($id)
     {
         $student = Student::findOrFail($id);
+
         return view('dashboard.training.students.removestudents', compact('student'));
     }
 
