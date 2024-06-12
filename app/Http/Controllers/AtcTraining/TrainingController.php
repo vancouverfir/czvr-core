@@ -494,20 +494,21 @@ class TrainingController extends Controller
         return view('dashboard.training.students.removestudents', compact('student'));
     }
 
-	public function removeStudent($id)
-	{
-	    $student = Student::findOrFail($id);
+    public function removeStudent($id)
+    {
+        $student = Student::findOrFail($id);
 
-	    if ($student === null) {
-		return redirect()->route('training.students.waitlist')->withError('Student not found!');
-	    } else {
-		if ($student->application) {
-		    $student->application->delete();
-		} else {
-		    return redirect()->route('training.students.waitlist')->withError('No application found!');
-		}
-		$student->delete();
-	    }
-	    return redirect()->route('training.students.waitlist')->withSuccess('Student removed successfully!');
-	}
-}
+        if ($student === null) {
+            return redirect()->route('training.students.waitlist')->withError('Student not found!');
+        } else {
+            if ($student->application) {
+                $student->application->delete();
+            } else {
+                return redirect()->route('training.students.waitlist')->withError('No application found!');
+            }
+            $student->delete();
+        }
+
+        return redirect()->route('training.students.waitlist')->withSuccess('Student removed successfully!');
+    }
+ }
