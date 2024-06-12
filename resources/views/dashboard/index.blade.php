@@ -84,7 +84,7 @@
                     <div class="card-body pb-0">
                         <h3 class="font-weight-bold blue-text pb-2">Profile</h3>
                         <div class="row">
-                            <div class="col" data-step="3" data-intro="Here is an overview of your profile, including your CZVR roles. You can change the way your name is displayed by clicking on the 'Change display name' button. (CoC A4(b))">
+                            <div class="col" data-step="3" data-intro="Here is an overview of your profile, including your CZWG roles. You can change the way your name is displayed by clicking on the 'Change display name' button. (CoC A4(b))">
                                 <h5 class="font-weight-bold card-title">
                                     {{ Auth::user()->fullName('FLC') }}
                                 </h5>

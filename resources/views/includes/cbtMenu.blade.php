@@ -1,9 +1,9 @@
 
   @if (Auth::user()->permissions <= 3)
-<nav class="navbar navbar-light bg-dark">
+<nav class="navbar navbar-light bg-light">
     <div class="container">
     <a href="/dashboard/training/cbt">
-    <img src=https://czvr.ca/storage/files/branding/czvr-logomark.png style="height:50px">
+    <img src=https://winnipegfir.ca/storage/files/uploads/1613084163.png style="height:50px">
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
@@ -20,10 +20,10 @@
 </nav><br/>
   @endif
   @if (Auth::user()->permissions >= 4)
-  <nav class="navbar navbar-light bg-dark">
+  <nav class="navbar navbar-light bg-light">
       <div class="container">
       <a href="/dashboard/training/cbt">
-      <img src=https://czvr.ca/storage/files/branding/czvr-logomark.png style="height:50px">
+      <img src=https://winnipegfir.ca/storage/files/uploads/1612961386.png style="height:50px">
           </a>
           <ul class="nav nav-pills">
               <li class="nav-item">

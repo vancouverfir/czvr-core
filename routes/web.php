@@ -360,8 +360,6 @@ Route::group(['middleware' => 'instructor'], function () {
     Route::post('/training/solorequest/{id}', 'AtcTraining\TrainingController@soloRequest')->name('training.solo.request');
 
     //AtcTraining
-    Route::get('/dashboard/training/students/delete/{id}', 'AtcTraining\TrainingController@showDeleteForm')->name('training.students.delete');
-    Route::delete('/dashboard/training/students/delete/{id}', 'AtcTraining\TrainingController@removeStudent')->name('training.students.destroy');
     Route::post('/dashboard/training/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
 });
 //Admin and CI
