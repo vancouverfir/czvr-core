@@ -12,7 +12,7 @@
         <h1 class="blue-text font-weight-bold mt-2"><img src="{{$user->avatar()}}" style="height: 50px; width:50px;margin-right: 15px; margin-bottom: 3px; border-radius: 50%;">{{$user->fullName('FL')}}</h1>
         <hr>
         @if ($user->fname != $user->display_fname || !$user->display_last_name || $user->display_cid_only)
-            <p>Note: this user's display name does not match their CERT name.</p>
+            <p>Note: This user's display name does not match their CERT name.</p>
         @endif
         @if($user->id == 1 || $user->id == 2)
         <div class="alert bg-czqo-blue-light">
