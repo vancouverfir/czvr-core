@@ -511,4 +511,4 @@ class TrainingController extends Controller
 
         return redirect()->route('training.students.waitlist')->withSuccess('Student removed successfully!');
     }
- }
+}
