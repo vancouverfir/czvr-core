@@ -284,7 +284,7 @@
                     <h5 class="modal-title" id="exampleModalLongTitle">Assign an Exam</h5>
                 </div>
                 <div class="modal-body">
-                <p><i>Note: if re-assigning an exam, old answers and result will be deleted!</i></p>
+                <p><i>Note: If re-assigning an exam, old answers and result will be deleted!</i></p>
                     <form method="POST" action="{{route('cbt.exam.assign')}}">
                         <select name="examid" class="custom-select">
                             @foreach ($exams as $e)
