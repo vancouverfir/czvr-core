@@ -24,6 +24,7 @@
                     <th scope="col">Date of Application</th>
                     <th scope="col">Entry</th>
                     <th scope="col">Email</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             @if (count($students) < 1)
@@ -50,6 +51,9 @@
                   @else
                   <i>Hidden for Privacy</i>
                   @endif
+                </td>
+                <td>
+                    <a href="{{ route('training.students.delete', $student->id) }}" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
             @endforeach
