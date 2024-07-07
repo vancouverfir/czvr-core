@@ -271,10 +271,10 @@
                 &nbsp;
                 <a href="{{route('privacy')}}">Privacy Policy</a>
                 &nbsp;
-                {{--•
+                •
                 &nbsp;
                 <a href="{{route('branding')}}">Branding</a>
-                &nbsp;--}}
+                &nbsp;
                 •
                 &nbsp;
                 <a href="https://www.vatcan.ca">VATCAN</a>
@@ -283,9 +283,6 @@
                 &nbsp;
                 <a href="https://www.vatsim.net">VATSIM</a>
             </div>
-
-            <div class="mt-3">
-                <p><img style="height: 20px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Intersex-inclusive_pride_flag.svg/1920px-Intersex-inclusive_pride_flag.svg.png" alt="">  The Vancouver FIR stands with the LGBTQIA+ community on VATSIM.</p>
             </div>
         </div>
     </footer>
