@@ -281,10 +281,6 @@
                 &nbsp;
                 <a href="https://www.vatsim.net">VATSIM</a>
             </div>
-
-            <div class="mt-3">
-                <p><img style="height: 20px;" src="https://media.discordapp.net/attachments/528107420593946624/1155198121245159444/Intersex-inclusive_pride_flag_small.svg.webp" alt="">  The Vancouver FIR stands with the LGBTQIA+ community on VATSIM.</p>
-            </div>
         </div>
     </footer>
     <!-- Footer -->
