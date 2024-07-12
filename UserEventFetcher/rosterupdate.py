@@ -126,13 +126,24 @@ fss_query = """
     END
 """
 
+gnd_del_combine = """
+    ALTER TABLE roster RENAME COLUMN del TO delgnd;
+    ALTER TABLE roster RENAME COLUMN gnd TO delgnd_t2;
+"""
+
+gnd_del_set = """
+    UPDATE roster
+    SET delgnd_t2 = delgnd;
+"""
+
 # Execute the update query
 # cursor.execute(col_query)
 # cursor.execute(gnd_del_query)
 # cursor.execute(twr_query)
 # cursor.execute(dep_app_query)
 # cursor.execute(center_query)
-cursor.execute(fss_query)
+cursor.execute(gnd_del_combine)
+cursor.execute(gnd_del_set)
 # Commit the changes and close the connection
 conn.commit()
 conn.close()

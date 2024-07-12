@@ -63,36 +63,31 @@
                             @else
                                 <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                             @endif
-                        <!-- Delivery -->
-                        <tr>
-                            <th scope="row" style="text-align: center;"><b>Delivery</b></th>
-                            @if ($rosterMember->del == "0")
-                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                            @elseif ($rosterMember->del == "1")
-                                <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->del == "2")
-                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->del == "3")
-                                <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                            @else
-                                <td align="center"><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                            @endif
-                        </tr>
 
                         <!-- Ground -->
                         <tr>
-                            <th scope="row" style="text-align: center;"><b>Ground</b></th>
-                            @if ($rosterMember->gnd == "0")
-                                <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                            @elseif ($rosterMember->gnd == "1")
-                                <td align="center" ><i class="far fa-user-circle icon-mentor"></i></td>
-                            @elseif ($rosterMember->gnd == "2")
-                                <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                            @elseif ($rosterMember->gnd == "3")
-                               <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                            @else
-                                <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                            @endif
+                            <th scope="row" style="text-align: center;"><b>Delivery/Ground</b></th>
+                            <td align="center">
+                                @if ($rosterMember->delgnd == "0")
+                                    <i class="fa fa-times-circle icon-no-cert"></i>
+                                @elseif ($rosterMember->delgnd == "1")
+                                    <i class="far fa-user-circle icon-mentor"></i>
+                                @elseif ($rosterMember->delgnd == "2")
+                                    <i class="fa fa-minus-circle icon-solo"></i>
+                                @elseif ($rosterMember->delgnd == "3")
+                                    @if ($rosterMember->delgnd_t2 != "3")
+                                        <i class="far fa-check-circle icon-certified"></i>
+                                        @endif
+                                @endif
+    
+                                @if ($rosterMember->delgnd_t2 == "1")
+                                    <i class="fa fa-user-circle icon-mentor"></i>
+                                @elseif ($rosterMember->delgnd_t2 == "2")
+                                    <i class="fa fa-plus-circle icon-solo"></i>
+                                @elseif ($rosterMember->delgnd_t2 == "3")
+                                    <i class="fa fa-check-circle icon-certified"></i>
+                                @endif
+                                </td>
                         </tr>
 
                         <!-- Tower -->

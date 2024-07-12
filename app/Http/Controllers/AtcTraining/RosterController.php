@@ -91,8 +91,8 @@ class RosterController extends Controller
     {
         $roster = RosterMember::where('cid', $cid)->first();
         if ($roster != null) {
-            $roster->del = $request->input('del');
-            $roster->gnd = $request->input('gnd');
+            $roster->delgnd = $request->input('delgnd');
+            $roster->delgnd_t2 = $request->input('delgnd_t2');
             $roster->twr = $request->input('twr');
             $roster->twr_t2 = $request->input('twr_t2');
             $roster->dep = $request->input('dep');

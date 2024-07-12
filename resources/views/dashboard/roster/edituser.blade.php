@@ -71,33 +71,26 @@
 </div>
   </div>
 
-<!-- Delivery -->
+<!-- Delivery/Ground -->
 
 <div class="form-group col-md-2">
-  <label class="control-label" for="del">Delivery</label>
+  <label class="control-label" for="delgnd">Delivery/Ground</label>
   <div align="center">
-  <label class="control-label" for="del">Unrestricted</label>
-    <select name="del" class="form-control">
-      <option value="0"{{ $roster->del == "0" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="1"{{ $roster->del == "1" ? "selected=selected" : ""}}>Mentor</option>
-      <option value="2"{{ $roster->del == "2" ? "selected=selected" : ""}}>Solo</option>
-      <option value="3"{{ $roster->del == "3" ? "selected=selected" : ""}}>Certified</option>
-    </select>
-  </div>
-</div>
-
-<!-- Ground -->
-
-<div class="form-group col-md-2">
-  <label class="control-label" for="gnd">Ground</label>
-  <div align="center">
-  <label class="control-label" for="gnd">Unrestricted</label>
-    <select name="gnd" class="form-control">
-      <option value="0"{{ $roster->gnd == "0" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="1"{{ $roster->gnd == "1" ? "selected=selected" : ""}}>Mentor</option>
-      <option value="2"{{ $roster->gnd == "2" ? "selected=selected" : ""}}>Solo</option>
-      <option value="3"{{ $roster->gnd == "3" ? "selected=selected" : ""}}>Certified</option>
-    </select>
+  <label class="control-label" for="delgnd">Unrestricted</label>
+  <select name="delgnd" class="form-control">
+    <option value="0"{{ $roster->delgnd == "0" ? "selected=selected" : ""}}>Not Certified</option>twr
+    <option value="1"{{ $roster->delgnd == "1" ? "selected=selected" : ""}}>Mentor</option>
+    <option value="2"{{ $roster->delgnd == "2" ? "selected=selected" : ""}}>Solo</option>
+    <option value="3"{{ $roster->delgnd == "3" ? "selected=selected" : ""}}>Certified</option>
+  </select>
+  <br>
+  <label class="control-label" for="delgnd">Tier 2</label>
+  <select name="delgnd_t2" class="form-control">
+    <option value="0"{{ $roster->delgnd_t2 == "0" ? "selected=selected" : ""}}>Not Certified</option>
+    <option value="1"{{ $roster->delgnd_t2 == "1" ? "selected=selected" : ""}}>Mentor</option>
+    <option value="2"{{ $roster->delgnd_t2 == "2" ? "selected=selected" : ""}}>Solo</option>
+    <option value="3"{{ $roster->delgnd_t2 == "3" ? "selected=selected" : ""}}>Certified</option>
+  </select>
   </div>
 </div>
 
