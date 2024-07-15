@@ -26,7 +26,7 @@
         <hr>
         <div class="roster-legend">
             <table id="rosterLegend" class="table table-hover">
-                thead>
+                <thead>
                     <tr>
                         <th scope="col"><b>Qualification Tier</b></th>
                         <th style="text-align:center" scope="col"><b>Not Authorised</b></th>
