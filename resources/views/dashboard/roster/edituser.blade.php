@@ -80,7 +80,6 @@
   <select name="delgnd" class="form-control">
     <option value="0"{{ $roster->delgnd == "0" ? "selected=selected" : ""}}>Not Certified</option>twr
     <option value="1"{{ $roster->delgnd == "1" ? "selected=selected" : ""}}>Mentor</option>
-    <option value="2"{{ $roster->delgnd == "2" ? "selected=selected" : ""}}>Solo</option>
     <option value="3"{{ $roster->delgnd == "3" ? "selected=selected" : ""}}>Certified</option>
   </select>
   <br>
@@ -88,7 +87,6 @@
   <select name="delgnd_t2" class="form-control">
     <option value="0"{{ $roster->delgnd_t2 == "0" ? "selected=selected" : ""}}>Not Certified</option>
     <option value="1"{{ $roster->delgnd_t2 == "1" ? "selected=selected" : ""}}>Mentor</option>
-    <option value="2"{{ $roster->delgnd_t2 == "2" ? "selected=selected" : ""}}>Solo</option>
     <option value="3"{{ $roster->delgnd_t2 == "3" ? "selected=selected" : ""}}>Certified</option>
   </select>
   </div>
