@@ -26,7 +26,7 @@
         <hr>
         <div class="roster-legend">
             <table id="rosterLegend" class="table table-hover">
-                thead>
+                <thead>
                     <tr>
                         <th scope="col"><b>Qualification Tier</b></th>
                         <th style="text-align:center" scope="col"><b>Not Authorised</b></th>
@@ -138,9 +138,6 @@
                                     @if ($controller->delgnd == "0")
                                         <i class="fa fa-times-circle icon-no-cert"></i>
                                     @elseif ($controller->delgnd == "1")
-                                        <i class="far fa-user-circle icon-mentor"></i>
-                                    @elseif ($controller->delgnd == "2")
-                                        <i class="fa fa-minus-circle icon-solo"></i>
                                     @elseif ($controller->delgnd == "3")
                                         @if ($controller->delgnd_t2 != "3")
                                             <i class="far fa-check-circle icon-certified"></i>
@@ -149,8 +146,6 @@
 
                                     @if ($controller->delgnd_t2 == "1")
                                         <i class="fa fa-user-circle icon-mentor"></i>
-                                    @elseif ($controller->delgnd_t2 == "2")
-                                        <i class="fa fa-plus-circle icon-solo"></i>
                                     @elseif ($controller->delgnd_t2 == "3")
                                         <i class="fa fa-check-circle icon-certified"></i>
 @endif</td>
@@ -357,8 +352,6 @@
                                     <i class="fa fa-times-circle icon-no-cert"></i>
                                 @elseif ($visitcontroller->delgnd == "1")
                                     <i class="far fa-user-circle icon-mentor"></i>
-                                @elseif ($visitcontroller->delgnd == "2")
-                                    <i class="fa fa-minus-circle icon-solo"></i>
                                 @elseif ($visitcontroller->delgnd == "3")
                                     @if ($visitcontroller->delgnd_t2 != "3")
                                         <i class="far fa-check-circle icon-certified"></i>
@@ -367,8 +360,6 @@
 
                                 @if ($visitcontroller->delgnd_t2 == "1")
                                     <i class="fa fa-user-circle icon-mentor"></i>
-                                @elseif ($visitcontroller->delgnd_t2 == "2")
-                                    <i class="fa fa-plus-circle icon-solo"></i>
                                 @elseif ($visitcontroller->delgnd_t2 == "3")
                                     <i class="fa fa-check-circle icon-certified"></i>
                             @endif</td>

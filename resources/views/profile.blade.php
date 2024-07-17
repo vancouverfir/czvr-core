@@ -72,8 +72,6 @@
                                     <i class="fa fa-times-circle icon-no-cert"></i>
                                 @elseif ($rosterMember->delgnd == "1")
                                     <i class="far fa-user-circle icon-mentor"></i>
-                                @elseif ($rosterMember->delgnd == "2")
-                                    <i class="fa fa-minus-circle icon-solo"></i>
                                 @elseif ($rosterMember->delgnd == "3")
                                     @if ($rosterMember->delgnd_t2 != "3")
                                         <i class="far fa-check-circle icon-certified"></i>
@@ -82,8 +80,6 @@
     
                                 @if ($rosterMember->delgnd_t2 == "1")
                                     <i class="fa fa-user-circle icon-mentor"></i>
-                                @elseif ($rosterMember->delgnd_t2 == "2")
-                                    <i class="fa fa-plus-circle icon-solo"></i>
                                 @elseif ($rosterMember->delgnd_t2 == "3")
                                     <i class="fa fa-check-circle icon-certified"></i>
                                 @endif
