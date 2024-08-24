@@ -91,7 +91,7 @@ def trim_events(data):
         past = datetime.strptime(str(i["end"])[:16], "%Y-%m-%d %H:%M")
 
         # get current time in YYYY-MM-DD format
-        present = datetime.now()
+        present = datetime.utcnow()
         present = present.strftime("%Y-%m-%d %H:%M")
         present = datetime.strptime(present, "%Y-%m-%d %H:%M")
 
@@ -99,26 +99,26 @@ def trim_events(data):
             str(i["start"]) + "-" + str(i["name"])
         )  # nicely formatting our datetime string
 
-        if past.date() > present.date():
-            print("Event is within period")
+        if past.date() >= present.date() and past.time() > present.time():
+                print("Event is within period")
 
-            arrival = magic_string(i["airports"]["arrival"])
-            departure = magic_string(i["airports"]["departure"])
+                arrival = magic_string(i["airports"]["arrival"])
+                departure = magic_string(i["airports"]["departure"])
 
-            # the keys for ID, name, start, end, description,imageurl,airports,dept, and arrivals
-            asyncio.run(
-                stow_event(
-                    i["id"],
-                    i["name"],
-                    str(i["start"])[:16],
-                    str(i["end"])[:16],
-                    i["description"],
-                    i["image_url"],
-                    departure,
-                    arrival,
-                    slug,
+                # the keys for ID, name, start, end, description,imageurl,airports,dept, and arrivals
+                asyncio.run(
+                    stow_event(
+                        i["id"],
+                        i["name"],
+                        str(i["start"])[:16],
+                        str(i["end"])[:16],
+                        i["description"],
+                        i["image_url"],
+                        departure,
+                        arrival,
+                        slug,
+                    )
                 )
-            )
         else:
             print("Event is outside of period, ignoring...")
 
