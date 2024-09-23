@@ -36,7 +36,6 @@ error_log
 
 training.yaml
 
-*/404.blade.php
 
 .editorconfig
 UserEventFetcher/pyapiconf.ini

@@ -8,7 +8,6 @@ use App\Models\Users\User;
 use App\Models\Users\UserPreferences;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -19,7 +18,6 @@ use Vatsim\OAuth\SSO;
  */
 class LoginController extends Controller
 {
-    use AuthenticatesUsers;
 
     /**
      * @var SSO
@@ -76,10 +74,6 @@ class LoginController extends Controller
                 'rating_long' => $user->rating->long,
                 'rating_GRP' => $user->rating->GRP,
                 'reg_date' => $user->reg_date,
-                'region_code' => $user->region->code,
-                'region_name' => $user->region->name,
-                'division_code' => $user->division->code,
-                'division_name' => $user->division->name,
                 'subdivision_code' => $user->subdivision->code,
                 'subdivision_name' => $user->subdivision->name,
                 'display_fname' => $user->name_first,
@@ -179,7 +173,7 @@ class LoginController extends Controller
         $checkUser = User::where('id', '=', $response->data->cid)->first();
 
         User::updateOrCreate(['id' => $response->data->cid], [
-            'email' => isset($response->data->personal->email) ? $response->data->personal->email : 'no-reply@czqo.vatcan.ca',
+            'email' => isset($response->data->personal->email) ? $response->data->personal->email : 'no-reply@czvr.ca',
             'fname' => isset($response->data->personal->name_first) ? utf8_decode($response->data->personal->name_first) : $response->data->cid,
             'lname' => isset($response->data->personal->name_last) ? $response->data->personal->name_last : $response->data->cid,
             'rating_id' => $response->data->vatsim->rating->id,

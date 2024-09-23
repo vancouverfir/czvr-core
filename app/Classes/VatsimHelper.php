@@ -2,15 +2,16 @@
 
 namespace App\Classes;
 
-use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
+use App\Classes\HttpHelper;
 
 class VatsimHelper
 {
-    public static function getDatafeedUrl()
+    public static function getDatafeedUrl(): string
     {
-        $client = new Client();
-        $request = $client->request('GET', 'https://status.vatsim.net/status.json');
-
-        return json_decode($request->getBody()->getContents())->data->v3[0];
+        return Cache::remember('vatsim-datafeed-url', 86400, function () {
+            $request = HttpHelper::getClient()->get('https://status.vatsim.net/status.json');
+            return $request['data']['v3'][0];
+        });
     }
 }

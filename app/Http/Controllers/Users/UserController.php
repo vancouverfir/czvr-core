@@ -15,6 +15,8 @@ use App\Notifications\DiscordWelcome;
 use App\Notifications\WelcomeNewUser;
 use Auth;
 use Carbon\Carbon;
+use Discord\Http\Endpoint;
+use Discord\Parts\Guild\Guild;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -24,7 +26,7 @@ use Laravel\Socialite\Facades\Socialite;
 use mofodojodino\ProfanityFilter\Check;
 use NotificationChannels\Discord\Discord;
 use NotificationChannels\Discord\Exceptions\CouldNotSendNotification;
-use RestCord\DiscordClient;
+use App\Classes\DiscordClient;
 use SocialiteProviders\Manager\Config;
 use Spatie\Permission\Models\Role;
 
@@ -602,27 +604,13 @@ class UserController extends Controller
 
     public function joinDiscordServer()
     {
-        $discord = new DiscordClient(['token' => config('services.discord.token')]);
+        $discord = new DiscordClient(config('services.discord.token'));
         $config = new Config(config('services.discord.client_id'), config('services.discord.client_secret'), config('services.discord.redirect_join'));
         $discordUser = Socialite::driver('discord')->setConfig($config)->user();
-        $args = [
-            'guild.id' => 598023748741758976,
-            'user.id' => intval($discordUser->id),
-            'access_token' => $discordUser->token,
-            'nick' => Auth::user()->fullName('FL'),
-        ];
-        if (Auth::user()->rosterProfile) {
-            if (Auth::user()->rosterProfile->status == 'training') {
-                $args['roles'] = [717155319981146182];
-            } elseif (Auth::user()->rosterProfile->status == 'home') {
-                $args['roles'] = [713914598750683157];
-            } elseif (Auth::id() == '1427371') {
-                $args['roles'] = [673725707259609093];
-            }
-        } else {
-            $args['roles'] = [482835389640343562];
-        }
-        $discord->guild->addGuildMember($args);
+        $roles = [];
+        
+
+        $discord->AddGuildMember($discordUser->id, $discordUser->token, Auth::user()->fullName('FL'), $roles);
 
         try {
             Auth::user()->notify(new DiscordWelcome());
@@ -630,20 +618,20 @@ class UserController extends Controller
             // do nothing
         }
 
-        $discord->channel->createMessage(['channel.id' => 695849973585149962, 'content' => '<@'.$discordUser->id.'> ('.Auth::id().') has joined.']);
+        $discord->SendAuditMessage('<@'.$discordUser->id.'> ('.Auth::id().') has joined.');
 
         return redirect()->route('dashboard.index')->with('success', 'You have joined the Vancouver Discord server!');
     }
 
     public function unlinkDiscord()
     {
-        $discord = new DiscordClient(['token' => config('services.discord.token')]);
+        $discord = new DiscordClient(config('services.discord.token'));
         $user = Auth::user();
-        if ($user->memberOfCZWGGuild()) {
+        if ($user->memberOfCZVRGuild()) {
             try {
-                $discord->guild->removeGuildMember(['guild.id' => 598023748741758976, 'user.id' => $user->discord_user_id]);
-                $discord->channel->createMessage(['channel.id' => 695849973585149962, 'content' => '<@'.$user->discord_user_id.'> ('.Auth::id().') has unlinked their account and has been kicked.']);
-            } catch (Exception $ex) {
+                $discord->RemoveGuildMember($user->discord_user_id);
+                $discord->SendAuditMessage('<@'.$user->discord_user_id.'> ('.Auth::id().') has unlinked their account and has been kicked.');
+        } catch (Exception $ex) {
                 Log::error($ex->getMessage());
             }
         }
