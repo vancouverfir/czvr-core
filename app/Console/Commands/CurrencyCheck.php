@@ -24,7 +24,7 @@ class CurrencyCheck extends Command
      *
      * @var string
      */
-    protected $description = 'Check if every roster member has completed their hours for this month';
+    protected $description = 'Check if every roster member has completed their hours for this quarter';
 
     /**
      * Create a new command instance.
@@ -45,19 +45,19 @@ class CurrencyCheck extends Command
     {
         $badMembers = [];
         foreach (RosterMember::all()->sortBy('currency') as $rosterMember) {
-            if ($rosterMember->currency > config(sprintf('currency.%s', $rosterMember->status))) {
+            if ($rosterMember->currency >= config(sprintf('currency.%s', $rosterMember->status))) {
                 continue;
             }
 
             $memberName = $rosterMember->full_name.' '.$rosterMember->cid;
             $memberEmail = $rosterMember->user()->first()->email;
             $memberActivity = $rosterMember->currency;
-            array_push($badMembers, [
+            $badMembers[] = [
                 'name' => $memberName,
                 'email' => $memberEmail,
                 'activity' => decimal_to_hm($memberActivity),
                 'requirement' => decimal_to_hm(config(sprintf('currency.%s', $rosterMember->status))),
-            ]);
+            ];
         }
 
         $settings = CoreSettings::find(1);
@@ -72,5 +72,7 @@ class CurrencyCheck extends Command
 
         // Remove our session logs because we don't need them anymore
         SessionLog::query()->truncate();
+
+        return 0;
     }
 }

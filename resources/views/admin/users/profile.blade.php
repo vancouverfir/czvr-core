@@ -258,7 +258,7 @@
                     @if($user->hasDiscord())
                     <h5><img style="border-radius:50%; height: 30px;" class="img-fluid" src="{{$user->getDiscordAvatar()}}" alt="">&nbsp;&nbsp;{{$user->getDiscordUser()->username}}</h5>
                     <ul class="list-unstyled">
-                        <li class="d-flex align-items-center">Member of the Vancouver Discord: <i style="margin-left: 5px;font-size: 20px;" class="{{$user->memberOfCZWGGuild() ? 'fas fa-check-circle green-text' : 'fas fa-times-circle red-text'}}"></i></li>
+                        <li class="d-flex align-items-center">Member of the Vancouver Discord: <i style="margin-left: 5px;font-size: 20px;" class="{{$user->memberOfCZVRGuild() ? 'fas fa-check-circle green-text' : 'fas fa-times-circle red-text'}}"></i></li>
                     </ul>
                     <hr>
                     <h5>

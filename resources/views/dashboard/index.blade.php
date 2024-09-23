@@ -110,7 +110,7 @@
                                         <p class="mt-1"><i class="fa fa-check-circle" style="color:green"> </i> <img style="border-radius:50%; height: 30px;" class="img-fluid"
                                             src="{{Auth::user()->getDiscordAvatar()}}" alt="">&nbsp;&nbsp;{{Auth::user()->getDiscordUser()->username}}
                                         </p>
-                                        @if(!Auth::user()->memberOfCZWGGuild())
+                                        @if(!Auth::user()->memberOfCZVRGuild())
                                             <a href="#" data-toggle="modal" data-target="#joinDiscordServerModal"
                                                class="mt-1">Join The CZVR Discord</a><br/>
                                         @endif
