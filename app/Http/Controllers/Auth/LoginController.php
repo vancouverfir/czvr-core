@@ -18,7 +18,6 @@ use Vatsim\OAuth\SSO;
  */
 class LoginController extends Controller
 {
-
     /**
      * @var SSO
      */

@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Classes\HttpHelper;
 use App\Classes\VatsimHelper;
 use App\Models\Users\User;
-use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 

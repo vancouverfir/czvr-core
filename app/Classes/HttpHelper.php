@@ -11,5 +11,4 @@ class HttpHelper
     {
         return Http::withHeaders(['User-Agent' => 'czvr.ca'])->connectTimeout(5);
     }
-
 }
