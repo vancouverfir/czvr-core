@@ -11,7 +11,7 @@
         
         <div>
             <p>Vancouver is happy to provide ATC for many events within our airspace!</p>
-            <p>To request ATC for your event, we recommend contacting Vancouvers's Events Coordinator by submitting a <a href="{{route('tickets.index')}}">ticket</a> or <a href="{{route('staff')}}">email</a>. If the position is vacant, instead contact the FIR Chief.</p>
+            <p>To request ATC for your event, we recommend contacting Vancouvers's Events Coordinator by submitting a <a href="{{route('tickets.index')}}">ticket</a> or <a href="{{route('staff')}}">email</a>. If the position is vacant, contact the FIR Chief instead.</p>
             <p>Thank you for choosing Vancouver!</p>
         </div>
         <div class="pt-4">

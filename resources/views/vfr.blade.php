@@ -26,7 +26,6 @@
         <h5 class="text-colour content-link"><a href="https://czvr.ca/storage/files/fss-handbook.pdf" class="text-colour"><text>Flight Who? - Introduction to FSS for Pilots</text></a></h5>
         <hr>
         <h2 class="font-weight-bold blue-text">Inner/Outer Tower</h2>
-        <hr>
         <p class="text-colour content-paragraph">Many of the following procedures indicated points to report/frequency change from inner to outer tower. 
         In the case both inner and outer tower are online no modifications are needed. However, if only inner tower is online this 
         controller will inherit the responsibilities of outer tower. In this case, simply follow the procedure with out frequency 
