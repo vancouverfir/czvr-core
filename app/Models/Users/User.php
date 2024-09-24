@@ -2,20 +2,18 @@
 
 namespace App\Models\Users;
 
+use App\Classes\DiscordClient;
 use App\Models\AtcTraining;
 use App\Models\ControllerBookings;
 use App\Models\Events;
 use App\Models\News;
 use App\Models\Tickets;
-use Exception;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use LasseRafn\InitialAvatarGenerator\InitialAvatar;
-use App\Classes\DiscordClient;
 
 class User extends Authenticatable
 {
@@ -29,7 +27,7 @@ class User extends Authenticatable
     protected $fillable = [
         'id', 'fname', 'lname', 'email', 'rating_id', 'rating_short', 'rating_long', 'rating_GRP',
         'reg_date', 'permissions', 'init', 'gdpr_subscribed_emails', 'avatar', 'bio', 'display_cid_only', 'display_fname', 'display_last_name',
-        'discord_user_id', 'discord_dm_channel_id', 'avatar_mode'
+        'discord_user_id', 'discord_dm_channel_id', 'avatar_mode',
     ];
 
     /**
@@ -193,11 +191,13 @@ class User extends Authenticatable
     public function getDiscordUser()
     {
         return Cache::remember('users.discorduserdata.'.$this->id, 84600, function () {
-            if (!$this->discord_user_id)
+            if (! $this->discord_user_id) {
                 return null;
+            }
 
-                $discord = new DiscordClient(config('services.discord.token'));
-                return $discord->GetDiscordUser($this->discord_user_id);
+            $discord = new DiscordClient(config('services.discord.token'));
+
+            return $discord->GetDiscordUser($this->discord_user_id);
         });
     }
 

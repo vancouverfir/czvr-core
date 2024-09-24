@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Classes\DiscordClient;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\ControllerBookings\ControllerBookingsBan;
@@ -15,8 +16,6 @@ use App\Notifications\DiscordWelcome;
 use App\Notifications\WelcomeNewUser;
 use Auth;
 use Carbon\Carbon;
-use Discord\Http\Endpoint;
-use Discord\Parts\Guild\Guild;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -26,7 +25,6 @@ use Laravel\Socialite\Facades\Socialite;
 use mofodojodino\ProfanityFilter\Check;
 use NotificationChannels\Discord\Discord;
 use NotificationChannels\Discord\Exceptions\CouldNotSendNotification;
-use App\Classes\DiscordClient;
 use SocialiteProviders\Manager\Config;
 use Spatie\Permission\Models\Role;
 
@@ -608,7 +606,6 @@ class UserController extends Controller
         $config = new Config(config('services.discord.client_id'), config('services.discord.client_secret'), config('services.discord.redirect_join'));
         $discordUser = Socialite::driver('discord')->setConfig($config)->user();
         $roles = [];
-        
 
         $discord->AddGuildMember($discordUser->id, $discordUser->token, Auth::user()->fullName('FL'), $roles);
 
@@ -631,7 +628,7 @@ class UserController extends Controller
             try {
                 $discord->RemoveGuildMember($user->discord_user_id);
                 $discord->SendAuditMessage('<@'.$user->discord_user_id.'> ('.Auth::id().') has unlinked their account and has been kicked.');
-        } catch (Exception $ex) {
+            } catch (Exception $ex) {
                 Log::error($ex->getMessage());
             }
         }
