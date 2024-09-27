@@ -31,4 +31,30 @@ class UploadController extends Controller
         return back()
             ->with('success', 'File uploaded to: <a href='.config('app.url').'/storage/files/uploads/'.$fileName.'>'.config('app.url').'/storage/files/uploads/'.$fileName.'</a>');
     }
+
+    public function manageUploads()
+    {
+        $files = Storage::files('public/files/uploads');
+
+        $files = array_map(function ($file) {
+            return str_replace('public/files/uploads/', '', $file);
+        }, $files);
+
+        return view('dashboard.uploadmanage', ['files' => $files]);
+    }
+
+    public function deletePost($filename)
+    {
+        $filePath = 'public/files/uploads/' . $filename;
+
+        if (Storage::exists($filePath)) {
+
+            Storage::delete($filePath);
+
+            return back()->with('success', 'File deleted successfully: ' . $filename);
+        } else {
+            return back()->with('error', 'File not found: ' . $filename);
+        }
+    }
+
 }
