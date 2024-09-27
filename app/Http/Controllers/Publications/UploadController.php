@@ -45,16 +45,14 @@ class UploadController extends Controller
 
     public function deletePost($filename)
     {
-        $filePath = 'public/files/uploads/' . $filename;
+        $filePath = 'public/files/uploads/'.$filename;
 
         if (Storage::exists($filePath)) {
-
             Storage::delete($filePath);
 
-            return back()->with('success', 'File deleted successfully: ' . $filename);
+            return back()->with('success', 'File deleted successfully: '.$filename);
         } else {
-            return back()->with('error', 'File not found: ' . $filename);
+            return back()->with('error', 'File not found: '.$filename);
         }
     }
-
 }
