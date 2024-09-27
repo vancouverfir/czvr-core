@@ -8,6 +8,7 @@ use App\Models\Settings\CoreSettings;
 use App\Models\Settings\HomepageImages;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
@@ -140,36 +141,42 @@ class SettingsController extends Controller
 
     public function uploadImage(Request $request)
     {
-        $this->validate($request, [
-            'URL' => 'required',
+        $request->validate([
+            'file' => 'required|image|mimes:jpeg,jpg|max:1048',
             'nameCredit' => 'required',
         ]);
+    
+        $fileName = time().'.'.request()->file->getClientOriginalExtension();
+
+        $fileUrl = Storage::url('public/files/homepageimages/' . $fileName);
+
+        Storage::putFileAs(
+            'public/files/homepageimages', request()->file, $fileName
+        );
 
         $image = new HomepageImages();
-        $image->url = $request->URL;
+        $image->url = '/storage/files/homepageimages/' . $fileName;
         $image->credit = $request->nameCredit;
-        $image->css = $request->CSS;
         $image->save();
-
-        return back()->withSuccess('Image uploaded successfully!');
+    
+        return back()->with('success', 'File uploaded to: <a href='.config('app.url').'/storage/files/homepageimages/'.$fileName.'>'.config('app.url').'/storage/files/homepageimages/'.$fileName.'</a>');
     }
 
     public function editImage(Request $request, $id)
     {
         $this->validate($request, [
-            'URL' => 'required',
             'nameCredit' => 'required',
         ]);
-
-        $image = HomepageImages::where('id', $id)->first();
-        $image->url = $request->URL;
+    
+        $image = HomepageImages::find($id);
+    
         $image->credit = $request->nameCredit;
-        $image->CSS = $request->CSS;
+        $image->css = $request->CSS;
         $image->save();
-
+    
         return back()->withSuccess('Image edited successfully!');
     }
-
+    
     public function testImage($id)
     {
         $image = HomepageImages::where('id', $id)->first();
@@ -179,12 +186,26 @@ class SettingsController extends Controller
 
     public function deleteImage($id)
     {
+        $totalImages = HomepageImages::count();
+    
+        if ($totalImages <= 1) {
+            return back()->with('error', 'Please add another image before deleting this one!');
+        }
         $image = HomepageImages::where('id', $id)->first();
-        $image->delete();
+        if ($image) {
+            $filePath = str_replace('/storage', 'public', $image->url);
 
-        return back()->withSuccess('Image deleted successfully!');
+            if (!Storage::exists($filePath)) {
+                return back()->with('error', 'File not found in storage!');
+            }
+            Storage::delete($filePath);
+            $image->delete();
+
+            return back()->withSuccess('Image and file deleted successfully!');
+        }
+        return back()->with('error', 'Image not found in the database!');
     }
-
+    
     public function viewRoles()
     {
         $roles = Role::all();

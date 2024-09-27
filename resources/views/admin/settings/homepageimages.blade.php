@@ -38,17 +38,15 @@
                 <div class="modal-header">
                     <h5 class="modal-title">Upload Image</h5>
                 </div>
-                <form method="POST" action="{{route('settings.images.upload')}}">
+                <form method="POST" action="{{ route('settings.images.upload') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
-                        <p class="font-weight-bold">URL</p>
-                        <input name="URL" class="form-control" placeholder="https://czvr.ca/path/to/very/good/picture">
-                        <br>
+                        <p class="font-weight-bold">Upload Image</p>
+                        <input type="file" name="file" class="form-control" accept=".jpeg,.jpg" required>
+                        <small class="form-text text-muted">Only JPEG and JPG formats are accepted. Max file size: 1MB.</small>
+                        <hr>
                         <p class="font-weight-bold">Credit for Picture</p>
-                        <input name="nameCredit" class="form-control" placeholder="CZVR One">
-                        <br>
-                        <p class="font-weight-bold">Extra CSS (optional)</p>
-                        <input name="CSS" class="form-control" value="{{$i->css}}" placeholder="background-position: bottom;">
+                        <input name="nameCredit" class="form-control" placeholder="Vancouver FIR" required>
                     </div>
                     <div class="modal-footer">
                         <input role="button" type="submit" class="btn btn-success" value="Upload">
@@ -71,14 +69,8 @@
                     <form method="POST" action="{{route('settings.images.edit', $i->id)}}">
                         @csrf
                         <div class="modal-body">
-                            <p class="font-weight-bold">URL</p>
-                            <input name="URL" class="form-control" value="{{$i->url}}" placeholder="https://czvr.ca/path/to/very/good/picture">
-                            <br>
                             <p class="font-weight-bold">Credit for Picture</p>
                             <input name="nameCredit" class="form-control" value="{{$i->credit}}" placeholder="CZVR One">
-                            <br>
-                            <p class="font-weight-bold">Extra CSS (optional)</p>
-                            <input name="CSS" class="form-control" value="{{$i->css}}" placeholder="background-position: bottom;">
                         </div>
                         <div class="modal-footer">
                             <input role="button" type="submit" class="btn btn-primary" value="Edit">

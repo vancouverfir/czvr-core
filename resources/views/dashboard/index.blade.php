@@ -290,6 +290,7 @@
                             </div>
                         </div>
                     </div>
+                    <br>
                 @endif
                 {{--
                 @if(Auth::user()->permissions >= 3)
@@ -567,16 +568,6 @@
 
 
                             <!--End Vancouver Instrctr Hours-->
-                                @if (Auth::user()->rosterProfile->rating == 'S1' || Auth::user()->rosterProfile->rating == 'S2' || Auth::user()->rosterProfile->rating == 'S3')
-                                    <b>Rating:</b>
-
-                                    <h3><span class="badge rounded shadow-none green">
-                                    {{Auth::user()->rosterProfile->rating_hours}} {{Auth::user()->rosterProfile->rating}} hours recorded
-                                </span></h3>
-
-                                @endif
-
-
                             @endif
                             @elseif ($certification == "not_certified")
                                 <ul class="list-unstyled mt-2 mb-0">
@@ -600,28 +591,10 @@
                               <i class="fa fa-book-open"></i>&nbsp;
                               In Training
                           </span>
-                                                </h3></div>
-                                        </div>
-
-                                    @endif
-
-                                    @if ((isset($potentialRosterMember)) &&
-                                    $potentialRosterMember->rating_hours >= 25.0)
-                                        <span class="text-success">
-                                          You have the required <b>25 hours</b> to begin the training for your next rating!
-                                      </span>
-                                    @endif
-                                    {{--  Hi James! Make sure we are using isset to make sure the data is present, otherwise we will run into issues with invalid properties in Laravel!  --}}
-                                    @if (isset(Auth::user()->rosterProfile->rating))
-                                        @if (Auth::user()->rosterProfile->rating == 'S1' || Auth::user()->rosterProfile->rating == 'S2' || Auth::user()->rosterProfile->rating == 'S3')
-                                            @if ($potentialRosterMember->rating_hours < 25.0)
-                                                You require <b>25 hours</b> to begin the training for your next rating!
-                                            @endif
-                                        @endif
-                                    @endif
-
-
-                                </ul>
+                            </h3></div>
+                            </div>
+                             @endif
+                            </ul>
                         </div>
                     </div>
                     <br/>
@@ -740,6 +713,8 @@
                                             <span class="text-colour">Manage Users</span>
                                         </a>
                                     </li>
+                    @endif
+                    @if (Auth::user()->permissions >= 5)
                                     <li class="mb-2">
                                         <a href="{{(route('dashboard.upload'))}}" style="text-decoration:none;">
                                     <span class="blue-text">
@@ -749,12 +724,19 @@
                                             <span class="text-colour">File Uploader</span>
                                         </a>
                                     </li>
+                                    <li class="mb-2">
+                                        <a href="{{(route('dashboard.uploadmanage'))}}" style="text-decoration:none;">
+                                    <span class="blue-text">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                            &nbsp;
+                                            <span class="text-colour">Manage Uploads</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
                         <br/>
-                    @endif
-                    @if (Auth::user()->permissions >= 5)
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="font-weight-bold blue-text pb-2">Site Admin</h3>

@@ -18,6 +18,7 @@
                 <input type="file" name="file" class="custom-file-input" id="chooseFile">
                 <label class="custom-file-label" for="chooseFile">Select a file...</label>
         </div>
+        <small class="form-text text-muted">Max 2MB</small>
         <button style="margin-left: 0px" type="submit" name="submit" class="btn btn-success">
             Upload
         </button>

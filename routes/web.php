@@ -83,6 +83,8 @@ Route::group(['middleware' => 'auth'], function () {
             //Uploads
             Route::get('/upload', 'Publications\UploadController@upload')->middleware('staff')->name('dashboard.upload');
             Route::post('/upload', 'Publications\UploadController@uploadPost')->middleware('staff')->name('dashboard.upload.post');
+            Route::get('/upload/manage', 'Publications\UploadController@manageuploads')->middleware('staff')->name('dashboard.uploadmanage');
+            Route::post('/upload/delete/{filename}', 'Publications\UploadController@deletepost')->middleware('staff')->name('dashboard.uploaddelete');
             //View Feedback
             Route::get('/feedback', 'Feedback\FeedbackController@index')->name('staff.feedback.index');
             Route::get('/feedback/controller/{id}', 'Feedback\FeedbackController@viewControllerFeedback')->name('staff.feedback.controller');
