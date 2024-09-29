@@ -157,6 +157,7 @@ class SettingsController extends Controller
         $image = new HomepageImages();
         $image->url = '/storage/files/homepageimages/'.$fileName;
         $image->credit = $request->nameCredit;
+        $image->CSS = 'background-size: cover; background-repeat: no-repeat; background-position: center;';
         $image->save();
 
         return back()->with('success', 'File uploaded to: <a href='.config('app.url').'/storage/files/homepageimages/'.$fileName.'>'.config('app.url').'/storage/files/homepageimages/'.$fileName.'</a>');
@@ -171,7 +172,7 @@ class SettingsController extends Controller
         $image = HomepageImages::find($id);
 
         $image->credit = $request->nameCredit;
-        $image->css = $request->CSS;
+        $image->CSS = $request->CSS;
         $image->save();
 
         return back()->withSuccess('Image edited successfully!');
