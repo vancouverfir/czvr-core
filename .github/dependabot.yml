@@ -10,7 +10,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    target-branch: "dev"
     labels:
       - "dependencies"
 
@@ -19,7 +18,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    target-branch: "dev"
     labels:
       - "npm"
       - "dependencies"
@@ -29,7 +27,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    target-branch: "dev"
     labels:
       - "php"
       - "dependencies"
