@@ -138,10 +138,11 @@
                                     @if ($controller->delgnd == "0")
                                         <i class="fa fa-times-circle icon-no-cert"></i>
                                     @elseif ($controller->delgnd == "1")
+                                        <i class="far fa-user-circle icon-mentor"></i>
                                     @elseif ($controller->delgnd == "3")
                                         @if ($controller->delgnd_t2 != "3")
                                             <i class="far fa-check-circle icon-certified"></i>
-                                            @endif
+                                        @endif
                                     @endif
 
                                     @if ($controller->delgnd_t2 == "1")
