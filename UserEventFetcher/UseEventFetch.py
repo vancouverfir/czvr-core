@@ -88,7 +88,7 @@ def trim_events(data):
         # End time ex. is YYYY-MM-DD HH:MM:SS
         # Example: 2021-04-04 01:00:00
 
-        past = datetime.strptime(str(i["end"])[:16], "%Y-%m-%d %H:%M")
+        event = datetime.strptime(str(i["end"])[:16], "%Y-%m-%d %H:%M")
 
         # get current time in YYYY-MM-DD format
         present = datetime.utcnow()
@@ -99,7 +99,7 @@ def trim_events(data):
             str(i["start"]) + "-" + str(i["name"])
         )  # nicely formatting our datetime string
 
-        if past.date() >= present.date() and past.time() > present.time():
+        if event.date() > present.date() or event.date() == present.date() and event.time() > present.time():
                 print("Event is within period")
 
                 arrival = magic_string(i["airports"]["arrival"])
