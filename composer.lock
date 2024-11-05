@@ -2450,16 +2450,16 @@
         },
         {
             "name": "lasserafn/php-initial-avatar-generator",
-            "version": "4.3",
+            "version": "4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LasseRafn/php-initial-avatar-generator.git",
-                "reference": "ffe43d8df3f18646d7b23011272cce2d71400e1f"
+                "reference": "149fb4e3d8c7009aa131eeac86ffc4b0e9d0a2b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LasseRafn/php-initial-avatar-generator/zipball/ffe43d8df3f18646d7b23011272cce2d71400e1f",
-                "reference": "ffe43d8df3f18646d7b23011272cce2d71400e1f",
+                "url": "https://api.github.com/repos/LasseRafn/php-initial-avatar-generator/zipball/149fb4e3d8c7009aa131eeac86ffc4b0e9d0a2b8",
+                "reference": "149fb4e3d8c7009aa131eeac86ffc4b0e9d0a2b8",
                 "shasum": ""
             },
             "require": {
@@ -2499,7 +2499,7 @@
             ],
             "support": {
                 "issues": "https://github.com/LasseRafn/php-initial-avatar-generator/issues",
-                "source": "https://github.com/LasseRafn/php-initial-avatar-generator/tree/4.3"
+                "source": "https://github.com/LasseRafn/php-initial-avatar-generator/tree/4.4"
             },
             "funding": [
                 {
@@ -2507,7 +2507,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2023-07-26T19:17:56+00:00"
+            "time": "2024-11-04T11:12:44+00:00"
         },
         {
             "name": "lasserafn/php-initials",
