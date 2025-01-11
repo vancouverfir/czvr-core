@@ -31,8 +31,8 @@ class Kernel extends ConsoleKernel
     {
         // * * * * * schedulers
         $schedule->command(ActivityLog::class)->everyMinute()->evenInMaintenanceMode()->sentryMonitor();
-	$schedule->command('backup:clean')->daily()->at('00:30');
-	$schedule->command('backup:run')->daily()->at('01:00');
+        $schedule->command('backup:clean')->daily()->at('00:30');
+        $schedule->command('backup:run')->daily()->at('01:00');
         // $schedule->command(EventReminders::class)->everyMinute();
         /* $schedule->call(function () {
             file_get_contents(config('cronurls.minute'));

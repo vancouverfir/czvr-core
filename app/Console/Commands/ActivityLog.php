@@ -160,16 +160,14 @@ class ActivityLog extends Command
 
                     if ($roster_member->rating == 'S1' || $roster_member->rating == 'S2' || $roster_member->rating == 'S3') {
                         $roster_member->rating_hours += $difference;
+                    } else {
+                        error_log('Something went wrong adding rating hours (Students)');
                     }
-		    else{
-			error_log("Something went wrong adding rating hours (Students)");
-		    }
                     // Save roster member
                     $roster_member->save();
+                } else {
+                    error_log('Something went wrong adding currency!');
                 }
-	     else{
-		  error_log("Something went wrong adding currency!");
-		}
             }
         }
     }

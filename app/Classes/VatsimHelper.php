@@ -30,7 +30,7 @@ class VatsimHelper
                     throw new \Exception('Failed to fetch VATSIM status.json.');
                 }
             } catch (\Exception $e) {
-                Log::error('Error fetching VATSIM datafeed URL: ' . $e->getMessage());
+                Log::error('Error fetching VATSIM datafeed URL: '.$e->getMessage());
                 throw $e;
             }
         });

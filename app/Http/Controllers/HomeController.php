@@ -111,8 +111,8 @@ class HomeController extends Controller
                             $weatherArray[5] = $w;
                             break;
                         default:
-                            $weatherArray[] = (object)[
-                            'error' => 'No weather data'];
+                            $weatherArray[] = (object) [
+                                'error' => 'No weather data'];
                             break;
                     }
                 }
