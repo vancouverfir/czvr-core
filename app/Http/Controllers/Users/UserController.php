@@ -118,7 +118,7 @@ class UserController extends Controller
             $quarterlyHours = 'N/A';
             $rosterMember = null;
             $connections = [];
-	    $time = [];
+            $time = [];
         }
 
         return view('profile', compact('id', 'user', 'quarterlyHours', 'rosterMember', 'time', 'connections'));
