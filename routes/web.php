@@ -36,6 +36,7 @@ Route::view('/mochi', 'mochi')->name('mochi');
 Route::view('/pdc', 'pdc')->name('pdc');
 Route::view('/vfr', 'vfr')->name('vfr');
 Route::view('/livemap', 'livemap')->name('livemap');
+Route::view('/westcoastmadness', 'westcoastmadness')->name('westcoastmadness');
 Route::get('sitemap.xml', function () {
     return \Illuminate\Support\Facades\Redirect::to('sitemap.xml');
 });
