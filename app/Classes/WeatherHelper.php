@@ -59,19 +59,23 @@ class WeatherHelper
         } else {
             $text = Cache::remember('metar.data.'.$icao, 900, function () use ($icao) {
                 $c = new Client();
-                $res = $c->request('GET', 'https://api.checkwx.com/metar/'.$icao, [
-                    'headers' => [
-                        'X-API-Key' => env('AIRPORT_API_KEY'),
-                    ],
-                ]);
+                try {
+                    $res = $c->request('GET', 'https://api.checkwx.com/metar/'.$icao, [
+                        'headers' => [
+                            'X-API-Key' => env('AIRPORT_API_KEY'),
+                        ],
+                    ]);
 
-                $metar = json_decode($res->getBody()->getContents())->data;
+                    $metar = json_decode($res->getBody()->getContents())->data;
 
-                if (! $metar) {
-                    return 'No ATIS/METAR available.';
+                    if (! $metar) {
+                        return 'No weather data.';
+                    }
+
+                    return $metar[0];
+                } catch (\Exception $e) {
+                    return 'No weather data.';
                 }
-
-                return $metar[0];
             });
         }
 

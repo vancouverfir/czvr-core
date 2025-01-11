@@ -655,6 +655,11 @@
                                     </div>
                                 @endif
                                 <br>
+				<li class="mb-2">
+				<a href="{{route('tickets.staff')}}" style="text-decoration:none;"><span
+                                            class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span
+                                            class="text-colour">View All Staff Tickets</span></a>
+				</li>
                             @endif
                                 <li class="mb-2">
                                     <a href="{{route('tickets.index')}}" style="text-decoration:none;"><span

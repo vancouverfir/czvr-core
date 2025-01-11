@@ -1,4 +1,6 @@
 <!DOCTYPE HTML>
+<!-- <link rel="shortcut icon" href="{{ asset('facvicon.ico') }}" type="image/x-icon"> -->
+<!-- <link rel="shortcut icon" href="{{ asset('facvicon.ico') }}" type="image/x-icon"> -->
 <html lang="en">
     <head>
         <!--
@@ -15,6 +17,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+	<!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <!--Rich Preview Meta-->
         <title>@yield('title', 'Vancouver FIR')</title>
@@ -24,6 +27,7 @@
         <meta name="og:description" content="@yield('description', '')">
         <meta name="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
         <link rel="shortcut icon" href="{{ asset('facvicon.ico') }}" type="image/x-icon">
+	<!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
         <!-- Bootstrap core CSS -->
@@ -89,6 +93,7 @@
     </head>
     <body class="background">
     <!--Header-->
+    <!-- <script src="/js/snowflakes.js"></script> -->
     @if (\App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->banner)
         <div class="alert alert-{{\App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->bannerMode}}" style="margin: 0; border-radius: 0; border: none;">
             <div class="text-center align-self-center">
@@ -99,7 +104,8 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark p-0 main-colour" style="min-height:59px">
             <div class="container">
-                <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="https://czvr.ca/storage/files/branding/czvr-long-wordmark.png" alt=""></a>
+                <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset('CZVR_Colour_Long.png') }}" alt=""></a>
+		<!-- <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset('Holiday Long.png') }}" alt=""></a> -->
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

@@ -110,6 +110,10 @@ class HomeController extends Controller
                         case 'CYQQ':
                             $weatherArray[5] = $w;
                             break;
+                        default:
+                            $weatherArray[] = (object)[
+                            'error' => 'No weather data'];
+                            break;
                     }
                 }
             }
