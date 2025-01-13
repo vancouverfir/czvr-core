@@ -15,7 +15,7 @@
                   <h1 align="center" class="h1" style="font-size: 4em;">{{$event->name}}</h1>
                   <h4>{{$event->start_timestamp_pretty()}} - {{$event->end_timestamp_pretty()}}</h4>
                   @if ($event->departure_icao && $event->arrival_icao)
-                  <h3>{{$event->departure_icao_data()['name']}} ({{$event->departure_icao}})&nbsp;&nbsp;<i class="fas fa-plane"></i>&nbsp;&nbsp;{{$event->arrival_icao_data()['name']}} ({{$event->arrival_icao}})</h3>
+                  <h3>{{$event->departure_icao}}&nbsp;&nbsp;<i class="fas fa-plane"></i>&nbsp;&nbsp;{{$event->arrival_icao}}</h3>
                   @endif
               </div>
           </div>
