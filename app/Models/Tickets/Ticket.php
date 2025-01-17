@@ -17,7 +17,7 @@ class Ticket extends Model
 
     public function replies()
     {
-        return $this->hasMany(TicketReply::class);
+        return $this->hasMany(TicketReply::class, 'ticket_id', 'ticket_id');
     }
 
     public function user()
