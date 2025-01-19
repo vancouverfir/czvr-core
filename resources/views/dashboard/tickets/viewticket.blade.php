@@ -54,7 +54,7 @@
             {!! Form::open(['route' => ['tickets.reply', $ticket->ticket_id]]) !!}
             {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'addReplyMessage']) !!}
             <script>
-                var simplemde = new SimpleMDE({ element: document.getElementById("addReplyMessage") });
+                var simplemde = new SimpleMDE({ element: document.getElementById("addReplyMessage"), height: auto });
             </script>
             <br/>
         <div class="row">
@@ -77,12 +77,12 @@
             <div class="modal-header">
                 <h5 class="modal-title">Close Ticket?</h5>
             </div>
-            <div class="modal-body" style="height: 700px; overflow: hidden;">
+            <div class="modal-body">
                 <p class="font-weight-bold">If you'd like, leave a comment below:</p>
+                <hr>
                 {!! Form::open(['route' => ['tickets.closeticket', $ticket->ticket_id]]) !!}
                 {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'addReplyMessage']) !!}
                 <hr>
-            </div>
                 <div class="container py-0 row">
                     {!! Form::submit('Close er up', ['class' => 'btn btn-outline-danger']) !!}
                     {!! Form::close() !!}
