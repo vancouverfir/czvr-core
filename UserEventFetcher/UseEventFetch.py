@@ -390,7 +390,7 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
                     sto.execute(
                         "SELECT status FROM roster WHERE cid = ?", (cid,))
                     status = sto.fetchone()
-                    if status[0] == "visit":
+                    if status is None or status[0] == "visit":
                         sto.execute(
                             f"UPDATE roster SET status = 'home' WHERE cid = {cid}"
                         )

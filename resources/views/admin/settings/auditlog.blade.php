@@ -46,7 +46,9 @@
     </div>
     <script>
         $(document).ready(function() {
-            $('.table.dt').DataTable();
+            $('.table.dt').DataTable( {
+            	"order": [[0, "desc"]]
+            } );
         } );
     </script>
 @endsection
