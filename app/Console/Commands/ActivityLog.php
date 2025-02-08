@@ -153,7 +153,7 @@ class ActivityLog extends Command
 
                 // check it exists
                 if ($roster_member &&
-                    $roster_member->status == 'home' || $roster_member->status == 'instructor' || $roster_member->status == 'visit' || $roster_member->status == 'training' &&
+                    ($roster_member->status == 'home' || $roster_member->status == 'instructor' || $roster_member->status == 'visit' || $roster_member->status == 'training') &&
                     $roster_member->active) {
                     // Add hours
                     $roster_member->currency += $difference;
