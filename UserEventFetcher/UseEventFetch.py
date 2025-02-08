@@ -18,8 +18,8 @@ print(ISMODE)
 
 # getting our config file
 config = configparser.RawConfigParser()
-assert os.path.exists("./pyapiconf.ini")
-CONFIGFILEPATH = "./pyapiconf.ini"
+assert os.path.exists('./pyapiconf.ini')
+CONFIGFILEPATH = './pyapiconf.ini'
 config.read(CONFIGFILEPATH)
 
 # this is our Vatsim API key, edit to match what is in use
@@ -45,7 +45,7 @@ print("|" + DBServer + "|")
 print("Connecting to MySQL Sevrer...")
 
 CIDSTOR = []
-VISITCIDSTOR = []
+# VISITCIDSTOR = []
 
 try:
     connectSQL = mariadb.connect(
@@ -355,6 +355,7 @@ def trim_roster():
         db_cid = int(str_cid)
         if db_cid not in CIDSTOR:
             print("invalid CID:", db_cid)
+            bye.execute("DELETE FROM session_logs WHERE roster_member_id=?", (db_cid,))
             bye.execute("DELETE FROM roster WHERE cid=?", (db_cid,))
             bye.execute(
                 "UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
@@ -414,40 +415,40 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
         print("Update Error:", db_error)
         sys.exit(1)
 
-    try:
-        print("Updating users role...")
-        cur.execute(f"SELECT permissions FROM users WHERE id={cid}")
-        # perm = cur.fetchall()[0][0]
-        perm = cur.fetchone()
-        if perm is not None:
-            print(f"permissions for {cid}={perm}")
-            if perm[0] <= 1:
-                print(f"{cid}: Guest or Controller, moving on")
-            elif perm[0] == 2:
-                print(f"{cid}: Mentor")
-                m = "mentor"
-                cur.execute(
-                    f"UPDATE roster SET staff = '{m}' WHERE cid = {cid}")
-            elif perm[0] == 3:
-                print(f"{cid}: Instructor")
-                ins = "ins"
-                cur.execute(
-                    f"UPDATE roster SET staff = '{ins}' WHERE cid = {cid}")
-            elif perm[0] == 4:
-                print(f"{cid}: Staff")
-                s = "staff"
-                cur.execute(
-                    f"UPDATE roster SET staff = '{s}' WHERE cid = {cid}")
-            elif perm[0] == 5:
-                print(f"{cid}: Executive")
-                e = "exec"
-                cur.execute(
-                    f"UPDATE roster SET staff = '{e}' WHERE cid = {cid}")
-        else:
-            print("Not in DB Moving on...")
-    except mariadb.Error as db_error:
-        print(" Iterative Error: ", db_error)
-        sys.exit(1)
+        try:
+            print("Updating users role...")
+            cur.execute(f"SELECT permissions FROM users WHERE id={cid}")
+            # perm = cur.fetchall()[0][0]
+            perm = cur.fetchone()
+            if perm is not None:
+                print(f"permissions for {cid}={perm}")
+                if perm[0] <= 1:
+                    print(f"{cid}: Guest or Controller, moving on")
+                elif perm[0] == 2:
+                    print(f"{cid}: Mentor")
+                    m = "mentor"
+                    cur.execute(
+                        f"UPDATE roster SET staff = '{m}' WHERE cid = {cid}")
+                elif perm[0] == 3:
+                    print(f"{cid}: Instructor")
+                    ins = "ins"
+                    cur.execute(
+                        f"UPDATE roster SET staff = '{ins}' WHERE cid = {cid}")
+                elif perm[0] == 4:
+                    print(f"{cid}: Staff")
+                    s = "staff"
+                    cur.execute(
+                        f"UPDATE roster SET staff = '{s}' WHERE cid = {cid}")
+                elif perm[0] == 5:
+                    print(f"{cid}: Executive")
+                    e = "exec"
+                    cur.execute(
+                        f"UPDATE roster SET staff = '{e}' WHERE cid = {cid}")
+            else:
+                print("Not in DB Moving on...")
+        except mariadb.Error as db_error:
+            print(" Iterative Error: ", db_error)
+            sys.exit(1)
 
     try:
         cur.execute(
