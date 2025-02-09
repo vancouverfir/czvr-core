@@ -371,7 +371,7 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
     sto = connectSQL.cursor()
     try:
         print("Searching for ID's to update...")
-        cur.execute("SELECT id FROM users WHERE id=?", (cid,))
+        # cur.execute("SELECT id FROM users WHERE id=?", (cid,))
 
         try:
             cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
@@ -393,7 +393,7 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
                     status = sto.fetchone()
                     if status is None or status[0] == "visit":
                         sto.execute(
-                            f"UPDATE roster SET status = 'home' WHERE cid = {cid}"
+                            "UPDATE roster SET status = 'home' WHERE cid = ?", (cid,)
                         )
                 else:
                     sto.execute(
@@ -415,40 +415,43 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
         print("Update Error:", db_error)
         sys.exit(1)
 
-        try:
-            print("Updating users role...")
-            cur.execute(f"SELECT permissions FROM users WHERE id={cid}")
-            # perm = cur.fetchall()[0][0]
-            perm = cur.fetchone()
-            if perm is not None:
-                print(f"permissions for {cid}={perm}")
-                if perm[0] <= 1:
-                    print(f"{cid}: Guest or Controller, moving on")
-                elif perm[0] == 2:
-                    print(f"{cid}: Mentor")
-                    m = "mentor"
-                    cur.execute(
-                        f"UPDATE roster SET staff = '{m}' WHERE cid = {cid}")
-                elif perm[0] == 3:
-                    print(f"{cid}: Instructor")
-                    ins = "ins"
-                    cur.execute(
-                        f"UPDATE roster SET staff = '{ins}' WHERE cid = {cid}")
-                elif perm[0] == 4:
-                    print(f"{cid}: Staff")
-                    s = "staff"
-                    cur.execute(
-                        f"UPDATE roster SET staff = '{s}' WHERE cid = {cid}")
-                elif perm[0] == 5:
-                    print(f"{cid}: Executive")
-                    e = "exec"
-                    cur.execute(
-                        f"UPDATE roster SET staff = '{e}' WHERE cid = {cid}")
-            else:
-                print("Not in DB Moving on...")
-        except mariadb.Error as db_error:
-            print(" Iterative Error: ", db_error)
-            sys.exit(1)
+    try:
+        print("Updating users role...")
+        cur.execute(f"SELECT permissions FROM users WHERE id={cid}")
+        # perm = cur.fetchall()[0][0]
+        perm = cur.fetchone()
+        if perm is not None:
+            print(f"permissions for {cid}={perm}")
+            if perm[0] <= 1:
+                print(f"{cid}: Guest or Controller, moving on")
+            elif perm[0] == 2:
+                print(f"{cid}: Mentor")
+                m = "mentor"
+                cur.execute(
+                    f"UPDATE roster SET staff = '{m}' WHERE cid = {cid}")
+            elif perm[0] == 3:
+                print(f"{cid}: Instructor")
+                ins = "ins"
+                cur.execute(
+                    f"UPDATE roster SET staff = '{ins}' WHERE cid = {cid}")
+            elif perm[0] == 4:
+                print(f"{cid}: Staff")
+                s = "staff"
+                cur.execute(
+                    f"UPDATE roster SET staff = '{s}' WHERE cid = {cid}")
+            elif perm[0] == 5:
+                print(f"{cid}: Executive")
+                e = "exec"
+                cur.execute(
+                    f"UPDATE roster SET staff = '{e}' WHERE cid = {cid}")
+
+            print("complete!")
+            return
+        else:
+            print("Not in DB Moving on...")
+    except mariadb.Error as db_error:
+        print(" Iterative Error: ", db_error)
+        sys.exit(1)
 
     try:
         cur.execute(
@@ -480,7 +483,7 @@ async def stow_visit_roster(
     sto = connectSQL.cursor()
     try:
         print("Searching for Visitor ID's to update...")
-        cur.execute("SELECT id FROM users WHERE id=?", (cid,))
+        # cur.execute("SELECT id FROM users WHERE id=?", (cid,))
         try:
             cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
             for i in cur:
@@ -505,6 +508,8 @@ async def stow_visit_roster(
                             "visitor = ? WHERE id = ?",
                             (email, lname, rating_id, rating_short, "1", "1", cid),
                         )
+                    print("complete!")
+                    return
                 else:
                     print("not in visitor DB moving on...")
         except mariadb.Error as db_error:
