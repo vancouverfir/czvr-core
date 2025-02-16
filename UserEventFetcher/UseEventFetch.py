@@ -47,6 +47,20 @@ print("Connecting to MySQL Sevrer...")
 CIDSTOR = []
 # VISITCIDSTOR = []
 
+WEBHOOK_URL = config.get("Webhook", "Webhook")
+
+def send_webhook(message):
+    #Send notifications via Webhook
+    payload = {
+        "content": f"**Script Error**\n{message}"
+    }
+    try:
+        response = requests.post(WEBHOOK_URL, json=payload)
+        response.raise_for_status()
+        print("Webhook error sent")
+    except requests.exceptions.RequestException as request_exception:
+        print("Webhook error failed to send ", request_exception)
+
 try:
     connectSQL = mariadb.connect(
         user=DBUser,
@@ -58,8 +72,8 @@ try:
     )
 except mariadb.Error as e:
     print(f"Error connecting to MariaDB Platform: {e}")
+    send_webhook(f"Python script failed to connect to MariaDB Platform {e}")
     sys.exit(1)
-
 
 def fetch_event():
     """Using the vatsim API to fetch events"""
@@ -106,19 +120,23 @@ def trim_events(data):
                 departure = magic_string(i["airports"]["departure"])
 
                 # the keys for ID, name, start, end, description,imageurl,airports,dept, and arrivals
-                asyncio.run(
-                    stow_event(
-                        i["id"],
-                        i["name"],
-                        str(i["start"])[:16],
-                        str(i["end"])[:16],
-                        i["description"],
-                        i["image_url"],
-                        departure,
-                        arrival,
-                        slug,
-                    )
-                )
+                data = {
+                    "data": [
+                        {
+                            "id": i["id"],
+                            "name": i["name"],
+                            "start_timestamp": str(i["start"])[:16],
+                            "end_timestamp": str(i["end"])[:16],
+                            "description": i["description"],
+                            "image_url": i["image_url"],
+                            "departure_icao": departure,
+                            "arrival_icao": arrival,
+                            "slug": slug
+                        }
+                    ]
+                }
+
+                asyncio.run(stow_event(data))
         else:
             print("Event is outside of period, ignoring...")
 
@@ -139,17 +157,7 @@ def magic_string(stron):
         return "YXE"  # My hometown, people have to go SOMEWHERE.
 
 
-async def stow_event(
-    id,
-    name,
-    start_timestamp,
-    end_timestamp,
-    description,
-    image_url,
-    departure_icao,
-    arrival_icao,
-    slug,
-):
+async def stow_event(data):
     """
     Uploading events to the DB
     """
@@ -157,71 +165,84 @@ async def stow_event(
     # stowing the fetched events in the DB
     print("Stowing Events in DB...")
     cur = connectSQL.cursor()
-    try:  # writing the DB update
-        print("selecting ID's to update")
-        cur.execute("SELECT id FROM events WHERE id=?", (id,))
-        print("Captain, we found something!")
-        try:  # attempting to update the DB
-            cur.execute(
-                "UPDATE events SET name = ?, start_timestamp = ?, end_timestamp = ?, description = ?, "
-                "image_url = ?, departure_icao = ?, arrival_icao = ?, slug = ? WHERE id = ?",
-                (
-                    name,
-                    start_timestamp,
-                    end_timestamp,
-                    description,
-                    image_url,
-                    departure_icao,
-                    arrival_icao,
-                    slug,
-                    id,
-                ),
-            )
-            print("Execute complete!")
-        except mariadb.Error as db_error:
-            print(f" Iterative Error: {db_error}")
-            print("He's dead, Jim...")
-            sys.exit(1)
-    # if anything fails, we can still just re-add everything.
-    except mariadb.Error as db_error:
-        print(f"Update Error: {db_error}")
-        sys.exit(1)
 
-    print(" On the off chance we get this far...")
-    print(slug)
-
-    print(type(id))
-    print("id = ", id)
+    # Extract all event IDs from the incoming data
+    event_ids = [event["id"] for event in data["data"]]
 
     try:
-        print(id)
-        print(name)
-        print(start_timestamp)
-        print(end_timestamp)
-        print(description)
-        print(image_url)
-        print(departure_icao)
-        print(arrival_icao)
-        print(slug)
-        cur.execute(
-            "INSERT INTO events (id, name, Start_timestamp, end_timestamp, description, image_url, "
-            "departure_icao, arrival_icao, slug) VALUES (?,?,?,?,?,?,?,?,?)",
-            (
-                id,
-                name,
-                start_timestamp,
-                end_timestamp,
-                description,
-                image_url,
-                departure_icao,
-                arrival_icao,
-                slug,
-            ),
-        )
+        # Batch fetch existing event IDs from the database
+        print("Selecting event IDs to check for updates...")
+        cur.execute("SELECT id FROM events WHERE id IN (%s)" % ','.join(['?'] * len(event_ids)), event_ids)
+        existing_event_ids = set(row[0] for row in cur.fetchall())
+        print("Existing event IDs fetched.")
     except mariadb.Error as db_error:
-        print(f"Error: {db_error}")
-    print("complete!")
+        print(f"Error fetching existing event IDs: {db_error}")
+        send_webhook(f"Error fetching existing event IDs: {db_error}")
+        sys.exit(1)
 
+    # Loop through the events in the data payload
+    for event in data["data"]:
+        id = event["id"]
+        name = event["name"]
+        start_timestamp = event["start_timestamp"]
+        end_timestamp = event["end_timestamp"]
+        description = event["description"]
+        image_url = event["image_url"]
+        departure_icao = event["departure_icao"]
+        arrival_icao = event["arrival_icao"]
+        slug = event["slug"]
+
+        # Check if the event already exists using the cached set
+        if id in existing_event_ids:
+            print(f"Event {id} exists, updating...")
+            try:
+                cur.execute(
+                    "UPDATE events SET name = ?, start_timestamp = ?, end_timestamp = ?, description = ?, "
+                    "image_url = ?, departure_icao = ?, arrival_icao = ?, slug = ? WHERE id = ?",
+                    (
+                        name,
+                        start_timestamp,
+                        end_timestamp,
+                        description,
+                        image_url,
+                        departure_icao,
+                        arrival_icao,
+                        slug,
+                        id,
+                    ),
+                )
+                print(f"Update complete for event {id}!")
+            except mariadb.Error as db_error:
+                print(f"Iterative Error while updating event {id}: {db_error}")
+                send_webhook(f"Iterative Error while updating event {id}: {db_error}")
+                sys.exit(1)
+        else:
+            print(f"Event {id} not found, inserting...")
+            try:
+                cur.execute(
+                    "INSERT INTO events (id, name, start_timestamp, end_timestamp, description, image_url, "
+                    "departure_icao, arrival_icao, slug) VALUES (?,?,?,?,?,?,?,?,?)",
+                    (
+                        id,
+                        name,
+                        start_timestamp,
+                        end_timestamp,
+                        description,
+                        image_url,
+                        departure_icao,
+                        arrival_icao,
+                        slug,
+                    ),
+                )
+                print(f"Insert complete for event {id}!")
+            except mariadb.Error as db_error:
+                print(f"Error while inserting event {id}: {db_error}")
+                send_webhook(f"Error while inserting event {id}: {db_error}")
+                sys.exit(1)
+
+    # Commit changes to the database
+    connectSQL.commit()
+    print("Event stowing complete!")
 
 def rm_deleted_events(data):
     """
@@ -369,56 +390,55 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
     print("Stowing users in DB...")
     cur = connectSQL.cursor()
     sto = connectSQL.cursor()
-    try:
-        print("Searching for ID's to update...")
-        # cur.execute("SELECT id FROM users WHERE id=?", (cid,))
 
-        try:
-            cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
-            permissions = cur.fetchone()
+    print("Fetching permissions for roster...")
+    cur.execute("SELECT id, permissions FROM users WHERE id IN (?)", (cid,))
+    permissions_map = {row[0]: row[1] for row in cur.fetchall()}
+    print("Permissions fetched for roster.")
 
-            if permissions is not None:
-                print(f"perms {permissions[0]}")
-                if permissions[0] > 0:
+    if cid in permissions_map:
+        permissions = permissions_map[cid]
+        print(f"Permissions for {cid}: {permissions}")
+        if permissions > 0:
+            try:
+                sto.execute(
+                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
+                    (email, lname, rating_id, rating_short, "0", cid),
+                )
+                sto.execute(
+                    "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",
+                    (fullname, "0", cid),
+                )
+                sto.execute("SELECT status FROM roster WHERE cid = ?", (cid,))
+                status = sto.fetchone()
+                if status is None or status[0] == "visit":
                     sto.execute(
-                        "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
-                        (email, lname, rating_id, rating_short, "0", cid),
+                        "UPDATE roster SET status = 'home' WHERE cid = ?", (cid,)
                     )
-                    sto.execute(
-                        "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",
-                        (fullname, "0", cid),
-                    )
-                    sto.execute(
-                        "SELECT status FROM roster WHERE cid = ?", (cid,))
-                    status = sto.fetchone()
-                    if status is None or status[0] == "visit":
-                        sto.execute(
-                            "UPDATE roster SET status = 'home' WHERE cid = ?", (cid,)
-                        )
-                else:
-                    sto.execute(
-                        "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",
-                        (fullname, "0", cid),
-                    )
-                    sto.execute(
-                        "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = "
-                        "? WHERE id = ?",
-                        (email, lname, rating_id, rating_short, "1", "0", cid),
-                    )
-            else:
-                print("Not in DB Moving on...")
-        except mariadb.Error as db_error:
-            print(" Iterative Error:", db_error)
-            print("He's dead, Jim...")
-            sys.exit(1)
-    except mariadb.Error as db_error:
-        print("Update Error:", db_error)
-        sys.exit(1)
+            except mariadb.Error as db_error:
+                print("Iterative Error:", db_error)
+                send_webhook(f"Iterative Error {db_error}")
+                sys.exit(1)
+        else:
+            try:
+                sto.execute(
+                    "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",
+                    (fullname, "0", cid),
+                )
+                sto.execute(
+                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",
+                    (email, lname, rating_id, rating_short, "1", "0", cid),
+                )
+            except mariadb.Error as db_error:
+                print("Iterative Error:", db_error)
+                send_webhook(f"Iterative Error {db_error}")
+                sys.exit(1)
+    else:
+        print("Not in DB Moving on...")
 
     try:
         print("Updating users role...")
-        cur.execute(f"SELECT permissions FROM users WHERE id={cid}")
-        # perm = cur.fetchall()[0][0]
+        cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
         perm = cur.fetchone()
         if perm is not None:
             print(f"permissions for {cid}={perm}")
@@ -428,35 +448,37 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
                 print(f"{cid}: Mentor")
                 m = "mentor"
                 cur.execute(
-                    f"UPDATE roster SET staff = '{m}' WHERE cid = {cid}")
+                    "UPDATE roster SET staff = ? WHERE cid = ?", (m, cid)
+                )
             elif perm[0] == 3:
                 print(f"{cid}: Instructor")
                 ins = "ins"
                 cur.execute(
-                    f"UPDATE roster SET staff = '{ins}' WHERE cid = {cid}")
+                    "UPDATE roster SET staff = ? WHERE cid = ?", (ins, cid)
+                )
             elif perm[0] == 4:
                 print(f"{cid}: Staff")
                 s = "staff"
                 cur.execute(
-                    f"UPDATE roster SET staff = '{s}' WHERE cid = {cid}")
+                    "UPDATE roster SET staff = ? WHERE cid = ?", (s, cid)
+                )
             elif perm[0] == 5:
                 print(f"{cid}: Executive")
                 e = "exec"
                 cur.execute(
-                    f"UPDATE roster SET staff = '{e}' WHERE cid = {cid}")
-
+                    "UPDATE roster SET staff = ? WHERE cid = ?", (e, cid)
+                )
             print("complete!")
-            return
         else:
             print("Not in DB Moving on...")
     except mariadb.Error as db_error:
         print(" Iterative Error: ", db_error)
+        send_webhook(f"Iterative Error {db_error}")
         sys.exit(1)
 
     try:
         cur.execute(
-            "INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname) VALUES "
-            "(?,?,?,?,?,?,?,?)",
+            "INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname) VALUES (?,?,?,?,?,?,?,?)",
             (cid, email, fname, lname, rating_id, rating_short, "1", fname),
         )
     except mariadb.Error as db_error:
@@ -472,58 +494,56 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
     print("complete!")
 
 
-async def stow_visit_roster(
-    cid, fname, lname, rating_id, email, fullname, rating_short
-):
+async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, rating_short):
     """
-    stores new users in the roster
+    stores new users in the visit roster
     """
     print("Stowing visitors in DB...")
     cur = connectSQL.cursor()
     sto = connectSQL.cursor()
-    try:
-        print("Searching for Visitor ID's to update...")
-        # cur.execute("SELECT id FROM users WHERE id=?", (cid,))
-        try:
-            cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
-            for i in cur:
-                if i is not None:
-                    print(f"Permissions for {cid}: {i[0]}")
-                    if i[0] > 0:
-                        sto.execute(
-                            "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
-                            (email, lname, rating_id, rating_short, "1", cid),
-                        )
-                        sto.execute(
-                            "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
-                            (fullname, "1", "visit", cid),
-                        )
-                    else:
-                        sto.execute(
-                            "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
-                            (fullname, "1", "visit", cid),
-                        )
-                        sto.execute(
-                            "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, "
-                            "visitor = ? WHERE id = ?",
-                            (email, lname, rating_id, rating_short, "1", "1", cid),
-                        )
-                    print("complete!")
-                    return
-                else:
-                    print("not in visitor DB moving on...")
-        except mariadb.Error as db_error:
-            print(" Iterative Error: ", db_error)
-            print("He's dead, Jim...")
-            sys.exit(1)
-    except mariadb.Error as db_error:
-        print(f"Update Error: {db_error}")
-        sys.exit(1)
+
+    print("Fetching permissions for visit roster...")
+    cur.execute("SELECT id, permissions FROM users WHERE id IN (?)", (cid,))
+    permissions_map = {row[0]: row[1] for row in cur.fetchall()}
+    print("Permissions fetched for visit roster.")
+
+    if cid in permissions_map:
+        permissions = permissions_map[cid]
+        print(f"Permissions for {cid}: {permissions}")
+        if permissions > 0:
+            try:
+                sto.execute(
+                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
+                    (email, lname, rating_id, rating_short, "1", cid),
+                )
+                sto.execute(
+                    "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
+                    (fullname, "1", "visit", cid),
+                )
+            except mariadb.Error as db_error:
+                print("Iterative Error:", db_error)
+                send_webhook(f"Iterative Error {db_error}")
+                sys.exit(1)
+        else:
+            try:
+                sto.execute(
+                    "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
+                    (fullname, "1", "visit", cid),
+                )
+                sto.execute(
+                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",
+                    (email, lname, rating_id, rating_short, "1", "1", cid),
+                )
+            except mariadb.Error as db_error:
+                print("Iterative Error:", db_error)
+                send_webhook(f"Iterative Error {db_error}")
+                sys.exit(1)
+    else:
+        print("Not in DB Moving on...")
 
     try:
         cur.execute(
-            "INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname, "
-            "visitor) VALUES (?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname, visitor) VALUES (?,?,?,?,?,?,?,?,?)",
             (cid, email, fname, lname, rating_id, rating_short, "1", fname, "1"),
         )
     except mariadb.Error as db_error:
@@ -565,6 +585,8 @@ try:
         print("You need to state either Events or Roster")
 except Exception as e:
     print("Something went wrong: ", e)
+    error_message = str(e)
+    send_webhook(error_message)
     sys.exit()
 
 

@@ -12,19 +12,24 @@ class RosterController extends Controller
 {
     public function showPublic()
     {
-        $roster = RosterMember::where('visit', '0')->get()->sortBy('cid');
-        $visitroster = RosterMember::where('visit', '1')->get()->sortBy('cid');
-
+        $roster = RosterMember::with('user')->where('visit', '0')->get()->sortBy('cid');
+        $visitroster = RosterMember::with('user')->where('visit', '1')->get()->sortBy('cid');
+    
         return view('roster', compact('roster', 'visitroster'));
     }
 
     public function index()
     {
-        $roster = RosterMember::where('visit', '0')->get()->sortBy('cid');
-        $visitroster2 = RosterMember::where('visit', '1')->get()->sortBy('cid');
+        $roster = RosterMember::with('user')->where('visit', '0')->get()->sortBy('cid');
+        $visitroster2 = RosterMember::with('user')->where('visit', '1')->get()->sortBy('cid');
         $users = User::all();
 
         return view('dashboard.roster.index', compact('roster', 'visitroster2', 'users'));
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function deleteController($id)
