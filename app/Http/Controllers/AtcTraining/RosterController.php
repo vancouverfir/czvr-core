@@ -14,7 +14,7 @@ class RosterController extends Controller
     {
         $roster = RosterMember::with('user')->where('visit', '0')->get()->sortBy('cid');
         $visitroster = RosterMember::with('user')->where('visit', '1')->get()->sortBy('cid');
-    
+
         return view('roster', compact('roster', 'visitroster'));
     }
 
