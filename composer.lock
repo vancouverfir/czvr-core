@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.339.13",
+            "version": "3.339.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "16b291be8ed930b87267552faeb9974aa3a2e6da"
+                "reference": "6632b63e2696052441894673c0fac882f52c3b92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/16b291be8ed930b87267552faeb9974aa3a2e6da",
-                "reference": "16b291be8ed930b87267552faeb9974aa3a2e6da",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6632b63e2696052441894673c0fac882f52c3b92",
+                "reference": "6632b63e2696052441894673c0fac882f52c3b92",
                 "shasum": ""
             },
             "require": {
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.339.13"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.339.17"
             },
-            "time": "2025-02-13T19:07:55+00:00"
+            "time": "2025-02-19T19:10:53+00:00"
         },
         {
             "name": "bonroyage/oauth",
