@@ -9,7 +9,7 @@ class VatsimHelper
 {
     public static function getDatafeedUrl(): string
     {
-        return Cache::remember('vatsim-datafeed-url', 86400, function () {
+        return Cache::remember('vatsim-datafeed-url', 180, function () {
             try {
                 $response = HttpHelper::getClient()->get('https://status.vatsim.net/status.json');
 
