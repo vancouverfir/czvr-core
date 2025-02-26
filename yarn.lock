@@ -1779,10 +1779,10 @@ autoprefixer@^10.4.0:
     picocolors "^1.0.1"
     postcss-value-parser "^4.2.0"
 
-axios@^1.7:
-  version "1.7.9"
-  resolved "https://registry.npmjs.org/axios/-/axios-1.7.9.tgz"
-  integrity sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==
+axios@^1.8:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.8.0.tgz#f68607ed4caf0f741ef084949ebb6f3d973c6837"
+  integrity sha512-AS3x1klSQ4VeoeAaOyITVjomjITxIRgpKVgAXhE8QFJiNiYliuU+cW0p7XpqvlwNKmiwE57aNEyhPtsfAxERqg==
   dependencies:
     follow-redirects "^1.15.6"
     form-data "^4.0.0"
