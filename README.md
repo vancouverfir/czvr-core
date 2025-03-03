@@ -26,11 +26,14 @@ Guidelines for submitting a **pull request**:
 ### Initial setup process
 
 1. Clone the repository.
-1. Run `composer install`
-1. Rename `.env.example` to `.env` and fill required fields. The VATSIM connect demo URI is already placed in there. Get your ID and put your redirect URI into http://auth-dev.vatsim.net.
-1. Run `php artisan migrate --seed` (runs database migrations and seeds with required rows).
-1. Run `php artisan key:generate`.
-1. Login with one of the accounts found at http://wiki.vatsim.net/connect.
-1. Give that new account in the `users` table a `permissions` value of `5`.
+2. Run `composer install`
+3. Rename `.env.example` to `.env` and fill required fields. The VATSIM connect demo URI is already placed in there. Get your ID and put your redirect URI into http://auth-dev.vatsim.net.
+4. Create a local database and update the `.env` file with your database credentials.
+5. Define `MAIL_FROM_ADDRESS` in the `.env` file.
+6. Get an API key from [CheckWX API](https://www.checkwxapi.com/) and set it to `AIRPORT_API_KEY` in the `.env` file.
+7. Run `php artisan migrate --seed` (runs database migrations and seeds with required rows).
+8. Run `php artisan key:generate`.
+9. Login with one of the accounts found at http://wiki.vatsim.net/connect.
+10. Give that new account in the `users` table a `permissions` value of `5`.
 
 
