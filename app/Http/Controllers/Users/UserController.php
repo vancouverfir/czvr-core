@@ -579,19 +579,24 @@ class UserController extends Controller
 
     public function linkDiscordRedirect()
     {
-        $discordUser = Socialite::driver('discord')->stateless()->user();
-        if (! $discordUser) {
-            abort(403, 'Discord OAuth failed.');
-        }
-        $user = Auth::user();
-        if (User::where('discord_user_id', $discordUser->id)->first()) {
-            return redirect()->route('dashboard.index')->with('error-modal', 'This Discord account has already been linked by another user.');
-        }
-        $user->discord_user_id = $discordUser->id;
-        $user->discord_dm_channel_id = app(Discord::class)->getPrivateChannel($discordUser->id);
-        $user->save();
+        try {
+            $discordUser = Socialite::driver('discord')->stateless()->user();
+            if (! $discordUser) {
+                abort(403, 'Discord OAuth failed.');
+            }
+            $user = Auth::user();
+            if (User::where('discord_user_id', $discordUser->id)->first()) {
+                return redirect()->route('dashboard.index')->with('error-modal', 'This Discord account has already been linked by another user.');
+            }
+            $user->discord_user_id = $discordUser->id;
+            $user->discord_dm_channel_id = app(Discord::class)->getPrivateChannel($discordUser->id);
+            $user->save();
 
-        return redirect()->route('dashboard.index')->with('success', 'Linked with account '.$discordUser->nickname.'!');
+            return redirect()->route('dashboard.index')->with('success', 'Linked with account ' . $discordUser->nickname . '!');
+
+        } catch (Exception $e) {
+            return redirect()->route('dashboard.index')->with('error-modal', 'Discord authentication was canceled or failed.');
+        }
     }
 
     public function joinDiscordServerRedirect()

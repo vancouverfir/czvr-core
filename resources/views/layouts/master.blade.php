@@ -125,7 +125,6 @@
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                                 <a class="dropdown-item {{ Request::is('events.index') ? 'active white-text' : '' }}" href="{{route('events.index')}}">Upcoming Events</a>
-				<a class="dropdown-item {{ Request::is('westcoastmadness') ? 'active white-text' : '' }}" href="{{route('westcoastmadness')}}">West Coast Madness</a>
                                 <a class="dropdown-item {{ Request::is('events.coverage') ? 'active white-text' : '' }}" href="{{route('events.coverage')}}">Need Coverage?</a>
                                 @if(Auth::check() && Auth::user()->permissions >= 4)
                                     <a class="dropdown-item {{ Request::is('events.admin.index') ? 'active white-text' : '' }}" href="{{route('events.admin.index')}}">Manage Events</a>
