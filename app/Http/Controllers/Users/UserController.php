@@ -593,7 +593,6 @@ class UserController extends Controller
             $user->save();
 
             return redirect()->route('dashboard.index')->with('success', 'Linked with account '.$discordUser->nickname.'!');
-
         } catch (Exception $e) {
             return redirect()->route('dashboard.index')->with('error-modal', 'Discord authentication was canceled or failed.');
         }
