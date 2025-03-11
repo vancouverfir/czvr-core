@@ -592,8 +592,7 @@ class UserController extends Controller
             $user->discord_dm_channel_id = app(Discord::class)->getPrivateChannel($discordUser->id);
             $user->save();
 
-            return redirect()->route('dashboard.index')->with('success', 'Linked with account ' . $discordUser->nickname . '!');
-
+            return redirect()->route('dashboard.index')->with('success', 'Linked with account '.$discordUser->nickname.'!');
         } catch (Exception $e) {
             return redirect()->route('dashboard.index')->with('error-modal', 'Discord authentication was canceled or failed.');
         }
