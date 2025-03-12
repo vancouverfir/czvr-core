@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Seeders\StudentLabelListsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -78,5 +79,7 @@ class DatabaseSeeder extends Seeder
             'url' => 'https://czvr.ca/storage/files/branding/czvr-logomark.png',
             'credit' => 'Vancouver FIR',
         ]);
+
+        $this->call(\Database\Seeds\StudentLabelListsSeeder::class);
     }
 }

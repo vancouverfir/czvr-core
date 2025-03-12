@@ -69,10 +69,11 @@ class Student extends Model
 
     public function hasLabel($label_text)
     {
-        if (! StudentLabel::whereName($label_text)->first()) {
+        if (!StudentLabel::whereName($label_text)->first()) {
             return false;
         }
-        if ($label = StudentInteractiveLabels::where('student_id', $this->id)
+        if ($label = StudentInteractiveLabels
+            ::where('student_id', $this->id)
             ->where(
                 'student_label_id',
                 StudentLabel::whereName($label_text)->first()->id
