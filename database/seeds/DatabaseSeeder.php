@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'name' => 'Executive Team',
             'slug' => 'executive',
-            'description' => 'CZWG\'s executive team oversees FIR operations',
+            'description' => 'CZVR\'s executive team oversees FIR operations',
             'can_receive_tickets' => true,
         ]);
 
@@ -75,8 +75,8 @@ class DatabaseSeeder extends Seeder
         );
 
         DB::table('homepage_images')->insert([
-            'url' => 'https://cdn.discordapp.com/attachments/598024548301930496/762594915552985108/unknown.png',
-            'credit' => 'Winnipeg FIR',
+            'url' => 'https://czvr.ca/storage/files/branding/czvr-logomark.png',
+            'credit' => 'Vancouver FIR',
         ]);
     }
 }

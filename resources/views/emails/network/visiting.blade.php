@@ -15,7 +15,7 @@
         <thead>
         <tr>
             <th class="border">Name</th>
-            <th class="border">% on Winnipeg Positions</th>
+            <th class="border">% on Vancouver Positions</th>
         </tr>
         </thead>
         @foreach($members as $m)
