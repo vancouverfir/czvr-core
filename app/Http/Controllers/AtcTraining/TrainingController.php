@@ -12,16 +12,15 @@ use App\Models\AtcTraining\CBT\CbtExamResult;
 use App\Models\AtcTraining\CBT\CbtModule;
 use App\Models\AtcTraining\CBT\CbtModuleAssign;
 use App\Models\AtcTraining\CBT\CbtNotification;
+use App\Models\AtcTraining\InstructingSession;
 use App\Models\AtcTraining\Instructor;
 use App\Models\AtcTraining\InstructorStudents;
-use App\Models\AtcTraining\InstructingSession;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\AtcTraining\SoloRequest;
 use App\Models\AtcTraining\Student;
-use App\Models\AtcTraining\StudentNote;
-use App\Models\AtcTraining\StudentLabel;
 use App\Models\AtcTraining\StudentInteractiveLabels;
-use MaddHatter\LaravelFullcalendar\Facades\Calendar;
+use App\Models\AtcTraining\StudentLabel;
+use App\Models\AtcTraining\StudentNote;
 use App\Models\AtcTraining\TrainingWaittime;
 use App\Models\Users\User;
 use App\Notifications\SoloApproval;
@@ -35,7 +34,7 @@ class TrainingController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if (!$user) {
+        if (! $user) {
             abort(403);
         }
         $soloreq = SoloRequest::where('approved', '0')->get();
@@ -145,14 +144,14 @@ class TrainingController extends Controller
             $instructor = $request->input('instructor');
         }
 
-       /* $application = Application::create([
-            'user_id' => $request->input('student_id'),
-            'status' => '2',
-            'submitted_at' => Carbon::now()->toDateTimeString(),
-            'processed_at' => Carbon::now()->toDateTimeString(),
-            'processed_by' => Auth::user()->id,
-            'application_id' => Str::random(8),
-        ]); */
+        /* $application = Application::create([
+             'user_id' => $request->input('student_id'),
+             'status' => '2',
+             'submitted_at' => Carbon::now()->toDateTimeString(),
+             'processed_at' => Carbon::now()->toDateTimeString(),
+             'processed_by' => Auth::user()->id,
+             'application_id' => Str::random(8),
+         ]); */
         $student = Student::create([
             'user_id' => $request->input('student_id'),
             'instructor_id' => $instructor,
@@ -249,17 +248,17 @@ class TrainingController extends Controller
         $student = Student::where('id', $student_id)->firstOrFail();
 
         $label = StudentLabel::where('id', $request->get('student_label_id'))->firstOrFail();
-    
+
         if (StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists()) {
             return back()->with('error', "Label {$label->name} already assigned.");
         }
-    
+
         $link = new StudentInteractiveLabels([
             'student_id' => $student->id,
             'student_label_id' => $label->id,
         ]);
         $link->save();
-    
+
         return redirect()->back()->with('success', 'Label Added!');
     }
 
