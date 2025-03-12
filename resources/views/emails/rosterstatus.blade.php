@@ -10,13 +10,13 @@
             <b>Certification:</b>&nbsp;In Training
         @break
         @case ('home')
-        <b>Certification:</b>&nbsp;CZWG Controller
+        <b>Certification:</b>&nbsp;CZVR Home Controller
         @break
         @case ('visit')
-        <b>Certification:</b>&nbsp;CZWG Visiting Controller
+        <b>Certification:</b>&nbsp;CZVR Visiting Controller
         @break
         @case ('instructor')
-            <b>Certification:</b>&nbsp;CZWG Instructor
+            <b>Certification:</b>&nbsp;CZVR Instructor
         @break
     @endswitch
     <br/>

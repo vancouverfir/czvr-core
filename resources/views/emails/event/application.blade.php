@@ -26,5 +26,5 @@
 @stop
 
 @section('footer-reason-line')
-    you signed up for Winnipeg FIR event notifications.
+    you signed up for Vancouver FIR event notifications.
 @endsection
