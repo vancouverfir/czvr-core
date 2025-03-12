@@ -14,10 +14,14 @@ use App\Models\AtcTraining\CBT\CbtModuleAssign;
 use App\Models\AtcTraining\CBT\CbtNotification;
 use App\Models\AtcTraining\Instructor;
 use App\Models\AtcTraining\InstructorStudents;
+use App\Models\AtcTraining\InstructingSession;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\AtcTraining\SoloRequest;
 use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentNote;
+use App\Models\AtcTraining\StudentLabel;
+use App\Models\AtcTraining\StudentInteractiveLabels;
+use MaddHatter\LaravelFullcalendar\Facades\Calendar;
 use App\Models\AtcTraining\TrainingWaittime;
 use App\Models\Users\User;
 use App\Notifications\SoloApproval;
@@ -31,6 +35,9 @@ class TrainingController extends Controller
     public function index()
     {
         $user = Auth::user();
+        if (!$user) {
+            abort(403);
+        }
         $soloreq = SoloRequest::where('approved', '0')->get();
         $instructor = Instructor::where('user_id', $user->id)->first();
         $yourStudents = null;
@@ -61,9 +68,9 @@ class TrainingController extends Controller
                 'created_at' => Carbon::now()->toDateTimeString(),
             ]);
 
-            return redirect('/dashboard/training/students/'.$student->id.'')->withSuccess('You have added a training note for '.$student->user->fullName('FLC').'');
+            return redirect('/dashboard/training/students/'.$student->id.'')->withSuccess('Training note added for '.$student->user->fullName('FLC').'');
         } else {
-            return redirect('/dashboard/training/students/'.$student->id.'')->withError('You do not have sufficient permissions to do this!');
+            return redirect('/dashboard/training/students/'.$student->id.'')->withError('Insufficient Permissions!');
         }
     }
 
@@ -97,6 +104,24 @@ class TrainingController extends Controller
         return view('dashboard.training.instructors.index', compact('instructors', 'potentialinstructor'));
     }
 
+    public function instructingSessionsIndex()
+    {
+        $sessions = InstructingSession::all();
+        $upcomingSessions = InstructingSession::where('start_time', '>', now())->get();
+
+        return view('dashboard.training.instructingsessions.index', compact('sessions', 'upcomingSessions'));
+    }
+
+    public function createInstructingSession()
+    {
+        return view('dashboard.training.instructingsessions.createsession');
+    }
+
+    public function viewInstructingSession()
+    {
+        return view('dashboard.training.instructingsessions.create');
+    }
+
     public function addInstructor(Request $request)
     {
         Instructor::create([
@@ -112,7 +137,7 @@ class TrainingController extends Controller
     {
         $check = Student::where('user_id', $request->input('student_id'))->first();
         if ($check != null) {
-            return redirect()->back()->withError('This student already exists in the system!');
+            return redirect()->back()->withError('This student already exists!');
         }
 
         $instructor = null;
@@ -120,24 +145,24 @@ class TrainingController extends Controller
             $instructor = $request->input('instructor');
         }
 
-        $application = Application::create([
+       /* $application = Application::create([
             'user_id' => $request->input('student_id'),
             'status' => '2',
             'submitted_at' => Carbon::now()->toDateTimeString(),
             'processed_at' => Carbon::now()->toDateTimeString(),
             'processed_by' => Auth::user()->id,
             'application_id' => Str::random(8),
-        ]);
+        ]); */
         $student = Student::create([
             'user_id' => $request->input('student_id'),
             'instructor_id' => $instructor,
             'status' => '0',
             'last_status_change' => Carbon::now()->toDateTimeString(),
             'created_at' => Carbon::now()->toDateTimeString(),
-            'accepted_application' => $application->id,
+            //'accepted_application' => $application->id,
             'entry_type' => $request->input('entry_type'),
         ]);
-        if ($instructor != null) {
+        /* if ($instructor != null) {
             $modules = CbtModule::all();
             foreach ($modules as $module) {
                 if ($module->assignall == '1') {
@@ -150,9 +175,25 @@ class TrainingController extends Controller
                     ]);
                 }
             }
-        }
+        } */
+
+        $label = new StudentInteractiveLabels([
+            'student_label_id' => StudentLabel::whereName('Waitlist')->first()->id,
+            'student_id' => $student->id,
+        ]);
+        $label->save();
 
         return redirect('dashboard/training/students/'.$student->id.'')->withSuccess('Added New Student: '.$student->user->fullName('FLC').'');
+    }
+
+    public function AllStudents()
+    {
+        $students = Student::all();
+        $potentialstudent = User::all();
+        $instructors = Instructor::all();
+        $lists = StudentLabel::where('name', 'Waitlist')->orWhere('name', 'S1 Training')->orWhere('name', 'S2 Training')->orWhere('name', 'S3 Training')->orWhere('name', 'C1 Training')->orWhere('name', 'Inactive')->orderByRaw("FIELD(name, 'Waitlist', 'S1 Training', 'S2 Training', 'S3 Training', 'C1 Training', 'Inactive')")->get();
+
+        return view('dashboard.training.students.allstudents', compact('students', 'potentialstudent', 'instructors', 'lists'));
     }
 
     public function currentStudents()
@@ -192,8 +233,49 @@ class TrainingController extends Controller
         $openexams = CbtExamAssign::where('student_id', $student->id)->get();
         $completedexams = CbtExamResult::where('student_id', $student->id)->get();
         $solo = SoloRequest::where('student_id', $student->id)->get();
+        $labels = StudentLabel::cursor()->filter(function ($l) use ($student) {
+            if (StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $l->id)->first()) {
+                return false;
+            }
 
-        return view('dashboard.training.students.viewstudent', compact('modules2', 'solo', 'student', 'instructors', 'completedexams', 'exams', 'openexams', 'modules'));
+            return true;
+        });
+
+        return view('dashboard.training.students.viewstudent', compact('modules2', 'solo', 'student', 'instructors', 'completedexams', 'exams', 'openexams', 'modules', 'labels'));
+    }
+
+    public function assignLabel(Request $request, $student_id)
+    {
+        $student = Student::where('id', $student_id)->firstOrFail();
+
+        $label = StudentLabel::where('id', $request->get('student_label_id'))->firstOrFail();
+    
+        if (StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists()) {
+            return back()->with('error', "Label {$label->name} already assigned.");
+        }
+    
+        $link = new StudentInteractiveLabels([
+            'student_id' => $student->id,
+            'student_label_id' => $label->id,
+        ]);
+        $link->save();
+    
+        return redirect()->back()->with('success', 'Label Added!');
+    }
+
+    public function dropLabel($id, $student_label_id)
+    {
+        $student = Student::where('id', $id)->firstorFail();
+
+        $link = StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $student_label_id)->firstOrFail();
+
+        if (count($student->labels) == 1) {
+            return redirect()->back()->with('error', 'Please assign another label before deleting this one!');
+        }
+
+        $link->delete();
+
+        return redirect()->back()->with('success', 'Label Removed!');
     }
 
     public function soloRequest(Request $request, $id)
@@ -287,7 +369,6 @@ class TrainingController extends Controller
         return redirect()->back()->withSuccess('Sucessfully Changed The Status Of '.$student->user->fullName('FLC').'');
     }
 
-    ///Nate Problem... worry about it
     public function assignInstructorToStudent(Request $request, $id)
     {
         $student = Student::where('id', $id)->firstorFail();
@@ -297,7 +378,7 @@ class TrainingController extends Controller
                 $student->instructor_id = $request->input('instructor');
                 $student->save();
 
-                return redirect()->back()->withSuccess('Paired '.$student->user->fullName('FLC').'with Instructor '.$student->instructor->user->fullName('FLC').'');
+                return redirect()->back()->withSuccess('Paired '.$student->user->fullName('FLC').' with Instructor '.$student->instructor->user->fullName('FLC').'');
             }
             if ($instructor == 'unassign') {
                 $student->instructor_id = null;
@@ -502,11 +583,6 @@ class TrainingController extends Controller
         if ($student === null) {
             return redirect()->route('training.students.waitlist')->withError('Student not found!');
         } else {
-            if ($student->application) {
-                $student->application->delete();
-            } else {
-                return redirect()->route('training.students.waitlist')->withError('No application found!');
-            }
             $student->delete();
         }
 

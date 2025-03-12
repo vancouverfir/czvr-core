@@ -25,14 +25,15 @@
                                 @if(count($instructor->students) < 1)
                                     <span class="badge badge-light badge-pill">
                                         <h6 class="p-0 m-0">
-                                             No students
+                                             No Students
                                         </h6>
                                     </span>
                                 @else
                                     <span class="badge badge-primary badge-pill">
-                                        <h6 class="p-0 m-0">
-                                            {{count($instructor->students)}} Student(s)
-                                        </h6>
+                                    <h6 class="p-0 m-0">
+                                    {{count($instructor->students)}} 
+                                    {{count($instructor->students) == 1 ? 'Student' : 'Students'}}
+                                    </h6>
                                     </span>
                                 @endif
                             </a>

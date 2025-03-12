@@ -7,58 +7,82 @@
 @stop
 
 @section('content')
-    @include('includes.trainingMenu')
-    <div class="container" style="margin-top: 20px;">
-        <b><h1 class="font-weight-bold blue-text">{{$student->user->fullName('FLC')}}</h1></b>
-        <h4 class="font-weight-bold">  @switch ($student->user->rating_short)
-          @case('INA')
-          Inactive (INA)
-          @break
-          @case('OBS')
-          Pilot/Observer (OBS)
-          @break
-          @case('S1')
-          Ground Controller (S1)
-          @break
-          @case('S2')
-          Tower Controller (S2)
-          @break
-          @case('S3')
-          TMA Controller (S3)
-          @break
-          @case('C1')
-          Enroute Controller (C1)
-          @break
-          @case('C3')
-          Senior Controller (C3)
-          @break
-          @case('I1')
-          Instructor (I1)
-          @break
-          @case('I3')
-          Senior Instructor (I3)
-          @break
-          @case('SUP')
-          Supervisor (SUP)
-          @break
-          @case('ADM')
-          Administrator (ADM)
-          @break
-          @endswitch</h4>
-        <br>
+@include('includes.trainingMenu')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <div class="container" style="margin-top: 20px; margin-bottom: 30px;">
         <div class="row">
-            <div class="col">     
+            <div class="col">  
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="font-weight-bold blue-text">Training Notes</h3>
+                        <div class="d-flex flex-row w-100 align-items-center h-100">
+                            <img src="{{$student->user->avatar()}}" style="height: 50px; width: 50px; margin-right: 15px; border-radius: 50%;">
+                            <div class="d-flex flex-column w-100">
+                                <h5 class="list-group-item">
+                                    {{$student->user->fullName('FLC')}}
+                                    <div class="d-flex flex-wrap mt-2">
+                                        @foreach($student->labels as $label)
+                                            <span class="mr-2 mb-1" style="background-color: {{$label->label->color}};">
+                                                <a href="{{route('training.students.drop.label', [$student->id, $label->student_label_id])}}" title="Remove label">
+                                                    {{$label->label->labelHtml()}}
+                                                </a>
+                                            </span>
+                                        @endforeach
+                                        <a data-toggle="modal" data-target="#assignLabelModal" title="Add label">
+                                            <i style="font-size: 0.7em;" class="fas fa-plus"></i>
+                                        </a>
+                                    </div>
+                                </h5>
+                            </div>
+                        </div>
+                        <h5 class="mt-3 font-weight-bold">Assigned Instructor</h5>
+                        @if ($student->instructor)
+                            <div class="d-flex flex-column w-50 align-items-left">
+                                <h5 class="list-group-item" style="background-color: transparent; border: none;">
+                                    <img src="{{$student->instructor->user->avatar()}}" style="height: 27px; width: 27px; margin-right: 5px; border-radius: 70%;">
+                                    {{$student->instructor->user->fullName('FLC')}}
+                                </h5>
+                            </div>
+                        @else
+                            <span style="color: red;">No Instructor Assigned!</span>
+                        @endif
+                    </div>
+                </div>
+            <br>
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="font-weight-bold blue-text pb-2">Instructing Sessions</h3>
+                        @if (count($student->instructingSessions) >= 1)
+                        @else
+                            None found!
+                        @endif
+                    </div>
+                </div>
+            <br>
+          </div>
+          <div class="col"> 
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="font-weight-bold blue-text pb-2">Info</h3>
+                            <h7 class="list-group-item" style="background: transparent;"><a href="{{ url('/roster/' . $student->user->id) }}" style="color: inherit;">&#x2192; View their roster profile here</a></h7>
+                            <h7 class="list-group-item" style="background: transparent;" >Joined {{$student->created_at?->format('j F Y') ?? 'N/A'}} | Rating {{$student->user->rating_short}}</h7>
+                            @if ($student->instructor)
+                                <h7 class="list-group-item" style="background: transparent; color: #ff0000; cursor: pointer;" data-toggle="modal" data-target="#confirmRemoveInstructorModal">Remove Instructor</h7>
+                            @else
+                                <h7 class="list-group-item" style="background: transparent; color: #2cb82c; cursor: pointer;" data-toggle="modal" data-target="#assignInstructorModal">Assign Instructor</h7>
+                            @endif
+                    </div>
+                </div>
+            <br>
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="font-weight-bold blue-text">Latest Training Notes</h3>
                         <div class="row">
                             <div class="col">
                               <table id="dataTable" class="table table-hover">
                                   <thead>
                                       <tr>
-                                          <th scope="col">Title</th>
-                                          <th scope="col">Published on</th>
-                                          <th scope="col">Published By</th>
+                                          <th scope="col">Content</th>
+                                          <th scope="col">By</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -76,323 +100,110 @@
                               </table>
                         </div>
                     </div>
-                    <a class ="btn-sm btn-primary"href="{{route('view.add.note', $student->id)}}" style="float: left;">New Training Note</a>
                   </div>
                 </div>
             <br>
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="font-weight-bold blue-text pb-2">Pending/Approved Requests</h3>
-                        @if (count($solo) < 1)
-                            <text class="font-weight-bold">This student has no requests created</text>
-                        @else
-                            @foreach ($solo as $s)
-                                @if ($s->approved == '1')
-                                    <li>{{$s->position}} Solo -
-                                    <text class="text-success"> Approved</text></li>
-                                @elseif ($s->approved == '2')
-                                    <li>{{$s->position}} Solo -
-                                    <text class="text-danger"> Denied</text></li>
-                                @else
-                                    <li>{{$s->position}} Solo -
-                                        <text class="text-danger"> Pending Approval</text></li>
-                            @endif
-                            @endforeach
-                            @endif
-                            <br>
-                            <a class="btn-sm btn-primary" href="#solorequest" data-toggle="modal" data-target="#solorequest" style="float: left;">Solo Request</a>
-                    </div>
-                </div>
-            <br>
-            <div class="card">
-              <div class="card-body">
-                <h3 class="font-weight-bold blue-text pb-2">CBT Progression</h3>
-                <div class="row">
-                  <div class="col">
-                    <h5 class="font-weight-bold">Modules</h5>
-                    @if (count($modules) < 1)
-                    <text>Student does not have any module history!</text>
-                      @else
-                        @foreach ($modules as $module)
-                              <li>{{$module->cbtmodule->name}}  -
-                              @if ($module->started_at == null)
-                                   <text class="text-danger">Not Started</text>
-                              @elseif ($module->completed_at == null)
-                                   <text class="text-primary">In Progress</text>
-                              @elseif ($module->completed_at != null)
-                                   <text class="text-success">Completed</text>
-                              @endif
-                                  <a href="{{route('cbt.module.unassign', $module->id)}}">(Unassign)</a></li>
-                          @endforeach
-                      @endif
-                      <br>
-                      <a class="btn-sm btn-primary" href="#assignModule" data-toggle="modal" data-target="#assignModule" style="float: left;">Assign Module</a>
-                  </div>
-                  <div class="col">
-                    <h5 class="font-weight-bold">Exams</h5>
-                      @if (count($openexams) < 1 && count($completedexams) < 1)
-                          <text>Student does not have any exam history!</text>
-                      @else
-                          @foreach ($openexams as $oe)
-                              <li>{{$oe->cbtexam->name}} -
-                              @if ($oe->started_at != null)
-                                  <text class="text-warning">In Progress</text>
-                                  @else
-                                  Not Started
-                                  <a href="{{route('cbt.exam.unassign', $oe->id)}}"> (Unassign)</a>
-                                  @endif
-                              </li>
-
-
-                          @endforeach
-
-                          @foreach ($completedexams as $cexams)
-                                  <li><a href="{{route('cbt.exam.results', [$cexams->cbtexam->id, $student->id])}}">{{$cexams->cbtexam->name}}</a> -
-                                  @if ($cexams->grade >= 80)
-                                      <text class="text-success">
-                                          {{$cexams->grade}}% (Pass)
-                                      </text>
-                                  @else
-                                      <text class="text-danger">
-                                          {{$cexams->grade}}% (Fail)
-                                      </text>
-                                  @endif
-                              </li>
-                          @endforeach
-                      @endif
-                      <br><br>
-                      <a class="btn-sm btn-primary" href="#assignexam" data-toggle="modal" data-target="#assignExam" style="float: left;">Assign Exam</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="font-weight-bold blue-text pb-2">Primary Info</h3>
-                        @if ($student->status == 0)
-                        <span class="m-0 btn btn-sm btn-primary">
-                            <h3 class="p-0 m-0">
-                                Waitlisted
-                            </h3>
-                        </span><br></br>
-                        The student's training is 'Waitlisted'. This means the student has an accepted application and has not begun training.
-                        @elseif ($student->status == 1)
-                        <span class="m-0 btn btn-sm btn-success">
-                            <h3 class="p-0 m-0">
-                                In Progress
-                            </h3>
-                        </span><br><br>
-                        The student has an assigned instructor and training is in progress.
-                        @elseif ($student->status == 2)
-                        <span class="m-0 btn btn-sm btn-danger">
-                            <h3 class="p-0 m-0">
-                                Completed
-                            </h3>
-                        </span><br><br>
-                        The student's training was completed successfully.
-                        @else
-                        <span class="m-0 btm btn-sm btn-danger">
-                            <h3 class="p-0 m-0">
-                                Closed
-                            </h3>
-                        </span><br><br>
-                        The student's training was closed.
-                        @endif
-                        <h5 class="mt-3 font-weight-bold">Assigned Instructor</h5>
-                        @if ($student->instructor)
-                        <a href="#">
-                            {{$student->instructor->user->fullName('FLC')}}
-                        </a>
-                        @else
-                            No instructor assigned
-                        @endif
-                        <h5 class="mt-3 font-weight-bold">Application</h5>
-                        @if ($student->application != null)
-                        Accepted at {{$student->application->processed_at}} by {{\App\Models\Users\User::find($student->application->processed_by)->fullName('FLC')}}
-                        @if (Auth::user()->permissions >= 3)
-                        <br>
-                        <a href="{{route('training.viewapplication', $student->application->application_id)}}">View application here</a>
-                        @endif
-                        @endif
-                    </div>
-                </div>
-
-        <br>
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="font-weight-bold blue-text pb-2">Instructing Sessions</h3>
-                    @if (count($student->instructingSessions) >= 1)
-                    @else
-                    None found!
-                    @endif
-                </div>
-            </div>
-            <br>
-            
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="font-weight-bold blue-text pb-2">Actions</h3>
-                        <h6>Change Status</h6>
-                        <form action="{{route('training.students.setstatus', $student->id)}}" method="POST">
-                            {{ csrf_field() }}
-                            <div class="row">
-                                <div class="col">
-                                    <select name="status" required class="custom-select">
-                                        <option selected="" value="" hidden>Please choose one..</option>
-                                        <option value="1">In Progress</option>
-                                        <option value="2">Completed</option>
-                                        <option value="0">Waitlist</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-4">
-                                    <input type="submit" value="Save" class="btn btn-sm btn-success"></input>
-                                </div>
-                            </div>
-                        </form>
-                        <br/>
-                        <h6>Instructor</h6>
-                        <form action="{{route('training.students.assigninstructor', $student->id)}}" method="POST">
-                            {{ csrf_field() }}
-                            <div class="row">
-                                <div class="col">
-                                    <select name="instructor" required class="custom-select">
-                                        <option value="" selected="" hidden>Please choose one..</option>
-                                        @foreach ($instructors as $instructor)
-                                        <option value="{{$instructor->id}}">{{$instructor->user->fullName('FLC')}}</option>
-                                        @endforeach
-                                        <option value="unassign">No instructor/unassign</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-4">
-                                    <input type="submit" value="Save" class="btn btn-sm btn-success"></input>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-<br><br>
-      </div>
-    </div>
-  </div>
-    <div class="modal fade" id="assignExam" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div align="center" class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Assign an Exam</h5>
-                </div>
-                <div class="modal-body">
-                <p><i>Note: If re-assigning an exam, old answers and result will be deleted!</i></p>
-                    <form method="POST" action="{{route('cbt.exam.assign')}}">
-                        <select name="examid" class="custom-select">
-                            @foreach ($exams as $e)
-                                <option value="{{$e->id}}">{{$e->name}}</option>
-                            @endforeach
-                        </select>
-    @csrf
-                </div>
-                <input type="hidden" value="{{$student->id}}" name="studentid">
-                <div class="modal-footer">
-                    <button class="btn btn-success form-control" type="submit" href="#">Assign</button>
-                    <button class="btn btn-light" data-dismiss="modal" style="width:375px">Dismiss</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-
-    <div class="modal fade" id="assignModule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div align="center" class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Assign a Module</h5>
-                </div>
-                <div class="modal-body">
-
-                    <form method="POST" action="{{route('cbt.module.assign')}}">
-                        <select name="moduleid" class="custom-select">
-                            @foreach ($modules2 as $m)
-                                <option value="{{$m->id}}">{{$m->name}}</option>
-                            @endforeach
-                        </select>
-                    @csrf
-                </div>
-                <input type="hidden" value="{{$student->id}}" name="studentid">
-                <div class="modal-footer">
-                    <button class="btn btn-success form-control" type="submit" href="#">Assign</button>
-                    <button class="btn btn-light" data-dismiss="modal" style="width:375px">Dismiss</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-
-
-    <div class="modal fade" id="solorequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div align="center" class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Solo Request</h5>
-                    </div>
-
-                <div class="modal-body">
-                    <form method="POST" action="{{route('training.solo.request', $student->id)}}">
-                        <p>This will generate a request to the CI for a solo certification.</p>
-                            <select class="custom-select" name="position">
-                            @if ($student->user->rating_short >= '1')
-                                <option value="Delivery">Delivery Solo</option>
-                                <option value="Ground">Ground Solo</option>
-                                <option value="Tower">Tower Solo</option>
-                            @endif
-                            @if ($student->user->rating_short  >= '5')
-                                <option value="Departure">Departure Solo</option>
-                                <option value="Arrival">Arrival Solo</option>
-                            @endif
-                            @if ($student->user->rating_short  >= '6')
-                                <option value="Centre">Centre Solo</option>
-                            @endif
-                        </select>
-                    @csrf
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-success form-control" type="submit" href="#">Send Request</button>
-                    <button class="btn btn-light" data-dismiss="modal" style="width: 40%">Dismiss</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-{{--
-  <div class="modal fade" id="newNote" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-       aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">Assign Student to Instructor</h5><br>
-              </div>
-              <div class="modal-body">
-                  <form method="POST" action="{{ route('add.trainingnote') }}" class="form-group">
-                      @csrf
-                      <label class="form-control">Title</label>
-                      <input type="text" name="title" class="form-control"></input>
-                          <label class="form-control">Content</label>
-                          <textarea name="content" class="form-control"></textarea>
-                          <input type="hidden" name="student" value="{{$student->id}}"></input>
-                          <input type="submit" class="btn btn-success" value="Add Training Note"></input>
-                  </form>
-              </div>
-              <div class="modal-footer">
-                  <button class="btn btn-light" data-dismiss="modal" style="width:375px">Dismiss</button>
-              </div>
           </div>
         </div>
-      </div> --}}
+    </div>
+    
+    <div class="modal fade" id="assignLabelModal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign a New Label</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('training.students.assign.label', $student->id)}}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        @foreach ($labels as $label)
+                            <div class="mb-2">
+                                <div class="card label-card" data-id="{{$label->id}}" style="cursor: pointer; height: 37px; align-items: center; padding: 3px; background: {{$label->color}}; filter: brightness(0.8);">
+                                    <span style="font-size: 20px; margin-right: 5px;">{{$label->labelHtml()}}</span>
+                                </div>
+                            </div>
+                        @endforeach
+                        <input type="hidden" name="student_label_id" id="selectedLabel" value="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-light" type="submit">Assign</button>
+                    <button type="button" class="btn btn-sm btn-red" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Assign Instructor Modal -->
+<div class="modal fade" id="assignInstructorModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign Instructor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('training.students.assigninstructor', $student->id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <select name="instructor" required class="custom-select">
+                            <option value="" selected hidden>Please choose one..</option>
+                            @foreach ($instructors as $instructor)
+                                <option value="{{ $instructor->id }}">{{ $instructor->user->fullName('FLC') }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Assign</button>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Remove Instructor Modal -->
+<div class="modal fade" id="confirmRemoveInstructorModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remove Instructor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to remove the assigned instructor?
+            </div>
+            <div class="modal-footer">
+                <form action="{{ route('training.students.assigninstructor', $student->id) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="instructor" value="unassign">
+                    <button type="submit" class="btn btn-danger">Yes</button>
+                </form>
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('.label-card').click(function() {
+        $('.label-card').removeClass('selected').css('border', '1px solid transparent');
+        $(this).addClass('selected');
+        const labelId = $(this).data('id');
+        $('#selectedLabel').val(labelId);
+        $(this).css('border', '1px solid #ffffff');
+    });
+});
+</script>
 @stop

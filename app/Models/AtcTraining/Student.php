@@ -28,10 +28,10 @@ class Student extends Model
         return $this->hasMany(SoloRequest::class);
     }
 
-    public function getApplicationAttribute()
+    /* public function getApplicationAttribute()
     {
         return Application::whereId($this->accepted_application)->firstOrFail();
-    }
+    } */
 
     public function instructingSessions()
     {
@@ -51,5 +51,37 @@ class Student extends Model
     public function CbtModuleAssigns()
     {
         return $this->hasMany(CbtModuleAssign::class);
+    }
+
+    public function labels()
+    {
+        return $this->hasMany(StudentInteractiveLabels::class);
+    }
+
+    public function assignLabel(StudentLabel $label)
+    {
+        $link = new StudentInteractiveLabels([
+            'student_id' => $this->id,
+            'student_label_id' => $label->id,
+        ]);
+        $link->save();
+    }
+
+    public function hasLabel($label_text)
+    {
+        if (!StudentLabel::whereName($label_text)->first()) {
+            return false;
+        }
+        if ($label = StudentInteractiveLabels
+            ::where('student_id', $this->id)
+            ->where(
+                'student_label_id',
+                StudentLabel::whereName($label_text)->first()->id
+            )->first()
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

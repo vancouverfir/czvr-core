@@ -16,41 +16,38 @@
         <h1 class="font-weight-bold blue-text">Waitlist <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#newStudent" style="float: right;">Add to Waitlist</button></h1>
 
         <hr>
-        <table id="dataTable" class="table table-hover">
-            <thead>
-                <tr>
+        <table id="dataTable" class="table">
+            <thead class="thead">
+                <tr class="text-center">
+                    <th scope="col">#</th>
                     <th scope="col">CID</th>
                     <th scope="col">Student Name</th>
-                    <th scope="col">Date of Application</th>
-                    <th scope="col">Entry</th>
+                    <th scope="col">Date Added</th>
                     <th scope="col">Email</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
             @if (count($students) < 1)
-            <font class="font-weight-bold">There are no students in the waitlist!</b></font>
-            @else
-            <tbody>
-            @foreach ($students as $student)
             <tr>
-                <th scope="row">{{$student->user->id}}</th>
+                <td colspan="6" class="text-center font-weight-bold">There are no students in the waitlist!</td>
+            </tr>
+            @else
+            @foreach ($students as $index => $student)
+            <tr class="text-center">
+                <th scope="row">{{ $loop->iteration }}</th> <!-- Position number -->
+                <td>{{$student->user->id}}</td>
                 <td>
-                    <a href="{{route('training.students.view', $student->id)}}">
+                    <a href="{{route('training.students.view', $student->id)}}" class="font-weight-bold text-primary">
                         {{$student->user->fullName('FL')}}
                     </a>
                 </td>
+                <td>{{$student->created_at->format('Y-m-d')}}</td> <!-- Formatted date -->
                 <td>
-                    {{$student->application->processed_at}}
-                </td>
-                <td>
-                  {{$student->entry_type}}
-                </td>
-                <td>
-                  @if (Auth::user()->permissions >= 4)
-                  {{$student->user->email}}
-                  @else
-                  <i>Hidden for Privacy</i>
-                  @endif
+                    @if (Auth::user()->permissions >= 4)
+                        {{$student->user->email}}
+                    @else
+                        <i>Hidden for Privacy</i>
+                    @endif
                 </td>
                 <td>
                     <a href="{{ route('training.students.delete', $student->id) }}" class="btn btn-sm btn-danger">Delete</a>

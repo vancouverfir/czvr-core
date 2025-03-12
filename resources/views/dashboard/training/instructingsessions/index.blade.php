@@ -40,35 +40,51 @@
                         Actions
                     </div>
                     <div class="card-body">
-                        <a href="#" role="button" class="btn btn-primary">Create Session</a>
+                    <a href="{{ route('training.instructingsessions.createsession') }}" role="button" class="btn btn-primary">Create Session</a>
                     </div>
                 </div>
             </div>
         </div>
         <br/>
-        <h5>Training Calendar</h5>
-        {{--<div id='calendar'></div>
-        <script>
+        <h3>Calendar</h3>
+            <script type='importmap'>
+                {
+                    "imports": {
+                    "@fullcalendar/core": "https://cdn.skypack.dev/@fullcalendar/core@6.1.15",
+                    "@fullcalendar/daygrid": "https://cdn.skypack.dev/@fullcalendar/daygrid@6.1.15",
+                    "@fullcalendar/interaction":"https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.15/+esm"
+                    }
+                }
+            </script>
 
-                document.addEventListener('DOMContentLoaded', function() {
-                  var calendarEl = document.getElementById('calendar');
+            <script type='module'>
+                import { Calendar } from '@fullcalendar/core'
+                import interactionPlugin from '@fullcalendar/interaction'
+                import dayGridPlugin from '@fullcalendar/daygrid'
 
-                  var calendar = new FullCalendar.Calendar(calendarEl, {
-                    plugins: [ 'dayGrid' ],
-                      events: [
-                          { // this object will be "parsed" into an Event Object
-                              title: 'The Title', // a property!
-                              start: '2018-09-01', // a property!
-                              end: '2018-09-02' // a property! ** see important note below about 'end' **
-                          }
-                      ]
-                  });
-
-                  calendar.render();
-                });
-
-              </script>--}}
-        {!!$calendar->calendar()!!}
-        {!!$calendar->script()!!}
+                const calendarEl = document.getElementById('calendar')
+                const calendar = new Calendar(calendarEl, {
+                    timeZone: 'UTC',
+                    headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                plugins: [
+                    interactionPlugin,
+                    dayGridPlugin
+                ],
+                initialView: 'dayGridMonth',
+                editable: true,
+                selectable: true,
+                events: [
+                    { title: 'Meeting', start: new Date() }
+                ]
+                })
+                    calendar.render()
+            </script>
+        <div class="card-body" id='calendar'></div>
+        <br>
+        <br>
     </div>
 @stop
