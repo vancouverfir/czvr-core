@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Seeders\StudentLabelListsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
