@@ -47,7 +47,7 @@ class DiscordClient
         }
     }
 
-    public function GetGuildMember(int $user_id): object|null
+    public function GetGuildMember(int $user_id): ?object
     {
         try {
             $response = $this->http->get('guilds/'.self::VANCOUVER_GUILD."/members/$user_id");
@@ -76,7 +76,7 @@ class DiscordClient
         }
     }
 
-    public function GetDiscordUser(int $user_id): object|null
+    public function GetDiscordUser(int $user_id): ?object
     {
         try {
             $response = $this->http->get("users/$user_id");
