@@ -1,6 +1,6 @@
 <?php
 
-namespace App\models\AtcTraining;
+namespace App\Models\AtcTraining;
 
 use Illuminate\Database\Eloquent\Model;
 
