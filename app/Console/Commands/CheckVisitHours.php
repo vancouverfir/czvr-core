@@ -78,7 +78,7 @@ class CheckVisitHours extends Command
                     $minutes += $result->minutes_on_callsign;
                 }
             } catch (RequestException $e) {
-                \Log::error("Error with VATSIM API for controller {$r->cid}: " .$e->getMessage());
+                \Log::error("Error with VATSIM API for controller {$r->cid}: ".$e->getMessage());
                 continue;
             }
 
