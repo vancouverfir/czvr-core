@@ -39,8 +39,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command(RatingUpdate::class)->daily();
 
         // 0 0 1 * * schedulers
-        $schedule->command(CheckVisitHours::class)->quarterly();
-        $schedule->command(CurrencyCheck::class)->quarterly()->after(CheckVisitHours::class);
+        $schedule->command(CheckVisitHours::class)->quarterly()->after(function () {Artisan::call(CurrencyCheck::class);});
     }
 
     /**
