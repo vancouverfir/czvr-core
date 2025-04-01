@@ -9,7 +9,7 @@
     </style>
 
     <h2>Visiting Violations!</h2>
-    <p>Here is a list of controllers who have committed less than 50% of their controlling at other facilites in the past month:</p>
+    <p>Here is a list of controllers who have committed less than 50% of their controlling at Vancouver in the past quarter:</p>
 
     <table style="width: 100%">
         <thead>
@@ -20,7 +20,7 @@
         </thead>
         @foreach($members as $m)
             <tr>
-                <td class="border" style="text-align: center">{{$m['name']}}</td>
+                <td class="border" style="text-align: left">{{$m['name']}}</td>
                 <td class="border" style="text-align: center">{{$m['percentage'] * 100}}%</td>
             </tr>
         @endforeach

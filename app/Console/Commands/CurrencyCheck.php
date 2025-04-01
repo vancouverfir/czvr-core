@@ -43,29 +43,65 @@ class CurrencyCheck extends Command
      */
     public function handle()
     {
-        $badMembers = [];
+        $badMembersVisit0 = [];
+        $badMembersVisit1 = [];
+
+        $fields = ['delgnd', 'delgnd_t2', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr', 'fss'];
+
         foreach (RosterMember::all()->sortBy('currency') as $rosterMember) {
             if ($rosterMember->currency >= config(sprintf('currency.%s', $rosterMember->status))) {
+                continue;
+            }
+
+            $fieldIsNotZero = false;
+            foreach ($fields as $field) {
+                if ($rosterMember->$field != 0) {
+                    $fieldIsNotZero = true;
+                    break;
+                }
+            }
+
+            if (!$fieldIsNotZero) {
                 continue;
             }
 
             $memberName = $rosterMember->full_name.' '.$rosterMember->cid;
             $memberEmail = $rosterMember->user()->first()->email;
             $memberActivity = $rosterMember->currency;
-            $badMembers[] = [
-                'name' => $memberName,
-                'email' => $memberEmail,
-                'activity' => decimal_to_hm($memberActivity),
-                'requirement' => decimal_to_hm(config(sprintf('currency.%s', $rosterMember->status))),
-            ];
+            $requiredActivity = decimal_to_hm(config(sprintf('currency.%s', $rosterMember->status)));
+
+            if ($rosterMember->visit == 1) {
+                $badMembersVisit1[] = [
+                    'name' => $memberName,
+                    'email' => $memberEmail,
+                    'activity' => decimal_to_hm($memberActivity),
+                    'requirement' => $requiredActivity,
+                ];
+            } else {
+                $badMembersVisit0[] = [
+                    'name' => $memberName,
+                    'email' => $memberEmail,
+                    'activity' => decimal_to_hm($memberActivity),
+                    'requirement' => $requiredActivity,
+                ];
+            }
         }
 
+        // Fetch settings for email notifications
         $settings = CoreSettings::find(1);
+
+        // Prepare the data to be sent in the email
+        $data = [
+            'visit0' => $badMembersVisit0,
+            'visit1' => $badMembersVisit1,
+        ];
+
+        // Send email notification
         Notification::route('mail', [
             $settings->emailfirchief,
             $settings->emaildepfirchief,
             $settings->emailcinstructor,
-        ])->notify(new MonthlyInactivity($badMembers));
+        ])->notify(new MonthlyInactivity($data));
 
         // Reset the hours for every member
         DB::table('roster')->update(['currency' => 0]);
