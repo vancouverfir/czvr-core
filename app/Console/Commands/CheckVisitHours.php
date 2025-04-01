@@ -7,9 +7,9 @@ use App\Models\Settings\CoreSettings;
 use App\Notifications\network\CheckVisitHours as Email;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Notification;
-use GuzzleHttp\Exception\RequestException;
 
 class CheckVisitHours extends Command
 {
@@ -62,7 +62,7 @@ class CheckVisitHours extends Command
                 }
             }
 
-            if (!$fieldIsNotZero) {
+            if (! $fieldIsNotZero) {
                 continue;
             }
 
@@ -78,7 +78,7 @@ class CheckVisitHours extends Command
                     $minutes += $result->minutes_on_callsign;
                 }
             } catch (RequestException $e) {
-                \Log::error("Error with VATSIM API for controller {$r->cid}: " . $e->getMessage());
+                \Log::error("Error with VATSIM API for controller {$r->cid}: ".$e->getMessage());
                 continue;
             }
 

@@ -61,7 +61,7 @@ class CurrencyCheck extends Command
                 }
             }
 
-            if (!$fieldIsNotZero) {
+            if (! $fieldIsNotZero) {
                 continue;
             }
 
