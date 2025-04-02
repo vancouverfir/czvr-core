@@ -34,22 +34,14 @@ class Kernel extends ConsoleKernel
         $schedule->command('backup:clean')->daily()->at('00:30');
         $schedule->command('backup:run')->daily()->at('01:00');
         // $schedule->command(EventReminders::class)->everyMinute();
-        /* $schedule->call(function () {
-            file_get_contents(config('cronurls.minute'));
-        })->everyMinute();*/
 
         // 0 0 * * * schedulers
         // $schedule->command(RatingUpdate::class)->daily();
-        /* $schedule->call(function () {
-            file_get_contents(config('cronurls.daily'));
-        })->daily();*/
 
         // 0 0 1 * * schedulers
-        // $schedule->command(CheckVisitHours::class)->monthly();
-        $schedule->command(CurrencyCheck::class)->quarterly();
-        /* $schedule->call(function () {
-            file_get_contents(config('cronurls.monthly'));
-        })->monthly();*/
+        $schedule->command(CheckVisitHours::class)->quarterly()->after(function () {
+            Artisan::call(CurrencyCheck::class);
+        });
     }
 
     /**

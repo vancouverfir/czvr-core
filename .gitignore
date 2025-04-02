@@ -42,3 +42,7 @@ UserEventFetcher/pyapiconf.ini
 
 UserEventFetcher/pyapiconf-live.ini
 UserEventFetcher/pyapiconf-stage.ini
+
+public/robots.txt
+config/backup.php
+resources/lang/vendor/

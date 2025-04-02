@@ -69,20 +69,22 @@
         </script>
         <h6>Comments from Staff</h6>
         <small>Only Executive members may edit comments.</small>
-        {!! Form::open(['route' => ['training.application.savestaffcomment', $application->application_id]]) !!}
-        {!! Form::textarea('staff_comment', $application->staff_comment, ['class' => 'form-control', 'onblur' => 'showSaveButton()', 'id' => 'staffCommentsField']) !!}
-        <small>This comment will be visible to the applicant and will be included in the application denied email sent if the application is denied.</small>
-        <br/>
-        {!! Form::submit('Save Staff Comments', ['class' => 'btn btn-sm btn-success', 'id' => 'saveCommentsButton']) !!}
-        @if (Auth::user()->permissions >= 4)
-        <script type="text/javascript">
-            function showSaveButton() {
-                document.getElementById('saveCommentsButton').classList.remove('invisible');
-                console.log('Save staff comments button visible!');
-            }
-        </script>
-        @endif
-        {!! Form::close() !!}
+        <form action="{{route('training.application.savestaffcomment', $application->application_id)}}" method="POST">
+            @csrf
+            <textarea name="staff_comment" class="form-control" id="staffCommentsField" onblur="showSaveButton()">{{old('staff_comment', $application->staff_comment)}}</textarea>
+            <small>This comment will be visible to the applicant and will be included in the application denied email sent if the application is denied.</small>
+            <br/>
+            <button type="submit" class="btn btn-sm btn-success" id="saveCommentsButton" style="display: none;">Save Staff Comments</button>
+            
+            @if (Auth::user()->permissions >= 4)
+                <script type="text/javascript">
+                    function showSaveButton() {
+                        document.getElementById('saveCommentsButton').style.display = 'inline-block';
+                        console.log('Save staff comments button visible!');
+                    }
+                </script>
+            @endif
+        </form>
         <br/>
 
         <h6>Submitted at {{ $application->submitted_at }} Zulu</h6>

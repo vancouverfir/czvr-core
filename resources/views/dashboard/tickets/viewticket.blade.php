@@ -9,10 +9,10 @@
 @section('content')
 
     <div class="container" style="margin-top: 20px;">
-            <a href="{{route('tickets.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Back</a>
+        <a href="{{route('tickets.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Back</a>
         <h1 class="blue-text font-weight-bold mt-2">Ticket #{{ $ticket->ticket_id }}</h1>
         <hr>
-        <h2>{{$ticket->title}}</h4>
+        <h2>{{$ticket->title}}</h2>
         <p>
             Status:
             @if ($ticket->status == 0)
@@ -50,22 +50,23 @@
         @endif
         <br/>
         @if ($ticket->status != 1)
-        <h5>Write a reply</h5>
-            {!! Form::open(['route' => ['tickets.reply', $ticket->ticket_id]]) !!}
-            {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'addReplyMessage']) !!}
-            <script>
-                var simplemde = new SimpleMDE({ element: document.getElementById("addReplyMessage"), height: auto });
-            </script>
-            <br/>
-        <div class="row">
-            {!! Form::submit('Reply', ['class' => 'btn btn-success']) !!}
-            @if(Auth::user()->permissions >= 4)
-                <a role="button" data-toggle="modal" data-target="#closeTicket" class="btn btn-outline-danger">Close Ticket</a>
-            @endif
-            {!! Form::close() !!}
+            <h5>Write a reply</h5>
+            <form action="{{route('tickets.reply', $ticket->ticket_id)}}" method="POST">
+                @csrf
+                <textarea name="message" class="form-control" id="addReplyMessage"></textarea>
+                <script>
+                    var simplemde = new SimpleMDE({ element: document.getElementById("addReplyMessage"), toolbar: false, height: auto });
+                </script>
+                <br/>
+                <div class="row">
+                    <button type="submit" class="btn btn-success">Reply</button>
+                    @if(Auth::user()->permissions >= 4)
+                        <a role="button" data-toggle="modal" data-target="#closeTicket" class="btn btn-outline-danger">Close Ticket</a>
+                    @endif
+                </div>
+            </form>
         @endif
         <br>
-        </div>
     </div>
 @stop
 
@@ -80,12 +81,13 @@
             <div class="modal-body">
                 <p class="font-weight-bold">If you'd like, leave a comment below:</p>
                 <hr>
-                {!! Form::open(['route' => ['tickets.closeticket', $ticket->ticket_id]]) !!}
-                {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'addReplyMessage']) !!}
-                <hr>
-                <div class="container py-0 row">
-                    {!! Form::submit('Close er up', ['class' => 'btn btn-outline-danger']) !!}
-                    {!! Form::close() !!}
+                <form action="{{route('tickets.closeticket', $ticket->ticket_id)}}" method="POST">
+                    @csrf
+                    <textarea name="message" class="form-control"></textarea>
+                    <hr>
+                    <div class="container py-0 row">
+                        <button type="submit" class="btn btn-outline-danger">Close er up</button>
+                    </form>
                     <button class="btn btn-light" data-dismiss="modal">Dismiss</button>
                 </div>
             </div>
