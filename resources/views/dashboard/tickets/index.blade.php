@@ -98,35 +98,36 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                {!! Form::open(['route' => 'tickets.startticket']) !!}
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Staff Member</label>
-                        <select name="staff_member" id="staff_member_select" class="form-control">
-                            <option value="" selected hidden>Please select one...</option>
-                            @foreach ($staff_members as $s)
-                            <option value="{{$s->shortform}}">{{$s->position}} - {{$s->user->fullName('FLC')}}</option>
-                            @endforeach
-                        </select>
+                <form action="{{route('tickets.startticket')}}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Staff Member</label>
+                            <select name="staff_member" id="staff_member_select" class="form-control">
+                                <option value="" selected hidden>Please select one...</option>
+                                @foreach ($staff_members as $s)
+                                <option value="{{$s->shortform}}">{{$s->position}} - {{$s->user->fullName('FLC')}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Title</label>
+                            <input type="text" name="title" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Message</label>
+                            <textarea name="message" id="createTicketMessage" class="form-control"></textarea>
+                            <small>Minimum 25 characters</small>
+                            <script>
+                                var simplemde = new SimpleMDE({ element: document.getElementById("createTicketMessage") });
+                            </script>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Title</label>
-                        {!! Form::text('title', null, ['class' => 'form-control']) !!}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Message</label>
-                        {!! Form::textarea('message', null, ['class' => 'form-control', 'id' => 'createTicketMessage']) !!}
-                        <small>Minimum 25 characters</small>
-                        <script>
-                            var simplemde = new SimpleMDE({ element: document.getElementById("createTicketMessage") });
-                        </script>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
-                    {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
-                </div>
-                {!! Form::close() !!}
+                </form>
             </div>
         </div>
     </div>

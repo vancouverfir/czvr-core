@@ -63,7 +63,7 @@
                             </h3>
                         @elseif ($certification == "home")
                             <h3>
-                            <span class="badge badge-info rounded shadow-none" style="background-color: #444">
+                            <span class="badge rounded shadow-none" style="background-color: #444">
                                 <i class="fa fa-user-check"></i>&nbsp;
                                 CZVR Controller
                             </span>
@@ -200,24 +200,24 @@
                     <h5 display="inline-block">Change Permissions Level:</h5>
                     <form method="post" action="{{route('edit.userpermissions', [$user->id])}}" style="position:absolute">
                         <select name="permissions" id="permissions" class="form-control" style="position:relative; width:100px; left:210px; bottom:40px">
-                        <option name="guest" value="0" id="0"{{ $user->permissions == "0" ? "selected=selected" : ""}}>Guest</option>
-                          <option name="controller" value="1" id="1"{{ $user->permissions == "1" ? "selected=selected" : ""}}>Controller</option>
-                          <option name="mentor" value="2" id="2"{{ $user->permissions == "2" ? "selected=selected" : ""}}>Mentor</option>
-                          <option name="instructor" value="3" id="3"{{ $user->permissions == "3" ? "selected=selected" : ""}}>Instructor</option>
+                        <option name="guest" value="0" id="0"{{$user->permissions == "0" ? "selected=selected" : ""}}>Guest</option>
+                          <option name="controller" value="1" id="1"{{$user->permissions == "1" ? "selected=selected" : ""}}>Controller</option>
+                          <option name="mentor" value="2" id="2"{{$user->permissions == "2" ? "selected=selected" : ""}}>Mentor</option>
+                          <option name="instructor" value="3" id="3"{{$user->permissions == "3" ? "selected=selected" : ""}}>Instructor</option>
 
                             @if (Auth::user()->permissions == 5)
-                          <option name="staff" value="4" id="4"{{ $user->permissions == "4" ? "selected=selected" : ""}}>Staff Member</option>
-                          <option name="admin" value="5" id="5"{{ $user->permissions == "5" ? "selected=selected" : ""}}>Administrator</option>
+                          <option name="staff" value="4" id="4"{{$user->permissions == "4" ? "selected=selected" : ""}}>Staff Member</option>
+                          <option name="admin" value="5" id="5"{{$user->permissions == "5" ? "selected=selected" : ""}}>Administrator</option>
                           @endif
                         </select>
                         <li><h5 display="inline-block" style="position:relative; bottom:35px">Change Certification:</h5></li>
                         <select name="certification" id="certification" class="form-control" style="position:relative; width:100px; left:210px; bottom:75px">
-                        <option name="not_certified" value="not_certified" id="not_certified"{{ $certification == "not_certified" ? "selected=selected" : ""}}>Not Certified</option>
-                          <option name="training" value="training" id="training"{{ $certification == "training" ? "selected=selected" : ""}}>Training</option>
-                          <option name="home" value="home" id="home"{{ $certification == "home" ? "selected=selected" : ""}}>Home</option>
-                          <option name="visit" value="visit" id="visit"{{ $certification == "visit" ? "selected=selected" : ""}}>Visitor</option>
+                        <option name="not_certified" value="not_certified" id="not_certified"{{$certification == "not_certified" ? "selected=selected" : ""}}>Not Certified</option>
+                          <option name="training" value="training" id="training"{{$certification == "training" ? "selected=selected" : ""}}>Training</option>
+                          <option name="home" value="home" id="home"{{$certification == "home" ? "selected=selected" : ""}}>Home</option>
+                          <option name="visit" value="visit" id="visit"{{$certification == "visit" ? "selected=selected" : ""}}>Visitor</option>
                           @if (Auth::user()->permissions >= 4)
-                          <option name="instructor" value="instructor" id="instructor"{{ $certification == "instructor" ? "selected=selected" : ""}}>Instructor</option>
+                          <option name="instructor" value="instructor" id="instructor"{{$certification == "instructor" ? "selected=selected" : ""}}>Instructor</option>
                           @endif
                         @csrf
                         <button type="submit" class="btn btn-sm btn-success" style="position:relative; width:150px; left:335px; bottom:114px">Update User</button>
@@ -299,32 +299,31 @@
         </div>
     </div>
     <div class="modal fade" id="addNoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">User Note</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{route('users.createnote', $user->id)}}" method="POST">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">User Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{route('users.createnote', $user->id)}}" method="POST">
                     @csrf
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">Content</label>
-                        {!! Form::textarea('content', null, ['class' => 'form-control']) !!}
+                        <textarea name="content" id="content" class="form-control" rows="4"></textarea>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">Confidential</label>
-                        {!! Form::checkbox('confidential', null, ['class' => 'form-control']) !!}
+                        <input type="checkbox" name="confidential" id="confidential" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" value="Submit">Submit</button>
-                    {!! Form::close() !!}
-                    </form>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -402,27 +401,27 @@
             <center><h3>Are You Sure?</h3>
             <p style="font-weight:bold; color:red">NOTE: If you demote yourself lower than staff member, you will not be able to change it back!</p></center>
             <form method="POST" action="{{route('edit.userpermissions', [$user->id])}}">
-                {{ csrf_field() }}
+                {{csrf_field()}}
                     <h5 display="inline-block">Change Permissions Level:</h5>
                     <form method="post" action="{{route('edit.userpermissions', [$user->id])}}" style="position:absolute">
                         <select name="permissions" id="permissions" class="form-control" style="position:relative; width:100px; left:210px; bottom:40px">
-                        <option name="guest" value="0" id="0"{{ $user->permissions == "0" ? "selected=selected" : ""}}>Guest</option>
-                        <option name="controller" value="1" id="1"{{ $user->permissions == "1" ? "selected=selected" : ""}}>Controller</option>
-                        <option name="mentor" value="2" id="2"{{ $user->permissions == "2" ? "selected=selected" : ""}}>Mentor</option>
-                        <option name="instructor" value="3" id="3"{{ $user->permissions == "3" ? "selected=selected" : ""}}>Instructor</option>
-                        <option name="staff" value="4" id="4"{{ $user->permissions == "4" ? "selected=selected" : ""}}>Staff Member</option>
+                        <option name="guest" value="0" id="0"{{$user->permissions == "0" ? "selected=selected" : ""}}>Guest</option>
+                        <option name="controller" value="1" id="1"{{$user->permissions == "1" ? "selected=selected" : ""}}>Controller</option>
+                        <option name="mentor" value="2" id="2"{{$user->permissions == "2" ? "selected=selected" : ""}}>Mentor</option>
+                        <option name="instructor" value="3" id="3"{{$user->permissions == "3" ? "selected=selected" : ""}}>Instructor</option>
+                        <option name="staff" value="4" id="4"{{$user->permissions == "4" ? "selected=selected" : ""}}>Staff Member</option>
                         @if (Auth::user()->permissions == 5)
-                        <option name="admin" value="5" id="5"{{ $user->permissions == "5" ? "selected=selected" : ""}}>Administrator</option>
+                        <option name="admin" value="5" id="5"{{$user->permissions == "5" ? "selected=selected" : ""}}>Administrator</option>
                         @endif
                         </select>
                         <h5 display="inline-block" style="position:relative; bottom:35px">Change Certification:</h5>
                         <select name="certification" id="certification" class="form-control" style="position:relative; width:100px; left:210px; bottom:75px">
-                        <option name="not_certified" value="not_certified" id="not_certified"{{ $certification == "not_certified" ? "selected=selected" : ""}}>Not Certified</option>
-                        <option name="training" value="training" id="training"{{ $certification == "training" ? "selected=selected" : ""}}>Training</option>
-                        <option name="home" value="home" id="home"{{ $certification == "home" ? "selected=selected" : ""}}>Home</option>
-                        <option name="visit" value="visit" id="visit"{{ $certification == "visit" ? "selected=selected" : ""}}>Visitor</option>
+                        <option name="not_certified" value="not_certified" id="not_certified"{{$certification == "not_certified" ? "selected=selected" : ""}}>Not Certified</option>
+                        <option name="training" value="training" id="training"{{$certification == "training" ? "selected=selected" : ""}}>Training</option>
+                        <option name="home" value="home" id="home"{{$certification == "home" ? "selected=selected" : ""}}>Home</option>
+                        <option name="visit" value="visit" id="visit"{{$certification == "visit" ? "selected=selected" : ""}}>Visitor</option>
                         @if (Auth::user()->permissions >= 4)
-                        <option name="instructor" value="instructor" id="instructor"{{ $certification == "instructor" ? "selected=selected" : ""}}>Instructor</option>
+                        <option name="instructor" value="instructor" id="instructor"{{$certification == "instructor" ? "selected=selected" : ""}}>Instructor</option>
                         @endif
                         </select>
             <div class="modal-footer">
