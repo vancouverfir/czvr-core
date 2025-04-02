@@ -4,9 +4,10 @@ namespace App\Console\Commands;
 
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Settings\CoreSettings;
-use App\Notifications\Network\CheckVisitHours as Email;
+use App\Notifications\network\CheckVisitHours as Email;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Notification;
 
@@ -24,7 +25,7 @@ class CheckVisitHours extends Command
      *
      * @var string
      */
-    protected $description = 'Checks if controllers have put 50% of their time on Vancouver positions';
+    protected $description = 'Checks if controllers have put 50% of their time on Vancouver positions each quarter';
 
     /**
      * Create a new command instance.
@@ -45,30 +46,40 @@ class CheckVisitHours extends Command
     {
         $members = [];
 
-        function getUrl($cid, $pageNum, $date)
+        function getUrl($cid, $date)
         {
-            return sprintf('https://api.vatsim.net/api/ratings/%s/atcsessions/?page=%s&start=%s', $cid, $pageNum, $date);
+            return sprintf('https://api.vatsim.net/api/ratings/%s/atcsessions/?start=%s', $cid, $date);
         }
 
-        foreach (RosterMember::all() as $r) {
-            // Set our variables
-            $monthAgo = Carbon::now()->subMonth()->format('Y-m-d');
-            $pageNum = 1;
+        foreach (RosterMember::where('visit', 0)->get() as $r) {
+            $fields = ['delgnd', 'delgnd_t2', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr', 'fss'];
+
+            $fieldIsNotZero = false;
+            foreach ($fields as $field) {
+                if ($r->$field != 0) {
+                    $fieldIsNotZero = true;
+                    break;
+                }
+            }
+
+            if (! $fieldIsNotZero) {
+                continue;
+            }
+
+            $quarterAgo = Carbon::now()->subMonths(3)->format('Y-m-d');
             $minutes = 0;
 
-            for ($x = 1; $x <= 1; $x++) {
+            try {
                 $client = new Client();
-                $response = $client->request('GET', getUrl($r->cid, $pageNum, $monthAgo));
+                $response = $client->request('GET', getUrl($r->cid, $quarterAgo));
                 $contents = json_decode($response->getBody()->getContents());
-
-                if ($contents->next) {
-                    $pageNum++;
-                    $x = 0;
-                }
 
                 foreach ($contents->results as $result) {
                     $minutes += $result->minutes_on_callsign;
                 }
+            } catch (RequestException $e) {
+                \Log::error("Error with VATSIM API for controller {$r->cid}: ".$e->getMessage());
+                continue;
             }
 
             // Change to hours as that is how it's stored in the roster

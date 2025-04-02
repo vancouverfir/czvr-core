@@ -50,25 +50,25 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            {!! Form::open(['route' => 'network.monitoredpositions.create']) !!}
-            <div class="modal-body">
-                <p>ActivityBot will monitor positions for activity and record sessions. You can specify a prefix or complete callsign.</p>
-                <div class="form-group">
-                    <label for="recipient-name" class="col-form-label">Identifier</label>
-                    {!! Form::text('identifier', null, ['class' => 'form-control', 'placeholder' => 'CZQX_']) !!}
+            <form action="{{route('network.monitoredpositions.create')}}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <p>ActivityBot will monitor positions for activity and record sessions. You can specify a prefix or complete callsign.</p>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Identifier</label>
+                        <input type="text" name="identifier" class="form-control" placeholder="CZVR_">
+                    </div>
                 </div>
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-                {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
-            </div>
-            {!! Form::close() !!}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 <!--End create position modal-->
 <script>
-$('.table').dataTable();
+    $('.table').dataTable();
 </script>
 @endsection

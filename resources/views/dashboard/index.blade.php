@@ -377,7 +377,7 @@
                                         </h3>
                                     @elseif ($certification == "home")
                                         <h3>
-                            <span class="badge rounded shadow-none" style="background-color:#2E2F2F">
+                            <span class="badge badge-info rounded shadow-none" style="background-color:#2E2F2F">
                                 <i class="fa fa-user-check"></i>&nbsp;
                                 CZVR Controller
                             </span>
@@ -421,8 +421,8 @@
                                     @endif
                                 </div>
                                 <span class="text-danger">
-                        @if ($certification == "not_certified")
-                                        <h5>You are not a certified controller, please contact an instructor to begin training.</h5>
+                                    @if ($certification == "not_certified")
+                                        <h5>You are currently not certified to control, if you think this is a mistake please contact us!</h5>
                                     @endif
                                     @if ($active == 0)
                                         <h5>You are currently inactive, please contact the FIR Chief</h5>
