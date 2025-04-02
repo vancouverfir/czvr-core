@@ -55,7 +55,7 @@ return [
             'visibility' => 'public',
         ],
 
-	'backup' => [
+        'backup' => [
             'driver' => 'local',
             'root' => storage_path('app/backup'),
         ],
