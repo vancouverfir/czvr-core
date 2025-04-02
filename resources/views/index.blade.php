@@ -114,7 +114,7 @@
                             @endif
                             @foreach($finalPositions as $p)
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <a href="https://stats.vatsim.net/search_id.php?id={{$p->cid}}" target="_blank" class="text-colour">
+                                    <a href="https://czvr.ca/roster/{{$p->cid}}" target="_blank" class="text-colour">
                                         @if($p->name == $p->cid)
                                             <i class="fas fa-user-circle mr-1"></i>{{$p->name}}
                                         @else
@@ -126,7 +126,7 @@
                             @endforeach
                         </div>
                         <div class="card-footer card-hf-padding blue-text text-center">
-                            <a href="https://map.vatsim.net" target="_blank" class="btn btn-sm btn-link text-secondary px-3"><i class="fas fa-map mr-2"></i>Live VATSIM Map</a>
+                            <a href="https://vatsim-radar.com/" target="_blank" class="btn btn-sm btn-link text-secondary px-3"><i class="fas fa-map mr-2"></i>Live VATSIM Map</a>
                         </div>
                     </div>
                 </div>
