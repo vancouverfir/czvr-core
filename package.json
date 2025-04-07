@@ -13,7 +13,7 @@
         "@babel/preset-react": "^7.26.3",
         "axios": "^1.8",
         "babel-preset-react": "^6.24.1",
-        "bootstrap": "^5.3.3",
+        "bootstrap": "^5.3.5",
         "cross-env": "^7.0",
         "jquery": "^3.7",
         "laravel-mix": "^6.0",
