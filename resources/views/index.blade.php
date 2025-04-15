@@ -1,165 +1,157 @@
 @extends('layouts.master')
-@section('description', 'Welcome to Vanouver - located in the left of Canada on the VATSIM network.')
+@section('description', 'Welcome to Vancouver - located in the left of Canada on the VATSIM network.')
 
 
 @section('content')
-<link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
-    <div>
-        <div data-jarallax data-speed="0.2" class="jarallax" style="height: min(calc(100vh - 59px), 1080px)">
-            <div class="mask flex-center flex-column"
-                 style="z-index: 1; width: 100%; background-image: url({{$background->url}}); {{$background->css}}">
-                <div class="container" style="padding-bottom: 20em">
-                    <div class="py-5">
-                        <div>
-                            <br>
-                            <h1 class="vancouver-text" style="font-size: 5em">
-                                <span class="main-colour corner" style="padding: 1%">From Sea to Sky.</span>
-                            </h1>
-                            <h6 class="vancouver-text" style="font-size: 1.25em;">
-                                <span class="main-colour corner" style="padding: 0.5%">Screenshot by {{$background->credit}}</span>
-                            </h6>
-                            <br>
-                            <h4 class="text-colour" style="font-size: 2em;">
-                                <span class="corner" style="padding: 0.5%; background-color: #00000066"><a href="#mid" id="discoverMore" class="blue-text">Come explore Canada's west coast&nbsp;&nbsp;<i class="fas fa-arrow-down"></i></a></span>
-                            </h4>
-                        </div>
-                    </div>
+        <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
+            <div class="mask"
+                style="z-index: -1; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: url({{$background->url}}); background-size: cover; background-position: center; animation: heroZoom 10s ease-in-out infinite alternate;">
+            </div>
+
+            <style>
+            @keyframes heroZoom {0% { transform: scale(1); }100% { transform: scale(1.03); }}
+            </style>
+
+            <div class="container" style="position: relative; z-index: 1; padding-top: 30px; padding-bottom: 30px;">
+                <div class="py-4 text-center">
+                    <h1 class="vancouver-text display-3" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); color: #fff;">
+                        <span class="corner">From Sea to Sky!</span>
+                    </h1>
+                    <h4 class="vancouver-text mt-2" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); color: #fff;">
+                        <a href="#mid" id="discoverMore" class="blue-text" style="color: #fff; text-decoration: none;">Come explore Canada's West Coast<i class="fas fa-arrow-down ml-2"></i></a>
+                    </h4>
+                    <small style="color: #fff; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">
+                        <i>Screenshot by {{$background->credit}}</i>
+                    </small>
                 </div>
             </div>
-        </div>
-        <div class="container" id="mid">
-            <div class="row">
-                <div class="col-md-6 card-padding">
-                    <div class="card card-background" style="min-height: 100%">
+
+            <div class="container mt-4" id="mid">
+                <div class="row">
+                    <!-- First column -->
+                    <div class="col-md-6">
+                    <!-- Top Controllers this Month -->
+                    <div class="card card-background mb-4" style="opacity: 90%; height: 210px; display: flex; flex-direction: column; overflow-y: auto;">
                         <div class="card-header card-hf-padding blue-text">
-                            <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-newspaper"></i>&nbsp;&nbsp;Recent News</h2>
+                            <h2 class="font-weight-bold card-header-size text-center"><i class="fas fa-award mr-2"></i>Top Controllers this Month</h2>
                         </div>
-                        <div class="card-body" style="padding-bottom:2%">
-                            @if(count($news) == 0)
-                            <h5 class="text-colour" style="text-align: center;">No current News.</h5>
-                            @endif
-                            @foreach($news as $n)
-                                <h5><span class="badge text-colour">{{$n->posted_on_pretty()}}</span>&nbsp;&nbsp;<a href="{{url('/news').'/'.$n->slug}}" class="text-colour"><text class="align-middle">{{$n->title}}</text></h5></a>
-                            @endforeach
-                        </div>
-                        <div class="card-footer card-hf-padding blue-text">
-                            <a href="{{url('/news')}}"><h6 style="text-align: center;"><i class="fas fa-eye"></i>&nbsp;View all news</h6></a>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <div class="col-md-6 card-padding">
-                    <div class="card card-background" style="min-height: 100%">
-                        <div class="card-header card-hf-padding blue-text">
-                            <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-calendar"></i>&nbsp;&nbsp;Upcoming Events</h2>
-                        </div>
-                        <div class="card-body" style="padding-bottom:2%">
-                            @if(count($nextEvents) == 0)
-                                <h5 class="text-colour" style="text-align: center;">Stay tuned here for upcoming events!</h5>
-                            @endif
-                            @foreach($nextEvents as $e)
-                                <h5 class="text-colour"><a href="{{url('/events').'/'.$e->slug}}" class="text-colour"><text class="align-middle">{{$e->name}}</text></a>&nbsp;&nbsp;<span class="float-right badge main-colour">{{$e->start_timestamp_pretty()}}</span></h5>
-                            @endforeach
-                        </div>
-                        <div class="card-footer card-hf-padding blue-text">
-                            <a href="{{url('/events')}}"><h6 style="text-align: center;"><i class="fas fa-eye"></i>&nbsp;View all events</h6></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row" style=" min-height: 100%">
-                <div class="col-md-6 card-padding">
-                    <div class="card card-background" style="min-height: 100%">
-                        <div class="card-header card-hf-padding blue-text">
-                            <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-award"></i>&nbsp;&nbsp;Top Controllers this Month</h2>
-                        </div>
-                        <div class="card-body" style="padding-bottom:2%">
+                        <div class="card-body">
                             @if(count($topControllersArray) == 0)
-                                <h5 class="text-colour" style="text-align: center;">No data yet.</h5>
+                                <h5 class="text-colour text-center">No Data Yet</h5>
                             @endif
                             @foreach($topControllersArray as $t)
                                 @if($t['time'] != 0)
-                                    <h2>
-                                        <span class="badge badge-light w-100" style="background-color: {{$t['colour']}} !important;">
-                                            <div style="float: left;">
-                                                {{User::where('id', $t['cid'])->first()->fullName('FLC')}}
-                                            </div>
-                                            <div style="float: right;">
-                                                {{$t['time']}}
-                                            </div>
-                                        </span>
-                                    </h2>
+                                    <div class="badge w-100 d-flex justify-content-between align-items-center py-1 px-2 mb-1" style="text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9); font-weight: normal; opacity: 90%; background-color: {{$t['colour']}} !important; font-size: 0.7rem; background-image: linear-gradient(-45deg, rgba(255,255,255,0) 25%, rgba(0,0,0,0.15) 25%, rgba(0,0,0,0.15) 50%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 75%, rgba(0,0,0,0.15) 75%, rgba(0,0,0,0.15) 100%); background-size: 20px 20px; border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 1px 3px rgba(0,0,0,0.7);">
+                                        <div>{{User::where('id', $t['cid'])->first()->fullName('FLC')}}</div>
+                                        <div>{{$t['time']}}</div>
+                                    </div>
                                 @endif
                             @endforeach
                         </div>
-                        <div class="card-footer">
-                        </div>
                     </div>
                 </div>
-                <div class="col-md-6 card-padding">
-                    <div class="card card-background" style="min-height: 100%">
+
+                <!-- Second column -->
+                <div class="col-md-6">
+                    <!-- Online Controllers -->
+                    <div class="card card-background mb-4" style="opacity: 90%; height: 210px; display: flex; flex-direction: column; overflow-y: auto;">
                         <div class="card-header card-hf-padding blue-text">
-                            <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-user"></i>&nbsp;&nbsp;Online Controllers</h2>
+                            <h2 class="font-weight-bold blue-text card-header-size text-center"><i class="fas fa-user mr-2"></i>Online Controllers</h2>
                         </div>
-                        <div class="card-body" style="padding-bottom:2%">
+                        <div class="card-body">
                             @if(count($finalPositions) == 0)
-                                <h5 class="text-colour" style="text-align: center;">No controllers online.</h5>
+                                <h5 class="text-colour text-center">No Controllers Online</h5>
                             @endif
                             @foreach($finalPositions as $p)
-                                <h5 class="text-colour">
-                                    <div style="float: left;">
-                                        <a href="https://czvr.ca/roster/{{$p->cid}}" target="_blank" class="text-colour">
-                                            @if($p->name == $p->cid)
-                                                <i class="fas fa-user-circle"></i>&nbsp;{{$p->name}}
-                                            @else
-                                                <i class="fas fa-user-circle"></i>&nbsp;{{$p->name}} {{$p->cid}}
-                                            @endif
-                                        </a>
-                                    </div>
-                                    <div style="float: right;">
-                                    <span class="badge main-colour">
-                                        {{$p->callsign}} on {{$p->frequency}}
-                                    </span>
-                                    </div>
-                                </h5>
-                                <br>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <a href="https://czvr.ca/roster/{{$p->cid}}" target="_blank" class="text-colour">
+                                        @if($p->name == $p->cid)
+                                            <i class="fas fa-user-circle"></i>&nbsp;{{$p->name}}
+                                        @else
+                                            <i class="fas fa-user-circle"></i>&nbsp;{{$p->name}} {{$p->cid}}
+                                        @endif
+                                    </a>
+                                    <span class="badge main-colour">{{$p->callsign}}</span>
+                                </div>
                             @endforeach
-                        </div>
-                        <div class="card-footer card-hf-padding blue-text">
-                            <a href="https://vatsim-radar.com/" target="_blank"><h6 style="text-align: center;"><i class="fas fa-map"></i>&nbsp;Live VATSIM Map</h6></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 card-padding">
-                    <div class="card card-background" style="width: 100%">
-                        <div class="card-header card-hf-padding blue-text">
-                            <h2 class="font-weight-bold card-header-size" style="text-align: center; padding-top:1%"><i class="fas fa-sun"></i>&nbsp;&nbsp;Weather</h2>
-                        </div>
-                        <div class="card-body" style="padding-bottom:0%">
-                        @if(count($weather) == 0)
-                                <h5 class="text-colour" style="text-align: center;">No weather data.</h5>
-                                @endif
-                            <div class="text-colour" style="float: left;">
-                                @foreach($weather as $w)
-                                    <h5 class="text-colour"><text class="align-middle font-weight-bold">{{$w->icao}} - {{$w->station->name}}&nbsp;&nbsp;</text>
-                                        <span class="badge {{$w->flight_category}}">{{$w->flight_category}}</span>
-                                    @if(Carbon\Carbon::make($w->observed) < Carbon\Carbon::now()->subHours(2))
-                                        <span class="badge grey">OUTDATED</span>
-                                    @endif
-                                    </h5>
-                                    {{$w->raw_text}}
-                                    <br><br>
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="card-footer">
                         </div>
                     </div>
                 </div>
             </div>
 
+            <div class="row">
+                <!-- First column -->
+                <div class="col-md-6">
+                    <!-- Recent News -->
+                    <div class="card card-background mb-4" style="opacity: 90%; height: 210px; display: flex; flex-direction: column; overflow-y: auto;">
+                        <div class="card-header card-hf-padding blue-text">
+                            <h2 class="font-weight-bold card-header-size text-center"><i class="fas fa-newspaper mr-2"></i>Recent News</h2></a>
+                        </div>
+                        <div class="card-body">
+                            @if(count($news) == 0)
+                                <h5 class="text-colour text-center">No Current News</h5>
+                            @endif
+                            @foreach($news as $n)
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge text-colour mr-2">{{$n->posted_on_pretty()}}</span>
+                                    <a href="{{url('/news').'/'.$n->slug}}" class="text-colour">{{$n->title}}</a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second column -->
+                <div class="col-md-6">
+                    <!-- Upcoming Events -->
+                    <div class="card card-background mb-4" style="opacity: 90%; height: 210px; display: flex; flex-direction: column; overflow-y: auto;">
+                        <div class="card-header card-hf-padding blue-text">
+                            <h2 class="font-weight-bold card-header-size text-center"><i class="fas fa-calendar-alt mr-2"></i>Upcoming Events</h2>
+                        </div>
+                        <div class="card-body">
+                            @if(count($nextEvents) == 0)
+                                <h5 class="text-colour text-center">Stay tuned here for Upcoming Events!</h5>
+                            @endif
+                            @foreach($nextEvents as $e)
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <a href="{{url('/events').'/'.$e->slug}}" class="text-colour">{{$e->name}}</a>
+                                    <span class="badge main-colour">{{$e->start_timestamp_pretty()}}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Section -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-background" style="opacity: 90%;">
+                        <div class="card-header card-hf-padding blue-text">
+                            <h2 class="font-weight-bold card-header-size text-center"><i class="fas fa-sun mr-2"></i>Weather</h2>
+                        </div>
+                        <div class="card-body">
+                            @if(count($weather) == 0)
+                                <h5 class="text-colour text-center">No weather data.</h5>
+                            @endif
+                            <div class="row">
+                                @foreach($weather as $w)
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <h5 class="mb-0 mr-2">{{$w->icao}} - {{$w->station->name}}</h5>
+                                        <span class="badge {{$w->flight_category}}">{{$w->flight_category}}</span>
+                                        @if(Carbon\Carbon::make($w->observed) < Carbon\Carbon::now()->subHours(2))
+                                            <span class="badge grey ml-1">OUTDATED</span>
+                                        @endif
+                                    </div>
+                                    <div class="small">{{$w->raw_text}}</div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <br>
         </div>
     </div>
