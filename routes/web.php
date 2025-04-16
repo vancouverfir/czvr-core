@@ -372,7 +372,6 @@ Route::group(['middleware' => 'instructor'], function () {
     Route::post('/training/students/{student}/assign-checklist', 'AtcTraining\StudentChecklistController@assignChecklist')->name('training.students.assign.checklist');
     Route::delete('/training/students/{student}/checklists/{name}', 'AtcTraining\StudentChecklistController@deleteChecklist')->name('training.students.checklist.deleteChecklist');
     Route::get('/api/training-notes', 'AtcTraining\TrainingController@getTrainingNotes');
-
 });
 //Admin and CI
 Route::group(['middleware' => 'executive'], function () {

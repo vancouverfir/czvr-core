@@ -11,7 +11,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up() {
+    public function up()
+    {
         Schema::create('checklists', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -24,7 +25,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('checklists');
     }
 };
