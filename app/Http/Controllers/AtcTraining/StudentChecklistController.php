@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\AtcTraining;
 
-use App\Models\AtcTraining\Student;
+use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Checklist;
+use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentChecklistItem;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class StudentChecklistController extends Controller
 {
@@ -51,5 +51,4 @@ class StudentChecklistController extends Controller
 
         return redirect()->back()->with('success', 'Checklist removed.');
     }
-
 }

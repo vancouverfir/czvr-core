@@ -11,7 +11,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up() {
+    public function up()
+    {
         Schema::create('student_checklist_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('student_id');
@@ -28,7 +29,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('student_checklist_items');
     }
 };

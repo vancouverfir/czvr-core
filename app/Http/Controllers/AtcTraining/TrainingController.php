@@ -12,6 +12,7 @@ use App\Models\AtcTraining\CBT\CbtExamResult;
 use App\Models\AtcTraining\CBT\CbtModule;
 use App\Models\AtcTraining\CBT\CbtModuleAssign;
 use App\Models\AtcTraining\CBT\CbtNotification;
+use App\Models\AtcTraining\Checklist;
 use App\Models\AtcTraining\InstructingSession;
 use App\Models\AtcTraining\Instructor;
 use App\Models\AtcTraining\InstructorStudents;
@@ -22,13 +23,12 @@ use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
 use App\Models\AtcTraining\StudentNote;
 use App\Models\AtcTraining\TrainingWaittime;
-use App\Models\AtcTraining\Checklist;
 use App\Models\Users\User;
 use App\Notifications\SoloApproval;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Auth;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -240,7 +240,9 @@ class TrainingController extends Controller
         $checklists = Checklist::all();
         $trainingNotes = $this->getTrainingNotes($student);
         $trainingNotes = collect($trainingNotes)->take(3);
-        $studentChecklistGroups = $student->checklistItems->groupBy(function ($item) {return $item->checklistItem->checklist->name;});
+        $studentChecklistGroups = $student->checklistItems->groupBy(function ($item) {
+            return $item->checklistItem->checklist->name;
+        });
 
         $labels = StudentLabel::cursor()->filter(function ($l) use ($student) {
             if (StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $l->id)->first()) {
@@ -263,7 +265,7 @@ class TrainingController extends Controller
             $response = $client->get("https://vatcan.ca/api/v2/user/{$userId}/notes", [
                 'query' => [
                     'api_key' => $apiKey,
-                ]
+                ],
             ]);
 
             $data = json_decode($response->getBody()->getContents(), true);
@@ -273,14 +275,12 @@ class TrainingController extends Controller
             });
 
             return $data['notes'] ?? [];
-
         } catch (RequestException $e) {
-            \Log::error('Error fetching training notes from Vatcan API: ' . $e->getMessage());
+            \Log::error('Error fetching training notes from Vatcan API: '.$e->getMessage());
 
             return [];
         }
     }
-
 
     public function assignLabel(Request $request, $student_id)
     {
@@ -410,22 +410,22 @@ class TrainingController extends Controller
     public function assignInstructorToStudent(Request $request, $id)
     {
         $student = Student::findOrFail($id);
-    
+
         if ($request->has('remove_instructor') && $request->input('remove_instructor') == 1) {
             $student->instructor_id = null;
             $student->save();
-    
+
             return redirect()->back()->withSuccess('Unassigned '.$student->user->fullName('FLC').' from Instructor.');
         }
-    
+
         if ($request->filled('instructor')) {
             $instructorId = $request->input('instructor');
             $student->instructor_id = $instructorId;
             $student->save();
-    
+
             return redirect()->back()->withSuccess('Paired '.$student->user->fullName('FLC').' with Instructor '.$student->instructor->user->fullName('FLC').'.');
         }
-    }    
+    }
 
     public function assignExam(Request $request)
     {
