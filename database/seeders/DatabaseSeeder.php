@@ -79,6 +79,7 @@ class DatabaseSeeder extends Seeder
             'credit' => 'Vancouver FIR',
         ]);
 
-        $this->call(\Database\Seeds\StudentLabelListsSeeder::class);
+        $this->call(\Database\Seeders\LabelListsSeeder::class);
+        $this->call(\Database\Seeders\ChecklistSeeder::class);
     }
 }
