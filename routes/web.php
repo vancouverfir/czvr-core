@@ -368,6 +368,11 @@ Route::group(['middleware' => 'instructor'], function () {
     Route::get('/dashboard/training/students/delete/{id}', 'AtcTraining\TrainingController@showDeleteForm')->name('training.students.delete');
     Route::delete('/dashboard/training/students/delete/{id}', 'AtcTraining\TrainingController@removeStudent')->name('training.students.destroy');
     Route::post('/dashboard/training/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
+    Route::patch('/training/students/checklist/{id}/complete', 'AtcTraining\StudentChecklistController@completeItem')->name('training.students.checklist.complete');
+    Route::post('/training/students/{student}/assign-checklist', 'AtcTraining\StudentChecklistController@assignChecklist')->name('training.students.assign.checklist');
+    Route::delete('/training/students/{student}/checklists/{name}', 'AtcTraining\StudentChecklistController@deleteChecklist')->name('training.students.checklist.deleteChecklist');
+    Route::get('/api/training-notes', 'AtcTraining\TrainingController@getTrainingNotes');
+
 });
 //Admin and CI
 Route::group(['middleware' => 'executive'], function () {

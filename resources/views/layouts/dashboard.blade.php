@@ -350,15 +350,16 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle"><span class="font-weight-bold red-text"><i class="fas fa-exclamation-circle"></i> An error occurred...</span></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="exampleModalLongTitle"><span class="font-weight-bold text-danger"><i class="fas fa-exclamation-circle"></i> An error occurred...</span></h5>
+                    <button type="button" class="close" style="color:white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{\Session::get('error-modal')}}
-                    <div class="alert bg-czqo-blue-light mt-4">
-                        If you believe this is a mistake, please create a <a target="_blank" href="{{route('tickets.index')}}">support ticket.</a>
+                    <div class="alert">
+                        <p> {{\Session::get('error-modal')}} </p>
+                        <hr class="bg-light">
+                        <small> If you believe this is a mistake, please create a <a target="_blank" class = "blue-text"href="{{route('tickets.index')}}">support ticket.</a> </small>
                     </div>
                 </div>
             </div>

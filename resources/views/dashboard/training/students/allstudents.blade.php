@@ -73,10 +73,10 @@
                 <i class="fa fa-plus mr-1"></i>Add New Student
             </a>
         </h1>
-        
+
         <hr class="bg-light">
         <h5><u><a href="#" id="toggleLabels" style="text-decoration: none; color: #fff;">Expand Labels</a></u></h5>
-        
+
         <div class="row">
             @foreach($lists as $index => $list)
             <div class="col-lg-4">
@@ -91,7 +91,7 @@
                         @else
                             @php($loopIndex = 1)
                             @foreach($list->students as $student)
-                                <a href="{{url('/dashboard/training/students/' . $student->id)}}" class="list-group-item rounded list-group-item-action waves-effect text-light" style="background-color: transparent; flex-shrink: 0;">
+                                <a href="{{url('/dashboard/training/students/' . $student->student_id)}}" class="list-group-item rounded list-group-item-action waves-effect text-light" style="background-color: transparent; flex-shrink: 0;">
                                     <div class="d-flex flex-column">
                                         <div class="d-flex flex-wrap mb-1">
                                             @foreach($student->student->labels as $label)

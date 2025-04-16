@@ -22,8 +22,11 @@ use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
 use App\Models\AtcTraining\StudentNote;
 use App\Models\AtcTraining\TrainingWaittime;
+use App\Models\AtcTraining\Checklist;
 use App\Models\Users\User;
 use App\Notifications\SoloApproval;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -152,6 +155,7 @@ class TrainingController extends Controller
              'processed_by' => Auth::user()->id,
              'application_id' => Str::random(8),
          ]); */
+
         $student = Student::create([
             'user_id' => $request->input('student_id'),
             'instructor_id' => $instructor,
@@ -161,6 +165,7 @@ class TrainingController extends Controller
             //'accepted_application' => $application->id,
             'entry_type' => $request->input('entry_type'),
         ]);
+
         /* if ($instructor != null) {
             $modules = CbtModule::all();
             foreach ($modules as $module) {
@@ -232,6 +237,11 @@ class TrainingController extends Controller
         $openexams = CbtExamAssign::where('student_id', $student->id)->get();
         $completedexams = CbtExamResult::where('student_id', $student->id)->get();
         $solo = SoloRequest::where('student_id', $student->id)->get();
+        $checklists = Checklist::all();
+        $trainingNotes = $this->getTrainingNotes($student);
+        $trainingNotes = collect($trainingNotes)->take(3);
+        $studentChecklistGroups = $student->checklistItems->groupBy(function ($item) {return $item->checklistItem->checklist->name;});
+
         $labels = StudentLabel::cursor()->filter(function ($l) use ($student) {
             if (StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $l->id)->first()) {
                 return false;
@@ -240,8 +250,37 @@ class TrainingController extends Controller
             return true;
         });
 
-        return view('dashboard.training.students.viewstudent', compact('modules2', 'solo', 'student', 'instructors', 'completedexams', 'exams', 'openexams', 'modules', 'labels'));
+        return view('dashboard.training.students.viewstudent', compact('modules2', 'solo', 'student', 'instructors', 'completedexams', 'exams', 'openexams', 'modules', 'labels', 'checklists', 'trainingNotes', 'studentChecklistGroups'));
     }
+
+    public function getTrainingNotes($student)
+    {
+        $apiKey = env('VATCAN_API_KEY');
+        $userId = $student->user_id;
+        $client = new Client();
+
+        try {
+            $response = $client->get("https://vatcan.ca/api/v2/user/{$userId}/notes", [
+                'query' => [
+                    'api_key' => $apiKey,
+                ]
+            ]);
+
+            $data = json_decode($response->getBody()->getContents(), true);
+
+            usort($data['notes'], function ($a, $b) {
+                return strtotime($b['created_at']) - strtotime($a['created_at']);
+            });
+
+            return $data['notes'] ?? [];
+
+        } catch (RequestException $e) {
+            \Log::error('Error fetching training notes from Vatcan API: ' . $e->getMessage());
+
+            return [];
+        }
+    }
+
 
     public function assignLabel(Request $request, $student_id)
     {
@@ -370,27 +409,23 @@ class TrainingController extends Controller
 
     public function assignInstructorToStudent(Request $request, $id)
     {
-        $student = Student::where('id', $id)->firstorFail();
-        $instructor = $request->input('instructor');
-        if ($student != null) {
-            if ($instructor != 'unassign') {
-                $student->instructor_id = $request->input('instructor');
-                $student->save();
-
-                return redirect()->back()->withSuccess('Paired '.$student->user->fullName('FLC').' with Instructor '.$student->instructor->user->fullName('FLC').'');
-            }
-            if ($instructor == 'unassign') {
-                $student->instructor_id = null;
-                $student->save();
-
-                return redirect()->back()->withSuccess('Unassigned '.$student->user->fullName('FLC').' from Instructor ');
-            }
+        $student = Student::findOrFail($id);
+    
+        if ($request->has('remove_instructor') && $request->input('remove_instructor') == 1) {
+            $student->instructor_id = null;
+            $student->save();
+    
+            return redirect()->back()->withSuccess('Unassigned '.$student->user->fullName('FLC').' from Instructor.');
         }
-
-        if ($student == null) {
-            return redirect()->back()->withError('Unable to find a student with CID '.$student->user->id.'');
+    
+        if ($request->filled('instructor')) {
+            $instructorId = $request->input('instructor');
+            $student->instructor_id = $instructorId;
+            $student->save();
+    
+            return redirect()->back()->withSuccess('Paired '.$student->user->fullName('FLC').' with Instructor '.$student->instructor->user->fullName('FLC').'.');
         }
-    }
+    }    
 
     public function assignExam(Request $request)
     {
@@ -580,11 +615,11 @@ class TrainingController extends Controller
         $student = Student::findOrFail($id);
 
         if ($student === null) {
-            return redirect()->route('training.students.waitlist')->withError('Student not found!');
+            return redirect()->route('training.students.students')->withError('Student not found!');
         } else {
             $student->delete();
         }
 
-        return redirect()->route('training.students.waitlist')->withSuccess('Student removed successfully!');
+        return redirect()->route('training.students.students')->withSuccess('Student removed successfully!');
     }
 }

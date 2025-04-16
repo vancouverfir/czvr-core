@@ -83,4 +83,8 @@ class Student extends Model
 
         return false;
     }
+
+    public function checklistItems() {
+        return $this->hasMany(StudentChecklistItem::class);
+    }
 }
