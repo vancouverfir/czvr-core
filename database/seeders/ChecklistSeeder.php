@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\AtcTraining\Checklist;
 use App\Models\AtcTraining\ChecklistItem;
+use Illuminate\Database\Seeder;
 
 class ChecklistSeeder extends Seeder
 {
@@ -225,7 +225,7 @@ class ChecklistSeeder extends Seeder
             'Student has been familiarized with where to find information about the airspace surrounding other unrestricted tower CZs',
             'Student has been familiarized with where to find information for VFR aircraft at other unrestricted airports',
         ];
-                
+
         foreach ($s2SoloItems as $item) {
             ChecklistItem::create([
                 'checklist_id' => $s2Solo->id,
