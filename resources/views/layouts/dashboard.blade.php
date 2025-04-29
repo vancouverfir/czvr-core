@@ -16,7 +16,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-	<!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
+        <!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="theme-color" content="#6CC24A">
         <title>@yield('title', 'Vancouver FIR')</title>
@@ -26,23 +26,15 @@
         <meta name="og:description" content="@yield('description', '')">
         <meta name="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-	<!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
-        <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&display=swap">
-        </noscript>
+        <!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
         <link rel="preload" as="style" href="{{ asset('css/bootstrap.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/mdb.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/all.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/main.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript>
-            <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('css/mdb.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('css/all.css') }}">
-            <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-        </noscript>
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/mdb.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/all.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
         <!-- Font Awesome -->
         <link href="{{ asset('css/all.css') }}" rel="stylesheet">
         <!-- Bootstrap core CSS -->
@@ -53,7 +45,7 @@
         <link href="{{ asset('css/simplemde.min.css') }}" rel="stylesheet">
         <script src="{{ asset('js/simplemde.min.js') }}" defer></script>
         <!-- JQuery -->
-        <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}" defer></script>
+        <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
         <!-- Bootstrap tooltips -->
         <script type="text/javascript" src="{{ asset('js/popper.min.js') }}" defer></script>
         <!-- Bootstrap core JavaScript -->
@@ -73,15 +65,16 @@
         <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
         @endif
         <!--Leaflet-->
-        <link rel="stylesheet" href="{{ asset('css/leaflet.css') }}">
-        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <!--Leaflet-->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
         <script src="{{asset('/js/leaflet.rotatedMarker.js')}}" defer></script>
         <!--TinyMCE-->
         <script src="{{ asset('js/tinymce.min.js') }}" referrerpolicy="origin" defer></script>
         <!--DataTables-->
         <link rel="stylesheet" type="text/css" href="{{ asset('css/dataTables.bootstrap4.min.css') }}"/>
-        <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}" defer></script>
-        <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap4.min.js') }}" defer></script>
+        <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
         <!--CSS Emoticons-->
         <link href="{{asset('css/jquery.cssemoticons.css')}}" media="screen" rel="stylesheet" type="text/css" />
         <script src="{{asset('/js/jquery.cssemoticons.js')}}" type="text/javascript" defer></script>
@@ -92,15 +85,15 @@
         <noscript><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css"></noscript>
         <!--IntroJS-->
         <link rel="stylesheet" href="{{asset('introjs/introjs.min.css')}}">
-        <script src="{{asset('introjs/intro.min.js')}}" defer></script>
+        <script src="{{asset('introjs/intro.min.js')}}"></script>
         <!--Date picker-->
         <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
-        <script src="{{ asset('css/flatpickr') }}" defer></script>
+        <script src="{{ asset('js/flatpickr.min.js') }}" defer></script>
         <!--SimpleMDE-->
         <link rel="stylesheet" href="{{ asset('css/simplemde.min.css') }}">
         <script src="{{ asset('js/simplemde.min.js') }}" defer></script>
         <!--Dropzone-->
-        <script src="{{asset('js/dropzone.js')}}" defer></script>
+        <script src="{{asset('js/dropzone.js')}}"></script>
         <!--JqueryValidate-->
         <script src="{{ asset('js/jquery.validate.min.js') }}" defer></script>
         <!---->
