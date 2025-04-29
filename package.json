@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "@babel/preset-react": "^7.26.3",
-        "axios": "^1.8",
+        "axios": "^1.9",
         "babel-preset-react": "^6.24.1",
         "bootstrap": "^5.3.5",
         "cross-env": "^7.0",
