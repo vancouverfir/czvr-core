@@ -27,14 +27,22 @@
         <meta name="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&display=swap">
+        </noscript>
         <link rel="preload" as="style" href="{{ asset('css/bootstrap.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/mdb.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/all.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/main.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/mdb.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/all.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        <noscript>
+            <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/mdb.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/all.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        </noscript>
         <!-- Font Awesome -->
         <link href="{{ asset('css/all.css') }}" rel="stylesheet">
         <!-- Bootstrap core CSS -->
@@ -65,16 +73,15 @@
         <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
         @endif
         <!--Leaflet-->
-        <!--Leaflet-->
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
-        <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
+        <link rel="stylesheet" href="{{ asset('css/leaflet.css') }}">
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
         <script src="{{asset('/js/leaflet.rotatedMarker.js')}}" defer></script>
         <!--TinyMCE-->
         <script src="{{ asset('js/tinymce.min.js') }}" referrerpolicy="origin" defer></script>
         <!--DataTables-->
         <link rel="stylesheet" type="text/css" href="{{ asset('css/dataTables.bootstrap4.min.css') }}"/>
-        <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}" defer></script>
+        <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap4.min.js') }}" defer></script>
         <!--CSS Emoticons-->
         <link href="{{asset('css/jquery.cssemoticons.css')}}" media="screen" rel="stylesheet" type="text/css" />
         <script src="{{asset('/js/jquery.cssemoticons.js')}}" type="text/javascript" defer></script>
@@ -85,7 +92,7 @@
         <noscript><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css"></noscript>
         <!--IntroJS-->
         <link rel="stylesheet" href="{{asset('introjs/introjs.min.css')}}">
-        <script src="{{asset('introjs/intro.min.js')}}"></script>
+        <script src="{{asset('introjs/intro.min.js')}}" defer></script>
         <!--Date picker-->
         <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
         <script src="{{ asset('js/flatpickr.min.js') }}" defer></script>
@@ -113,13 +120,16 @@
         <nav class="navbar navbar-expand-lg navbar-dark p-0 main-colour" style="min-height:59px">
             <div class="container">
                 <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset('CZVR_Colour_Long.png') }}" alt=""></a>
-            <!-- <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset('Holiday Long.png') }}" alt=""></a> -->
+                <!-- <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset('Holiday Long.png') }}" alt=""></a> -->
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
+                        {{-- <li class="nav-item">
+                            <a href="{{route('controllerbookings.public')}}" class="nav-link {{ Request::is('bookings/*') || Request::is('bookings') ? 'active' : '' }}">Bookings</a>
+                        </li> --}}
                         <li class="nav-item {{ Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
                             @if(Auth::check() && Auth::user()->permissions >= 4)
                             <li class="nav-item dropdown {{ Request::is('news') || Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
@@ -131,15 +141,18 @@
                                 <a href="{{route('news')}}" class="nav-link">News</a>
                             @endif
                         </li>
-                        <li class="nav-item dropdown {{ Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
+                        <li class="nav-item {{ Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
+                          <!--  @if(Auth::check() && Auth::user()->permissions >= 4)
+                            <li class="nav-item dropdown {{ Request::is('events') || Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                                <a class="dropdown-item {{ Request::is('events.index') ? 'active white-text' : '' }}" href="{{route('events.index')}}">Upcoming Events</a>
-                                <a class="dropdown-item {{ Request::is('events.coverage') ? 'active white-text' : '' }}" href="{{route('events.coverage')}}">Need Coverage?</a>
-                                @if(Auth::check() && Auth::user()->permissions >= 4)
-                                    <a class="dropdown-item {{ Request::is('events.admin.index') ? 'active white-text' : '' }}" href="{{route('events.admin.index')}}">Manage Events</a>
-                                @endif
-                            </div>
+                            <a class="dropdown-item" href="{{route('events.index')}}">Events</a>
+                                <a class="dropdown-item {{ Request::is('events') ? 'active white-text' : '' }}" href="{{route('events.admin.index')}}">Manage Events</a>
+                            @else
+                                <a href="{{route('events.index')}}" class="nav-link">Events</a>
+                            @endif
+                                                Hide as we will try and automatically fetch events-->
+                            <a href="{{route('events.index')}}" class="nav-link">Events</a>
                         </li>
                         <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
@@ -157,12 +170,9 @@
                         <li class="nav-item dropdown {{ Request::is('airports') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                                <a class="dropdown-item" href="https://czvr.ca/storage/files/uploads/1709591072.pdf">General/Event Info</a>
                                 <a class="dropdown-item" href="{{route('airports')}}">Airports</a>
                                 <a class="dropdown-item" href="{{route('livemap')}}">Live Map</a>
                                 <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
-                                <a class="dropdown-item" href="https://www.fltplan.com/" target="_blank">Charts</a>
-                                <a class="dropdown-item" href="{{route('pdc')}}">PDC</a>
                                 <a class="dropdown-item" href="https://vatsim.net/docs/pilots/pilots" target="_blank">VATSIM Resources</a>
                             </div>
                         </li>
@@ -188,6 +198,9 @@
                     <ul class="navbar-nav ml-auto nav-flex-icons">
                         @unless (Auth::check())
                         <li class="nav-item d-flex align-items-center">
+                            {{-- <a href="{{route('auth.connect.login')}}" class="nav-link waves-effect waves-light">
+                                <i class="fas fa-sign-in-alt"></i>&nbsp;Login
+                            </a> --}}
                             <a href="{{route('auth.connect.login')}}" class="nav-link waves-effect waves-light">
                                 <i class="fas fa-sign-in-alt"></i>&nbsp;Login
                             </a>
