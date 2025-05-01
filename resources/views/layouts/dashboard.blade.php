@@ -1,6 +1,4 @@
 <!DOCTYPE HTML>
-<!-- <link rel="shortcut icon" href="{{ asset('facvicon.ico') }}" type="image/x-icon"> -->
-<!-- <link rel="shortcut icon" href="{{ asset('facvicon.ico') }}" type="image/x-icon"> -->
 <html lang="en">
     <head>
         <!--
@@ -8,43 +6,60 @@
         {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->release}} ({{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->sys_build}})
         Built on Bootstrap 4 and Laravel 6
 
-        Written by Liesel D... edited by a hundred Vancouverites.
+        Written by Liesel D... edited by a hundred Vancouverers
 
-        For Flight Simulation Use Only - Not to be used for real-world navigation. All content on this web site may not be shared, copied, reproduced or used in any way without prior express written consent of Gander Oceanic. © Copyright {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->copyright_year}} Gander Oceanic, All Rights Reserved.
+        For Flight Simulation Use Only - Not to be used for real-world navigation. All content on this web site may not be shared, copied, reproduced or used in any way without prior express written consent of Vancouver FIR. © Copyright {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->copyright_year}} Vancouver FIR , All Rights Reserved.
         -->
+
         <!--Metadata-->
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-	<!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
+        <!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <!--Rich Preview Meta-->
+        <meta name="theme-color" content="#6CC24A">
         <title>@yield('title', 'Vancouver FIR')</title>
         <meta name="description" content="@yield('description', '')">
         <meta name="theme-color" content="#6CC24A">
         <meta name="og:title" content="@yield('title', 'Vancouver FIR')">
         <meta name="og:description" content="@yield('description', '')">
         <meta name="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
-        <link rel="shortcut icon" href="{{ asset('facvicon.ico') }}" type="image/x-icon">
-	<!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+        <!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&display=swap">
+        </noscript>
+        <link rel="preload" as="style" href="{{ asset('css/bootstrap.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" as="style" href="{{ asset('css/mdb.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" as="style" href="{{ asset('css/all.css') }}" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" as="style" href="{{ asset('css/main.css') }}" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript>
+            <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/mdb.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/all.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        </noscript>
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+        <link href="{{ asset('css/all.css') }}" rel="stylesheet">
         <!-- Bootstrap core CSS -->
-        <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.3/materia/bootstrap.min.css" rel="stylesheet" integrity="sha384-5bFGNjwF8onKXzNbIcKR8ABhxicw+SC1sjTh6vhSbIbtVgUuVTm2qBZ4AaHc7Xr9" crossorigin="anonymous">        <!-- Material Design Bootstrap -->
+        <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         <!-- Material Design Bootstrap -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.11/css/mdb.min.css" rel="stylesheet">
+        <link href="{{ asset('css/mdb.min.css') }}" rel="stylesheet">
         <!--SimpleMDE Editor-->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-        <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+        <link href="{{ asset('css/simplemde.min.css') }}" rel="stylesheet">
+        <script src="{{ asset('js/simplemde.min.js') }}" defer></script>
         <!-- JQuery -->
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
         <!-- Bootstrap tooltips -->
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+        <script type="text/javascript" src="{{ asset('js/popper.min.js') }}" defer></script>
         <!-- Bootstrap core JavaScript -->
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}" defer></script>
         <!-- MDB core JavaScript -->
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.11/js/mdb.min.js"></script>
+        <script type="text/javascript" src="{{ asset('js/mdb.min.js') }}" defer></script>
         <!--CZQO specific CSS-->
         @if (Auth::check())
         @switch (Auth::user()->preferences)
@@ -58,36 +73,36 @@
         <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
         @endif
         <!--Leaflet-->
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
-        <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
-        <script src="{{asset('/js/leaflet.rotatedMarker.js')}}"></script>
+        <link rel="stylesheet" href="{{ asset('css/leaflet.css') }}">
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script src="{{asset('/js/leaflet.rotatedMarker.js')}}" defer></script>
         <!--TinyMCE-->
-            <script src="https://cdn.tiny.cloud/1/iz7e8hg00dm8miggx7tpbcws8glzakaodu6y0i3t3sc59u42/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+        <script src="{{ asset('js/tinymce.min.js') }}" referrerpolicy="origin" defer></script>
         <!--DataTables-->
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css"/>
-        <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/dataTables.bootstrap4.min.css') }}"/>
+        <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}" defer></script>
+        <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap4.min.js') }}" defer></script>
         <!--CSS Emoticons-->
         <link href="{{asset('css/jquery.cssemoticons.css')}}" media="screen" rel="stylesheet" type="text/css" />
-        <script src="{{asset('/js/jquery.cssemoticons.js')}}" type="text/javascript"></script>
+        <script src="{{asset('/js/jquery.cssemoticons.js')}}" type="text/javascript" defer></script>
         <!--Fullcalendar-->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.0.2/main.css">
-        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.js"></script>
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css"/>
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js" defer></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.js" defer></script>
+        <noscript><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css"></noscript>
         <!--IntroJS-->
         <link rel="stylesheet" href="{{asset('introjs/introjs.min.css')}}">
-        <script src="{{asset('introjs/intro.min.js')}}"></script>
+        <script src="{{asset('introjs/intro.min.js')}}" defer></script>
         <!--Date picker-->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
+        <script src="{{ asset('js/flatpickr.min.js') }}" defer></script>
         <!--SimpleMDE-->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-        <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+        <link rel="stylesheet" href="{{ asset('css/simplemde.min.css') }}">
+        <script src="{{ asset('js/simplemde.min.js') }}" defer></script>
         <!--Dropzone-->
         <script src="{{asset('js/dropzone.js')}}"></script>
         <!--JqueryValidate-->
-        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+        <script src="{{ asset('js/jquery.validate.min.js') }}" defer></script>
         <!---->
         <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
     </head>
@@ -105,7 +120,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark p-0 main-colour" style="min-height:59px">
             <div class="container">
                 <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset('CZVR_Colour_Long.png') }}" alt=""></a>
-		<!-- <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset('Holiday Long.png') }}" alt=""></a> -->
+                <!-- <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset('Holiday Long.png') }}" alt=""></a> -->
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -142,6 +157,7 @@
                         <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
+                            {{--<a class="dropdown-item" href="{{route('controllerbookings')}}">Bookings</a>--}}
                             <a class="dropdown-item" href="{{route('roster.public')}}">Roster</a>
                             @if(Auth::check() && Auth::user()->permissions >= 3)
                                 <a class="dropdown-item {{ Request::is('roster') ? 'active white-text' : '' }}" href="{{route('roster.index')}}">Manage Roster</a>
@@ -154,8 +170,8 @@
                         <li class="nav-item dropdown {{ Request::is('airports') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                              	<a class="dropdown-item" href="{{route('airports')}}">Airports</a>
-                              	<a class="dropdown-item" href="{{route('livemap')}}">Live Map</a>
+                                <a class="dropdown-item" href="{{route('airports')}}">Airports</a>
+                                <a class="dropdown-item" href="{{route('livemap')}}">Live Map</a>
                                 <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
                                 <a class="dropdown-item" href="https://vatsim.net/docs/pilots/pilots" target="_blank">VATSIM Resources</a>
                             </div>
@@ -260,7 +276,6 @@
         @yield('content')
     </div>
     <!-- Footer -->
-    <!-- Footer -->
     <footer class="page-footer text-light font-small py-4 {{Request::is('/dashboard') ? 'mt-5' : ''}}">
         <div class="container">
             <p style="color:white">For Flight Simulation Use Only - Not to be used for real-world navigation. By using this site, you agree to hold harmless and indemnify the owners and authors of these web pages, those listed on these pages, and all pages that this site that may be pointed to (i.e. external links).</p>
@@ -287,7 +302,6 @@
                 •
                 &nbsp;
                 <a href="https://www.vatsim.net">VATSIM</a>
-            </div>
             </div>
         </div>
     </footer>
@@ -348,7 +362,7 @@
     <!-- Error modal -->
     <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
+            <div class="modal-content bg-dark">
                 <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle"><span class="font-weight-bold text-danger"><i class="fas fa-exclamation-circle"></i> An error occurred...</span></h5>
                     <button type="button" class="close" style="color:white" data-dismiss="modal" aria-label="Close">
@@ -381,7 +395,7 @@
                 </div>
                 <div class="modal-body">
                     <p>To join our Discord community, please head to your <a href="{{route('dashboard.index')}}">dashboard.</a></p>
-                    <p>VATCAN has a Discord too! You can join the VATCAN discord by clicking <a href="https://vatcan.ca/my/discord/join" rel="noopener noreferrer" target="_blank">here!</a>
+                    <p>VATCAN has a Discord too! You can join the VATCAN discord by clicking <a href="https://vatcan.ca/my/integrations" rel="noopener noreferrer" target="_blank">here!</a>
                 </div>
             </div>
         </div>
