@@ -364,8 +364,8 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content bg-dark">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle"><span class="font-weight-bold red-text"><i class="fas fa-exclamation-circle"></i> An error occurred...</span></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="exampleModalLongTitle"><span class="font-weight-bold text-danger"><i class="fas fa-exclamation-circle"></i> An error occurred...</span></h5>
+                    <button type="button" class="close" style="color:white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -373,6 +373,10 @@
                     <span class="white-text">{{\Session::get('error-modal')}}</span>
                     <div class="alert black-text bg-white mt-4">
                         <small>If you believe this is a mistake, please create a <a target="_blank" class="black-text" href="{{route('tickets.index')}}">support ticket.</a></small>
+                    <div class="alert">
+                        <p> {{\Session::get('error-modal')}} </p>
+                        <hr class="bg-light">
+                        <small> If you believe this is a mistake, please create a <a target="_blank" class = "blue-text"href="{{route('tickets.index')}}">support ticket.</a> </small>
                     </div>
                 </div>
             </div>

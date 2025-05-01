@@ -10,16 +10,17 @@
     <div class="container" style="margin-top: 20px;">
         <div class="card">
             <div class="card-body">
-                <h3 class="font-weight-bold blue-text">Remove Student</h3>
-                <p>Are you sure you want to remove <strong>{{ $student->user->fullName('FLC') }}</strong>?</p>
-                <p class ="content-warning">This will permanently delete this student and their application!<p>
+                <h3 class="font-weight-bold blue-text">Delete Student</h3>
+                <p>Are you sure you want to delete <strong>{{ $student->user->fullName('FLC') }}</strong>?</p>
+                <p class="content-warning">This will permanently delete this student!</p>
                 <form action="{{ route('training.students.destroy', $student->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Remove</button>
-                    <a href="{{ route('training.students.waitlist') }}" class="btn btn-light">Cancel</a>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <a href="{{ url('dashboard/training/students/' . $student->id) }}" class="btn btn-light">Cancel</a>
                 </form>
             </div>
         </div>
     </div>
+    <br>
 @stop

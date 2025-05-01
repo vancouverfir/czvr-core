@@ -349,15 +349,18 @@ Route::group(['middleware' => 'instructor'], function () {
     Route::view('/dashboard/training/sessions/create', 'dashboard.training.instructingsessions.create')->name('training.instructingsessions.createsessionindex');
     Route::get('/dashboard/training/sessions/create', 'AtcTraining\TrainingController@createInstructingSession')->name('training.instructingsessions.createsession');
     Route::get('/dashboard/training/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
+    Route::get('/dashboard/training/students', 'AtcTraining\TrainingController@AllStudents')->name('training.students.students');
     Route::get('/dashboard/training/students/current', 'AtcTraining\TrainingController@currentStudents')->name('training.students.current');
     Route::get('/dashboard/training/students/new', 'AtcTraining\TrainingController@newStudents')->name('training.students.new');
     Route::get('/dashboard/training/students/completed', 'AtcTraining\TrainingController@completedStudents')->name('training.students.completed');
     Route::get('/dashboard/training/students/waitlist', 'AtcTraining\TrainingController@newStudents')->name('training.students.waitlist');
     Route::get('/dashboard/training/students/{id}', 'AtcTraining\TrainingController@viewStudent')->name('training.students.view');
+    Route::post('/dashboard/training/students/{id}/assign/label', 'AtcTraining\TrainingController@assignLabel')->name('training.students.assign.label');
+    Route::get('/dashboard/training/students/{id}/drop/label/{student_label_id}', 'AtcTraining\TrainingController@dropLabel')->name('training.students.drop.label');
     Route::post('/dashboard/training/students/{id}/assigninstructor', 'AtcTraining\TrainingController@assignInstructorToStudent')->name('training.students.assigninstructor');
     Route::post('/dashboard/training/students/{id}/setstatus', 'AtcTraining\TrainingController@changeStudentStatus')->name('training.students.setstatus');
     Route::get('/dashboard/trainingnotes/{id}', 'AtcTraining\TrainingController@viewNote')->name('trainingnote.view');
-    //  Route::get('/dashboard/trainingnotes/{id}/delete', 'AtcTraining\TrainingNotesController@delete')->name('trainingnotes.delete');
+    Route::get('/dashboard/trainingnotes/{id}/delete', 'AtcTraining\TrainingController@delete')->name('trainingnotes.delete');
     Route::post('/dashboard/trainingnotes/add/{id}', 'AtcTraining\TrainingController@addNote')->name('add.trainingnote');
     Route::get('/dashboard/trainingnotes/create/{id}', 'AtcTraining\TrainingController@newNoteView')->name('view.add.note');
     Route::post('/training/solorequest/{id}', 'AtcTraining\TrainingController@soloRequest')->name('training.solo.request');
@@ -366,6 +369,10 @@ Route::group(['middleware' => 'instructor'], function () {
     Route::get('/dashboard/training/students/delete/{id}', 'AtcTraining\TrainingController@showDeleteForm')->name('training.students.delete');
     Route::delete('/dashboard/training/students/delete/{id}', 'AtcTraining\TrainingController@removeStudent')->name('training.students.destroy');
     Route::post('/dashboard/training/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
+    Route::patch('/training/students/checklist/{id}/complete', 'AtcTraining\StudentChecklistController@completeItem')->name('training.students.checklist.complete');
+    Route::post('/training/students/{student}/assign-checklist', 'AtcTraining\StudentChecklistController@assignChecklist')->name('training.students.assign.checklist');
+    Route::delete('/training/students/{student}/checklists/{name}', 'AtcTraining\StudentChecklistController@deleteChecklist')->name('training.students.checklist.deleteChecklist');
+    Route::get('/api/training-notes', 'AtcTraining\TrainingController@getTrainingNotes');
 });
 //Admin and CI
 Route::group(['middleware' => 'executive'], function () {

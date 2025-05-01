@@ -78,5 +78,8 @@ class DatabaseSeeder extends Seeder
             'url' => 'https://czvr.ca/storage/files/branding/czvr-logomark.png',
             'credit' => 'Vancouver FIR',
         ]);
+
+        $this->call(\Database\Seeders\LabelListsSeeder::class);
+        $this->call(\Database\Seeders\ChecklistSeeder::class);
     }
 }

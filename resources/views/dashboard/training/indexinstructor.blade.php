@@ -19,7 +19,7 @@
                         </div>
 
                     <div class="card-body">
-                        @if ($yourStudents !== null)
+                        @if ($yourStudents !== null && count($yourStudents) > 0)
                         <div class="list-group">
                             @foreach ($yourStudents as $student)
                             <a href="{{route('training.students.view', $student->id)}}" class="list-group-item d-flex justify-content-between align-items-center">
@@ -52,22 +52,11 @@
               @if (Auth::check() && Auth::user()->permissions >= 3)
                 <div class="card">
                     <div class="card-header">
-                        <text class="font-weight-bold">Student Solo Requests</text>
+                        <text class="font-weight-bold">Upcoming Sessions</text>
                     </div>
 
                     <div class="card-body">
-                    @if (count($soloreq) < 1)
-                        There are currently no requests!
-                    @else
-                        @foreach ($soloreq as $s)
-                        <text class="font-weight-bold">Student: </text> {{$s->student->user->fullName('FLC')}}<br>
-                        <text class="font-weight-bold">Instructor: </text> {{$s->instructor->user->fullName('FLC')}}<br>
-                        <text class="font-weight-bold">Solo Position: </text> {{$s->position}}<br>
-                        <a href="{{route('training.solo.approve', $s->id)}}" class="ml-0 btn btn-success btn-sm" style="float: center;">Approve</a>
-                        <a href="{{route('training.solo.deny', $s->id)}}" class="btn btn-danger btn-sm" style="float: center;">Deny</a>
-                        <hr>
-                        @endforeach
-                    @endif
+                    // Insert code here
                     </div>
 
             </div>
@@ -76,9 +65,5 @@
             </div>
         </div>
         <br>
-
-        <h3 class="font-weight-bold blue-text">Training Calendar</h3>
-        <br>
-
     </div>
 @stop

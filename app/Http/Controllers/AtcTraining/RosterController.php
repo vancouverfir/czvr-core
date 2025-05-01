@@ -34,8 +34,14 @@ class RosterController extends Controller
 
     public function deleteController($id)
     {
+        $user = User::find($roster->user_id);
         $roster = RosterMember::findorFail($id);
         $session = SessionLog::where('roster_member_id', $id)->get();
+
+        if ($user) {
+            $user->permissions = '0';
+            $user->save();
+        }
 
         foreach ($session as $s) {
             $s->delete();
@@ -55,9 +61,11 @@ class RosterController extends Controller
                 'cid' => $users->id,
                 'user_id' => $users->id,
                 'full_name' => $users->fullName('FL'),
-                'status' => 'home',
+                'status' => 'not_certified',
                 'visit' => '0',
             ]);
+            $users->permissions = '1';
+            $users->save();
         } else {
             return redirect()->back()->withErrors('Member: '.$users->fullName('FL').' CID: '.$users->id.' is already on the roster!');
         }
@@ -75,7 +83,7 @@ class RosterController extends Controller
                 'cid' => $users->id,
                 'user_id' => $users->id,
                 'full_name' => $users->fullName('FL'),
-                'status' => 'visit',
+                'status' => 'not_certified',
                 'visit' => 1,
             ]);
         } else {
