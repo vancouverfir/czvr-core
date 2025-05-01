@@ -356,10 +356,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert">
-                        <p> {{\Session::get('error-modal')}} </p>
-                        <hr class="bg-light">
-                        <small> If you believe this is a mistake, please create a <a target="_blank" class = "blue-text"href="{{route('tickets.index')}}">support ticket.</a> </small>
+                    <span class="white-text">{{\Session::get('error-modal')}}</span>
+                    <div class="alert black-text bg-white mt-4">
+                        <small>If you believe this is a mistake, please create a <a target="_blank" class="black-text" href="{{route('tickets.index')}}">support ticket.</a></small>
                     </div>
                 </div>
             </div>
