@@ -80,8 +80,8 @@
         <script src="{{ asset('js/tinymce.min.js') }}" referrerpolicy="origin" defer></script>
         <!--DataTables-->
         <link rel="stylesheet" type="text/css" href="{{ asset('css/dataTables.bootstrap4.min.css') }}"/>
-        <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}" defer></script>
-        <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap4.min.js') }}" defer></script>
+        <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
         <!--CSS Emoticons-->
         <link href="{{asset('css/jquery.cssemoticons.css')}}" media="screen" rel="stylesheet" type="text/css" />
         <script src="{{asset('/js/jquery.cssemoticons.js')}}" type="text/javascript" defer></script>
