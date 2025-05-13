@@ -8,17 +8,17 @@ use Illuminate\Support\HtmlString;
 class MarkdownHelper
 {
     /**
-     * Convert markdown text to HTML using Laravel-Markdown
+     * Convert markdown text to HTML using Laravel-Markdown.
      *
-     * @param string|null $markdown The markdown content to convert
+     * @param  string|null  $markdown  The markdown content to convert
      * @return HtmlString The HTML-rendered version of the markdown content
      */
     public function toHtml(?string $markdown): HtmlString
     {
-        if (!$markdown) {
+        if (! $markdown) {
             return new HtmlString('');
         }
-        
+
         return new HtmlString(Markdown::convert($markdown)->getContent());
     }
 }

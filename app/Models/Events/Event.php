@@ -2,14 +2,14 @@
 
 namespace App\Models\Events;
 
+use App\Helpers\MarkdownHelper;
+use App\Models\AtcTraining\RosterMember;
+use App\Models\Users\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use App\Helpers\MarkdownHelper;
-use App\Models\AtcTraining\RosterMember;
-use App\Models\Users\User;
 
 class Event extends Model
 {
