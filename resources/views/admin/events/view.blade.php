@@ -65,7 +65,7 @@
           </div>
             <hr>
           <h4 class="font-weight-bold blue-text">Description</h4>
-            {{$event->html()}}<hr>
+            {{$event->description_html}}<hr>
           <h4 class="font-weight-bold blue-text">Updates</h4>
             @if (count($updates) == 0)
                 None yet!
