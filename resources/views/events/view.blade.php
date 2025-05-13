@@ -65,7 +65,7 @@
                 @endif
             </div>
             <div class="col-md-9">
-                {{$event->html()}}
+                {{$event->description_html}}
                 @if($event->start_timestamp > $timeNow)
                 @if (Auth::check() && $event->controller_applications_open && Auth::user()->rosterProfile)
                 <hr>

@@ -2,20 +2,22 @@
 
 namespace App\Models\Events;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use App\Helpers\MarkdownHelper;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Users\User;
-use Auth;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\HtmlString;
-use Parsedown;
 
 class Event extends Model
 {
     protected $fillable = [
         'id', 'name', 'start_timestamp', 'end_timestamp', 'user_id', 'description', 'image_url', 'controller_applications_open', 'departure_icao', 'arrival_icao', 'slug',
     ];
+
+    protected $appends = ['description_html'];
 
     public function user()
     {
@@ -174,9 +176,18 @@ class Event extends Model
         return true;
     }
 
-    public function html()
+    /**
+     * Get the HTML version of the description.
+     */
+    protected function descriptionHtml(): Attribute
     {
-        return new HtmlString(app(Parsedown::class)->text($this->description));
+        return Attribute::make(
+            get: fn () => Cache::remember(
+                "events.{$this->id}.description_html",
+                now()->addHours(24),
+                fn () => app(MarkdownHelper::class)->toHtml($this->description)
+            )
+        );
     }
 
     public function userHasApplied()
