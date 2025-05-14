@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
+use App\Helpers\MarkdownHelper;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use App\Helpers\MarkdownHelper;
 
 class AppServiceProvider extends ServiceProvider
 {

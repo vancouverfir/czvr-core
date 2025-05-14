@@ -2,13 +2,13 @@
 
 namespace App\Models\Events;
 
+use App\Models\AtcTraining\RosterMember;
+use App\Models\Users\User;
+use App\Traits\HasMarkdownFields;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use App\Models\AtcTraining\RosterMember;
-use App\Models\Users\User;
-use App\Traits\HasMarkdownFields;
 
 class Event extends Model
 {
@@ -20,7 +20,7 @@ class Event extends Model
 
     /**
      * Retrieve the list of fields that should be processed as Markdown.
-     * Required for HasMarkdownFields
+     * Required for HasMarkdownFields.
      *
      * @return array An array of field names that are treated as Markdown.
      */
