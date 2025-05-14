@@ -77,7 +77,7 @@
                             <i class="far fa-clock"></i>&nbsp;&nbsp;Created {{$u->created_pretty()}}</span>&nbsp;&nbsp;•&nbsp;&nbsp;<i class="far fa-user-circle"></i>&nbsp;&nbsp;{{$u->author_pretty()}}&nbsp;&nbsp;•&nbsp;&nbsp;<a href="{{route('events.admin.update.delete', [$event->slug, $u->id])}}" class="red-text">Delete</a>
                         </div>
                         <hr>
-                        {{$u->html()}}
+                        {{$u->toHtml('content')}}
                     </div>
                     <br>
                 @endforeach

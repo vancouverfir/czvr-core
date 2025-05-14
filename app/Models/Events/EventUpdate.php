@@ -3,25 +3,32 @@
 namespace App\Models\Events;
 
 use App\Models\Users\User;
+use App\Traits\HasMarkdownFields;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
-use Parsedown;
 
 class EventUpdate extends Model
 {
+    use HasMarkdownFields;
+
     protected $fillable = [
         'event_id', 'user_id', 'title', 'content', 'created_timestamp', 'slug',
     ];
 
+    /**
+     * Retrieve the list of fields that should be processed as Markdown.
+     * Required for HasMarkdownFields
+     *
+     * @return array An array of field names that are treated as Markdown.
+     */
+    protected function getMarkdownFields(): array
+    {
+        return ['content'];
+    }
+
     public function event()
     {
         return $this->belongTo(Event::class);
-    }
-
-    public function html()
-    {
-        return new HtmlString(app(Parsedown::class)->text($this->content));
     }
 
     public function user()
