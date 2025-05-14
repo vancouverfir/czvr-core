@@ -65,7 +65,7 @@
                 @endif
             </div>
             <div class="col-md-9">
-                {{$event->description_html}}
+                {{$event->toHtml('description')}}
                 @if($event->start_timestamp > $timeNow)
                 @if (Auth::check() && $event->controller_applications_open && Auth::user()->rosterProfile)
                 <hr>
@@ -138,7 +138,7 @@
                                         <i class="far fa-clock"></i>&nbsp;&nbsp;Posted {{$u->created_pretty()}}</span>&nbsp;&nbsp;•&nbsp;&nbsp;<i class="far fa-user-circle"></i>&nbsp;&nbsp;{{$u->author_pretty()}}
                                     </div>
                                 <hr>
-                                {{$u->html()}}
+                                {{$u->toHtml('content')}}
                             </div>
                         <br>
                 @endforeach
