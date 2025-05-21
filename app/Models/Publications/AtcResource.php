@@ -2,18 +2,25 @@
 
 namespace App\Models\Publications;
 
+use App\Traits\HasMarkdownFields;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
-use Parsedown;
 
 class AtcResource extends Model
 {
+    use HasMarkdownFields;
+
     protected $fillable = [
         'user_id', 'title', 'description', 'url', 'atc_only',
     ];
 
-    public function html()
+    /**
+     * Retrieve the list of fields that should be processed as Markdown.
+     * Required for HasMarkdownFields
+     *
+     * @return array An array of field names that are treated as Markdown.
+     */
+    protected function getMarkdownFields(): array
     {
-        return new HtmlString(app(Parsedown::class)->text($this->description));
+        return ['description'];
     }
 }

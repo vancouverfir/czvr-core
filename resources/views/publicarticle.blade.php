@@ -28,6 +28,6 @@
             This article is not visible to the public.
         </div>
         @endif
-        {{$article->html()}}
+        {{$article->toHtml('content')}}
     </div>
 @stop
