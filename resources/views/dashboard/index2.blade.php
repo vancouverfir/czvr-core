@@ -286,26 +286,32 @@
     <!--End change avatar modal-->
 
     <!--Biography modal-->
-    <div class="modal fade" id="viewBio" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+    <div class="modal fade" id="viewBio" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">View your biography</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">View Your Biography</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
+                    <h5 class="mb-3">Your Current Biography</h5>
                     @if (Auth::user()->bio)
-                        {{Auth::user()->bio}}
+                        <p>{{ Auth::user()->bio }}</p>
                     @else
-                        You have no biography.
+                        <p class="text-muted">You have no biography!</p>
                     @endif
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
-                    <a href="{{route('me.editbio')}}" class="btn btn-primary" role="button">Edit Biography</a>
+                <div class="modal-footer flex-column align-items-start">
+                    <form method="post" action="{{ route('me.editbio') }}" class="w-100">
+                        @csrf
+                        <h5 class="mb-2">Change Your Biography</h5>
+                        <textarea name="bio" class="form-control mb-3" rows="5">{{ Auth::user()->bio }}</textarea>
+                        <p class="text-muted mb-3">Please ensure this complies with the VATSIM Code of Conduct!</p>
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                        <input type="submit" class="btn btn-success" value="Save">
+                    </form>
                 </div>
             </div>
         </div>
