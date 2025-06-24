@@ -8,7 +8,7 @@
 
 @section('title', 'ATC Resources')
 @section('description', 'Sector Files & Resources for Vancouver Controllers')
-
+tc
 @section('content')
 <div class="container" style="margin-top: 20px;">
     <div class="container" style="margin-top: 20px;">
@@ -36,7 +36,7 @@
                     </div>
                     <div class="modal-body">
                         <small>Description</small><br/>
-                        {{$resource->html()}}
+                         {{$resource->toHtml('description')}}
                     </div>
                     <div class="modal-footer">
                         @if (Auth::check() && Auth::user()->permissions >= 3)
