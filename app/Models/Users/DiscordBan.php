@@ -14,9 +14,9 @@ class DiscordBan extends Model
         'user_id', 'reason', 'ban_start_timestamp', 'ban_end_timestamp',
     ];
 
-     /**
+    /**
      * Retrieve the list of fields that should be processed as Markdown.
-     * Required for HasMarkdownFields
+     * Required for HasMarkdownFields.
      *
      * @return array An array of field names that are treated as Markdown.
      */
