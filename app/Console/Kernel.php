@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use Illuminate\Support\Facades\Artisan;
 use App\Console\Commands\ActivityLog;
 use App\Console\Commands\CheckVisitHours;
 use App\Console\Commands\CurrencyCheck;
@@ -10,6 +9,7 @@ use App\Console\Commands\EventReminders;
 use App\Console\Commands\RatingUpdate;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Artisan;
 
 class Kernel extends ConsoleKernel
 {
