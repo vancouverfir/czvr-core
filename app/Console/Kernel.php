@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use Illuminate\Support\Facades\Artisan;
 use App\Console\Commands\ActivityLog;
 use App\Console\Commands\CheckVisitHours;
 use App\Console\Commands\CurrencyCheck;
