@@ -18,6 +18,7 @@
 
 <div class="container py-4">
     <h1 class="font-weight-bold blue-text">Airports</h1>
+    <hr> <u> <a class="blue-text" href="https://fltplan.com/" target="_blank" rel="noopener noreferrer"> Vancouver Aeronautical Charts </a> </u> <hr>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="pr-tab" data-toggle="tab" href="#pr" role="tab" aria-controls="pr" aria-selected="true">Preferred Routing</a>
