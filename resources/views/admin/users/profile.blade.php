@@ -344,7 +344,7 @@
                         <ul class="list-unstyled">
                             <li><p>Author: {{$note->author_name}}</p></li>
                             <li><p>Date/Time: {{$note->timestamp}}</p></li>
-                            <li><p>Notes: {{$note->html()}}</p></li>
+                            <li><p>Notes: {{$note->toHtml('content')}}</p></li>
                             <form action="{{route('users.deletenote', [$user->id, $note->id])}}" method="GET">
                             <button class="btn btn-sm btn-danger" class="mt-1">Delete</button>
                             </form>

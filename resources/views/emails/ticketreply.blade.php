@@ -5,7 +5,7 @@
 @section('message-content')
 <p>{{$reply->user->fullName('FLC')}} has replied to ticket {{$ticket->title}} at {{$reply->submission_time_pretty()}}.</p>
 <hr>
-{{$reply->html()}}
+{{$reply->toHtml('message')}}
 <hr>
 <a href="{{route('tickets.viewticket', $ticket->ticket_id)}}">View the ticket here.</a>
 @endsection

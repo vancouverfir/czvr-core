@@ -30,7 +30,7 @@
         </p>
         <h3>Message</h3>
         <div class="markdown border p-3">
-            {{$ticket->html()}}
+            {{$ticket->toHtml('message')}}
         </div>
         <br/>
         <h3>Replies</h3>
@@ -42,7 +42,7 @@
                     <div class="list-group-item" @if ($reply->user_id == 1) style="background-color: #bfe0fb;" @endif">
                     <h6>{{$reply->user->fullName('FLC')}} on <span title="{{$reply->submission_time}}">{{$reply->submission_time_pretty()}}</span></h6>
                         <div id="replyContent{{$reply->id}}" class="text markdown">
-                            {{$reply->html()}}
+                            {{$reply->toHtml('message')}}
                         </div>
                     </div>
                 @endforeach

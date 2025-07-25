@@ -67,7 +67,7 @@
                     </a>
                     <div class="step-content w-75 pt-0">
                         <label for="">Use Markdown</label>
-                        <textarea id="contentMD" name="content" class="w-75">{{$article->html()}}</textarea>
+                        <textarea id="contentMD" name="content" class="w-75">{{$article->content}}</textarea>
                         <script>
                             var simplemde = new SimpleMDE({ element: document.getElementById("contentMD"), toolbar: false });
                         </script>
