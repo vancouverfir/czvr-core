@@ -5,7 +5,6 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\AtcTraining\Student;
 
 class RenewalNotification extends Notification
 {
@@ -46,7 +45,7 @@ class RenewalNotification extends Notification
 
         return (new MailMessage)
             ->subject('Renew Your Request for Training!')
-            ->view('emails.renewalnotification', ['student' => $this->student,'renewalLink' => $renewalLink,]);
+            ->view('emails.renewalnotification', ['student' => $this->student, 'renewalLink' => $renewalLink]);
     }
 
     /**

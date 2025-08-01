@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Notifications\RenewalNotification;
 use App\Models\AtcTraining\Student;
-use App\Models\AtcTraining\StudentNote;
-use App\Models\AtcTraining\StudentLabel;
 use App\Models\AtcTraining\StudentInteractiveLabels;
+use App\Models\AtcTraining\StudentLabel;
+use App\Models\AtcTraining\StudentNote;
+use App\Notifications\RenewalNotification;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
 class RenewNotification extends Command
@@ -34,7 +34,7 @@ class RenewNotification extends Command
     {
         $days = 31;
         $students = Student::whereIn('status', [0, 3])
-            ->where(function($query) use ($days) {
+            ->where(function ($query) use ($days) {
                 $query->where('renewed_at', '<=', Carbon::now()->subDays($days));
             })
             ->get();

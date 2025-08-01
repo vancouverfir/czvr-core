@@ -4,10 +4,10 @@ namespace App\Models\AtcTraining;
 
 use App\Models\AtcTraining\CBT\CbtModuleAssign;
 use App\Models\AtcTraining\CBT\ExamAssign;
-use Illuminate\Support\Str;
 use App\Models\Users\User;
 use App\Notifications\CreateStudent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Student extends Model
 {
@@ -98,12 +98,11 @@ class Student extends Model
     protected static function booted()
     {
         static::created(function ($student) {
-
             $student->renewal_token = Str::random(31);
             $student->renewed_at = now();
             $student->save();
 
-            if ($student->user && !empty($student->user->email)) {
+            if ($student->user && ! empty($student->user->email)) {
                 $student->user->notify(new CreateStudent($student));
             } else {
                 \Log::warning('New student notification skipped! Missing User or Email!!!', [
