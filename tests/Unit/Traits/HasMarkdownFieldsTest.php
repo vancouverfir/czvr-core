@@ -13,26 +13,26 @@ class HasMarkdownFieldsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Mock the Markdown facade
         Markdown::shouldReceive('convert')
             ->with('**test**')
-            ->andReturn((object)['getContent' => fn() => '<strong>test</strong>']);
-            
+            ->andReturn((object) ['getContent' => fn () => '<strong>test</strong>']);
+
         Markdown::shouldReceive('convert')
             ->with('# Hello')
-            ->andReturn((object)['getContent' => fn() => '<h1>Hello</h1>']);
+            ->andReturn((object) ['getContent' => fn () => '<h1>Hello</h1>']);
     }
 
     public function test_converts_markdown_field_to_html()
     {
         $model = new TestModelWithMarkdown([
             'description' => '**test**',
-            'content' => '# Hello'
+            'content' => '# Hello',
         ]);
 
         $html = $model->toHtml('description');
-        
+
         $this->assertInstanceOf(HtmlString::class, $html);
         $this->assertEquals('<strong>test</strong>', $html->toHtml());
     }
@@ -41,12 +41,12 @@ class HasMarkdownFieldsTest extends TestCase
     {
         $model = new TestModelWithMarkdown([
             'description' => '**test**',
-            'content' => '# Hello'
+            'content' => '# Hello',
         ]);
 
         $descriptionHtml = $model->toHtml('description');
         $contentHtml = $model->toHtml('content');
-        
+
         $this->assertEquals('<strong>test</strong>', $descriptionHtml->toHtml());
         $this->assertEquals('<h1>Hello</h1>', $contentHtml->toHtml());
     }
@@ -57,7 +57,7 @@ class HasMarkdownFieldsTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Field 'non_markdown' is not defined as a markdown field");
-        
+
         $model->toHtml('non_markdown');
     }
 
@@ -66,7 +66,7 @@ class HasMarkdownFieldsTest extends TestCase
         $model = new TestModelWithMarkdown(['description' => null]);
 
         $html = $model->toHtml('description');
-        
+
         $this->assertInstanceOf(HtmlString::class, $html);
         $this->assertEquals('', $html->toHtml());
     }
@@ -76,7 +76,7 @@ class HasMarkdownFieldsTest extends TestCase
         $model = new TestModelWithMarkdown(['description' => '']);
 
         $html = $model->toHtml('description');
-        
+
         $this->assertInstanceOf(HtmlString::class, $html);
         $this->assertEquals('', $html->toHtml());
     }

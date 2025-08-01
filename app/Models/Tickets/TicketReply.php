@@ -6,7 +6,6 @@ use App\Models\Users\User;
 use App\Traits\HasMarkdownFields;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
 
 class TicketReply extends Model
 {
@@ -18,7 +17,7 @@ class TicketReply extends Model
 
     /**
      * Retrieve the list of fields that should be processed as Markdown.
-     * Required for HasMarkdownFields
+     * Required for HasMarkdownFields.
      *
      * @return array An array of field names that are treated as Markdown.
      */
