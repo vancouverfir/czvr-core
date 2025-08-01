@@ -11,20 +11,20 @@
     },
     "devDependencies": {
         "@babel/preset-react": "^7.27.1",
-        "axios": "^1.10",
+        "axios": "^1.11",
         "babel-preset-react": "^6.24.1",
         "bootstrap": "^5.3.7",
-        "cross-env": "^7.0",
+        "cross-env": "^10.0",
         "jquery": "^3.7",
         "laravel-mix": "^6.0",
         "lodash": "^4.17.19",
         "popper.js": "^1.12",
-        "react": "^19.1.0",
+        "react": "^19.1.1",
         "react-dom": "^19.1.0",
         "semantic-ui-css": "^2.5.0"
     },
     "dependencies": {
-        "dotenv": "^16.5.0",
-        "npm": "^11.4.2"
+        "dotenv": "^17.2.1",
+        "npm": "^11.5.2"
     }
 }

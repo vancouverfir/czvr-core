@@ -9,6 +9,7 @@ use App\Console\Commands\EventReminders;
 use App\Console\Commands\RatingUpdate;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Artisan;
 
 class Kernel extends ConsoleKernel
 {
