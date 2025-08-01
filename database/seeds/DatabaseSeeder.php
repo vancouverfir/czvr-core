@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
             ['position' => 'Departure'],
             ['position' => 'Arrival'],
             ['position' => 'Centre'],
-            ['position' => 'Relief']
+            ['position' => 'Relief'],
         ]);
 
         DB::table('homepage_images')->insert([
