@@ -387,7 +387,6 @@ Route::group(['middleware' => 'mentor'], function () {
     Route::get('/dashboard/trainingnotes/{id}/delete', 'AtcTraining\TrainingController@delete')->name('trainingnotes.delete');
     Route::get('/dashboard/trainingnotes/create/{id}', 'AtcTraining\TrainingController@newNoteView')->name('view.add.note');
     */
-
 });
 
 //Students and Instructors

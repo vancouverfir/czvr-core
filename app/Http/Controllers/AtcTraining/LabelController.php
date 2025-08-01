@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\AtcTraining;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\AtcTraining\Student;
-use App\Models\AtcTraining\StudentLabel;
 use App\Models\AtcTraining\StudentInteractiveLabels;
+use App\Models\AtcTraining\StudentLabel;
+use Illuminate\Http\Request;
 
 class LabelController extends Controller
 {
