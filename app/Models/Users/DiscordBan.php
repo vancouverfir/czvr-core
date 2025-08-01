@@ -2,16 +2,28 @@
 
 namespace App\Models\Users;
 
+use App\Traits\HasMarkdownFields;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
-use Parsedown;
 
 class DiscordBan extends Model
 {
+    use HasMarkdownFields;
+
     protected $fillable = [
         'user_id', 'reason', 'ban_start_timestamp', 'ban_end_timestamp',
     ];
+
+    /**
+     * Retrieve the list of fields that should be processed as Markdown.
+     * Required for HasMarkdownFields.
+     *
+     * @return array An array of field names that are treated as Markdown.
+     */
+    protected function getMarkdownFields(): array
+    {
+        return ['reason'];
+    }
 
     public function user()
     {
@@ -53,10 +65,5 @@ class DiscordBan extends Model
     public function durationPretty()
     {
         return Carbon::create($this->ban_end_timestamp)->diffForHumans(Carbon::create($this->ban_start_timestamp));
-    }
-
-    public function reasonHtml()
-    {
-        return new HtmlString(app(Parsedown::class)->text($this->reason));
     }
 }
