@@ -6,7 +6,7 @@ use App\Traits\HasMarkdownFields;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class HasMarkdownFieldsTest extends TestCase
 {
@@ -15,13 +15,28 @@ class HasMarkdownFieldsTest extends TestCase
         parent::setUp();
 
         // Mock the Markdown facade
+        $mockRendered1 = \Mockery::mock(RenderedContentInterface::class);
+        $mockRendered1->shouldReceive('getContent')->andReturn('<strong>test</strong>');
+
+        $mockRendered2 = \Mockery::mock(RenderedContentInterface::class);
+        $mockRendered2->shouldReceive('getContent')->andReturn('<h1>Hello</h1>');
+
         Markdown::shouldReceive('convert')
             ->with('**test**')
-            ->andReturn((object) ['getContent' => fn () => '<strong>test</strong>']);
+            ->andReturn($mockRendered1);
 
         Markdown::shouldReceive('convert')
             ->with('# Hello')
-            ->andReturn((object) ['getContent' => fn () => '<h1>Hello</h1>']);
+            ->andReturn($mockRendered2);
+    }
+
+    public function test_skips_field_if_markdown_fields_are_not_defined()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Field 'note' is not defined as a markdown field");
+
+        $model = new TestModelWithoutMarkdown(['note' => '# Hello']);
+        $model->toHtml('note');
     }
 
     public function test_converts_markdown_field_to_html()
@@ -51,7 +66,7 @@ class HasMarkdownFieldsTest extends TestCase
         $this->assertEquals('<h1>Hello</h1>', $contentHtml->toHtml());
     }
 
-    public function test_throws_exception_for_non_markdown_field()
+    public function test_returns_empty_html_for_non_markdown_field()
     {
         $model = new TestModelWithMarkdown();
 
@@ -92,5 +107,17 @@ class TestModelWithMarkdown extends Model
     protected function getMarkdownFields(): array
     {
         return ['description', 'content'];
+    }
+}
+
+class TestModelWithoutMarkdown extends Model
+{
+    use HasMarkdownFields;
+
+    protected $fillable = ['note'];
+
+    protected function getMarkdownFields(): array
+    {
+        return [];
     }
 }
