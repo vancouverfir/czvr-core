@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'fname' => 'System',
             'lname' => 'User',
-            'email' => 'test@email.com',
+            'email' => 'info@info.ca',
             'permissions' => 1,
             'display_fname' => 'System',
         ]);
@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
             'id' => 2,
             'fname' => 'Roster',
             'lname' => 'Placeholder',
-            'email' => 'test@email.com',
+            'email' => 'info@info.ca',
             'permissions' => 1,
             'display_fname' => 'Roster',
         ]);
