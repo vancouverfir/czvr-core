@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'fname' => 'System',
             'lname' => 'User',
-            'email' => 'info@info.ca',
+            'email' => 'info@info.com',
             'permissions' => 1,
             'display_fname' => 'System',
         ]);
