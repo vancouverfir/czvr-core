@@ -16,7 +16,7 @@
         @endif
         @if($user->id == 1 || $user->id == 2)
         <div class="alert bg-czqo-blue-light">
-            This account is a system account used to identify automatic actions, or to serve as a placeholder user.
+            This account is a system account used to identify automatic actions, or to serve as a placeholder user!
         </div>
         @endif
         <div class="row">

@@ -24,6 +24,6 @@ class TrainingNoteController extends Controller
         ]);
         dd($student);
 
-        return redirect()->back()->withSuccess('You have added a training note for '.$student->user->fullName('FLC').'');
+        return redirect()->back()->withSuccess('You have added a training note for '.$student->user->fullName('FLC').'!');
     }
 }

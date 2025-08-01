@@ -7,7 +7,7 @@
 
 @section('content')
     @include('includes.trainingMenu')
-    <div class="container" style="margin-top: 20px;">
+    <div class="container" style="margin-top: 30px; margin-bottom: 30px">
         <div class="card">
             <div class="card-body">
                 <h3 class="font-weight-bold blue-text">Delete Student</h3>
@@ -17,10 +17,9 @@
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
-                    <a href="{{ url('dashboard/training/students/' . $student->id) }}" class="btn btn-light">Cancel</a>
+                    <a href="{{ url('training/students/' . $student->id) }}" class="btn btn-light">Cancel</a>
                 </form>
             </div>
         </div>
     </div>
-    <br>
 @stop

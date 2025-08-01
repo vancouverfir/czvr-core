@@ -34,8 +34,8 @@ class RosterController extends Controller
 
     public function deleteController($id)
     {
-        $user = User::find($roster->user_id);
         $roster = RosterMember::findorFail($id);
+        $user = User::findorFail($roster->user_id);
         $session = SessionLog::where('roster_member_id', $id)->get();
 
         if ($user) {
@@ -53,7 +53,6 @@ class RosterController extends Controller
 
     public function addController(Request $request)
     {
-        //here we are getting the data from the table
         $users = User::findOrFail($request->input('newcontroller'));
         $rosterMember = RosterMember::where('cid', $users->id)->first();
         if ($rosterMember == null) {
@@ -75,9 +74,9 @@ class RosterController extends Controller
 
     public function addVisitController(Request $request)
     {
-        //here we are getting the data from the table
         $users = User::findOrFail($request->input('newcontroller'));
         $rosterMember = RosterMember::where('cid', $users->id)->first();
+
         if ($rosterMember == null) {
             RosterMember::create([
                 'cid' => $users->id,
@@ -96,6 +95,10 @@ class RosterController extends Controller
     public function editControllerForm($cid)
     {
         $roster = RosterMember::where('cid', $cid)->first();
+
+        if (! $roster) {
+            abort(404);
+        }
 
         return view('dashboard.roster.edituser', compact('roster'))->with('cid', $cid);
     }

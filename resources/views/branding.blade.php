@@ -4,7 +4,7 @@
 @section('content')
 <div class="container py-4">
     <h1 class="font-weight-bold blue-text">Branding</h1>
-    We kindly request that you maintain the images in their original, published state without making modifications. Resizing is acceptable, as long as the aspect ratio remains unaltered.
+    <p>We kindly request that you maintain the images in their original, published state without making modifications. Resizing is acceptable, as long as the aspect ratio remains unaltered</p>
     <hr>
     <h4 class="font-weight-bold blue-text">Horizontal Logos</h4>
     <div class="pt-1">
@@ -45,27 +45,30 @@
                 <a href="https://czvr.ca/storage/files/branding/czvr-bw-short-wordmark.png">Gray Short Wordmark</a>
             </div>
         </div>
+    </div>
 </div>
 
-<h4 class="font-weight-bold blue-text">Square Logos</h4>
-    <div class="pt-1">
-        <div class="row">
-            <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                <img style="background-color: #fffff; height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-logomark.png" class="img-fluid" alt="">
-                <br/>
-                <a href="https://czvr.ca/storage/files/branding/czvr-logomark.png">Color Logo</a>
-            </div>
-        
-        <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-            <img style="background-color: #ffffff; height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-logo-square.png" class="img-fluid" alt="">
-            <br/>
-            <a href="https://czvr.ca/storage/files/branding/czvr-logo-square.png">Color Logo Square</a>
-        </div>
+<div class="container py-4">
+    <h4 class="font-weight-bold blue-text">Square Logos</h4>
+        <div class="pt-1">
+            <div class="row">
+                <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
+                    <img style="background-color: #fffff; height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-logomark.png" class="img-fluid" alt="">
+                    <br/>
+                    <a href="https://czvr.ca/storage/files/branding/czvr-logomark.png">Color Logo</a>
+                </div>
 
-        <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                <img style="height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-bw-logomark.png" class="img-fluid" alt="">
+            <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
+                <img style="background-color: #ffffff; height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-logo-square.png" class="img-fluid" alt="">
                 <br/>
-                <a href="https://czvr.ca/storage/files/branding/czvr-bw-logomark.png">Gray Logo</a>
+                <a href="https://czvr.ca/storage/files/branding/czvr-logo-square.png">Color Logo Square</a>
+            </div>
+
+            <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
+                    <img style="height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-bw-logomark.png" class="img-fluid" alt="">
+                    <br/>
+                    <a href="https://czvr.ca/storage/files/branding/czvr-bw-logomark.png">Gray Logo</a>
+            </div>
         </div>
 </div>
 

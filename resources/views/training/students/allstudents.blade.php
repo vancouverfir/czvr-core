@@ -58,24 +58,30 @@
         color: red !important;
         font-size: 16px;
     }
+    #studentSearch::placeholder {
+        color: white;
+    }
 </style>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
-<div class="container swirly-background" style="margin-top: 20px;">
+<div class="container swirly-background" style="margin-top: 30px; margin-bottom: 30px">
     <div class="content">
-        <h1 class="font-weight-bold text-light">
-            Students
-            <a href="#" data-toggle="modal" data-target="#newStudent" class="text-primary" style="font-size: 18px; text-decoration: none; float: right;">
-                <i class="fa fa-plus mr-1"></i>Add New Student
-            </a>
-        </h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="font-weight-bold blue-text mb-0">Students</h1>
+            <h5><u><a href="#" id="toggleLabels" style="text-decoration: none; color: #fff;">Expand Labels</a></u></h5>
+        </div>
 
-        <hr class="bg-light">
-        <h5><u><a href="#" id="toggleLabels" style="text-decoration: none; color: #fff;">Expand Labels</a></u></h5>
+        <div class="form-group mb-2">
+            <input type="text" class="form-control" id="studentSearch" placeholder="Search Students...">
+        </div>
+        <div class="mb-4">
+            <a href="{{ route('training.students.completed') }}" class="blue-text" style="text-decoration: none; color: #fff;">
+                <small>View Completed Students</small>
+            </a>
+        </div>
 
         <div class="row">
             @foreach($lists as $index => $list)
@@ -83,7 +89,7 @@
                 <div class="card p-3 z-depth-1 shadow-none mb-3 rounded-card prechecks-card" style="min-height: 160px;">
                     <h5>
                         <i class="fa fa-circle fa-fw" style="color: {{$list->color}};"></i>&nbsp;
-                        {{$list->name}} ({{count($list->students)}})
+                        {{$list->name}} [{{count($list->students)}}]
                     </h5>
                     <div id="list-group-{{$index}}" class="list-group mt-3" style="max-height: 350px; overflow-y: auto;">
                         @if(count($list->students) == 0)
@@ -91,7 +97,7 @@
                         @else
                             @php($loopIndex = 1)
                             @foreach($list->students as $student)
-                                <a href="{{url('/dashboard/training/students/' . $student->student_id)}}" class="list-group-item rounded list-group-item-action waves-effect text-light" style="background-color: transparent; flex-shrink: 0;">
+                                <a href="{{url('/training/students/' . $student->student_id)}}" class="list-group-item rounded list-group-item-action waves-effect text-light" style="background-color: transparent; flex-shrink: 0;">
                                     <div class="d-flex flex-column">
                                         <div class="d-flex flex-wrap mb-1">
                                             @foreach($student->student->labels as $label)
@@ -118,67 +124,35 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var toggleButton = document.getElementById('toggleLabels');
-    function toggleLabels() {
-        var labelsHidden = document.querySelectorAll('.label-hidden');
-        var labelsExpanded = document.querySelectorAll('.label-expanded');
-        labelsHidden.forEach(function(label) {
-            label.style.display = label.style.display === 'none' ? 'inline-block' : 'none';
+    document.addEventListener('DOMContentLoaded', function() {
+        var toggleButton = document.getElementById('toggleLabels');
+        function toggleLabels() {
+            var labelsHidden = document.querySelectorAll('.label-hidden');
+            var labelsExpanded = document.querySelectorAll('.label-expanded');
+            labelsHidden.forEach(function(label) {
+                label.style.display = label.style.display === 'none' ? 'inline-block' : 'none';
+            });
+            labelsExpanded.forEach(function(label) {
+                label.style.display = label.style.display === 'none' ? 'inline-block' : 'none';
+            });
+            toggleButton.textContent = toggleButton.textContent === 'Hide Labels' ? 'Expand Labels' : 'Hide Labels';
+        }
+        toggleButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            toggleLabels();
         });
-        labelsExpanded.forEach(function(label) {
-            label.style.display = label.style.display === 'none' ? 'inline-block' : 'none';
-        });
-        toggleButton.textContent = toggleButton.textContent === 'Hide Labels' ? 'Expand Labels' : 'Hide Labels';
-    }
-    toggleButton.addEventListener('click', function(event) {
-        event.preventDefault();
-        toggleLabels();
-    });
-    $('#student_id').select2({
-        width: '100%',
-        placeholder: "Select a Student"
     });
 
-    $('#instructor').select2({
-        width: '100%',
-        placeholder: "Assign an Instructor",
-        allowClear: true
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('studentSearch');
+        searchInput.addEventListener('keyup', function () {
+            const query = this.value.toLowerCase();
+            document.querySelectorAll('.list-group-item').forEach(function (item) {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
     });
-});
 </script>
-
-<div class="modal fade" id="newStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add New Student</h5>       
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="{{ route('instructor.student.add.new') }}" class="form-group">
-                    @csrf
-                    <label class="form-control font-weight-bold">Search for a Student</label>
-                    <select name="student_id" id="student_id" class="js-example-basic-single form-control" style="width:100%;">
-                        <option value="">No Student</option>
-                        @foreach ($potentialstudent as $u)
-                            <option value="{{ $u->id }}">{{ $u->id }} - {{ $u->fullName('FL') }}</option>
-                        @endforeach
-                    </select>
-                    <label class="form-control font-weight-bold">Assign an Instructor?</label>
-                    <select name="instructor" id="instructor" class="js-example-basic-single form-control" style="width:100%;">
-                        <option value="">No Instructor</option>
-                        @foreach ($instructors as $i)
-                            <option value="{{ $i->id }}">{{ $i->user->id }} - {{ $i->user->fullName('FL') }}</option>
-                        @endforeach
-                    </select>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-success form-control" type="submit">Add Student</button>
-                <button class="btn btn-light" data-dismiss="modal" style="width:375px">Dismiss</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div><br>
 
 @stop

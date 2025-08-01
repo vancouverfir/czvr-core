@@ -19,6 +19,17 @@ class ChecklistSeeder extends Seeder
         ]);
 
         $unrestrictedItems = [
+            'Euroscope properly installed, latest version',
+            'Vancouver sector files installed, renamed and student is familiar with how to update the files and where to find them',
+            'Explain departure list and re organize list. List order should be DEP ACID TYPE TxRx FP TA FL DEST SID RWY C/S ASSA SSR STS Check list Scratch pad',
+            'How to bring a metar up on Euroscope',
+            'Private messaging Controllers and Planes',
+            'Different keyboard functions and where to find the list',
+            'Where to find the CZVR ALIAS File and ASR’s',
+            'How to save settings that are set up in Euroscope',
+            'vATIS set up with CZVR profile',
+            'Ensure TeamSpeak is set up and working correctly with push to talk',
+            'Audio for Vatsim / Track Audio working with push to talk',
             'Have student screen share to ensure all items are set up correctly.',
             'Review CZVR Knowledge check if student scored less than 80%',
             'Student is able to connect to the VATSIM network',
@@ -154,6 +165,7 @@ class ChecklistSeeder extends Seeder
         // -------------------------------------
         // S2 Unrestricted Supervised Checklist
         // -------------------------------------
+
         $s2 = Checklist::create([
             'name' => 'S2 Unrestricted Supervised',
         ]);
@@ -193,6 +205,7 @@ class ChecklistSeeder extends Seeder
         // -------------------------------
         // S2 Unrestricted Solo Checklist
         // -------------------------------
+
         $s2Solo = Checklist::create([
             'name' => 'S2 Unrestricted Solo',
         ]);
@@ -236,6 +249,7 @@ class ChecklistSeeder extends Seeder
         // ----------------------------------
         // S2 T2 Supervised (CYVR) Checklist
         // ----------------------------------
+
         $s2t2 = Checklist::create([
             'name' => 'S2 T2 Supervised (CYVR)',
         ]);
@@ -262,6 +276,7 @@ class ChecklistSeeder extends Seeder
         // ----------------------------
         // S2 T2 Solo (CYVR) Checklist
         // ----------------------------
+
         $s2t2Solo = Checklist::create([
             'name' => 'S2 T2 Solo (CYVR)',
         ]);
@@ -290,6 +305,7 @@ class ChecklistSeeder extends Seeder
         // -------------------------------------
         // S3 Unrestricted Supervised Checklist
         // -------------------------------------
+
         $s3Supervised = Checklist::create([
             'name' => 'S3 Unrestricted Supervised',
         ]);
@@ -314,6 +330,7 @@ class ChecklistSeeder extends Seeder
         // -------------------------------
         // S3 Unrestricted Solo Checklist
         // -------------------------------
+
         $s3Solo = Checklist::create([
             'name' => 'S3 Unrestricted Solo',
         ]);
@@ -335,6 +352,7 @@ class ChecklistSeeder extends Seeder
         // --------------------------------------
         // S3 T2 DEP Supervised (CYVR) Checklist
         // --------------------------------------
+
         $s3t2DepSupervised = Checklist::create([
             'name' => 'S3 T2 DEP Supervised (CYVR)',
         ]);
@@ -358,6 +376,7 @@ class ChecklistSeeder extends Seeder
         // --------------------------------------
         // S3 T2 TML Supervised (CYVR) Checklist
         // --------------------------------------
+
         $s3t2TmlSupervised = Checklist::create([
             'name' => 'S3 T2 TML Supervised (CYVR)',
         ]);
@@ -384,6 +403,7 @@ class ChecklistSeeder extends Seeder
         // --------------------------------
         // S3 T2 TML Solo (CYVR) Checklist
         // --------------------------------
+
         $s3t2TmlSolo = Checklist::create([
             'name' => 'S3 T2 TML Solo (CYVR)',
         ]);
@@ -407,6 +427,7 @@ class ChecklistSeeder extends Seeder
         // -------------------------------
         // C1 Centre Supervised Checklist
         // -------------------------------
+
         $c1CentreSupervised = Checklist::create([
             'name' => 'C1 Centre Supervised',
         ]);
@@ -433,6 +454,7 @@ class ChecklistSeeder extends Seeder
         // -------------------------
         // C1 Centre Solo Checklist
         // -------------------------
+
         $c1CentreSolo = Checklist::create([
             'name' => 'C1 Centre Solo',
         ]);
@@ -456,6 +478,7 @@ class ChecklistSeeder extends Seeder
         // ----------------------------
         // T2 FSS Supervised Checklist
         // ----------------------------
+
         $t2FssSupervised = Checklist::create([
             'name' => 'T2 FSS Supervised',
         ]);
@@ -476,6 +499,123 @@ class ChecklistSeeder extends Seeder
         foreach ($t2fssItems as $item) {
             ChecklistItem::create([
                 'checklist_id' => $t2FssSupervised->id,
+                'item' => $item,
+            ]);
+        }
+
+        // ------------------------------------
+        // VATCAN Controller - Unrestricted S3
+        // ------------------------------------
+
+        $vatcanUnrestrictedS3 = Checklist::create([
+            'name' => 'VATCAN Controller - Unrestricted S3',
+        ]);
+
+        $vatcanUnrestrictedS3Items = [
+            'Visiting Controller has been briefed on Initial scope set-up as required',
+            'Visiting Controller has been briefed on SIDs at CYYJ & CYLW',
+            'Visiting Controller has been briefed on PDC usage',
+            'Visiting Controller has been briefed on LOA procedures with CZEG/KZSE/PAZA from a DEL perspective',
+            'Visiting Controller has been briefed on Runway layout & taxiway restrictions at CYYJ',
+            'Visiting Controller has been briefed on Circuits at CYYJ & CYLW',
+            'Visiting Controller has been briefed on STARs at CYYJ',
+            'Visiting Controller has been briefed on Terrain/MVAs surrounding CYYJ, CYLW, and CYXX',
+            'Visiting Controller has been briefed on Familiarization of the location and names of airports within the CYYJ_APP airspace',
+            'Visiting Controller has been briefed on CYCD procedures with & without FSS online',
+            'Visiting Controller has been briefed on CYYJ_APP airspace dimensions',
+            'Visiting Controller has been briefed on CYQQ_APP airspace dimensions',
+            'Visiting Controller has been briefed on Any other information deemed pertinent by the instructor',
+            'Visiting Controller is supervised for no less than 30 minutes on the network AFTER the above items have been completed',
+        ];
+
+        foreach ($vatcanUnrestrictedS3Items as $item) {
+            ChecklistItem::create([
+                'checklist_id' => $vatcanUnrestrictedS3->id,
+                'item' => $item,
+            ]);
+        }
+
+        // ----------------------------------
+        // VATCAN Controller - Restricted S3
+        // ----------------------------------
+
+        $vatcanRestrictedS3 = Checklist::create([
+            'name' => 'VATCAN Controller - Restricted S3',
+        ]);
+
+        $vatcanRestrictedS3Items = [
+            'Visiting Controller has passed the CZVR S3 Visitor Tier 2 Endorsement Exam',
+            'Visiting Controller has been briefed on all the briefing items listed in the “VATCAN Controller - Unrestricted S3” Checklist',
+            'Visiting Controller has been briefed on CYVR SIDs',
+            'Visiting Controller has been briefed on CYVR taxiway layout including taxiway restrictions and uncontrolled taxiways',
+            'Visiting Controller has been briefed on CYVR gates/aprons/areas',
+            'Visiting Controller has been briefed on CYVR runway layout including Dependent and Independent Parallel Ops from both a TWR & APP perspective',
+            'Visiting Controller has been briefed on CYVR circuits',
+            'Visiting Controller has been briefed on CYVR noise abatement procedures',
+            'Visiting Controller has been briefed on CYVR APP/DEP airspace dimensions',
+            'Visiting Controller has been briefed on CYVR STARs',
+            'Visiting Controller has been briefed on CYVR MVAs',
+            'Visiting Controller has been briefed on Familiarization of the location and names of airports within the CYVR_APP airspace',
+            'Visiting Controller has been briefed on Any other information deemed pertinent by the instructor',
+            'Visiting Controller is supervised for no less than 30 minutes on the network AFTER the above items have been completed',
+        ];
+
+        foreach ($vatcanRestrictedS3Items as $item) {
+            ChecklistItem::create([
+                'checklist_id' => $vatcanRestrictedS3->id,
+                'item' => $item,
+            ]);
+        }
+
+        // -----------------------------------
+        // VATCAN Controller - Restricted C1+
+        // -----------------------------------
+
+        $vatcanRestrictedC1 = Checklist::create([
+            'name' => 'VATCAN Controller - Restricted C1+',
+        ]);
+
+        $vatcanRestrictedC1Items = [
+            'Visiting Controller has passed the CZVR C1 Visitor Tier 2 Endorsement Exam',
+            'Visiting Controller has been briefed on all the briefing items listed in the “VATCAN Controller - Unrestricted S3” & “VATCAN Controller - Restricted S3” Checklists',
+            'Visiting Controller has been briefed on Airspace and airport familiarization',
+            'Visiting Controller has been briefed on Initial descents into various airports (CYVR, CYYJ, CYLW, CYYC, PAKT, KSEA, other uncontrolled airports)',
+            'Visiting Controller has been briefed on LOA procedures with CZEG/KZSE/PAZA from a CTR perspective',
+            'Visiting Controller has been briefed on CYLW STARs',
+            'Visiting Controller has been briefed on Oceanic entry procedures',
+            'Visiting Controller has been briefed on Common overflight routes',
+            'Visiting Controller has been briefed on Any other information deemed pertinent by the instructor',
+        ];
+
+        foreach ($vatcanRestrictedC1Items as $item) {
+            ChecklistItem::create([
+                'checklist_id' => $vatcanRestrictedC1->id,
+                'item' => $item,
+            ]);
+        }
+
+        // ---------------------------------------------------
+        // Non-VATCAN Controller - Unrestricted S3 & C1+
+        // ---------------------------------------------------
+
+        $nonVatcan = Checklist::create([
+            'name' => 'Non-VATCAN Controller - Unrestricted S3 & Restricted C1+',
+        ]);
+
+        $nonVatcanItems = [
+            'Visiting Controller has completed the CZVR Entrance Knowledge Check',
+            'Visiting Controller has completed the CZVR Familiarization checks with sweatbox sessions for each position from DEL to TWR, covering procedural and phraseology items',
+            'Visiting Controller successfully completes the training goals outlined in APP.CYYJ.LP3 sweatbox',
+            'Visiting Controller has completed the CZVR Competency Check (2 hour “OTS-style” on CYYJ_APP within 90 days of joining FIR)',
+            'NOTE: Competency Check must be passed within 2 attempts in 90 days, regardless of familiarization training completion',
+            'Visiting Controller successfully completes all TWR and APP Tier 2 checklists including Tier 2 exams',
+            'Visiting Controller successfully completes the training goals outlined in CTR.CYVR.LP3',
+            'Visiting Controller has been briefed on all items listed in the S3 and C1+ VATCAN Checklists, if not already covered in sweatbox sessions',
+        ];
+
+        foreach ($nonVatcanItems as $item) {
+            ChecklistItem::create([
+                'checklist_id' => $nonVatcan->id,
                 'item' => $item,
             ]);
         }

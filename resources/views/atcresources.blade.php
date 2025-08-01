@@ -49,23 +49,23 @@
         @endforeach
     </div>
     <br/><br>
-    @if (Auth::check() && Auth::user()->permissions >= 4)
+    @if (Auth::check() && Auth::user()->permissions >= 3)
     <form method="POST" action="{{route('atcresources.upload')}}">
         @csrf
-        <h3>Add resource</h3>
+        <h3 class="blue-text">Add Resource</h3>
         <div class="form-group">
-            <label>Title</label>
-            <input required class="form-control" type="text" placeholder="Sector files 1903" name="title">
+            <p>Title</p>
+            <input required class="form-control" type="text" name="title">
         </div>
         <div class="form-group">
-            <label>Description</label>
+            <p>Description</p>
             <textarea id="descriptionField" name="description" cols="30" rows="10"></textarea>
             <script>
                 var simplemde = new SimpleMDE({ element: document.getElementById("descriptionField") });
             </script>
         </div>
         <div class="form-group">
-            <label>Link to Resource</label>
+            <p>Link to Resource</p>
             <input type="url" class="form-control" name="url">
         </div>
         <div class="form-group">

@@ -3,28 +3,27 @@
 
 @section('content')
 
-    <div class="container" style="margin-top: 20px;">
+    <div class="container" style="margin-top: 30px;">
         <h1 class="blue-text font-weight-bold">Training</h1>
-            <p>Vancouver FIR holds training to the highest standards, the training we provide is always extremely professional and precise and cultivate a culture of teaching and learning between all ratings.
-            Our most successful students are those who engage in the community and contribute their unique skills and perspectives.</p>
+            <p>Vancouver FIR holds training to the highest standards, the training we provide is always extremely professional, precise and cultivates a culture of teaching and learning between all ratings. Our most successful students are those who engage in the community and contribute their unique skills and perspectives!</p>
         <hr>
         <h3 class="font-weight-bold blue-text">Current Wait Time</h3>
         <div class="row" style="padding-left:8px">
             <h3 class="btn btn-{{$training_time->colour}}" style="color:white" data-toggle="modal" data-target="#waitTime"><b>Estimated Wait Time:</b> {{$training_time->wait_length}}</h3>
-                <div class="row" style="padding-left:8px">
-                    <h3 class="btn btn-primary" style="color:white" data-toggle="modal" data-target="#waitList"><b>Students On Waitlist:</b> {{count($waitlist)}}</h3>
-                    @if(Auth::check() && Auth::user()->permissions >= 4)
-                    <h3 class="btn btn-primary" data-toggle="modal" data-target="#waitEdit">Wait Time Editor</h3>
-                    @endif
-                </div>
+            <div class="row" style="padding-left:8px">
+                <h3 class="btn btn-primary" style="color:white" data-toggle="modal" data-target="#waitList"><b>Students On Waitlist:</b> {{count($waitlist)}}</h3>
+                @if(Auth::check() && Auth::user()->permissions >= 5)
+                <h3 class="btn btn-primary" data-toggle="modal" data-target="#waitEdit">Wait Time Editor</h3>
+                @endif
+            </div>
         </div>
         <hr>
         <div>
             <h3 class="font-weight-bold blue-text">Interested In Joining Vancouver?</h3>
-                <p>Come join the community of students, controllers and instructors in Vancouver today by clicking <a href="{{url('/join')}}">HERE.</a></p>
+            <p>Come join the community of students, controllers and instructors in Vancouver today by clicking <a href="{{url('/join')}}">HERE!</a></p>
         </div>
         <hr>
-            <p>Questions? <a href="{{route('staff')}}">Contact our Chief Instructor!</a></p>
+        <p>Questions? <a href="{{route('staff')}}">Contact our Chief Instructor!</a></p>
     </div>
 
 <!-- Start Waitlist modal -->
@@ -32,10 +31,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Our Waitlist</h5>
+                    <h5 class="modal-title">Waitlist!</h5>
                 </div>
                     <div class="modal-body">
-                    Our waitlist updates live whenever any students are added to our wait list. Check back here for updates on what our wait time, and our wait list is like!.
+                    Our waitlist updates live whenever any students are added! Check back here for updates on what our wait time, and our wait list is like!
                     </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" data-dismiss="modal">Dismiss</button>
@@ -53,7 +52,7 @@
                     <h5 class="modal-title">The Wait Time Calculation</h5>
                 </div>
                     <div class="modal-body">
-                    Our wait time tracker is calculated based on the FIR's current Instructor and Mentor numbers, as well as the amount of students in training and awaiting training.
+                        Our wait time tracker is calculated based on the FIR's current Instructor and Mentor numbers, as well as the amount of students in training and awaiting training!
                     </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" data-dismiss="modal">Dismiss</button>
@@ -63,7 +62,7 @@
     </div>
 <!-- End Wait Time modal -->
 
-@if(Auth::check() && Auth::user()->permissions >= 4)
+@if(Auth::check() && Auth::user()->permissions >= 5)
 
 <!-- Start Time Editor modal -->
     <div class="modal fade" id="waitEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

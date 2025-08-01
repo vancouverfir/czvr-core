@@ -30,7 +30,7 @@ class LabelListsSeeder extends Seeder
 
         $availabilityRequested = new StudentLabel([
             'name' => 'Availability Requested',
-            'fa_icon' => 'fa-solid fa-question',
+            'fa_icon' => 'fas fa-question',
             'color' => '#6A5ACD',
         ]);
         $availabilityRequested->save();
@@ -42,81 +42,88 @@ class LabelListsSeeder extends Seeder
         ]);
         $noResponse->save();
 
-        $readyForPickUp = new StudentLabel([
-            'name' => 'Ready For Pick-Up',
-            'fa_icon' => 'fa-solid fa-truck-pickup',
-            'color' => '#00E5FF',
-        ]);
-        $readyForPickUp->save();
-
-        $recertification = new StudentLabel([
-            'name' => 'Recertification',
-            'fa_icon' => 'fa-solid fa-chalkboard',
-            'color' => '#82B1FF',
-        ]);
-        $recertification->save();
-
-        $leaveOfAbsence = new StudentLabel([
-            'name' => 'Leave Of Absence',
-            'fa_icon' => 'fa fa-sign-out',
-            'color' => '#FFC107',
-        ]);
-        $leaveOfAbsence->save();
-
-        $visitorNonVATCAN = new StudentLabel([
-            'name' => 'Visitor Non-VATCAN',
-            'fa_icon' => 'fa-brands fa-pagelines',
-            'color' => '#FF6347',
-        ]);
-        $visitorNonVATCAN->save();
-
-        $visitorVATCAN = new StudentLabel([
-            'name' => 'Visitor VATCAN',
-            'fa_icon' => 'fa-brands fa-canadian-maple-leaf',
-            'color' => '#B22222',
-        ]);
-        $visitorVATCAN->save();
-
-        $S1Training = new StudentLabel([
-            'name' => 'S1 Training',
-            'fa_icon' => 'fa fa-mortar-board',
-            'color' => 'darkgreen',
-        ]);
-        $S1Training->save();
-
-        $S2Training = new StudentLabel([
-            'name' => 'S2 Training',
-            'fa_icon' => 'fa fa-mortar-board',
-            'color' => '#006400',
-        ]);
-        $S2Training->save();
-
-        $S3Training = new StudentLabel([
-            'name' => 'S3 Training',
-            'fa_icon' => 'fa fa-mortar-board',
-            'color' => '#43A047',
-        ]);
-        $S3Training->save();
-
-        $C1Training = new StudentLabel([
-            'name' => 'C1 Training',
-            'fa_icon' => 'fa fa-mortar-board',
-            'color' => '#1E90FF',
-        ]);
-        $C1Training->save();
-
         $inactive = new StudentLabel([
             'name' => 'Inactive',
-            'fa_icon' => 'fa fa-close',
+            'fa_icon' => 'fas fa-times',
             'color' => '#D3D3D3',
         ]);
         $inactive->save();
 
         $markedforRemoval = new StudentLabel([
             'name' => 'Marked for Removal',
-            'fa_icon' => 'fa-solid fa-user-slash',
+            'fa_icon' => 'fas fa-user-slash',
             'color' => '#FF0000',
         ]);
         $markedforRemoval->save();
+
+        $recertification = new StudentLabel([
+            'name' => 'Recertification',
+            'fa_icon' => 'fas fa-chalkboard',
+            'color' => '#82B1FF',
+        ]);
+        $recertification->save();
+
+        $leaveOfAbsence = new StudentLabel([
+            'name' => 'Leave Of Absence',
+            'fa_icon' => 'fas fa-sign-out-alt',
+            'color' => '#FFC107',
+        ]);
+        $leaveOfAbsence->save();
+
+        $visitorNonVATCAN = new StudentLabel([
+            'name' => 'Visitor Non-VATCAN',
+            'fa_icon' => 'fab fa-pagelines',
+            'color' => '#FF6347',
+        ]);
+        $visitorNonVATCAN->save();
+
+        $visitorVATCAN = new StudentLabel([
+            'name' => 'Visitor VATCAN',
+            'fa_icon' => 'fab fa-canadian-maple-leaf',
+            'color' => '#B22222',
+        ]);
+        $visitorVATCAN->save();
+
+        $S1Training = new StudentLabel([
+            'name' => 'S1 Training',
+            'fa_icon' => 'fas fa-graduation-cap',
+            'color' => '#006400',
+        ]);
+        $S1Training->save();
+
+        $S2Training = new StudentLabel([
+            'name' => 'S2 Training',
+            'fa_icon' => 'fas fa-graduation-cap',
+            'color' => '#007d00',
+        ]);
+        $S2Training->save();
+
+        $S3Training = new StudentLabel([
+            'name' => 'S3 Training',
+            'fa_icon' => 'fas fa-graduation-cap',
+            'color' => '#43A047',
+        ]);
+        $S3Training->save();
+
+        $VisitorS3Training = new StudentLabel([
+            'name' => 'Visitor S3 Training',
+            'fa_icon' => 'fas fa-graduation-cap',
+            'color' => '#388E3C',
+        ]);
+        $VisitorS3Training->save();
+
+        $C1Training = new StudentLabel([
+            'name' => 'C1 Training',
+            'fa_icon' => 'fas fa-user-graduate',
+            'color' => '#1E90FF',
+        ]);
+        $C1Training->save();
+
+        $VisitorC1Training = new StudentLabel([
+            'name' => 'Visitor C1 Training',
+            'fa_icon' => 'fas fa-user-graduate',
+            'color' => '#1C7ED6',
+        ]);
+        $VisitorC1Training->save();
     }
 }

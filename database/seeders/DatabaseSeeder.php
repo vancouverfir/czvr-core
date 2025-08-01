@@ -32,8 +32,8 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'fname' => 'System',
             'lname' => 'User',
-            'email' => 'no-reply@info.com',
-            'permissions' => 4,
+            'email' => 'exmaple@email.com',
+            'permissions' => 1,
             'display_fname' => 'System',
         ]);
 
@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
             'id' => 2,
             'fname' => 'Roster',
             'lname' => 'Placeholder',
-            'email' => 'no-reply@info.ca',
+            'email' => 'exmaple@email.com',
             'permissions' => 1,
             'display_fname' => 'Roster',
         ]);
@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
             ['position' => 'Departure'],
             ['position' => 'Arrival'],
             ['position' => 'Centre'],
-            ['position' => 'Relief']
+            ['position' => 'Relief'],
         );
 
         DB::table('homepage_images')->insert([
@@ -79,7 +79,20 @@ class DatabaseSeeder extends Seeder
             'credit' => 'Vancouver FIR',
         ]);
 
-        $this->call(\Database\Seeders\LabelListsSeeder::class);
-        $this->call(\Database\Seeders\ChecklistSeeder::class);
+        DB::table('training_waittimes')->insert([
+            'id' => 1,
+            'wait_length' => '1 Month',
+            'colour' => 'green',
+        ]);
+
+        DB::table('instructors')->insert([
+            'id' => 1,
+            'user_id' => 1,
+            'qualification' => 'ALL',
+            'email' => 'example@email.com',
+        ]);
+
+
+        $this->call([\Database\Seeders\LabelListsSeeder::class, \Database\Seeders\ChecklistsSeeder::class,]);
     }
 }

@@ -6,8 +6,8 @@
 
     <div class="container" style="margin-top: 20px;">
         <h1 class="blue-text font-weight-bold">Welcome to Vancouver.</h1>
-        <p>We're home to VATSIM's most modern training program, some of the best instructors around and a great controlling environment. Interested in joining? We're happy to help out.</p>
-		
+        <p>We're home to VATSIM's most modern training program, some of the best instructors around and a great controlling environment. Interested in joining? We're happy to help out!</p>
+
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			<li class="nav-item">
 				<a class="nav-link active font-weight-bold" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new" aria-selected="false">If You're New to VATSIM</a>
@@ -16,7 +16,7 @@
 				<a class="nav-link font-weight-bold" id="visit-tab" data-toggle="tab" href="#visit" role="tab" aria-controls="visit" aria-selected="false">If You Have a Home FIR/ARTCC/vACC</a>
 			</li>
 		</ul>
-		
+
 	<div class="card">
 		<div class="card-body">	
 			<div class="tab-content" id="myTabContent">
@@ -55,8 +55,8 @@
 						</div>
 					</div>
 					<br>
-					<p>Vancouver is always looking for controllers to visit our FIR. Whether it's for a change of scenery, to learn a new way of controlling, or just for fun, come visit Vancouver!</p>
-					<p>Members who are interested in visiting are now asked to visit the VATCAN.ca website to apply for visiting status.</p>
+					<p>Vancouver is always looking for controllers to visit our FIR! Whether it's for a change of scenery, to learn a new way of controlling, or just for fun, come visit Vancouver!</p>
+					<p>Members who are interested in visiting are now asked to visit the VATCAN.CA website to apply for visiting status!</p>
 					<a class="ml-0 btn btn-success" href="https://vatcan.ca/my/visit" target="_blank" rel="noopener noreferrer">Apply Now!</a>
 					</div>
 				</div>
@@ -65,7 +65,7 @@
 
 <br>
 <hr>
-	<h5 class="font-weight-bold blue-text">View our estimated wait time and more.</h5>
+	<h5 class="font-weight-bold blue-text">View our estimated wait time and more!</h5>
 	<div class="row" style="padding-left:8px">
 		<a class="btn btn-sm btn-primary" href="{{route('training')}}">Click HERE to learn more!</a>
 	</div>
