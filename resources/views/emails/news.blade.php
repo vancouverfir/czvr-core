@@ -4,7 +4,7 @@
 
 @section('message-content')
 <h2>{{$news->title}}</h2>
-{{$news->html()}}
+{{$news->toHtml('content')}}
 @endsection
 
 @section('from-line')
