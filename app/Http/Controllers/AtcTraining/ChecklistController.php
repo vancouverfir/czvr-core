@@ -5,9 +5,9 @@ namespace App\Http\Controllers\AtcTraining;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Checklist;
 use App\Models\AtcTraining\Student;
-use App\Models\AtcTraining\StudentLabel;
-use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentChecklistItem;
+use App\Models\AtcTraining\StudentInteractiveLabels;
+use App\Models\AtcTraining\StudentLabel;
 use Illuminate\Http\Request;
 
 class ChecklistController extends Controller
@@ -99,18 +99,18 @@ class ChecklistController extends Controller
                 default => null,
             };
 
-            if (!$checklistName) {
+            if (! $checklistName) {
                 return back()->with('error', 'No applicable Tier 2 checklist found for visitor!');
             }
 
             $checklist = Checklist::where('name', $checklistName)->first();
-            if (!$checklist) {
+            if (! $checklist) {
                 return back()->with('error', "Checklist not found: {$checklistName}");
             }
 
             $existingItemIds = $student->checklistItems->pluck('checklist_item_id');
             foreach ($checklist->items as $item) {
-                if (!$existingItemIds->contains($item->id)) {
+                if (! $existingItemIds->contains($item->id)) {
                     $student->checklistItems()->create([
                         'checklist_item_id' => $item->id,
                         'completed' => false,
@@ -123,9 +123,9 @@ class ChecklistController extends Controller
 
         $trainingOrder = ['S1 Training', 'S2 Training', 'S3 Training', 'C1 Training'];
 
-        $currentLabel = collect($trainingOrder)->first(fn($label) => in_array($label, $labelNames));
+        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
 
-        if (!$currentLabel) {
+        if (! $currentLabel) {
             return back()->with('error', 'No valid label found for T2 checklist assignment!');
         }
 
@@ -140,7 +140,7 @@ class ChecklistController extends Controller
         foreach ($checklistIds as $checklistId) {
             $checklist = Checklist::findOrFail($checklistId);
             foreach ($checklist->items as $item) {
-                if (!$existingItemIds->contains($item->id)) {
+                if (! $existingItemIds->contains($item->id)) {
                     $student->checklistItems()->create([
                         'checklist_item_id' => $item->id,
                         'completed' => false,
@@ -151,6 +151,7 @@ class ChecklistController extends Controller
 
         return back()->with('success', "T2 checklists assigned for {$currentLabel}!");
     }
+
     public function getT2ChecklistIdsByLabel($label)
     {
         $map = [
@@ -169,7 +170,7 @@ class ChecklistController extends Controller
     {
         $labelNames = $student->labels->pluck('label.name')->toArray();
 
-        if (!in_array('Visitor Waitlist', $labelNames)) {
+        if (! in_array('Visitor Waitlist', $labelNames)) {
             return back()->with('error', 'Student is not on Visitor Waitlist!');
         }
 
@@ -179,16 +180,16 @@ class ChecklistController extends Controller
         $checklistName = match (true) {
             $isVatcan && $rating === 'S3' => 'VATCAN Controller - Unrestricted S3',
             $isVatcan && $rating === 'C1' => 'VATCAN Controller - Restricted C1+',
-            !$isVatcan && in_array($rating, ['S3', 'C1']) => 'Non-VATCAN Controller - Unrestricted S3 & Restricted C1+',
+            ! $isVatcan && in_array($rating, ['S3', 'C1']) => 'Non-VATCAN Controller - Unrestricted S3 & Restricted C1+',
             default => null,
         };
 
-        if (!$checklistName) {
+        if (! $checklistName) {
             return back()->with('error', 'Unsupported rating or label combination for Visitor promotion!');
         }
 
         $checklist = Checklist::where('name', $checklistName)->first();
-        if (!$checklist) {
+        if (! $checklist) {
             return back()->with('error', "Checklist not found: {$checklistName}");
         }
 
@@ -222,9 +223,9 @@ class ChecklistController extends Controller
     {
         $labelNames = $student->labels->pluck('label.name')->toArray();
         $trainingOrder = ['Waitlist', 'S1 Training', 'S2 Training', 'S3 Training', 'C1 Training'];
-        $currentLabel = collect($trainingOrder)->first(fn($label) => in_array($label, $labelNames));
+        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
 
-        if (!$currentLabel) {
+        if (! $currentLabel) {
             return back()->with('error', 'No label assigned to student!');
         }
 

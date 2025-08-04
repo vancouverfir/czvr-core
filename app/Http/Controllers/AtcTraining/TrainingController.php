@@ -16,10 +16,7 @@ use App\Models\Publications\AtcResource;
 use App\Models\Users\User;
 use Auth;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class TrainingController extends Controller
 {
@@ -46,7 +43,9 @@ class TrainingController extends Controller
 
         $statusInfo = $student ? ($statusMap[$student->status] ?? $statusMap['default']) : null;
 
-        $labels = $student ? StudentLabel::cursor()->filter(function ($label) use ($student) {return ! StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists();}) : collect();
+        $labels = $student ? StudentLabel::cursor()->filter(function ($label) use ($student) {
+            return ! StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists();
+        }) : collect();
 
         $yourStudents = $instructor ? Student::where('instructor_id', $instructor->id)->get() : null;
 
@@ -81,7 +80,8 @@ class TrainingController extends Controller
         return view('training.indexinstructor', compact('yourStudents', 'soloreq', 'student', 'Visitors', 'waitlistPosition', 'studentChecklistGroups', 'training_time', 'statusInfo'));
     }
 
-    public function viewResources(){
+    public function viewResources()
+    {
         $atcResources = AtcResource::all()->sortBy('title');
 
         return view('training.resources', compact('atcResources'));
