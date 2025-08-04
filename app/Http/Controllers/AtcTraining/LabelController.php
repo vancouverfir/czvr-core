@@ -4,7 +4,6 @@ namespace App\Http\Controllers\AtcTraining;
 
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Student;
-use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
 use Illuminate\Http\Request;
 
@@ -17,7 +16,7 @@ class LabelController extends Controller
 
         if ($label->exclusive) {
             $existingExclusive = $student->labels
-                ->filter(fn($link) => $link->label->exclusive)
+                ->filter(fn ($link) => $link->label->exclusive)
                 ->first();
 
             if ($existingExclusive && $existingExclusive->label->id !== $label->id) {
@@ -40,8 +39,9 @@ class LabelController extends Controller
 
     public function updateStatus(Student $student)
     {
-        $newStatus = $student->labels->pluck('label.new_status')->reject(function ($value) {return is_null($value);})->max();
-
+        $newStatus = $student->labels->pluck('label.new_status')->reject(function ($value) {
+            return is_null($value);
+        })->max();
 
         if ($newStatus !== null) {
             $originalStatus = $student->status;
@@ -75,7 +75,7 @@ class LabelController extends Controller
             return back()->with('error', 'Label does not exist!');
         }
 
-        $currentExclusiveLabels = $student->labels->filter(fn($link) => $link->label->exclusive);
+        $currentExclusiveLabels = $student->labels->filter(fn ($link) => $link->label->exclusive);
 
         if ($labelToRemove->exclusive && $currentExclusiveLabels->count() <= 1) {
             return back()->with('error', 'Each student must have at least one exclusive label!');
