@@ -4,18 +4,30 @@ namespace App\Models\Events;
 
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Users\User;
-use Auth;
+use App\Traits\HasMarkdownFields;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\HtmlString;
-use Parsedown;
 
 class Event extends Model
 {
+    use HasMarkdownFields;
+
     protected $fillable = [
         'id', 'name', 'start_timestamp', 'end_timestamp', 'user_id', 'description', 'image_url', 'controller_applications_open', 'departure_icao', 'arrival_icao', 'slug',
     ];
+
+    /**
+     * Retrieve the list of fields that should be processed as Markdown.
+     * Required for HasMarkdownFields.
+     *
+     * @return array An array of field names that are treated as Markdown.
+     */
+    protected function getMarkdownFields(): array
+    {
+        return ['description'];
+    }
 
     public function user()
     {
@@ -172,11 +184,6 @@ class Event extends Model
         }
 
         return true;
-    }
-
-    public function html()
-    {
-        return new HtmlString(app(Parsedown::class)->text($this->description));
     }
 
     public function userHasApplied()

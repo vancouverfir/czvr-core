@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
             'shortform' => 'firchief',
         ]);
 
-        DB::table('event_positions')->insert(
+        DB::table('event_positions')->insert([
             ['position' => 'Delivery'],
             ['position' => 'Ground'],
             ['position' => 'Tower'],
@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
             ['position' => 'Arrival'],
             ['position' => 'Centre'],
             ['position' => 'Relief'],
-        );
+        ]);
 
         DB::table('homepage_images')->insert([
             'url' => 'https://czvr.ca/storage/files/branding/czvr-logomark.png',

@@ -4,16 +4,28 @@ namespace App\Models\Tickets;
 
 use App\Models\Users\StaffMember;
 use App\Models\Users\User;
+use App\Traits\HasMarkdownFields;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
-use Parsedown;
 
 class Ticket extends Model
 {
+    use HasMarkdownFields;
+
     protected $fillable = [
         'user_id', 'ticket_id', 'staff_member_id', 'staff_member_cid', 'title', 'message', 'status', 'submission_time',
     ];
+
+    /**
+     * Retrieve the list of fields that should be processed as Markdown.
+     * Required for HasMarkdownFields.
+     *
+     * @return array An array of field names that are treated as Markdown.
+     */
+    protected function getMarkdownFields(): array
+    {
+        return ['message'];
+    }
 
     public function replies()
     {
@@ -28,11 +40,6 @@ class Ticket extends Model
     public function staff_member()
     {
         return $this->belongsTo(StaffMember::class);
-    }
-
-    public function html()
-    {
-        return new HtmlString(app(Parsedown::class)->text($this->message));
     }
 
     public function updated_at_pretty()

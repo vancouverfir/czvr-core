@@ -5,7 +5,7 @@
 @section('message-content')
 <p>{{$ticket->user->fullName('FLC')}} has opened a ticket titled {{$ticket->title}} at {{$ticket->submission_time_pretty()}}.</p>
 <hr>
-{{$ticket->html()}}
+{{$ticket->toHtml('message')}}
 <hr>
 <a href="{{route('tickets.viewticket', $ticket->ticket_id)}}">View the ticket here.</a>
 @endsection
