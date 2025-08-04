@@ -34,18 +34,6 @@
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('dashboard/training/students/waitlist') }}" style="color:white" href="{{ route('training.students.waitlist') }}">Waitlist</a>
             </li>
-
-            {{--<li class="nav-item">
-                <a class="nav-link {{ Request::is('dashboard/training/applications/*') || Request::is('dashboard/training/applications') }}" href="{{route('training.applications')}}">
-                    Applications
-                    @if (count(\App\Models\AtcTraining\Application::where('status', 0)->get()) >= 1)
-                        <span class="badge-pill {{ Request::is('dashboard/training/applications/*') || Request::is('dashboard/training/applications') ? 'badge-light text-primary' : 'badge-primary' }}">{{count(\App\Models\AtcTraining\Application::where('status', 0)->get())}}</span>
-                    @endif
-                </a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link {{ Request::is('dashboard/training/cbt') }}" href="{{route('cbt.index')}}">CBT System</a> --}}
-            </li>
         </ul>
     </div>
 </nav>

@@ -44,8 +44,8 @@ class RenewalNotification extends Notification
         $renewalLink = route('training.renew', $this->student->renewal_token);
 
         return (new MailMessage)
-            ->subject('Renew Your Request for Training!')
-            ->view('emails.renewalnotification', ['student' => $this->student, 'renewalLink' => $renewalLink]);
+                    ->subject('Renew Your Request for Training!')
+                    ->view('emails.renewalnotification', ['student' => $this->student, 'renewalLink' => $renewalLink]);
     }
 
     /**

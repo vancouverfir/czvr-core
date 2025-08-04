@@ -27,7 +27,6 @@ class CreateStudentsTable extends Migration
             $table->dateTime('renewal_expires_at')->nullable();
             $table->dateTime('last_status_change')->nullable();
             $table->timestamps();
-            // $table->integer('accepted_application')->nullable();
         });
     }
 

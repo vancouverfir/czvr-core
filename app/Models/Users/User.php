@@ -49,11 +49,6 @@ class User extends Authenticatable
         return $this->hasMany(News\News::class);
     }
 
-    public function applications()
-    {
-        return $this->hasMany(AtcTraining\Application::class);
-    }
-
     public function eventApplications()
     {
         return $this->hasMany(Events\ControllerApplication::class);

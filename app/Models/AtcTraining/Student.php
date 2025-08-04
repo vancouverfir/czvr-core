@@ -2,8 +2,6 @@
 
 namespace App\Models\AtcTraining;
 
-use App\Models\AtcTraining\CBT\CbtModuleAssign;
-use App\Models\AtcTraining\CBT\ExamAssign;
 use App\Models\Users\User;
 use App\Notifications\CreateStudent;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +10,7 @@ use Illuminate\Support\Str;
 class Student extends Model
 {
     protected $fillable = [
-        'user_id', 'position', 'status', 'instructor_id', 'last_status_change', 'accepted_application', 'entry_type',
+        'user_id', 'times', 'position', 'status', 'instructor_id', 'renewal_token', 'renewed_at', 'renewal_expires_at', 'last_status_change',
     ];
 
     public function user()
@@ -30,11 +28,6 @@ class Student extends Model
         return $this->hasMany(SoloRequest::class);
     }
 
-    /* public function getApplicationAttribute()
-    {
-        return Application::whereId($this->accepted_application)->firstOrFail();
-    } */
-
     public function instructingSessions()
     {
         return $this->hasMany(InstructingSession::class);
@@ -43,16 +36,6 @@ class Student extends Model
     public function trainingNotes()
     {
         return $this->hasMany(StudentNote::class)->orderBy('created_at', 'desc');
-    }
-
-    public function exams()
-    {
-        return $this->HasMany(ExamAssign::class);
-    }
-
-    public function CbtModuleAssigns()
-    {
-        return $this->hasMany(CbtModuleAssign::class);
     }
 
     protected $casts = [

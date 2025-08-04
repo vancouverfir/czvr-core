@@ -43,8 +43,8 @@ class CreateStudent extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('You have been added as a Student!')
-            ->view('emails.createstudent', ['student' => $this->student]);
+                    ->subject('You have been added as a Student!')
+                    ->view('emails.createstudent', ['student' => $this->student]);
     }
 
     /**
