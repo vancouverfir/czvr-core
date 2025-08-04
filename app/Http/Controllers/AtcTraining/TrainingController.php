@@ -5,7 +5,6 @@ namespace App\Http\Controllers\AtcTraining;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Checklist;
 use App\Models\AtcTraining\Instructor;
-use App\Models\AtcTraining\InstructorStudents;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentInteractiveLabels;
@@ -15,7 +14,6 @@ use App\Models\AtcTraining\TrainingWaittime;
 use App\Models\Publications\AtcResource;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class TrainingController extends Controller
