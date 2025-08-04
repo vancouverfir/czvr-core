@@ -170,7 +170,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/emailpref', 'Users\DataController@emailPref')->name('dashboard.emailpref');
         Route::get('/emailpref/subscribe', 'Users\DataController@subscribeEmails');
         Route::get('/emailpref/unsubscribe', 'Users\DataController@unsubscribeEmails');
-
     });
     // '/me'
     Route::prefix('dashboard/me')->group(function () {
@@ -309,7 +308,6 @@ Route::group(['middleware' => 'mentor'], function () {
     Route::post('/training/students/{student}/promote', 'AtcTraining\ChecklistController@promoteStudent')->name('training.students.promote');
     Route::post('/training/students/{student}/promote-visitor', 'AtcTraining\ChecklistController@promoteVisitor')->name('training.students.promoteVisitor');
     Route::post('/students/{student}/assign-t2', 'AtcTraining\ChecklistController@assignT2Checklist')->name('training.students.assignT2');
-
 });
 
 //Students and Instructors
