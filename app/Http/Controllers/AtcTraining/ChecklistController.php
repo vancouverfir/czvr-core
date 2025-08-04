@@ -14,7 +14,6 @@ class ChecklistController extends Controller
 {
     public function assignChecklist(Request $request, Student $student)
     {
-        // Validate the request
         $request->validate([
             'checklist_id' => 'required|exists:checklists,id',
         ]);
@@ -214,7 +213,7 @@ class ChecklistController extends Controller
             'student_label_id' => $nextLabel->id,
         ]);
 
-        (new LabelController)->updateStudentStatusBasedOnLabels($student->refresh());
+        (new LabelController)->updateStatus($student->refresh());
 
         return back()->with('success', "Visitor promoted to {$nextLabelName} with checklist assigned!");
     }
@@ -265,7 +264,7 @@ class ChecklistController extends Controller
 
         $labelController = new LabelController();
 
-        $labelController->updateStudentStatusBasedOnLabels($student->refresh());
+        $labelController->updateStatus($student->refresh());
 
         return back()->with('success', "Student promoted to {$nextLabelName} and checklists assigned!");
     }

@@ -15,99 +15,77 @@ class LabelController extends Controller
         $student = Student::with('labels.label')->findOrFail($student_id);
         $label = StudentLabel::findOrFail($request->get('student_label_id'));
 
-        $trainingLabels = ['S1 Training', 'S2 Training', 'S3 Training', 'C1 Training', 'Waitlist', 'Visitor Waitlist', 'Visitor S3 Training', 'Visitor C1 Training'];
+        if ($label->exclusive) {
+            $existingExclusive = $student->labels
+                ->filter(fn($link) => $link->label->exclusive)
+                ->first();
 
-        if (in_array($label->name, $trainingLabels)) {
-            $existingTraining = $student->labels->first(function ($labelLink) use ($trainingLabels) {
-                return in_array($labelLink->label->name ?? '', $trainingLabels);
-            });
-
-            if ($existingTraining && $existingTraining->label->id !== $label->id) {
-                $existingTraining->delete();
+            if ($existingExclusive && $existingExclusive->label->id !== $label->id) {
+                $existingExclusive->delete();
             }
         }
 
-        if (StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists()) {
-            return back()->with('error', "Label {$label->name} already assigned.");
+        if ($student->labels->contains('student_label_id', $label->id)) {
+            return back()->with('error', "Label {$label->name} already assigned!");
         }
 
-        StudentInteractiveLabels::create([
-            'student_id' => $student->id,
+        $student->labels()->create([
             'student_label_id' => $label->id,
         ]);
 
-        $this->updateStudentStatusBasedOnLabels($student->refresh());
+        $this->updateStatus($student->refresh());
 
-        return redirect()->back()->with('success', 'Label Added!');
+        return back()->with('success', 'Label added!');
     }
 
-    public function updateStudentStatusBasedOnLabels(Student $student)
+    public function updateStatus(Student $student)
     {
-        $labelNames = $student->labels->pluck('label.name')->filter();
+        $newStatus = $student->labels->pluck('label.new_status')->reject(function ($value) {return is_null($value);})->max();
 
-        $statusMap = [
-            5 => ['Visitor S3 Training', 'Visitor C1 Training'],
-            4 => ['Inactive', 'Marked for Removal'],
-            3 => ['Visitor Waitlist'],
-            1 => ['S1 Training', 'S2 Training', 'S3 Training', 'C1 Training'],
-            0 => ['Waitlist'],
-        ];
 
-        $originalStatus = $student->status;
+        if ($newStatus !== null) {
+            $originalStatus = $student->status;
+            $student->status = $newStatus;
 
-        foreach ($statusMap as $status => $labels) {
-            if ($labelNames->intersect($labels)->isNotEmpty()) {
-                $newStatus = $status;
-                break;
+            if (
+                $student->status !== $originalStatus &&
+                in_array($student->status, [0, 3])
+            ) {
+                $lastPosition = Student::where('status', $student->status)->max('position') ?? 0;
+                $student->position = $lastPosition + 1;
+                $student->checklistItems()->delete();
             }
+
+            $student->save();
         }
-
-        $student->status = $newStatus;
-
-        if (
-            $student->status !== $originalStatus &&
-            in_array($student->status, [0, 3])
-        ) {
-            $lastPosition = Student::where('status', $student->status)->max('position') ?? 0;
-            $student->position = $lastPosition + 1;
-            $student->checklistItems()->delete();
-        }
-
-        $student->save();
     }
 
-    public function dropLabel($id, $student_label_id)
+    public function dropLabel($student_id, $student_label_id)
     {
-        $student = Student::with('labels.label')->findOrFail($id);
+        $student = Student::with('labels.label')->findOrFail($student_id);
         $link = $student->labels->firstWhere('student_label_id', $student_label_id);
 
         if (! $link) {
-            return redirect()->back()->with('error', 'Label not found for this student!');
+            return back()->with('error', 'Label not found for this student!');
         }
 
         $labelToRemove = $link->label;
 
         if (! $labelToRemove) {
-            return redirect()->back()->with('error', 'Label does not exist!');
+            return back()->with('error', 'Label does not exist!');
         }
 
-        $listLabels = [
-            'S1 Training', 'S2 Training', 'S3 Training', 'C1 Training', 'Inactive', 'Marked for Removal', 'Waitlist', 'Visitor Waitlist', 'Visitor S3 Training', 'Visitor C1 Training',
-        ];
+        $currentExclusiveLabels = $student->labels->filter(fn($link) => $link->label->exclusive);
 
-        $currentListLabels = $student->labels->filter(function ($labelLink) use ($listLabels) {
-            return in_array($labelLink->label->name ?? '', $listLabels);
-        });
-
-        if (in_array($labelToRemove->name, $listLabels) && $currentListLabels->count() <= 1) {
-            return redirect()->back()->with('error', 'Each student must have at least one list label!');
+        if ($labelToRemove->exclusive && $currentExclusiveLabels->count() <= 1) {
+            return back()->with('error', 'Each student must have at least one exclusive label!');
         }
 
         $link->delete();
 
         $student->load('labels.label');
-        $this->updateStudentStatusBasedOnLabels($student);
+        $this->updateStatus($student);
 
-        return redirect()->back()->with('success', 'Label Removed!');
+        return back()->with('success', 'Label removed!');
     }
 }

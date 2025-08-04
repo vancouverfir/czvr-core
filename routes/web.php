@@ -120,7 +120,6 @@ Route::group(['middleware' => 'auth'], function () {
         //Assigning Instructor
         Route::prefix('instructor')->group(function () {
             Route::post('/add', 'AtcTraining\TrainingController@assignStudent')->name('instructor.student.add');
-            Route::post('/add', 'AtcTraining\TrainingController@newStudent')->name('instructor.student.add.new');
             Route::get('/delete/{id}', 'AtcTraining\TrainingController@deleteStudent')->name('instructor.student.delete');
         });
     });
@@ -349,7 +348,7 @@ Route::get('/training', 'AtcTraining\TrainingController@index')->name('training.
 Route::post('/trainingtimes', 'AtcTraining\TrainingController@editTrainingTime')->middleware('staff')->name('waittime.edit');
 Route::group(['middleware' => 'mentor'], function () {
     //Vatcan
-    Route::get('/training/students/{id}/notes/create', 'AtcTraining\VatcanController@createVatcan')->name('vatcan.notes.createvatcan');
+    //    Route::get('/training/students/{id}/notes/create', 'AtcTraining\VatcanController@createVatcan')->name('vatcan.notes.createvatcan');
     //    Route::post('/training/students/{id}/notes', 'AtcTraining\VatcanController@newVatcan')->name('vatcan.notes.new');
 
     //Label
@@ -359,11 +358,13 @@ Route::group(['middleware' => 'mentor'], function () {
     //AtcTraining
     Route::get('/training/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
     Route::get('/training/students', 'AtcTraining\TrainingController@AllStudents')->name('training.students.students');
+    Route::post('/add', 'AtcTraining\TrainingController@newStudent')->name('instructor.student.add.new');
     Route::get('/training/students/completed', 'AtcTraining\TrainingController@completedStudents')->name('training.students.completed');
     Route::get('/training/students/waitlist', 'AtcTraining\TrainingController@newStudents')->name('training.students.waitlist');
     Route::get('/training/students/{id}', 'AtcTraining\TrainingController@viewStudent')->name('training.students.view');
     Route::post('/training/students/{id}/assigninstructor', 'AtcTraining\TrainingController@assignInstructorToStudent')->name('training.students.assigninstructor');
     Route::post('/dashboard/trainingnotes/add/{id}', 'AtcTraining\TrainingController@addNote')->name('add.trainingnote');
+    Route::get('/dashboard/trainingnotes/create/{id}', 'AtcTraining\TrainingController@newNoteView')->name('view.add.note');
     Route::post('/training/solorequest/{id}', 'AtcTraining\TrainingController@soloRequest')->name('training.solo.request');
     Route::post('/waitlist/sort', 'AtcTraining\TrainingController@sort')->name('waitlist.sort');
     Route::post('/visitor-waitlist/sort', 'AtcTraining\TrainingController@sortVisitor')->name('visitor.sort');
@@ -385,7 +386,6 @@ Route::group(['middleware' => 'mentor'], function () {
     Route::get('/training/sessions/create', 'AtcTraining\TrainingController@createInstructingSession')->name('training.instructingsessions.createsession');
     Route::get('/dashboard/trainingnotes/{id}', 'AtcTraining\TrainingController@viewNote')->name('trainingnote.view');
     Route::get('/dashboard/trainingnotes/{id}/delete', 'AtcTraining\TrainingController@delete')->name('trainingnotes.delete');
-    Route::get('/dashboard/trainingnotes/create/{id}', 'AtcTraining\TrainingController@newNoteView')->name('view.add.note');
     */
 });
 

@@ -9,7 +9,7 @@
 <style>
     .instructor:hover {
     color: #2ca32c;
-}
+    }
 
     #training-notes-container {
     max-height: 545px;
@@ -52,7 +52,7 @@
                     @elseif (!$student->instructor && auth()->user()->permissions >= 3)
                         <h7 class="instructor" style="color: #2cb82c; cursor: pointer" data-toggle="modal" data-target="#assignInstructorModal">Assign Instructor</h7>
                     @elseif ($student->instructor)
-                        <h5 class="instructor list-group-item" style="background-color: transparent; border: none;">
+                        <h5 class="list-group-item" style="background-color: transparent; border: none;">
                             <img src="{{ $student->instructor->user->avatar() }}" style="height: 27px; width: 27px; margin-right: 5px; border-radius: 70%;">
                             {{ $student->instructor->user->fullName('FLC') }}
                         </h5>

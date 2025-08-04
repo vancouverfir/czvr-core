@@ -175,10 +175,10 @@
                             </select>
                         </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn btn-success form-control" type="submit">Add Student</button>
-                    <button class="btn btn-light" data-dismiss="modal" style="width:375px">Dismiss</button>
-                </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success form-control" type="submit">Add Student</button>
+                        <button class="btn btn-light" data-dismiss="modal" style="width:375px">Dismiss</button>
+                    </div>
                 </form>
         </div>
     </div>

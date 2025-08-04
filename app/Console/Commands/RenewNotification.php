@@ -55,18 +55,23 @@ class RenewNotification extends Command
             ->get();
 
         foreach ($expiredStudents as $student) {
-            $label = StudentLabel::where('name', 'Marked for Removal')->first();
-            if ($label) {
+            $labels = StudentLabel::where('new_status', 4)->get();
+
+            foreach ($labels as $label) {
                 StudentInteractiveLabels::create([
                     'student_label_id' => $label->id,
                     'student_id' => $student->id,
                 ]);
             }
+            StudentInteractiveLabels::create([
+                'student_label_id' => 10,
+                'student_id' => $student->id,
+            ]);
             StudentNote::create([
                 'student_id' => $student->id,
                 'author_id' => 1,
                 'title' => 'Renewal Failed',
-                'content' => 'Student did not respond in time and has been marked for removal',
+                'content' => 'Student did not respond in time and has been marked for removal!',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);

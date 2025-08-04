@@ -11,8 +11,11 @@ class CreateStudentLabelTable extends Migration
         Schema::create('student_label', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('fa_icon')->nullable();
-            $table->string('color')->nullable();
+            $table->string('fa_icon');
+            $table->string('color');
+            $table->boolean('visible_home')->default(0);
+            $table->boolean('exclusive')->default(0);
+            $table->unsignedTinyInteger('new_status')->nullable();
             $table->timestamps();
         });
     }

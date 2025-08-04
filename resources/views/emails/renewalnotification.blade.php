@@ -4,8 +4,9 @@
 
 
 @section('message-content')
-    <h1>Your training request is set to expire! Please renew your training request by clicking the link below!</h1><br/>
-    <p><a href="{{ $renewalLink }}" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:#fff; text-decoration:none; border-radius:4px;">Renew Training</a></p><br/><br/>
+    <h1>Your training request is set to expire!</h1><br/>
+    <p>Please renew your training request by clicking the link below!</p><br/>
+    <p><a href="{{ $renewalLink }}" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:#fff; text-decoration:none; border-radius:4px; margin-bottom: 30px;">Renew Training</a></p><br/>
     <p>If you believe there is an error, or have any questions, please do not hesitate to open up a support ticket.</p>
 @stop
 

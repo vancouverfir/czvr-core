@@ -107,12 +107,12 @@ class VatcanController extends Controller
                 return back()->withErrors('Failed to create training note!');
             }
         }
+
+        public function createVatcan($studentId)
+        {
+            $student = Student::findOrFail($studentId);
+
+            return view('training.createvatcan', compact('student'));
+        }
     */
-
-    public function createVatcan($studentId)
-    {
-        $student = Student::findOrFail($studentId);
-
-        return view('training.createvatcan', compact('student'));
-    }
 }

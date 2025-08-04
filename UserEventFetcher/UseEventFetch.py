@@ -362,7 +362,7 @@ def trim_roster():
     """
     Cleans up the roster and returns a list of players
     """
-    print("Cleaning up roster")
+    print("Cleaning up roster!")
     cur = connectSQL.cursor()
     bye = connectSQL.cursor()
     cur.execute("SELECT cid FROM roster")
@@ -377,10 +377,9 @@ def trim_roster():
                 "UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
             print("Invalid CID Removed from DB... BUH BYE")
 
-
 async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_join, rating_short):
     """
-    Stores new users in the roster.
+    Stores new users in the roster or updates existing ones
     """
     print(f"Stowing user {cid} in DB...")
 
@@ -393,41 +392,28 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
         permissions = row[0] if row else None
 
         if permissions is not None:
-            print(f"Permissions for {cid}: {permissions}")
-            # Existing user
-            if permissions > 0:
-                # Update existing user
-                cur.execute("""
-                    UPDATE users 
-                    SET email=?, lname=?, rating_id=?, rating_short=?, visitor='0' 
-                    WHERE id=?
-                """, (email, lname, rating_id, rating_short, cid))
+            print(f"User {cid} exists with permissions: {permissions}")
+            # Update existing user
+            cur.execute("""
+                UPDATE users 
+                SET email=?, lname=?, rating_id=?, rating_short=?, visitor='0'
+                WHERE id=?
+            """, (email, lname, rating_id, rating_short, cid))
 
-                cur.execute("""
-                    UPDATE roster 
-                    SET full_name=?, visit='0' 
-                    WHERE user_id=?
-                """, (fullname, cid))
+            # Update roster
+            cur.execute("""
+                UPDATE roster
+                SET full_name=?, visit='0'
+                WHERE user_id=?
+            """, (fullname, cid))
 
-                # Ensure roster status is 'home'
-                cur.execute("SELECT status FROM roster WHERE cid=?", (cid,))
-                status_row = cur.fetchone()
-                if status_row is None or status_row[0] == 'visit':
-                    cur.execute("UPDATE roster SET status='home' WHERE cid=?", (cid,))
-            else:
-                # Limited permissions, still update
-                cur.execute("""
-                    UPDATE roster 
-                    SET full_name=?, visit='0' 
-                    WHERE user_id=?
-                """, (fullname, cid))
-                cur.execute("""
-                    UPDATE users 
-                    SET email=?, lname=?, rating_id=?, rating_short=?, permissions='1', visitor='0' 
-                    WHERE id=?
-                """, (email, lname, rating_id, rating_short, cid))
+            # Ensure roster status is 'home'
+            cur.execute("UPDATE roster SET status='home' WHERE cid=? AND (status='visit' OR status IS NULL)", (cid,))
+            if permissions == 0:
+                cur.execute("UPDATE users SET permissions='1' WHERE id=?", (cid,))
+
         else:
-            print(f"User {cid} not in DB. Proceeding to insert.")
+            print(f"User {cid} not in DB. Inserting new user!")
             # Insert new user
             cur.execute("""
                 INSERT INTO users (id, email, fname, lname, rating_id, rating_short, permissions, display_fname)
@@ -441,18 +427,13 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
 
         # Update staff roles based on permissions
         if permissions:
-            role_map = {
-                2: 'mentor',
-                3: 'ins',
-                4: 'staff',
-                5: 'exec',
-            }
+            role_map = {2: 'mentor', 3: 'ins', 4: 'staff', 5: 'exec'}
             staff_role = role_map.get(permissions)
             if staff_role:
                 print(f"Assigning staff role '{staff_role}' to {cid}")
                 cur.execute("UPDATE roster SET staff=? WHERE cid=?", (staff_role, cid))
 
-        # Check certifications
+        # Update if no certifications
         cur.execute("""
             SELECT delgnd, delgnd_t2, twr, twr_t2, dep, app, app_t2, ctr, fss
             FROM roster WHERE cid=?
@@ -460,151 +441,134 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
         certs = cur.fetchone()
 
         if certs and all(c == 0 for c in certs):
-            # Check if user already a student
             cur.execute("SELECT COUNT(*) FROM students WHERE user_id=?", (cid,))
             is_student = cur.fetchone()[0]
 
             if is_student == 0:
+                print(f"Adding user {cid} to students table!")
                 cur.execute("""
-                    INSERT INTO students (user_id, status, entry_type, created_at, updated_at)
-                    VALUES (?, 0, 'Student', ?, CURRENT_TIMESTAMP)
-                """, (cid, facility_join))
+                    INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, renewal_expires_at, last_status_change, created_at, updated_at)
+                    VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
+                """, (cid, 0, facility_join))
                 student_id = cur.lastrowid
 
                 # Add waitlist label
                 cur.execute("""
                     INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
-                    VALUES (1, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                """, (student_id,))
+                    VALUES
+                        (8, ?, UTC_TIMESTAMP, UTC_TIMESTAMP),
+                        (1, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
+                """, (student_id, student_id,))
 
                 # Add system note
                 cur.execute("""
                     INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
                     VALUES (?, 1, 'Created', CONCAT('Student created automatically by System at ', NOW()), NOW(), NOW())
                 """, (student_id,))
-                print(f"User {cid} added as student with waitlist label!")
-    except mariadb.Error as db_error:
-        print(f"DB Error: {db_error}")
-        send_webhook(f"DB Error for user {cid}: {db_error}")
-        sys.exit(1)
+                print(f"Created user {cid} !")
+
     except Exception as e:
-        print(f"Unexpected error: {e}")
-        send_webhook(f"Unexpected error for user {cid}: {e}")
+        print(f"Error processing user {cid}: {e}")
+        send_webhook(f"Error for user {cid}: {e}")
         sys.exit(1)
     finally:
-        print(f"Completed User {cid}.")
+        print(f"Completed User {cid}!")
 
 
 async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facility_join, rating_short):
     """
-    Stores a new visiting user in the visit roster.
+    Stores new visiting users or updates existing ones as visitors
     """
     print(f"Processing visiting user {cid}...")
-
     try:
         cur = connectSQL.cursor()
 
-        # Check if user exists and get permissions
         cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
         row = cur.fetchone()
         permissions = row[0] if row else None
 
         if permissions is not None:
             print(f"User {cid} exists with permissions: {permissions}")
-
-            # Update existing user
+            # Update user as visitor
             cur.execute("""
                 UPDATE users 
                 SET email=?, lname=?, rating_id=?, rating_short=?, visitor='1'
                 WHERE id=?
             """, (email, lname, rating_id, rating_short, cid))
 
-            # Update roster to reflect visit
+            # Update roster as visit
             cur.execute("""
                 UPDATE roster 
                 SET full_name=?, visit='1', status='visit'
                 WHERE user_id=?
             """, (fullname, cid))
 
-            # If permissions are 0, bump to 1
+            # If permissions were 0, bump to 1
             if permissions == 0:
-                cur.execute("""
-                    UPDATE users 
-                    SET permissions='1'
-                    WHERE id=?
-                """, (cid,))
+                cur.execute("UPDATE users SET permissions='1' WHERE id=?", (cid,))
+
         else:
             print(f"User {cid} not in DB. Inserting new visitor.")
-
-            # Insert new user
+            # Insert new visitor
             cur.execute("""
                 INSERT INTO users (id, email, fname, lname, rating_id, rating_short, permissions, display_fname, visitor)
                 VALUES (?, ?, ?, ?, ?, ?, '1', ?, '1')
             """, (cid, email, fname, lname, rating_id, rating_short, fname))
 
-            # Insert into roster as visitor
             cur.execute("""
                 INSERT INTO roster (cid, user_id, full_name, status, active, visit)
                 VALUES (?, ?, ?, 'visit', '1', '1')
             """, (cid, cid, fullname))
 
-        # Check certifications: if all zero, add to students table as Visitor
+        # Update if no certifications
         cur.execute("""
             SELECT delgnd, delgnd_t2, twr, twr_t2, dep, app, app_t2, ctr, fss
-            FROM roster WHERE cid=? AND visit='1'
+            FROM roster WHERE cid=?
         """, (cid,))
         certs = cur.fetchone()
 
         if certs and all(c == 0 for c in certs):
-            # Check if already student
             cur.execute("SELECT COUNT(*) FROM students WHERE user_id=?", (cid,))
             is_student = cur.fetchone()[0]
 
             if is_student == 0:
-                print(f"Adding user {cid} to students table as Visitor...")
+                print(f"Adding user {cid} to visitor students table!")
                 cur.execute("""
-                    INSERT INTO students (user_id, status, entry_type, created_at, updated_at)
-                    VALUES (?, 3, 'Visitor', ?, CURRENT_TIMESTAMP)
-                """, (cid, facility_join))
+                    INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, renewal_expires_at, last_status_change, created_at, updated_at)
+                    VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
+                """, (cid, 3, facility_join))
                 student_id = cur.lastrowid
 
-                # Determine division_code to pick label
-                cur.execute("""
-                    SELECT division_code FROM users WHERE id=?
-                """, (cid,))
-                division_row = cur.fetchone()
-                division_code = division_row[0] if division_row else None
-
-                if division_code:
-                    vat_label = 10 if division_code == 'CAN' else 9
-                    cur.execute("""
-                        INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
-                        VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                    """, (vat_label, student_id))
-
-                # Add Visitor label (always)
+                # Add Visitor label
                 cur.execute("""
                     INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
-                    VALUES (2, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                """, (student_id,))
+                    VALUES
+                        (9, ?, UTC_TIMESTAMP, UTC_TIMESTAMP),
+                        (1, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
+                """, (student_id, student_id,))
+
+                # Division Code
+                cur.execute("SELECT division_code FROM users WHERE id=?", (cid,))
+                division_row = cur.fetchone()
+                division_code = division_row[0] if division_row else None
+                vat_label = 17 if division_code == 'CAN' else 16
+                cur.execute("""
+                    INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
+                    VALUES (?, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
+                """, (vat_label, student_id))
 
                 # Add system note
                 cur.execute("""
                     INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
                     VALUES (?, 1, 'Created', CONCAT('Student created automatically by System at ', NOW()), NOW(), NOW())
                 """, (student_id,))
-                print(f"User {cid} added as student with Visitor label.")
-    except mariadb.Error as db_error:
-        print(f"DB Error while processing visitor {cid}: {db_error}")
-        send_webhook(f"Visitor DB Error for user {cid}: {db_error}")
-        sys.exit(1)
+
     except Exception as e:
-        print(f"Unexpected error for visitor {cid}: {e}")
-        send_webhook(f"Unexpected error for visitor {cid}: {e}")
+        print(f"Error processing visiting user {cid}: {e}")
+        send_webhook(f"Visitor error for user {cid}: {e}")
         sys.exit(1)
     finally:
-        print(f"Finished processing visiting user {cid}.")
-
+        print(f"Finished processing visiting user {cid}!")
 
 def reset_activity():
     """

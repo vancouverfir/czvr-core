@@ -11,7 +11,7 @@
 @include('includes.trainingMenu')
 
 <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
-    <a class="blue-text" href="{{ route('training.students.view', $student->id) }}" style="font-size: 1.2em;">
+    <a href="javascript:void(0);" onclick="history.back();" class="blue-text" style="font-size: 1.2em;">
         <i class="fas fa-arrow-left"></i> Student
     </a>
 

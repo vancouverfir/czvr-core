@@ -89,16 +89,19 @@
                         </div>
                         <h5 class="mt-3 font-weight-bold">Instructor</h5>
                         @if ($student->instructor)
-                        <div class="d-flex flex-column w-50 align-items-left">
-                        <h5 class="list-group-item" style="background-color: transparent; border: none;">
-                            <img src="{{$student->instructor->user->avatar()}}" style="height: 27px; width: 27px; margin-right: 5px; border-radius: 70%;"> {{$student->instructor->user->fullName('FLC')}}
-                        </h5>
-                        </div>
+                            <div class="d-flex flex-column w-50 align-items-left">
+                                <h5 class="list-group-item" style="background-color: transparent; border: none;">
+                                    <img src="{{$student->instructor->user->avatar()}}" style="height: 27px; width: 27px; margin-right: 5px; border-radius: 70%;"> {{$student->instructor->user->fullName('FLC')}}
+                                </h5>
+                            </div>
                         @else
                             <span>No Instructor Assigned!</span>
                         @endif
-                        <h5 class="mt-3 font-weight-bold">Availability</h5>
-                        <span>{{$student->times ?? 'Not yet submitted!'}}</span>
+
+                        @if (in_array($student->status, [0, 3]))
+                            <h5 class="mt-3 font-weight-bold">Availability</h5>
+                            <span>{{$student->times ?? 'Not yet submitted!'}}</span>
+                        @endif
                     </div>
                 </div>
 
@@ -162,36 +165,34 @@
             <div class="card-body">
                 <h3 class="font-weight-bold blue-text text-primary mb-3">Info</h3>
 
-                <span class="btn btn-sm btn-{{ $statusInfo['class'] }} mb-3" style="cursor: default;">
-                    <span class="h5 mb-0">{{ $statusInfo['label'] }}</span>
-                </span>
+                @if ($student->status == 3)
+                    <p>There are currently <strong>{{ $Visitors }}</strong> visitors total!</p>
 
-                @if (!empty($statusInfo['showWaitlist']))
-                    @if ($student->status == 3)
-                        <p>There are currently <strong>{{ $Visitors }}</strong> visitors total!</p>
-                    @elseif ($waitlistPosition)
+                @elseif ($student->status == 0)
+                    @if ($waitlistPosition)
                         <p>You are currently <strong>{{ $waitlistPosition }}</strong> on the waitlist!</p>
                     @else
                         <p>You are currently not on the waitlist!</p>
                     @endif
+
+                    <button class="btn btn-sm btn-outline-info mt-2 mb-3" id="editTimes">Edit Availability</button>
+
+                    <small class="d-block mb-3"> You last renewed your training request {{ $student->renewed_at?->format('F j, Y H:i') ?? 'not renewed yet' }} </small>
+
+                    <hr>
+
+                    <p><strong>Estimated Wait Time:</strong> {{ $training_time->wait_length }}</p>
+
+                @else
+                    <h3>Your Training has Started!</h3>
                 @endif
-
-                <button class="btn btn-sm btn-outline-info mt-2 mb-3" id="editTimes">Edit Availability</button>
-
-                <small class="d-block mb-3">
-                    You last renewed your training request {{ $student->renewed_at?->format('F j, Y H:i') ?? 'not renewed yet' }}
-                </small>
-
-                <hr>
-
-                <p><strong>Estimated Wait Time:</strong> {{ $training_time->wait_length }}</p>
 
                 <div id="timesFormContainer" class="mt-3" style="display:none;">
                     <form method="POST" action="{{ route('training.students.editTimes', $student->id) }}">
                         @csrf
                         <div class="form-group">
                             <label for="timesInput">Session Times</label>
-                            <textarea name="times" id="timesInput" rows="3" class="form-control" placeholder="Enter your availability here!">{{ $student->times }}</textarea>
+                            <textarea name="times" id="timesInput" rows="3" class="form-control" placeholder="Enter your availability here!"></textarea>
                         </div>
 
                         <div class="d-flex gap-2">
