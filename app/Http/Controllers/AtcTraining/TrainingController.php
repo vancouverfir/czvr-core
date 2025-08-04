@@ -23,12 +23,14 @@ class TrainingController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if (! $user) {abort(403);}
+        if (! $user) {
+            abort(403);
+        }
 
         $student = Student::where('user_id', $user->id)->first();
         $instructor = Instructor::where('user_id', $user->id)->first();
 
-        $labels = $student ? StudentLabel::cursor()->filter(fn ($label) => !StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists()): collect();
+        $labels = $student ? StudentLabel::cursor()->filter(fn ($label) => ! StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists()) : collect();
 
         $yourStudents = $instructor ? Student::where('instructor_id', $instructor->id)->get() : null;
 
@@ -70,7 +72,9 @@ class TrainingController extends Controller
     {
         $student = Student::findOrFail($id);
 
-        if ($student->user_id !== auth()->id() && auth()->user()->permissions < 2) {  abort(403); }
+        if ($student->user_id !== auth()->id() && auth()->user()->permissions < 2) {
+            abort(403);
+        }
 
         return view('training.students.viewstudentnotes', compact('student'));
     }
@@ -87,7 +91,7 @@ class TrainingController extends Controller
         $student = Student::findOrFail($id);
         $instructor = Instructor::where('user_id', Auth::id())->first();
 
-        if (!$instructor) {
+        if (! $instructor) {
             return redirect("/training/students/{$student->id}")->withError('Insufficient Permissions!');
         }
 
@@ -99,7 +103,7 @@ class TrainingController extends Controller
             'created_at' => now(),
         ]);
 
-        return redirect("/training/students/{$student->id}")->withSuccess('Staff Comment added for ' . $student->user->fullName('FLC') . '!');
+        return redirect("/training/students/{$student->id}")->withSuccess('Staff Comment added for '.$student->user->fullName('FLC').'!');
     }
 
     public function trainingTime()
@@ -186,7 +190,7 @@ class TrainingController extends Controller
             }
         }
 
-        return redirect("/training/students/{$student->id}")->withSuccess('Added New Visitor/Student - ' . $student->user->fullName('FLC') . '!');
+        return redirect("/training/students/{$student->id}")->withSuccess('Added New Visitor/Student - '.$student->user->fullName('FLC').'!');
     }
 
     public function AllStudents()
@@ -233,7 +237,7 @@ class TrainingController extends Controller
             return $item->checklistItem->checklist->name;
         });
 
-        $labels = StudentLabel::cursor()->filter(fn ($label) => !StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists());
+        $labels = StudentLabel::cursor()->filter(fn ($label) => ! StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists());
 
         return view('training.students.viewstudent', compact('student', 'instructors', 'times', 'labels', 'checklists', 'studentChecklistGroups'));
     }
