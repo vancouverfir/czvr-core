@@ -30,4 +30,4 @@ class CreateChecklistItemsTable extends Migration
     {
         Schema::dropIfExists('checklist_items');
     }
-};
+}

@@ -32,4 +32,4 @@ class CreateStudentChecklistItemsTable extends Migration
     {
         Schema::dropIfExists('student_checklist_items');
     }
-};
+}

@@ -29,4 +29,4 @@ class CreateChecklistsTable extends Migration
     {
         Schema::dropIfExists('checklists');
     }
-};
+}
