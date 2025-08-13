@@ -29,4 +29,4 @@ class CreateLabelChecklistMapTable extends Migration
     {
         Schema::dropIfExists('label_checklist_map');
     }
-};
+}

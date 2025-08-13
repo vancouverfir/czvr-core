@@ -2,7 +2,6 @@
 
 namespace App\Models\AtcTraining;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class LabelChecklistMap extends Model

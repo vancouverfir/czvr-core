@@ -57,7 +57,7 @@ class ChecklistController extends Controller
     {
         $mapClass = $visitor ? LabelChecklistVisitorMap::class : LabelChecklistMap::class;
 
-        return $mapClass::whereHas('label', fn($q) => $q->where('name', $label))
+        return $mapClass::whereHas('label', fn ($q) => $q->where('name', $label))
             ->where('tier_type', $tierType)
             ->pluck('checklist_id')
             ->toArray();
@@ -68,7 +68,7 @@ class ChecklistController extends Controller
         $existingItemIds = $student->checklistItems->pluck('checklist_item_id');
 
         foreach ($items as $item) {
-            if (!$existingItemIds->contains($item->id)) {
+            if (! $existingItemIds->contains($item->id)) {
                 $student->checklistItems()->create([
                     'checklist_item_id' => $item->id,
                     'completed' => false,
@@ -85,8 +85,8 @@ class ChecklistController extends Controller
         $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
         $trainingOrder = $this->getTrainingOrder($isVisitor);
 
-        $currentLabel = collect($trainingOrder)->first(fn($label) => in_array($label, $labelNames));
-        if (!$currentLabel) {
+        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
+        if (! $currentLabel) {
             return back()->with('error', 'No valid label found for T2 checklist assignment!');
         }
 
@@ -111,11 +111,15 @@ class ChecklistController extends Controller
         $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
         $trainingOrder = $this->getTrainingOrder(true);
 
-        $currentLabel = collect($trainingOrder)->first(fn($label) => in_array($label, $labelNames));
-        if (!$currentLabel) return back()->with('error', 'No visitor label assigned to student!');
+        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
+        if (! $currentLabel) {
+            return back()->with('error', 'No visitor label assigned to student!');
+        }
 
         $nextLabelName = $this->NextVisitorLabel($currentLabel, $trainingOrder, $isNonVatcanVisitor);
-        if (!$nextLabelName) return back()->with('error', 'Visitor cannot be promoted further!');
+        if (! $nextLabelName) {
+            return back()->with('error', 'Visitor cannot be promoted further!');
+        }
 
         $this->assignNewLabel($student, $nextLabelName, $isNonVatcanVisitor ? 'T3' : 'T1', true);
 
@@ -127,10 +131,11 @@ class ChecklistController extends Controller
         if ($nonVatcan) {
             return collect($trainingOrder)
                 ->slice(array_search($currentLabel, $trainingOrder) + 1)
-                ->first(fn($label) => !empty($this->getChecklistIdsByLabelName($label, 'T3', true)));
+                ->first(fn ($label) => ! empty($this->getChecklistIdsByLabelName($label, 'T3', true)));
         }
 
         $currentIndex = array_search($currentLabel, $trainingOrder);
+
         return $trainingOrder[$currentIndex + 1] ?? null;
     }
 
@@ -160,12 +165,16 @@ class ChecklistController extends Controller
         $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
         $trainingOrder = $this->getTrainingOrder(false);
 
-        $currentLabel = collect($trainingOrder)->first(fn($label) => in_array($label, $labelNames));
-        if (!$currentLabel) return back()->with('error', 'No label assigned to student!');
+        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
+        if (! $currentLabel) {
+            return back()->with('error', 'No label assigned to student!');
+        }
 
         $currentIndex = array_search($currentLabel, $trainingOrder);
         $nextLabelName = $trainingOrder[$currentIndex + 1] ?? null;
-        if (!$nextLabelName) return back()->with('error', 'Student cannot be promoted further!');
+        if (! $nextLabelName) {
+            return back()->with('error', 'Student cannot be promoted further!');
+        }
 
         $this->assignNewLabel($student, $nextLabelName, 'T1');
 
