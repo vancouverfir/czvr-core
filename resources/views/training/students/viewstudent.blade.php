@@ -130,16 +130,26 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h3 class="font-weight-bold blue-text pb-2">Info</h3>
-                    <h7 class="list-group-item" style="background: transparent; color: #2cb82c; cursor: pointer">
-                        @php
-                            $isVisitor = in_array($student->status, [3, 5]);
-                            $routeName = $isVisitor ? 'training.students.promoteVisitor' : 'training.students.promote';
-                            $buttonLabel = $isVisitor ? 'Promote Visitor' : 'Promote Student';
-                        @endphp
+                    @php
+                        $isVisitor = in_array($student->status, [3, 5]);
+                        $routeName = $isVisitor ? 'training.students.promoteVisitor' : 'training.students.promote';
+                        $buttonLabel = $isVisitor ? 'Promote Visitor' : 'Promote Student';
 
-                        <form method="POST" action="{{ route($routeName, $student->id) }}" style="display: inline;">
+                        $currentLabel = $student->labels->pluck('label.name')->last();
+                        $trainingOrder = $isVisitor 
+                            ? \App\Models\AtcTraining\LabelChecklistVisitorMap::orderBy('id')->with('label')->get()->pluck('label.name')->unique()->values()->toArray()
+                            : \App\Models\AtcTraining\LabelChecklistMap::orderBy('id')->with('label')->get()->pluck('label.name')->unique()->values()->toArray();
+
+                        $lastLabel = $currentLabel === collect($trainingOrder)->last();
+                        $formAction = $lastLabel 
+                            ? route('training.students.completeTraining', $student->id) 
+                            : route($routeName, $student->id);
+                    @endphp
+                    <h7 class="list-group-item" style="background: transparent; color: #2cb82c; cursor: pointer;">
+                        <form id="promotionForm" method="POST" action="{{ $formAction }}">
                             @csrf
-                            <button type="submit" style="all: unset; color: inherit; cursor: pointer;">
+                            <button type="button" class="btn btn-link p-0" style="all: unset; cursor: pointer; color: inherit;" 
+                                onclick="handlePromotionClick({{ $lastLabel ? 'true' : 'false' }})">
                                 {{ $buttonLabel }}
                             </button>
                         </form>
@@ -224,6 +234,25 @@
                             </div>
                         @endif
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complete Student Modal -->
+        <div class="modal fade" id="completeTrainingModal" tabindex="-1" aria-labelledby="completeTrainingLabel" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="completeTrainingLabel">Complete Training</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        This action will complete this student's training. Are you sure?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="submitCompleteTrainingForm()">Yes, Complete</button>
                     </div>
                 </div>
             </div>
@@ -342,6 +371,20 @@
     </div>
 
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        window.handlePromotionClick = function(isLastLabel) {
+            if (isLastLabel) {
+                new bootstrap.Modal(document.getElementById('completeTrainingModal')).show();
+            } else {
+                document.getElementById('promotionForm').submit();
+            }
+        };
+
+        window.submitCompleteTrainingForm = function() {
+            document.getElementById('promotionForm').submit();
+        };
+    });
+
     $(document).ready(function() {
         $('.label-card').click(function() {
             $('.label-card').removeClass('selected').css('border', '1px solid transparent');

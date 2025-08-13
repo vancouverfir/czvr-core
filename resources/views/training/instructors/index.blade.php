@@ -65,7 +65,7 @@
                     </div>
                 </div>
             </div>
-            @if (Auth::user()->permissions >= 4)
+            @if (Auth::user()->permissions >= 3)
                 <div class="col">
                     <div class="card">
                         <div class="card-header">Actions</div>

@@ -67,7 +67,7 @@
 <hr>
 	<h5 class="font-weight-bold blue-text">View our estimated wait time and more!</h5>
 	<div class="row" style="padding-left:8px">
-		<a class="btn btn-sm btn-primary" href="{{route('training')}}">Click HERE to learn more!</a>
+		<a class="btn btn-sm btn-primary" href="{{route('trainingtimes')}}">Click HERE to learn more!</a>
 	</div>
 
 <hr>

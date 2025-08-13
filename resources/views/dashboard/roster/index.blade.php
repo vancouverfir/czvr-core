@@ -598,5 +598,6 @@
         </div>
     </div>
     <!--End add Visitor controller modal-->
+</div>
 
 @stop

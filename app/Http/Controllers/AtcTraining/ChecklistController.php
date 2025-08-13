@@ -4,6 +4,8 @@ namespace App\Http\Controllers\AtcTraining;
 
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Checklist;
+use App\Models\AtcTraining\LabelChecklistMap;
+use App\Models\AtcTraining\LabelChecklistVisitorMap;
 use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentChecklistItem;
 use App\Models\AtcTraining\StudentInteractiveLabels;
@@ -12,29 +14,10 @@ use Illuminate\Http\Request;
 
 class ChecklistController extends Controller
 {
-    public function assignChecklist(Request $request, Student $student)
-    {
-        $request->validate([
-            'checklist_id' => 'required|exists:checklists,id',
-        ]);
-
-        $checklist = Checklist::findOrFail($request->checklist_id);
-
-        foreach ($checklist->items as $item) {
-            $student->checklistItems()->create([
-                'checklist_item_id' => $item->id,
-                'completed' => false,
-            ]);
-        }
-
-        return back()->with('success', 'Checklist assigned to Student!');
-    }
-
     public function completeItem(Request $request, $id)
     {
-        $checklistItem = StudentChecklistItem::findOrFail($id);
-        $checklistItem->completed = true;
-        $checklistItem->save();
+        $item = StudentChecklistItem::findOrFail($id);
+        $item->update(['completed' => true]);
 
         return back()->with('success', 'Checklist item marked as Complete!');
     }
@@ -53,218 +36,138 @@ class ChecklistController extends Controller
             ->where('student_id', $student->id)
             ->update(['completed' => true]);
 
-        return redirect()->back()->with('success', 'Checklist items marked as completed!');
+        return back()->with('success', 'Checklist items marked as completed!');
     }
 
-    public function deleteChecklist($studentId, $name)
+    // --- LABEL AND CHECKLIST HELPERS ---
+    private function getTrainingOrder(bool $visitor = false): array
     {
-        $student = Student::findOrFail($studentId);
+        $query = $visitor ? LabelChecklistVisitorMap::class : LabelChecklistMap::class;
 
-        $checklist = Checklist::where('name', $name)->firstOrFail();
-        $itemIds = $checklist->items->pluck('id');
-
-        StudentChecklistItem::where('student_id', $student->id)
-            ->whereIn('checklist_item_id', $itemIds)
-            ->delete();
-
-        return redirect()->back()->with('success', 'Checklist removed!');
+        return $query::orderBy('id')
+            ->with('label')
+            ->get()
+            ->pluck('label.name')
+            ->unique()
+            ->values()
+            ->toArray();
     }
 
-    public function getChecklistIdsByLabel($label)
+    private function getChecklistIdsByLabelName(string $label, string $tierType = 'T1', bool $visitor = false): array
     {
-        $map = [
-            'S1 Training' => [1, 2],
-            'S2 Training' => [5, 6],
-            'S3 Training' => [9, 10],
-            'C1 Training' => [14, 15],
-            'Visitor VATCAN' => [17],
-            'Visitor Non-VATCAN' => [],
-        ];
+        $mapClass = $visitor ? LabelChecklistVisitorMap::class : LabelChecklistMap::class;
 
-        return $map[$label] ?? [];
+        return $mapClass::whereHas('label', fn($q) => $q->where('name', $label))
+            ->where('tier_type', $tierType)
+            ->pluck('checklist_id')
+            ->toArray();
     }
 
-    public function assignT2Checklist(Request $request, Student $student)
+    private function assignChecklistItemsToStudent(Student $student, $items)
     {
-        $labelNames = $student->labels->pluck('label.name')->toArray();
-        $rating = $student->user->rating_short;
-
-        $isVatcan = in_array('Visitor Vatcan', $labelNames);
-        $isNonVatcan = in_array('Visitor Non Vatcan', $labelNames);
-
-        if ($isVatcan || $isNonVatcan) {
-            $checklistName = match (true) {
-                $isVatcan && $rating === 'S3' => 'VATCAN Controller - Restricted S3',
-                default => null,
-            };
-
-            if (! $checklistName) {
-                return back()->with('error', 'No applicable Tier 2 checklist found for visitor!');
-            }
-
-            $checklist = Checklist::where('name', $checklistName)->first();
-            if (! $checklist) {
-                return back()->with('error', "Checklist not found: {$checklistName}");
-            }
-
-            $existingItemIds = $student->checklistItems->pluck('checklist_item_id');
-            foreach ($checklist->items as $item) {
-                if (! $existingItemIds->contains($item->id)) {
-                    $student->checklistItems()->create([
-                        'checklist_item_id' => $item->id,
-                        'completed' => false,
-                    ]);
-                }
-            }
-
-            return back()->with('success', "Visitor Tier 2 checklist '{$checklistName}' assigned!");
-        }
-
-        $trainingOrder = ['S1 Training', 'S2 Training', 'S3 Training', 'C1 Training'];
-
-        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
-
-        if (! $currentLabel) {
-            return back()->with('error', 'No valid label found for T2 checklist assignment!');
-        }
-
-        $checklistIds = $this->getT2ChecklistIdsByLabel($currentLabel);
-
-        if (empty($checklistIds)) {
-            return back()->with('error', "No T2 checklists found for {$currentLabel}!");
-        }
-
         $existingItemIds = $student->checklistItems->pluck('checklist_item_id');
 
-        foreach ($checklistIds as $checklistId) {
-            $checklist = Checklist::findOrFail($checklistId);
-            foreach ($checklist->items as $item) {
-                if (! $existingItemIds->contains($item->id)) {
-                    $student->checklistItems()->create([
-                        'checklist_item_id' => $item->id,
-                        'completed' => false,
-                    ]);
-                }
-            }
-        }
-
-        return back()->with('success', "T2 checklists assigned for {$currentLabel}!");
-    }
-
-    public function getT2ChecklistIdsByLabel($label)
-    {
-        $map = [
-            'S1 Training' => [3, 4],
-            'S2 Training' => [7, 8],
-            'S3 Training' => [11, 12, 13],
-            'C1 Training' => [],
-            'Visitor VATCAN' => [18],
-            'Visitor Non-VATCAN' => [],
-        ];
-
-        return $map[$label] ?? [];
-    }
-
-    public function promoteVisitor(Request $request, Student $student)
-    {
-        $labelNames = $student->labels->pluck('label.name')->toArray();
-
-        if (! in_array('Visitor Waitlist', $labelNames)) {
-            return back()->with('error', 'Student is not on Visitor Waitlist!');
-        }
-
-        $isVatcan = in_array('Visitor VATCAN', $labelNames);
-        $rating = $student->user->rating_short;
-
-        $checklistName = match (true) {
-            $isVatcan && $rating === 'S3' => 'VATCAN Controller - Unrestricted S3',
-            $isVatcan && $rating === 'C1' => 'VATCAN Controller - Restricted C1+',
-            ! $isVatcan && in_array($rating, ['S3', 'C1']) => 'Non-VATCAN Controller - Unrestricted S3 & Restricted C1+',
-            default => null,
-        };
-
-        if (! $checklistName) {
-            return back()->with('error', 'Unsupported rating or label combination for Visitor promotion!');
-        }
-
-        $checklist = Checklist::where('name', $checklistName)->first();
-        if (! $checklist) {
-            return back()->with('error', "Checklist not found: {$checklistName}");
-        }
-
-        $student->checklistItems()->delete();
-
-        foreach ($checklist->items as $item) {
-            $student->checklistItems()->create([
-                'checklist_item_id' => $item->id,
-                'completed' => false,
-            ]);
-        }
-
-        $nextLabelName = $rating === 'S3' ? 'Visitor S3 Training' : 'Visitor C1 Training';
-        $nextLabel = StudentLabel::where('name', $nextLabelName)->firstOrFail();
-
-        $student->labels()->whereHas('label', function ($query) {
-            $query->where('name', 'Visitor Waitlist');
-        })->delete();
-
-        StudentInteractiveLabels::create([
-            'student_id' => $student->id,
-            'student_label_id' => $nextLabel->id,
-        ]);
-
-        (new LabelController)->updateStatus($student->refresh());
-
-        return back()->with('success', "Visitor promoted to {$nextLabelName} with checklist assigned!");
-    }
-
-    public function promoteStudent(Request $request, Student $student)
-    {
-        $labelNames = $student->labels->pluck('label.name')->toArray();
-        $trainingOrder = ['Waitlist', 'S1 Training', 'S2 Training', 'S3 Training', 'C1 Training'];
-        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
-
-        if (! $currentLabel) {
-            return back()->with('error', 'No label assigned to student!');
-        }
-
-        $trainingOrder = ['Waitlist', 'S1 Training', 'S2 Training', 'S3 Training', 'C1 Training'];
-        $currentIndex = array_search($currentLabel, $trainingOrder);
-
-        if ($currentIndex === false || $currentIndex === count($trainingOrder) - 1) {
-            return back()->with('error', 'Student cannot be promoted further!');
-        }
-
-        $nextLabelName = $trainingOrder[$currentIndex + 1];
-
-        $currentLabelLink = $student->labels->firstWhere('label.name', $currentLabel);
-        if ($currentLabelLink) {
-            $currentLabelLink->delete();
-        }
-
-        $nextLabel = StudentLabel::where('name', $nextLabelName)->firstOrFail();
-        StudentInteractiveLabels::create([
-            'student_id' => $student->id,
-            'student_label_id' => $nextLabel->id,
-        ]);
-
-        $student->checklistItems()->delete();
-
-        $checklistIds = $this->getChecklistIdsByLabel($nextLabelName);
-        foreach ($checklistIds as $checklistId) {
-            $checklist = Checklist::findOrFail($checklistId);
-
-            foreach ($checklist->items as $item) {
+        foreach ($items as $item) {
+            if (!$existingItemIds->contains($item->id)) {
                 $student->checklistItems()->create([
                     'checklist_item_id' => $item->id,
                     'completed' => false,
                 ]);
             }
         }
+    }
 
-        $labelController = new LabelController();
+    // --- T2 CHECKLIST ASSIGNMENT ---
+    public function assignT2Checklist(Request $request, Student $student)
+    {
+        $isVisitor = $student->user->visitor;
 
-        $labelController->updateStatus($student->refresh());
+        $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
+        $trainingOrder = $this->getTrainingOrder($isVisitor);
+
+        $currentLabel = collect($trainingOrder)->first(fn($label) => in_array($label, $labelNames));
+        if (!$currentLabel) {
+            return back()->with('error', 'No valid label found for T2 checklist assignment!');
+        }
+
+        $checklistIds = $this->getChecklistIdsByLabelName($currentLabel, 'T2', $isVisitor);
+
+        if (empty($checklistIds)) {
+            return back()->with('error', "No T2 checklists found for {$currentLabel}!");
+        }
+
+        foreach ($checklistIds as $checklistId) {
+            $this->assignChecklistItemsToStudent($student, Checklist::findOrFail($checklistId)->items);
+        }
+
+        return back()->with('success', "T2 checklists assigned for {$currentLabel}!");
+    }
+
+    // --- VISITOR PROMOTION ---
+    public function promoteVisitor(Request $request, Student $student)
+    {
+        $isNonVatcanVisitor = $student->user->division_code !== 'CAN';
+
+        $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
+        $trainingOrder = $this->getTrainingOrder(true);
+
+        $currentLabel = collect($trainingOrder)->first(fn($label) => in_array($label, $labelNames));
+        if (!$currentLabel) return back()->with('error', 'No visitor label assigned to student!');
+
+        $nextLabelName = $this->NextVisitorLabel($currentLabel, $trainingOrder, $isNonVatcanVisitor);
+        if (!$nextLabelName) return back()->with('error', 'Visitor cannot be promoted further!');
+
+        $this->assignNewLabel($student, $nextLabelName, $isNonVatcanVisitor ? 'T3' : 'T1', true);
+
+        return back()->with('success', "Visitor promoted to {$nextLabelName} and checklists assigned!");
+    }
+
+    private function NextVisitorLabel(string $currentLabel, array $trainingOrder, bool $nonVatcan): ?string
+    {
+        if ($nonVatcan) {
+            return collect($trainingOrder)
+                ->slice(array_search($currentLabel, $trainingOrder) + 1)
+                ->first(fn($label) => !empty($this->getChecklistIdsByLabelName($label, 'T3', true)));
+        }
+
+        $currentIndex = array_search($currentLabel, $trainingOrder);
+        return $trainingOrder[$currentIndex + 1] ?? null;
+    }
+
+    private function assignNewLabel(Student $student, string $labelName, string $tierType, bool $visitor = false)
+    {
+        $student->labels()->delete();
+
+        $nextLabel = StudentLabel::where('name', $labelName)->firstOrFail();
+        StudentInteractiveLabels::create([
+            'student_id' => $student->id,
+            'student_label_id' => $nextLabel->id,
+        ]);
+
+        $student->checklistItems()->delete();
+
+        $checklistIds = $this->getChecklistIdsByLabelName($labelName, $tierType, $visitor);
+        foreach ($checklistIds as $checklistId) {
+            $this->assignChecklistItemsToStudent($student, Checklist::findOrFail($checklistId)->items);
+        }
+
+        (new LabelController())->updateStatus($student->refresh());
+    }
+
+    // --- STUDENT PROMOTION ---
+    public function promoteStudent(Request $request, Student $student)
+    {
+        $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
+        $trainingOrder = $this->getTrainingOrder(false);
+
+        $currentLabel = collect($trainingOrder)->first(fn($label) => in_array($label, $labelNames));
+        if (!$currentLabel) return back()->with('error', 'No label assigned to student!');
+
+        $currentIndex = array_search($currentLabel, $trainingOrder);
+        $nextLabelName = $trainingOrder[$currentIndex + 1] ?? null;
+        if (!$nextLabelName) return back()->with('error', 'Student cannot be promoted further!');
+
+        $this->assignNewLabel($student, $nextLabelName, 'T1');
 
         return back()->with('success', "Student promoted to {$nextLabelName} and checklists assigned!");
     }

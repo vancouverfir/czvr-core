@@ -17,7 +17,7 @@ Route::view('/airports', 'airports')->name('airports');
 Route::get('/roster', 'AtcTraining\RosterController@showPublic')->name('roster.public');
 Route::get('/roster/{id}', 'Users\UserController@viewProfile');
 Route::get('/roster/{id}/connections', 'Users\UserController@viewConnections');
-Route::get('/join', 'AtcTraining\ApplicationsController@joinvancouver')->name('join.public');
+Route::get('/join', 'AtcTraining\TrainingController@joinvancouver')->name('join.public');
 Route::get('/staff', 'Users\StaffListController@index')->name('staff');
 Route::get('/policies', 'Publications\PoliciesController@index')->name('policies');
 Route::get('/meetingminutes', 'News\NewsController@minutesIndex')->name('meetingminutes');
@@ -286,6 +286,7 @@ Route::group(['middleware' => 'mentor'], function () {
     Route::get('/training/students/{id}/drop/label/{student_label_id}', 'AtcTraining\LabelController@dropLabel')->name('training.students.drop.label');
 
     //AtcTraining
+    Route::post('/training/students/{student}/complete', 'AtcTraining\TrainingController@completeTraining')->name('training.students.completeTraining');
     Route::get('/training/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
     Route::get('/training/students', 'AtcTraining\TrainingController@AllStudents')->name('training.students.students');
     Route::post('/add', 'AtcTraining\TrainingController@newStudent')->name('instructor.student.add.new');
@@ -303,8 +304,6 @@ Route::group(['middleware' => 'mentor'], function () {
     Route::post('/training/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
     Route::patch('/training/students/checklist/{id}/complete', 'AtcTraining\ChecklistController@completeItem')->name('training.students.checklist.complete');
     Route::post('/training/students/{student}/checklist/complete-multiple', 'AtcTraining\ChecklistController@completeMultiple')->name('training.students.checklist.completeMultiple');
-    Route::post('/training/students/{student}/assign-checklist', 'AtcTraining\ChecklistController@assignChecklist')->name('training.students.assign.checklist');
-    Route::delete('/training/students/{student}/checklists/{name}', 'AtcTraining\ChecklistController@deleteChecklist')->name('training.students.checklist.deleteChecklist');
     Route::post('/training/students/{student}/promote', 'AtcTraining\ChecklistController@promoteStudent')->name('training.students.promote');
     Route::post('/training/students/{student}/promote-visitor', 'AtcTraining\ChecklistController@promoteVisitor')->name('training.students.promoteVisitor');
     Route::post('/students/{student}/assign-t2', 'AtcTraining\ChecklistController@assignT2Checklist')->name('training.students.assignT2');

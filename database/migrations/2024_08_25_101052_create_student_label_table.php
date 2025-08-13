@@ -13,8 +13,9 @@ class CreateStudentLabelTable extends Migration
             $table->string('name');
             $table->string('fa_icon');
             $table->string('color');
-            $table->boolean('visible_home')->default(0);
-            $table->boolean('exclusive')->default(0);
+            $table->boolean('visible_home');
+            $table->boolean('exclusive');
+            $table->boolean('visitor');
             $table->unsignedTinyInteger('new_status')->nullable();
             $table->timestamps();
         });

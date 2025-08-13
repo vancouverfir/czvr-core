@@ -100,7 +100,7 @@ def trim_events(data):
     for i in data["data"]:
         print("End time ", i["end"])
         # End time ex. is YYYY-MM-DD HH:MM:SS
-        # Example: 2021-04-04 01:00:00
+        # Example: 2021-01-01 01:11:11
 
         event = datetime.strptime(str(i["end"])[:16], "%Y-%m-%d %H:%M")
 
@@ -365,14 +365,14 @@ def trim_roster():
     print("Cleaning up roster!")
     cur = connectSQL.cursor()
     bye = connectSQL.cursor()
-    cur.execute("SELECT cid FROM roster")
+    cur.execute("SELECT user_id FROM roster")
     for i in cur:
         str_cid = str(i)[1:-2]
         db_cid = int(str_cid)
         if db_cid not in CIDSTOR:
             print("invalid CID:", db_cid)
             bye.execute("DELETE FROM session_logs WHERE roster_member_id=?", (db_cid,))
-            bye.execute("DELETE FROM roster WHERE cid=?", (db_cid,))
+            bye.execute("DELETE FROM roster WHERE user_id=?", (db_cid,))
             bye.execute(
                 "UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
             print("Invalid CID Removed from DB... BUH BYE")
@@ -386,35 +386,30 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
     try:
         cur = connectSQL.cursor()
 
-        # Get permissions
         cur.execute("SELECT permissions FROM users WHERE id = ?", (cid,))
         row = cur.fetchone()
         permissions = row[0] if row else None
 
         if permissions is not None:
             print(f"User {cid} exists with permissions: {permissions}")
-            # Update existing user
             cur.execute("""
                 UPDATE users 
                 SET email=?, lname=?, rating_id=?, rating_short=?, visitor='0'
                 WHERE id=?
             """, (email, lname, rating_id, rating_short, cid))
 
-            # Update roster
             cur.execute("""
                 UPDATE roster
                 SET full_name=?, visit='0'
                 WHERE user_id=?
             """, (fullname, cid))
 
-            # Ensure roster status is 'home'
             cur.execute("UPDATE roster SET status='home' WHERE cid=? AND (status='visit' OR status IS NULL)", (cid,))
             if permissions == 0:
                 cur.execute("UPDATE users SET permissions='1' WHERE id=?", (cid,))
 
         else:
             print(f"User {cid} not in DB. Inserting new user!")
-            # Insert new user
             cur.execute("""
                 INSERT INTO users (id, email, fname, lname, rating_id, rating_short, permissions, display_fname)
                 VALUES (?, ?, ?, ?, ?, ?, '1', ?)
@@ -425,7 +420,6 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
                 VALUES (?, ?, ?, 'home', '1', '0')
             """, (cid, cid, fullname))
 
-        # Update staff roles based on permissions
         if permissions:
             role_map = {2: 'mentor', 3: 'ins', 4: 'staff', 5: 'exec'}
             staff_role = role_map.get(permissions)
@@ -433,7 +427,6 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
                 print(f"Assigning staff role '{staff_role}' to {cid}")
                 cur.execute("UPDATE roster SET staff=? WHERE cid=?", (staff_role, cid))
 
-        # Update if no certifications
         cur.execute("""
             SELECT delgnd, delgnd_t2, twr, twr_t2, dep, app, app_t2, ctr, fss
             FROM roster WHERE cid=?
@@ -452,7 +445,6 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
                 """, (cid, 0, facility_join))
                 student_id = cur.lastrowid
 
-                # Add waitlist label
                 cur.execute("""
                     INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
                     VALUES
@@ -460,7 +452,6 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
                         (1, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
                 """, (student_id, student_id,))
 
-                # Add system note
                 cur.execute("""
                     INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
                     VALUES (?, 1, 'Created', CONCAT('Student created automatically by System at ', NOW()), NOW(), NOW())
@@ -489,27 +480,23 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
 
         if permissions is not None:
             print(f"User {cid} exists with permissions: {permissions}")
-            # Update user as visitor
             cur.execute("""
                 UPDATE users 
                 SET email=?, lname=?, rating_id=?, rating_short=?, visitor='1'
                 WHERE id=?
             """, (email, lname, rating_id, rating_short, cid))
 
-            # Update roster as visit
             cur.execute("""
                 UPDATE roster 
                 SET full_name=?, visit='1', status='visit'
                 WHERE user_id=?
             """, (fullname, cid))
 
-            # If permissions were 0, bump to 1
             if permissions == 0:
                 cur.execute("UPDATE users SET permissions='1' WHERE id=?", (cid,))
 
         else:
             print(f"User {cid} not in DB. Inserting new visitor.")
-            # Insert new visitor
             cur.execute("""
                 INSERT INTO users (id, email, fname, lname, rating_id, rating_short, permissions, display_fname, visitor)
                 VALUES (?, ?, ?, ?, ?, ?, '1', ?, '1')
@@ -520,7 +507,6 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                 VALUES (?, ?, ?, 'visit', '1', '1')
             """, (cid, cid, fullname))
 
-        # Update if no certifications
         cur.execute("""
             SELECT delgnd, delgnd_t2, twr, twr_t2, dep, app, app_t2, ctr, fss
             FROM roster WHERE cid=?
@@ -539,7 +525,6 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                 """, (cid, 3, facility_join))
                 student_id = cur.lastrowid
 
-                # Add Visitor label
                 cur.execute("""
                     INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
                     VALUES
@@ -547,7 +532,6 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                         (1, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
                 """, (student_id, student_id,))
 
-                # Division Code
                 cur.execute("SELECT division_code FROM users WHERE id=?", (cid,))
                 division_row = cur.fetchone()
                 division_code = division_row[0] if division_row else None
@@ -557,7 +541,6 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                     VALUES (?, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
                 """, (vat_label, student_id))
 
-                # Add system note
                 cur.execute("""
                     INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
                     VALUES (?, 1, 'Created', CONCAT('Student created automatically by System at ', NOW()), NOW(), NOW())

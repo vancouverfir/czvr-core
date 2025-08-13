@@ -59,6 +59,11 @@ class TrainingController extends Controller
         return view('training.indexinstructor', compact('yourStudents', 'student', 'Visitors', 'waitlistPosition', 'studentChecklistGroups', 'training_time'));
     }
 
+    public function joinvancouver()
+    {
+        return view('joinvancouver');
+    }
+
     public function viewResources()
     {
         $atcResources = AtcResource::all()->sortBy('title');
@@ -104,13 +109,24 @@ class TrainingController extends Controller
         return redirect("/training/students/{$student->id}")->withSuccess('Staff Comment added for '.$student->user->fullName('FLC').'!');
     }
 
+    public function completeTraining(Request $request, Student $student)
+    {
+        $student->labels()->delete();
+
+        $student->checklistItems()->delete();
+
+        $student->update(['status' => 2]);
+
+        return back()->with('success', "Completed training for {$student->user->name}!");
+    }
+
     public function trainingTime()
     {
-        $trainingTime = TrainingWaittime::find(1);
+        $training_time = TrainingWaittime::find(1);
         $waitlist = Student::where('status', 0)->get();
         $visitorWaitlist = Student::where('status', 3)->get();
 
-        return view('trainingtimes', compact('trainingTime', 'waitlist', 'visitorWaitlist'));
+        return view('trainingtimes', compact('training_time', 'waitlist', 'visitorWaitlist'));
     }
 
     public function editTrainingTime(Request $request)
