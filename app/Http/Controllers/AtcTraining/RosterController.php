@@ -34,8 +34,8 @@ class RosterController extends Controller
 
     public function deleteController($id)
     {
-        $roster = RosterMember::findorFail($id);
         $user = User::findorFail($roster->user_id);
+        $roster = RosterMember::findorFail($id);
         $session = SessionLog::where('roster_member_id', $id)->get();
 
         if ($user) {
@@ -60,7 +60,7 @@ class RosterController extends Controller
                 'cid' => $users->id,
                 'user_id' => $users->id,
                 'full_name' => $users->fullName('FL'),
-                'status' => 'not_certified',
+                'status' => 'home',
                 'visit' => '0',
             ]);
             $users->permissions = '1';
@@ -82,7 +82,7 @@ class RosterController extends Controller
                 'cid' => $users->id,
                 'user_id' => $users->id,
                 'full_name' => $users->fullName('FL'),
-                'status' => 'not_certified',
+                'status' => 'visit',
                 'visit' => 1,
             ]);
         } else {

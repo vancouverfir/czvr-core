@@ -119,11 +119,11 @@
 <!--Vancouver Training Hrs-->
                         @if ($user->rosterProfile->status == "training")
                         @if (!$user->rosterProfile->currency == 0)
-                          @if ($user->rosterProfile->currency < 2.0)
-                          <h3><span class="badge rounded shadow-none blue">
+                          @if ($user->rosterProfile->currency < 3.0)
+                          <h3><span class="badge rounded shadow-none purple">
                             {{$user->rosterProfile->currency}} hours recorded
                           </span></h3>
-                          @elseif ($user->rosterProfile->currency >= 2.0)
+                          @elseif ($user->rosterProfile->currency >= 3.0)
                           <h3><span class="badge rounded shadow-none green">
                             {{$user->rosterProfile->currency}} hours recorded
                           </span></h3>
@@ -136,11 +136,11 @@
 <!--Vancouver Cntrlr Hrs-->
                         @if ($user->rosterProfile->status == "home")
                         @if (!$user->rosterProfile->currency == 0)
-                          @if ($user->rosterProfile->currency < 2.0)
-                          <h3><span class="badge rounded shadow-none blue">
+                          @if ($user->rosterProfile->currency < 3.0)
+                          <h3><span class="badge rounded shadow-none purple">
                             {{$user->rosterProfile->currency}} hours recorded
                           </span></h3>
-                          @elseif ($user->rosterProfile->currency >= 2.0)
+                          @elseif ($user->rosterProfile->currency >= 3.0)
                           <h3><span class="badge rounded shadow-none green">
                             {{$user->rosterProfile->currency}} hours recorded
                           </span></h3>
@@ -153,17 +153,17 @@
 <!--Vancouver Vstr Cntrlr Hrs-->
                         @if ($user->rosterProfile->status == "visit")
                         @if (!$user->rosterProfile->currency == 0)
-                        @if ($user->rosterProfile->currency < 1.0)
-                          <h3><span class="badge rounded shadow-none blue">
+                        @if ($user->rosterProfile->currency < 3.0)
+                          <h3><span class="badge rounded shadow-none purple">
                               {{Auth::user()->rosterProfile->currency}} hours recorded
                           </span></h3>
-                        @elseif ($user->rosterProfile->currency >= 1.0)
+                        @elseif ($user->rosterProfile->currency >= 3.0)
                           <h3><span class="badge rounded shadow-none green">
                               {{$user->rosterProfile->currency}} hours recorded
                           </span></h3>
                         @endif
                         @endif
-                        <p>They require <b>3 hour</b> of activity every quarter.</p>
+                        <p>They require <b>3 hours</b> of activity every quarter.</p>
                         @endif
 
 <!--End Vancouver Cntrlr Hours-->
@@ -172,7 +172,7 @@
                         @if ($user->rosterProfile->status == "instructor")
                         @if (!$user->rosterProfile->currency == 0)
                             @if ($user->rosterProfile->currency < 3.0)
-                                <h3><span class="badge rounded shadow-none blue">
+                                <h3><span class="badge rounded shadow-none purple">
                                 {{$user->rosterProfile->currency}} hours recorded
                             </span></h3>
                             @elseif ($user->rosterProfile->currency >= 3.0)

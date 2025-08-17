@@ -309,7 +309,13 @@ def fetch_visit_roster():
     for i in resp["data"]["visitors"]:
         print("CID =", i["cid"])
         fullname = i["first_name"] + " " + i["last_name"]
-        facility_join = i.get("facility_join")
+        facility_join = None
+        for vf in i.get("visiting_facilities", []):
+            if vf["fir"]["name_long"] == "Vancouver FIR":
+                dt = datetime.strptime(vf["created_at"].rstrip("Z"), "%Y-%m-%dT%H:%M:%S.%f")
+                facility_join = dt.strftime("%Y-%m-%d %H:%M:%S")
+                break
+
         rating_short = conv_rating(i["rating"])
         print("Users Full Name:", fullname)
         asyncio.run(
@@ -449,7 +455,7 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
                     INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
                     VALUES
                         (8, ?, UTC_TIMESTAMP, UTC_TIMESTAMP),
-                        (1, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
+                        (7, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
                 """, (student_id, student_id,))
 
                 cur.execute("""
@@ -528,9 +534,8 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                 cur.execute("""
                     INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
                     VALUES
-                        (9, ?, UTC_TIMESTAMP, UTC_TIMESTAMP),
-                        (1, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
-                """, (student_id, student_id,))
+                        (9, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
+                """, (student_id,))
 
                 cur.execute("SELECT division_code FROM users WHERE id=?", (cid,))
                 division_row = cur.fetchone()

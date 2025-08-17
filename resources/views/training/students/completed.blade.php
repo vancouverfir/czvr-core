@@ -17,27 +17,31 @@
                 <tr>
                     <th scope="col">CID</th>
                     <th scope="col">Student Name</th>
+                    <th scope="col">Type</th>
                 </tr>
             </thead>
             <tbody>
-            @if (count($students) < 1)
-                <tr>
-                    <td colspan="3" class="font-weight-bold text-center">
-                        There are no students in this category!
-                    </td>
-                </tr>
-            @else
-                @foreach ($students as $student)
-                <tr>
-                    <th scope="row">{{$student->user->id}}</th>
-                    <td>
-                        <a href="{{route('training.students.view', $student->id)}}" class="blue-text">
-                            {{$student->user->fullName('FL')}}
-                        </a>
-                    </td>
-                </tr>
-                @endforeach
-            @endif
+                @if (count($students) < 1)
+                    <tr>
+                        <td colspan="3" class="font-weight-bold text-center">
+                            There are no students in this category!
+                        </td>
+                    </tr>
+                @else
+                    @foreach ($students as $student)
+                        <tr>
+                            <th scope="row">{{ $student->user->id }}</th>
+                            <td>
+                                <a href="{{ route('training.students.view', $student->id) }}" class="blue-text">
+                                    {{ $student->user->fullName('FL') }}
+                                </a>
+                            </td>
+                            <td>
+                                {{ $student->user->visitor ? 'Visitor' : 'Home' }}
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
     </div>

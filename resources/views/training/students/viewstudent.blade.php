@@ -60,7 +60,7 @@
                         <span>Instructor not set!</span>
                     @endif
                     <h5 class="mt-3 font-weight-bold">Availability</h5>
-                    <span>{{$student->times ?? 'Not yet submitted!'}}</span>
+                    <span>{{$student->times ?? 'Student has not yet submitted!'}}</span>
                 </div>
             </div>
 
@@ -130,30 +130,34 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h3 class="font-weight-bold blue-text pb-2">Info</h3>
-                    @php
-                        $isVisitor = in_array($student->status, [3, 5]);
-                        $routeName = $isVisitor ? 'training.students.promoteVisitor' : 'training.students.promote';
-                        $buttonLabel = $isVisitor ? 'Promote Visitor' : 'Promote Student';
+                        @php
+                            $isVisitor = in_array($student->status, [3, 5]);
 
-                        $currentLabel = $student->labels->pluck('label.name')->last();
-                        $trainingOrder = $isVisitor 
-                            ? \App\Models\AtcTraining\LabelChecklistVisitorMap::orderBy('id')->with('label')->get()->pluck('label.name')->unique()->values()->toArray()
-                            : \App\Models\AtcTraining\LabelChecklistMap::orderBy('id')->with('label')->get()->pluck('label.name')->unique()->values()->toArray();
+                            $routeName = $isVisitor ? 'training.students.promoteVisitor' : 'training.students.promote';
 
-                        $lastLabel = $currentLabel === collect($trainingOrder)->last();
-                        $formAction = $lastLabel 
-                            ? route('training.students.completeTraining', $student->id) 
-                            : route($routeName, $student->id);
-                    @endphp
-                    <h7 class="list-group-item" style="background: transparent; color: #2cb82c; cursor: pointer;">
-                        <form id="promotionForm" method="POST" action="{{ $formAction }}">
+                            $buttonLabel = $isVisitor ? 'Promote Visitor' : 'Promote Student';
+
+                        @endphp
+
+                        <form method="POST" action="{{ route($routeName, $student->id) }}" style="display: inline;">
                             @csrf
-                            <button type="button" class="btn btn-link p-0" style="all: unset; cursor: pointer; color: inherit;" 
-                                onclick="handlePromotionClick({{ $lastLabel ? 'true' : 'false' }})">
-                                {{ $buttonLabel }}
-                            </button>
+                            <h7 class="list-group-item" style="background: transparent; color: #2cb82c;">
+                                @if ($nextLabel)
+                                    <!-- Promote -->
+                                    <form method="POST" action="{{ $isVisitor ? route('training.students.promoteVisitor', $student->id) : route('training.students.promote', $student->id) }}" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" style="all: unset; color: inherit; cursor: pointer;">
+                                            {{ $isVisitor ? 'Promote Visitor' : 'Promote Student' }}
+                                        </button>
+                                    </form>
+                                @else
+                                    <!-- Complete Training -->
+                                    <button type="button" style="all: unset; color: inherit; cursor: pointer;" data-toggle="modal" data-target="#completeTrainingModal">
+                                        Complete Training
+                                    </button>
+                                @endif
+                            </h7>
                         </form>
-                    </h7>
                     <h7 class="list-group-item" style="background: transparent;">
                         <form method="POST" action="{{ route('training.students.assignT2', $student->id) }}" style="display: inline;">
                             @csrf
@@ -175,84 +179,128 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="font-weight-bold blue-text mb-0">Latest Vatcan Notes</h3>
-                        @csrf
                         <div>
-                            <a href="{{ url('https://vatcan.ca/manage/training/notes/controller/' . $student->user_id) }}" target="_blank" rel="noopener noreferrer" class="btn btn-success btn-sm">
-                                New Vatcan Note
-                            </a>
-                            <a href="{{ route('training.students.allnotes', $student->id) }}" class="text-primary btn btn-sm btn-outline-info ms-2">
-                                View All
-                            </a>
+                            <a href="{{ route('training.students.allnotes', $student->id) }}" 
+                            class="text-primary btn btn-sm btn-outline-info ms-2">View All</a>
                         </div>
                     </div>
                     <div class="text-muted small mt-1">
                         Notes left by non Vancouver FIR members not shown!
                     </div>
                 </div>
-                <div class="card-body" id="training-notes-container">
-                    <span>Loading latest Vatcan Notes!</span>
+
+                <div class="card-body">
+                    @if (empty($vatcanNotes))
+                        <span class="alert">No training notes available!</span>
+                    @else
+                        @php
+                            $sessionTypes = ['Sweatbox', 'OJT (Monitoring)', 'OTS', 'Generic'];
+                            $sessionBadgeColors = ['bg-secondary', 'bg-warning', 'bg-success', 'bg-info'];
+                            $afacility = [
+                                'Academy', 'Edmonton FIR', 'Gander Oceanic', 'Moncton/Gander FIR',
+                                'Montreal FIR', 'Toronto FIR', 'Vancouver FIR', 'Winnipeg FIR'
+                            ];
+                        @endphp
+
+                        @foreach (array_slice($vatcanNotes, 0, 3) as $note)
+                            <div class="border rounded p-3 mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div class="me-3"><i class="far fa-sticky-note mr-1"></i></div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            {{ $note['instructor_name'] ?? 'Unknown' }} -
+                                            {{ $afacility[$note['facility_id']] ?? 'Unknown' }}
+                                            {{ \Carbon\Carbon::parse($note['friendly_time'])->format('F j, Y') }}
+                                        </h6>
+                                        <div class="mt-1">
+                                            <span class="badge bg-info">{{ $note['position_trained'] ?? '' }}</span>
+                                            <span class="badge {{ $sessionBadgeColors[$note['session_type']] ?? 'bg-secondary' }}">
+                                                {{ $sessionTypes[$note['session_type']] ?? 'Generic' }}
+                                            </span>
+                                        </div>
+                                        <p class="mt-3 mb-0" style="white-space: pre-wrap;">{{ $note['training_note'] }}</p>
+                                        @if (!empty($note['marking_sheet']))
+                                            <hr class="my-3">
+                                            <a href="{{ $note['marking_sheet'] }}" target="_blank" class="btn btn-outline-info btn-sm">
+                                                <i class="far fa-list-alt me-1"></i> View Marking Sheet
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>
-        </div>
+    </div>
 
-        <!-- Staff Comments -->
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 class="font-weight-bold blue-text mb-0">Staff Comments</h3>
-                            <a class="btn btn-sm btn-outline-info" href="{{ route('view.add.note', $student->id) }}">New Staff Comment</a>
-                        </div>
-                        <div class="row">
-                        @if (count($student->trainingNotes) >= 1)
-                            <div class="col">
-                                <table id="dataTable" class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"><span>Title</span></th>
-                                            <th scope="col"><span>Content</span></th>
-                                            <th scope="col"><span>Published on</span></th>
-                                            <th scope="col"><span>Published By</span></th>
+    <!-- Staff Comments -->
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="font-weight-bold blue-text mb-0">Staff Comments</h3>
+                        <a class="btn btn-sm btn-outline-info" href="{{ route('view.add.note', $student->id) }}">New Staff Comment</a>
+                    </div>
+                    <div class="row">
+                    @if (count($student->trainingNotes) >= 1)
+                        <div class="col">
+                            <table id="dataTable" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"><span>Title</span></th>
+                                        <th scope="col"><span>Content</span></th>
+                                        <th scope="col"><span>Published on</span></th>
+                                        <th scope="col"><span>Published By</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($student->trainingNotes as $notes)
+                                        <tr @if($notes->author_id === 1) class="text-info" @endif>
+                                            <th scope="row" class="font-weight-bold blue-text">{{ $notes->title }}</th>
+                                            <td><span>{{ $notes->content }}</span></td>
+                                            <td><span>{{ $notes->created_at->diffForHumans() }}</span></td>
+                                            <td>{{ $notes->instructor->user->fullName('FLC') }}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($student->trainingNotes as $notes)
-                                            <tr @if($notes->author_id === 1) class="text-info" @endif>
-                                                <th scope="row" class="font-weight-bold blue-text">{{ $notes->title }}</th>
-                                                <td><span>{{ $notes->content }}</span></td>
-                                                <td><span>{{ $notes->created_at->diffForHumans() }}</span></td>
-                                                <td>{{ $notes->instructor->user->fullName('FLC') }}</td>
-                                            </tr>
-                                        @endforeach
-                                </table>
-                            </div>
-                        @else
-                            <div class="col">
-                                <span>No staff comments available!</span>
-                            </div>
-                        @endif
+                                    @endforeach
+                            </table>
                         </div>
+                    @else
+                        <div class="col">
+                            <span>No staff comments available!</span>
+                        </div>
+                    @endif
                     </div>
                 </div>
             </div>
+        </div>
         </div>
 
         <!-- Complete Student Modal -->
-        <div class="modal fade" id="completeTrainingModal" tabindex="-1" aria-labelledby="completeTrainingLabel" aria-hidden="true" data-bs-backdrop="static">
-            <div class="modal-dialog">
-                <div class="modal-content">
+        <div class="modal fade" id="completeTrainingModal" tabindex="-1" aria-labelledby="completeTrainingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="completeTrainingLabel">Complete Training</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="completeTrainingModalLabel">
+                            🎉 Complete Training! 🎉
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" style="color: white;" aria-label="Close"><span aria-hidden="true">&times;</button>
                     </div>
-                    <div class="modal-body">
-                        This action will complete this student's training. Are you sure?
+
+                    <div class="modal-body text-center">
+                        <p class="fs-5">Are you sure you want to complete <strong class='blue-text'>{{ $student->user->fullName('FLC') }}</strong>'s training?</p>
+                        <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWg3Z3I1YnFtdmtsanVvMnd3YjE0ODJ4MGVlNW16anlwa2Nzd2Q5MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/BfyJIRCINN0NxwEcsE/giphy.gif" alt="Celebration GIF" class="img-fluid mb-3" style="max-height: 200px;">
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="submitCompleteTrainingForm()">Yes, Complete</button>
+
+                    <div class="modal-footer d-flex justify-content-center align-items-center gap-2">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+
+                        <form method="POST" action="{{ route('training.students.completeTraining', $student->id) }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="btn btn-success"> Yes, Complete Training! </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -371,180 +419,104 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        window.handlePromotionClick = function(isLastLabel) {
-            if (isLastLabel) {
-                new bootstrap.Modal(document.getElementById('completeTrainingModal')).show();
-            } else {
-                document.getElementById('promotionForm').submit();
-            }
-        };
-
-        window.submitCompleteTrainingForm = function() {
-            document.getElementById('promotionForm').submit();
-        };
-    });
-
-    $(document).ready(function() {
-        $('.label-card').click(function() {
-            $('.label-card').removeClass('selected').css('border', '1px solid transparent');
-            $(this).addClass('selected');
-            const labelId = $(this).data('id');
-            $('#selectedLabel').val(labelId);
-            $(this).css('border', '1px solid #ffffff');
-        });
-    });
-
     document.addEventListener('DOMContentLoaded', function () {
-        const button = document.getElementById('toggle-completed');
-        let hidden = false;
+        document.querySelectorAll('.label-card').forEach(card => {
+            card.addEventListener('click', function () {
+                document.querySelectorAll('.label-card').forEach(c => {
+                    c.classList.remove('selected');
+                    c.style.border = '1px solid transparent';
+                });
+                this.classList.add('selected');
+                this.style.border = '1px solid #ffffff';
+                document.getElementById('selectedLabel').value = this.dataset.id;
+            });
+        });
 
-        if (button) {
-            button.addEventListener('click', function () {
-                const rows = document.querySelectorAll('.completed-row');
-                rows.forEach(row => row.style.display = hidden ? '' : 'none');
+        const toggleButton = document.getElementById('toggle-completed');
+        if (toggleButton) {
+            let hidden = false;
+            toggleButton.addEventListener('click', function () {
+                document.querySelectorAll('.completed-row').forEach(row => {
+                    row.style.display = hidden ? '' : 'none';
+                });
                 hidden = !hidden;
-                button.textContent = hidden ? 'Show Completed' : 'Hide Completed';
+                toggleButton.textContent = hidden ? 'Show Completed' : 'Hide Completed';
             });
         }
-    });
 
-    $(document).ready(function () {
-        const confirmBtn = $('#confirmBtn');
-        const instructorSelect = $('#instructorSelect');
-        const removeInstructorInput = $('#removeInstructor');
-        const unassignBtn = $('#unassignBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const instructorSelect = document.getElementById('instructorSelect');
+        const removeInstructorInput = document.getElementById('removeInstructor');
+        const unassignBtn = document.getElementById('unassignBtn');
 
         function updateConfirmButtonState() {
-            const hasSelectedInstructor = instructorSelect.val();
-            const isUnassign = removeInstructorInput.val() === '1';
+            const hasSelectedInstructor = instructorSelect?.value;
+            const isUnassign = removeInstructorInput?.value === '1';
 
-            if (hasSelectedInstructor || isUnassign) {
-                confirmBtn.prop('disabled', false).removeClass('btn-outline-success').addClass('btn-success');
-            } else {
-                confirmBtn.prop('disabled', true).removeClass('btn-success').addClass('btn-outline-success');
+            if (confirmBtn) {
+                confirmBtn.disabled = !(hasSelectedInstructor || isUnassign);
+                confirmBtn.classList.toggle('btn-success', hasSelectedInstructor || isUnassign);
+                confirmBtn.classList.toggle('btn-outline-success', !(hasSelectedInstructor || isUnassign));
             }
 
-            if (isUnassign) {
-                unassignBtn.removeClass('btn-outline-danger').addClass('btn-danger');
-            } else {
-                unassignBtn.removeClass('btn-danger').addClass('btn-outline-danger');
+            if (unassignBtn) {
+                unassignBtn.classList.toggle('btn-danger', isUnassign);
+                unassignBtn.classList.toggle('btn-outline-danger', !isUnassign);
             }
         }
 
-        instructorSelect.change(function () {
-            removeInstructorInput.val('0');
-            unassignBtn.removeClass('active');
+        instructorSelect?.addEventListener('change', function () {
+            removeInstructorInput.value = '0';
+            unassignBtn?.classList.remove('active');
             updateConfirmButtonState();
         });
 
-        unassignBtn.click(function () {
-            if ($(this).hasClass('btn-danger')) {
-                $(this).removeClass('btn-danger').addClass('btn-outline-danger');
-                removeInstructorInput.val('0');
-            } else {
-                $(this).removeClass('btn-outline-danger').addClass('btn-danger');
-                instructorSelect.val('');
-                removeInstructorInput.val('1');
-            }
+        unassignBtn?.addEventListener('click', function () {
+            const isActive = removeInstructorInput.value === '1';
+            removeInstructorInput.value = isActive ? '0' : '1';
+            instructorSelect.value = '';
             updateConfirmButtonState();
         });
-    });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const globalForm = document.querySelector('#header-complete-selected').closest('form');
+        updateConfirmButtonState();
+
         const globalButton = document.getElementById('header-complete-selected');
-        const selectedItems = new Set();
+        if (globalButton) {
+            const globalForm = globalButton.closest('form');
+            const selectedItems = new Set();
 
-        document.querySelectorAll('.toggle-select-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const itemId = this.dataset.itemId;
+            document.querySelectorAll('.toggle-select-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const itemId = this.dataset.itemId;
 
-                if (selectedItems.has(itemId)) {
-                    selectedItems.delete(itemId);
-                    this.classList.remove('btn-success');
-                    this.classList.add('btn-outline-success');
-                } else {
-                    selectedItems.add(itemId);
-                    this.classList.remove('btn-outline-success');
-                    this.classList.add('btn-success');
-                }
-
-                globalButton.disabled = selectedItems.size === 0;
-
-            });
-        });
-
-        globalForm.addEventListener('submit', function (e) {
-
-            globalForm.querySelectorAll('input[name="checklist_items[]"]').forEach(el => el.remove());
-
-            selectedItems.forEach(itemId => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'checklist_items[]';
-                input.value = itemId;
-                globalForm.appendChild(input);
-            });
-
-            if (selectedItems.size === 0) {
-                e.preventDefault();
-            }
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const studentId = {{ $student->id }};
-
-        fetch(`/api/training-notes?student_id=${studentId}`)
-            .then(response => response.json())
-            .then(notes => {
-                const container = document.getElementById('training-notes-container');
-                container.innerHTML = '';
-
-                const trainingNotesCard = container.closest('.card');
-
-                if (!notes.length) {
-                    container.innerHTML = '<span class="alert">No training notes available!</span>';
-                    if (trainingNotesCard) {
-                        trainingNotesCard.style.marginBottom = '30px';
+                    if (selectedItems.has(itemId)) {
+                        selectedItems.delete(itemId);
+                        this.classList.replace('btn-success', 'btn-outline-success');
+                    } else {
+                        selectedItems.add(itemId);
+                        this.classList.replace('btn-outline-success', 'btn-success');
                     }
-                } else {
-                    if (trainingNotesCard) {
-                        trainingNotesCard.style.marginBottom = '';
-                    }
-                }
 
-                const sessionTypes = ['Sweatbox', 'OJT (Monitoring)', 'OTS', 'Generic'];
-                const sessionBadgeColors = ['bg-secondary', 'bg-warning', 'bg-success', 'bg-info'];
-                const afacility = ['Academy', 'Edmonton FIR', 'Gander Oceanic', 'Moncton/Gander FIR', 'Montreal FIR', 'Toronto FIR', 'Vancouver FIR', 'Winnipeg FIR'];
-
-                notes.slice(0, 3).forEach(note => {
-                    const noteHtml = `
-                        <div class="border rounded p-3 mb-3">
-                            <div class="d-flex align-items-start">
-                                <div class="me-3">
-                                    <i class="far fa-sticky-note mr-1"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">${note.instructor_name} - ${afacility[note.facility_id]} ${new Date(note.friendly_time).toLocaleDateString(undefined, {year:'numeric', month:'long', day:'numeric'})}</h6>
-                                    <div class="mt-1">
-                                        <span class="badge bg-info">${note.position_trained}</span>
-                                        <span class="badge ${sessionBadgeColors[note.session_type]}">${sessionTypes[note.session_type]}</span>
-                                    </div>
-                                    <p class="mt-3 mb-0" style="white-space: pre-wrap;">${note.training_note}</p>
-                                    ${note.marking_sheet ? `<hr class="my-3"><a href="${note.marking_sheet}" target="_blank" class="btn btn-outline-info btn-sm"><i class="far fa-list-alt me-1"></i> View Marking Sheet</a>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', noteHtml);
+                    globalButton.disabled = selectedItems.size === 0;
                 });
-            })
-            .catch(err => {
-                console.error('Failed to load training notes:', err);
-                document.getElementById('training-notes-container').innerHTML = '<div>Failed to load training notes!</div>';
-        });
+            });
+
+            globalForm?.addEventListener('submit', function (e) {
+                globalForm.querySelectorAll('input[name="checklist_items[]"]').forEach(el => el.remove());
+
+                selectedItems.forEach(itemId => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'checklist_items[]';
+                    input.value = itemId;
+                    globalForm.appendChild(input);
+                });
+
+                if (selectedItems.size === 0) {
+                    e.preventDefault();
+                }
+            });
+        }
     });
     </script>
 

@@ -92,6 +92,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'example@email.com',
         ]);
 
-        $this->call([\Database\Seeders\LabelListsSeeder::class, \Database\Seeders\ChecklistSeeder::class]);
+        $this->call([UsersTableSeeder::class]);
     }
 }

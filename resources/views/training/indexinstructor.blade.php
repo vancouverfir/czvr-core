@@ -6,6 +6,13 @@
 
 @stop
 
+<style>
+    #training-notes-container {
+    max-height: 545px;
+    overflow-y: auto;
+    }
+</style>
+
 @section('content')
     <!-- Instructors -->
     @include('includes.trainingMenu')
@@ -59,13 +66,6 @@
     </div>
     @elseif (auth()->user()->studentProfile)
 
-    <style>
-        #training-notes-container {
-        max-height: 545px;
-        overflow-y: auto;
-        }
-    </style>
-
     <!-- User -->
     <div class="container" style="margin-top: 20px; margin-bottom: 30px;">
         <div class="row">
@@ -98,7 +98,7 @@
                             <span>No Instructor Assigned!</span>
                         @endif
 
-                        @if (in_array($student->status, [0, 3]))
+                        @if ($student->status == 0)
                             <h5 class="mt-3 font-weight-bold">Availability</h5>
                             <span>{{$student->times ?? 'Not yet submitted!'}}</span>
                         @endif
@@ -168,6 +168,8 @@
                 @if ($student->status == 3)
                     <p>There are currently <strong>{{ $Visitors }}</strong> visitors total!</p>
 
+                    <small class="d-block mb-3"> You last renewed your training request {{ $student->renewed_at?->format('F j, Y H:i') ?? 'not renewed yet' }} </small>
+
                 @elseif ($student->status == 0)
                     @if ($waitlistPosition)
                         <p>You are currently <strong>{{ $waitlistPosition }}</strong> on the waitlist!</p>
@@ -209,19 +211,70 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <h3 class="font-weight-bold blue-text mb-0">Latest Vatcan Notes</h3>
-                    @csrf
                     <div>
-                        <a href="{{ route('training.students.allnotes', $student->id) }}" class="text-primary btn btn-sm btn-outline-info ms-2">
-                            View All
-                        </a>
+                        @if ($student)
+                            <a href="{{ route('training.students.allnotes', $student->id) }}"
+                            class="text-primary btn btn-sm btn-outline-info ms-2">
+                                View All
+                            </a>
+                        @endif
                     </div>
                 </div>
                 <div class="text-muted small mt-1">
                     Notes left by non Vancouver FIR members not shown!
                 </div>
             </div>
+
             <div class="card-body" id="training-notes-container">
-                <span>Loading latest Vatcan Notes!</span>
+                @php
+                    $sessionTypes = ['Sweatbox', 'OJT (Monitoring)', 'OTS', 'Generic'];
+                    $sessionBadgeColors = ['bg-secondary', 'bg-warning', 'bg-success', 'bg-info'];
+                    $afacility = [
+                        'Academy', 'Edmonton FIR', 'Gander Oceanic', 'Moncton/Gander FIR',
+                        'Montreal FIR', 'Toronto FIR', 'Vancouver FIR', 'Winnipeg FIR'
+                    ];
+                @endphp
+
+                @if (empty($vatcanNotes))
+                    <span class="alert">You have no training notes available!</span>
+                @else
+                    @foreach (array_slice($vatcanNotes, 0, 3) as $note)
+                        <div class="border rounded p-3 mb-3">
+                            <div class="d-flex align-items-start">
+                                <div class="me-3">
+                                    <i class="far fa-sticky-note mr-1"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        {{ $note['instructor_name'] ?? 'Unknown' }} -
+                                        {{ $afacility[$note['facility_id'] ?? -1] ?? 'Unknown' }}
+                                        {{ \Carbon\Carbon::parse($note['friendly_time'] ?? $note['created_at'] ?? now())->format('F j, Y') }}
+                                    </h6>
+                                    <div class="mt-1">
+                                        @if (!empty($note['position_trained']))
+                                            <span class="badge bg-info">{{ $note['position_trained'] }}</span>
+                                        @endif
+                                        @php $stype = $note['session_type'] ?? 3; @endphp
+                                        <span class="badge {{ $sessionBadgeColors[$stype] ?? 'bg-info' }}">
+                                            {{ $sessionTypes[$stype] ?? 'Generic' }}
+                                        </span>
+                                    </div>
+                                    @if (!empty($note['training_note']))
+                                        <p class="mt-3 mb-0" style="white-space: pre-wrap;">{{ $note['training_note'] }}</p>
+                                    @endif
+
+                                    @if (!empty($note['marking_sheet']))
+                                        <hr class="my-3">
+                                        <a href="{{ $note['marking_sheet'] }}" target="_blank"
+                                        class="btn btn-outline-info btn-sm">
+                                            <i class="far fa-list-alt me-1"></i> View Marking Sheet
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>
@@ -260,60 +313,6 @@
                 button.textContent = hidden ? 'Show Completed' : 'Hide Completed';
             });
         }
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const studentId = {{ $student->id }};
-
-        fetch(`/api/training-notes?student_id=${studentId}`)
-            .then(response => response.json())
-            .then(notes => {
-                const container = document.getElementById('training-notes-container');
-                container.innerHTML = '';
-
-                const trainingNotesCard = container.closest('.card');
-
-                if (!notes.length) {
-                    container.innerHTML = '<span class="alert">You have no training notes available!</span>';
-                    if (trainingNotesCard) {
-                        trainingNotesCard.style.marginBottom = '30px';
-                    }
-                } else {
-                    if (trainingNotesCard) {
-                        trainingNotesCard.style.marginBottom = '';
-                    }
-                }
-
-                const sessionTypes = ['Sweatbox', 'OJT (Monitoring)', 'OTS', 'Generic'];
-                const sessionBadgeColors = ['bg-secondary', 'bg-warning', 'bg-success', 'bg-info'];
-                const afacility = ['Academy', 'Edmonton FIR', 'Gander Oceanic', 'Moncton/Gander FIR', 'Montreal FIR', 'Toronto FIR', 'Vancouver FIR', 'Winnipeg FIR'];
-
-                notes.slice(0, 3).forEach(note => {
-                    const noteHtml = `
-                        <div class="border rounded p-3 mb-3">
-                            <div class="d-flex align-items-start">
-                                <div class="me-3">
-                                    <i class="far fa-sticky-note mr-1"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">${note.instructor_name} - ${afacility[note.facility_id]} ${new Date(note.friendly_time).toLocaleDateString(undefined, {year:'numeric', month:'long', day:'numeric'})}</h6>
-                                    <div class="mt-1">
-                                        <span class="badge bg-info">${note.position_trained}</span>
-                                        <span class="badge ${sessionBadgeColors[note.session_type]}">${sessionTypes[note.session_type]}</span>
-                                    </div>
-                                    <p class="mt-3 mb-0" style="white-space: pre-wrap;">${note.training_note}</p>
-                                    ${note.marking_sheet ? `<hr class="my-3"><a href="${note.marking_sheet}" target="_blank" class="btn btn-outline-info btn-sm"><i class="far fa-list-alt me-1"></i> View Marking Sheet</a>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', noteHtml);
-                });
-            })
-            .catch(err => {
-                console.error('Failed to load training notes:', err);
-                document.getElementById('training-notes-container').innerHTML = '<div>Failed to load training notes!</div>';
-        });
     });
     </script>
 

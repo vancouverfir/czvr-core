@@ -76,7 +76,9 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-header">Actions</div>
-                        <div class="card-body"></div>
+                        <div class="card-body">
+                            <span>I don't know what to put here for mentors sorry lol</span>
+                        </div>
                     </div>
                 </div>
             @endif

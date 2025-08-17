@@ -39,8 +39,7 @@ class ChecklistController extends Controller
         return back()->with('success', 'Checklist items marked as completed!');
     }
 
-    // --- LABEL AND CHECKLIST HELPERS ---
-    private function getTrainingOrder(bool $visitor = false): array
+    public function getTrainingOrder(bool $visitor = false): array
     {
         $query = $visitor ? LabelChecklistVisitorMap::class : LabelChecklistMap::class;
 
@@ -77,7 +76,6 @@ class ChecklistController extends Controller
         }
     }
 
-    // --- T2 CHECKLIST ASSIGNMENT ---
     public function assignT2Checklist(Request $request, Student $student)
     {
         $isVisitor = $student->user->visitor;
@@ -103,7 +101,6 @@ class ChecklistController extends Controller
         return back()->with('success', "T2 checklists assigned for {$currentLabel}!");
     }
 
-    // --- VISITOR PROMOTION ---
     public function promoteVisitor(Request $request, Student $student)
     {
         $isNonVatcanVisitor = $student->user->division_code !== 'CAN';
@@ -118,7 +115,10 @@ class ChecklistController extends Controller
 
         $nextLabelName = $this->NextVisitorLabel($currentLabel, $trainingOrder, $isNonVatcanVisitor);
         if (! $nextLabelName) {
-            return back()->with('error', 'Visitor cannot be promoted further!');
+            $student->labels()->delete();
+            $student->checklistItems()->delete();
+            $student->update(['status' => 9]);
+            return back()->with('success', 'Completed training for '.$student->user->fullName('FLC').'!');
         }
 
         $this->assignNewLabel($student, $nextLabelName, $isNonVatcanVisitor ? 'T3' : 'T1', true);
@@ -159,7 +159,6 @@ class ChecklistController extends Controller
         (new LabelController())->updateStatus($student->refresh());
     }
 
-    // --- STUDENT PROMOTION ---
     public function promoteStudent(Request $request, Student $student)
     {
         $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
@@ -173,7 +172,10 @@ class ChecklistController extends Controller
         $currentIndex = array_search($currentLabel, $trainingOrder);
         $nextLabelName = $trainingOrder[$currentIndex + 1] ?? null;
         if (! $nextLabelName) {
-            return back()->with('error', 'Student cannot be promoted further!');
+            $student->labels()->delete();
+            $student->checklistItems()->delete();
+            $student->update(['status' => 9]);
+            return back()->with('success', 'Completed training for '.$student->user->fullName('FLC').'!');
         }
 
         $this->assignNewLabel($student, $nextLabelName, 'T1');

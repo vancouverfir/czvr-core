@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\AtcTraining;
 
+use App\Http\Controllers\AtcTraining\VatcanController;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Checklist;
 use App\Models\AtcTraining\Instructor;
 use App\Models\AtcTraining\RosterMember;
+use App\Models\AtcTraining\LabelChecklistMap;
+use App\Models\AtcTraining\LabelChecklistVisitorMap;
 use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
@@ -18,7 +21,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TrainingController extends Controller
 {
-    public function index()
+    public function index(VatcanController $vatcan)
     {
         $user = Auth::user();
         if (! $user) {
@@ -28,7 +31,13 @@ class TrainingController extends Controller
         $student = Student::where('user_id', $user->id)->first();
         $instructor = Instructor::where('user_id', $user->id)->first();
 
-        $labels = $student ? StudentLabel::cursor()->filter(fn ($label) => ! StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists()) : collect();
+        $labels = $student
+            ? StudentLabel::cursor()->filter(fn ($label) =>
+                ! StudentInteractiveLabels::where('student_id', $student->id)
+                    ->where('student_label_id', $label->id)
+                    ->exists()
+            )
+            : collect();
 
         $yourStudents = $instructor ? Student::where('instructor_id', $instructor->id)->get() : null;
 
@@ -39,24 +48,31 @@ class TrainingController extends Controller
 
         $Visitors = Student::where('status', 3)->count();
 
+        $vatcanNotes = [];
         if ($student) {
             $training_time = TrainingWaittime::find(1);
 
-            $student->renewed_at;
-
             if (in_array($student->status, [0, 3])) {
-                $waitlistIds = Student::where('status', $student->status)->orderBy('position')->pluck('id')->toArray();
-
-                $index = array_search($student->id, $waitlistIds);
+                $waitlistIds = Student::where('status', $student->status)
+                    ->orderBy('position')
+                    ->pluck('id')
+                    ->toArray();
+                $index = array_search($student->id, $waitlistIds, true);
                 $waitlistPosition = $index !== false ? $index + 1 : null;
             }
 
-            $studentChecklistGroups = $student->checklistItems->groupBy(function ($item) {
-                return $item->checklistItem->checklist->name;
-            });
+            $studentChecklistGroups = $student->checklistItems->groupBy(
+                fn ($item) => $item->checklistItem->checklist->name
+            );
+
+            $vatcanNotes = collect($vatcan->getVatcanNotes($student->id))
+                ->sortByDesc('friendly_time')
+                ->take(3)
+                ->values()
+                ->all();
         }
 
-        return view('training.indexinstructor', compact('yourStudents', 'student', 'Visitors', 'waitlistPosition', 'studentChecklistGroups', 'training_time'));
+        return view('training.indexinstructor', compact('yourStudents', 'student', 'Visitors', 'waitlistPosition', 'studentChecklistGroups', 'training_time', 'vatcanNotes'));
     }
 
     public function joinvancouver()
@@ -71,7 +87,7 @@ class TrainingController extends Controller
         return view('training.resources', compact('atcResources'));
     }
 
-    public function allNotes($id)
+    public function allNotes($id, VatcanController $vatcan)
     {
         $student = Student::findOrFail($id);
 
@@ -79,7 +95,12 @@ class TrainingController extends Controller
             abort(403);
         }
 
-        return view('training.students.viewstudentnotes', compact('student'));
+        $vatcanNotes = collect($vatcan->getVatcanNotes($student->id))
+            ->sortByDesc('friendly_time')
+            ->values()
+            ->all();
+
+        return view('training.students.viewstudentnotes', compact('student', 'vatcanNotes'));
     }
 
     public function newNoteView($id)
@@ -111,13 +132,15 @@ class TrainingController extends Controller
 
     public function completeTraining(Request $request, Student $student)
     {
+        $student->instructor_id = null;
+
         $student->labels()->delete();
 
         $student->checklistItems()->delete();
 
-        $student->update(['status' => 2]);
+        $student->update(['status' => 9]);
 
-        return back()->with('success', "Completed training for {$student->user->name}!");
+        return redirect()->route('training.students.completed')->with('success', 'Completed training for '.$student->user->fullName('FLC').'!');
     }
 
     public function trainingTime()
@@ -220,7 +243,7 @@ class TrainingController extends Controller
 
     public function completedStudents()
     {
-        $students = Student::where('status', 2)->get();
+        $students = Student::where('status', 9)->get();
         $potentialstudent = User::all();
         $instructors = Instructor::all();
 
@@ -240,7 +263,7 @@ class TrainingController extends Controller
         return view('training.students.waitlist', compact('waitlistStudents', 'visitorWaitlist', 'potentialstudent', 'instructors'));
     }
 
-    public function viewStudent($id)
+    public function viewStudent($id, VatcanController $vatcan)
     {
         $student = Student::findOrFail($id);
         $instructors = Instructor::all();
@@ -251,9 +274,31 @@ class TrainingController extends Controller
             return $item->checklistItem->checklist->name;
         });
 
-        $labels = StudentLabel::cursor()->filter(fn ($label) => ! StudentInteractiveLabels::where('student_id', $student->id)->where('student_label_id', $label->id)->exists());
+        $labels = StudentLabel::cursor()->filter(fn ($label) => 
+            ! StudentInteractiveLabels::where('student_id', $student->id)
+                ->where('student_label_id', $label->id)
+                ->exists()
+        );
 
-        return view('training.students.viewstudent', compact('student', 'instructors', 'times', 'labels', 'checklists', 'studentChecklistGroups'));
+        $ChecklistController = new \App\Http\Controllers\AtcTraining\ChecklistController();
+
+        $isVisitor = in_array($student->status, [3, 5]);
+
+        $trainingOrder = $ChecklistController->getTrainingOrder($isVisitor);
+
+        $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
+        $currentLabel = collect($trainingOrder)->first(fn($label) => in_array($label, $labelNames));
+
+        $currentIndex = array_search($currentLabel, $trainingOrder);
+        $nextLabel = $trainingOrder[$currentIndex + 1] ?? null;
+
+        $vatcanNotes = collect($vatcan->getVatcanNotes($student->id))
+            ->sortByDesc('friendly_time')
+            ->take(3)
+            ->values()
+            ->all();
+
+        return view('training.students.viewstudent', compact('student', 'instructors', 'times', 'labels', 'checklists', 'studentChecklistGroups', 'isVisitor', 'trainingOrder', 'currentLabel', 'nextLabel', 'vatcanNotes'));
     }
 
     public function sort(Request $request)
@@ -283,7 +328,7 @@ class TrainingController extends Controller
         $student->times = $validated['times'];
         $student->save();
 
-        $student->labels()->where('student_label_id', 1)->delete();
+        $student->labels()->where('student_label_id', 7)->delete();
 
         return redirect()->back()->with('success', 'Times updated successfully!');
     }

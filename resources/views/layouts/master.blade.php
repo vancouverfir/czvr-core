@@ -208,19 +208,19 @@
 
                             <div class="dropdown-menu dropdown-menu-right dropdown-default py-0" aria-labelledby="navbarDropdownMenuLink-333">
                                     <a class="dropdown-item {{ Request::is('dashboard') || Request::is('dashboard/*')}}" href="{{route('dashboard.index')}}">
-                                        <i class="fas fa-chart-pie mr-2"></i>Dashboard
+                                        <i class="fas fas fa-tachometer-alt mr-2"></i>Dashboard
                                     </a>
                                 @if (auth()->check() && (auth()->user()->instructorProfile))
                                     <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
-                                        <i class="fas fa-user-graduate mr-2"></i>Instructors
+                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Instructors
                                     </a>
                                 @elseif (auth()->check() && auth()->user()->permissions == 2)
                                     <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
-                                        <i class="fas fa-user-graduate mr-2"></i>Mentors
+                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Mentors
                                     </a>
                                 @elseif (auth()->check() && (auth()->user()->studentProfile))
                                     <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
-                                        <i class="fas fa-user-graduate mr-2"></i>Training
+                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Training
                                     </a>
                                 @endif
                                     <a class="dropdown-item red-text" href="{{route('auth.logout')}}">
