@@ -1,5 +1,7 @@
 @extends('layouts.dashboard')
+
 @section('content')
+
 @section('title', 'Dashboard - Vancouver FIR')
 
 <style>
@@ -57,29 +59,6 @@
         <br class="my-2">
         <div class="row">
             <div class="col">
-                @if (Auth::user()->permissions >= 1 || $certification == "training")
-                    <div class="card">
-                        <div class="card-body">
-                            <h3 class="font-weight-bold blue-text pb-2">ATC Resources</h3>
-                            @if(Auth::user()->permissions >= 4)
-                                <a href="{{route('atcresources.index')}}">Manage Resources</a><br></br>
-                            @endif
-                            <div class="list-group" style="border-radius: 0.5em !important">
-                                @foreach($atcResources as $resource)
-                                    @if($resource->atc_only && Auth::user()->permissions < 1)
-                                        @continue
-                                    @else
-                                        <a href="{{$resource->url}}" target="_new"
-                                           class="list-group-item list-group-item-action">
-                                            {{$resource->title}}
-                                        </a>
-                                    @endif
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                <br>
                 <div data-step="2" data-intro="Here is where you manage and view the data we store on you and your Vancouver FIR Profile." class="card ">
                     <div class="card-body pb-0">
                         <h3 class="font-weight-bold blue-text pb-2">Profile</h3>
@@ -100,8 +79,6 @@
                                 <div data-step="4" data-intro="Here you can link your Discord account to receive reminders for training sessions, and gain access to the CZVR Discord.">
                                     <h5 class="mt-2 font-weight-bold blue-text">Discord</h5>
                                     <hr>
-
-
                                     @if (!Auth::user()->hasDiscord())
                                         <p class="mt-1"><i class="fa fa-times-circle" style="color:red"></i> You don't have a linked Discord account.</p>
                                         <a href="#" class="btn-sm btn-primary m-0" data-toggle="modal" data-target="#discordModal" class="mt-1">Link Discord account</a>
@@ -291,6 +268,25 @@
                         </div>
                     </div>
                     <br>
+                    @if(Auth::user()->permissions >= 5)
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="font-weight-bold blue-text pb-2">Site Admin</h3>
+                            <ul class="list-unstyled mt-2 mb-0">
+                                <li class="mb-2">
+                                    <a href="{{route('settings.index')}}" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-colour">Settings</span></a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="{{route('network.index')}}" style="text-decoration:none;">
+                                    <span class="blue-text"><i class="fas fa-chevron-right"></i></span>
+                                    &nbsp;
+                                    <span class="text-colour">View network data</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    @endif
                 @endif
                 {{--
                 @if(Auth::user()->permissions >= 3)
@@ -449,7 +445,7 @@
                                 @if (Auth::user()->rosterProfile->status == "training")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
-                                            <h3><span class="badge rounded shadow-none blue">
+                                            <h3><span class="badge rounded shadow-none purple">
                             {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                           </span></h3>
                                         @elseif (Auth::user()->rosterProfile->currency >= 3.0)
@@ -466,7 +462,7 @@
                                 @if (Auth::user()->rosterProfile->status == "home" && Auth::user()->rosterProfile->staff == "mentor")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
-                                            <h3><span class="badge rounded shadow-none blue">
+                                            <h3><span class="badge rounded shadow-none purple">
                                                 {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                                             </span></h3>
                                         @elseif (Auth::user()->rosterProfile->currency >= 3.0)
@@ -479,7 +475,7 @@
                                 @elseif (Auth::user()->rosterProfile->status == "home" && Auth::user()->rosterProfile->staff == "staff")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
-                                            <h3><span class="badge rounded shadow-none blue">
+                                            <h3><span class="badge rounded shadow-none purple">
                                                 {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                                             </span></h3>
                                         @elseif (Auth::user()->rosterProfile->currency >= 3.0)
@@ -492,7 +488,7 @@
                                 @elseif (Auth::user()->rosterProfile->status == "home" && Auth::user()->rosterProfile->staff == "exec")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 5.0)
-                                            <h3><span class="badge rounded shadow-none blue">
+                                            <h3><span class="badge rounded shadow-none purple">
                                                 {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                                             </span></h3>
                                         @elseif (Auth::user()->rosterProfile->currency >= 5.0)
@@ -504,11 +500,11 @@
                                     <p>You require <b>3 hours</b> of activity every quarter!</p>
                                 @elseif (Auth::user()->rosterProfile->status == "home")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
-                                        @if (Auth::user()->rosterProfile->currency < 2.0)
-                                            <h3><span class="badge rounded shadow-none blue">
+                                        @if (Auth::user()->rosterProfile->currency < 3.0)
+                                            <h3><span class="badge rounded shadow-none purple">
                                                 {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                                             </span></h3>
-                                        @elseif (Auth::user()->rosterProfile->currency >= 2.0)
+                                        @elseif (Auth::user()->rosterProfile->currency >= 3.0)
                                             <h3><span class="badge rounded shadow-none green">
                                                 {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                                             </span></h3>
@@ -521,17 +517,17 @@
                                 <!--Vancouver Vstr Cntrlr Hrs-->
                                 @if (Auth::user()->rosterProfile->status == "visit")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
-                                        @if (Auth::user()->rosterProfile->currency < 2.0)
-                                            <h3><span class="badge rounded shadow-none blue">
+                                        @if (Auth::user()->rosterProfile->currency < 3.0)
+                                            <h3><span class="badge rounded shadow-none purple">
                               {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                           </span></h3>
-                                        @elseif (Auth::user()->rosterProfile->currency >= 2.0)
+                                        @elseif (Auth::user()->rosterProfile->currency >= 3.0)
                                             <h3><span class="badge rounded shadow-none green">
                               {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                           </span></h3>
                                         @endif
                                     @endif
-                                    <p>You require <b>3 hour</b> of activity every quarter!</p>
+                                    <p>You require <b>3 hours</b> of activity every quarter!</p>
                                 @endif
 
                             <!--End Vancouver Cntrlr Hours-->
@@ -540,7 +536,7 @@
                                 @if (Auth::user()->rosterProfile->status == "instructor" && Auth::user()->rosterProfile->staff == "exec")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 5.0)
-                                            <h3><span class="badge rounded shadow-none blue">
+                                            <h3><span class="badge rounded shadow-none purple">
                                                 {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                                             </span></h3>
                                         @elseif (Auth::user()->rosterProfile->currency >= 5.0)
@@ -553,7 +549,7 @@
                                 @elseif (Auth::user()->rosterProfile->status == "instructor")
                                     @if (!Auth::user()->rosterProfile->currency == 0)
                                         @if (Auth::user()->rosterProfile->currency < 3.0)
-                                            <h3><span class="badge rounded shadow-none blue">
+                                            <h3><span class="badge rounded shadow-none purple">
                                                 {{decimal_to_hm(Auth::user()->rosterProfile->currency)}} hours recorded
                                             </span></h3>
                                         @elseif (Auth::user()->rosterProfile->currency >= 3.0)
@@ -742,30 +738,6 @@
                             </div>
                         </div>
                         <br/>
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="font-weight-bold blue-text pb-2">Site Admin</h3>
-                                <ul class="list-unstyled mt-2 mb-0">
-                                    <li class="mb-2">
-                                        <a href="{{route('settings.index')}}" style="text-decoration:none;"><span
-                                                class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                            <span
-                                                class="text-colour">Settings</span></a>
-                                    </li>
-                                    <li class="mb-2">
-                                        <a href="{{route('network.index')}}" style="text-decoration:none;">
-                                <span class="blue-text">
-                                    <i class="fas fa-chevron-right"></i>
-                                </span>
-                                            &nbsp;
-                                            <span class="text-colour">
-                                    View network data
-                                </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
                     @endif
                 </div>
             </div>
@@ -876,6 +848,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <img style="height: 70px;" src="{{ asset('/img/discord/czvrdiscord.png') }}" class="img-fluid mb-2 d-block mx-auto" alt="">
                         <p>Linking your Discord account with Vancouver FIR allows you to:</p>
                         <ul>
                             <li>Join our Discord community</li>
@@ -901,7 +874,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Fair Warning: Unlinking your account will:</p>
+                        <p>Fair Warning! Unlinking your account will:</p>
                         <ul>
                             <li>Remove you from the CZVR Discord, if you're a member</li>
                             <li>Remove a Discord avatar if you have it selected</li>

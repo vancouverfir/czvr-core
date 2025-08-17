@@ -27,12 +27,6 @@
         <meta name="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
-        <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&display=swap">
-        </noscript>
         <link rel="preload" as="style" href="{{ asset('css/bootstrap.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/mdb.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/all.css') }}" onload="this.onload=null;this.rel='stylesheet'">
@@ -213,17 +207,30 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right dropdown-default py-0" aria-labelledby="navbarDropdownMenuLink-333">
-                                <a class="dropdown-item {{ Request::is('dashboard') || Request::is('dashboard/*')}}" href="{{route('dashboard.index')}}">
-                                    <i class="fa fa-tachometer-alt mr-2"></i>Dashboard
-                                </a>
-                                <a class="dropdown-item red-text" href="{{route('auth.logout')}}">
-                                    <i class="fa fa-sign-out-alt mr-2"></i>&nbsp;Logout
-                                </a>
+                                    <a class="dropdown-item {{ Request::is('dashboard') || Request::is('dashboard/*')}}" href="{{route('dashboard.index')}}">
+                                        <i class="fas fas fa-tachometer-alt mr-2"></i>Dashboard
+                                    </a>
+                                @if (auth()->check() && (auth()->user()->instructorProfile))
+                                    <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
+                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Instructors
+                                    </a>
+                                @elseif (auth()->check() && auth()->user()->permissions == 2)
+                                    <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
+                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Mentors
+                                    </a>
+                                @elseif (auth()->check() && (auth()->user()->studentProfile))
+                                    <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
+                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Training
+                                    </a>
+                                @endif
+                                    <a class="dropdown-item red-text" href="{{route('auth.logout')}}">
+                                        <i class="fa fa-sign-out-alt mr-2"></i>&nbsp;Logout
+                                    </a>
                             </div>
                         </li>
                         @endauth
                         <li class="nav-item d-flex align-items-center">
-                            <a href="https://mobile.twitter.com/vancouverfir" class="nav-link waves-effect waves-light" target="_BLANK" >
+                            <a href="https://www.twitter.com/vancouverfir" class="nav-link waves-effect waves-light" target="_BLANK" >
                                 <i style="font-size: 1.7em;" class="fab fa-twitter"></i>
                             </a>
                         </li>
@@ -279,7 +286,7 @@
     <footer class="page-footer text-light font-small py-4 {{Request::is('/dashboard') ? 'mt-5' : ''}}">
         <div class="container">
             <p style="color:white">For Flight Simulation Use Only - Not to be used for real-world navigation. By using this site, you agree to hold harmless and indemnify the owners and authors of these web pages, those listed on these pages, and all pages that this site that may be pointed to (i.e. external links).</p>
-            <p style="color:white">Copyright © {{ date('Y') }} Vancouver FIR | All Rights Reserved.</p>
+            <p style="color:white">Copyright © {{ date('Y') }} Vancouver FIR | All Rights Reserved</p>
             <div class="flex-left mt-3">
             <a href="{{route('about')}}">Github</a>
                 &nbsp;

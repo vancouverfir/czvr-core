@@ -57,7 +57,7 @@ def send_webhook(message):
     try:
         response = requests.post(WEBHOOK_URL, json=payload)
         response.raise_for_status()
-        print("Webhook error sent")
+        print("Webhook error sent!")
     except requests.exceptions.RequestException as request_exception:
         print("Webhook error failed to send ", request_exception)
 
@@ -76,9 +76,9 @@ except mariadb.Error as e:
     sys.exit(1)
 
 def fetch_event():
-    """Using the vatsim API to fetch events"""
+    """Using the vatsim API to fetch Events"""
 
-    print("Fetching Events...")
+    print("Fetching Events!")
     try:
         req = requests.get(APIEvent + simKey, timeout=5)
     except requests.exceptions.RequestException as request_exception:
@@ -91,16 +91,16 @@ def fetch_event():
 
 def trim_events(data):
     """
-    trimming the DB of any old events. Date/Time format is YYYY-MM-DD HH:MM:SS
+    Trimming the DB of any old Events! Date/Time format is YYYY-MM-DD HH:MM:SS
     """
-    print("Trimming events")
+    print("Trimming Events")
 
     rm_deleted_events(data)
 
     for i in data["data"]:
         print("End time ", i["end"])
         # End time ex. is YYYY-MM-DD HH:MM:SS
-        # Example: 2021-04-04 01:00:00
+        # Example: 2021-01-01 01:11:11
 
         event = datetime.strptime(str(i["end"])[:16], "%Y-%m-%d %H:%M")
 
@@ -114,31 +114,31 @@ def trim_events(data):
         )  # nicely formatting our datetime string
 
         if event.date() > present.date() or event.date() == present.date() and event.time() > present.time():
-                print("Event is within period")
+            print("Event is within period!")
 
-                arrival = magic_string(i["airports"]["arrival"])
-                departure = magic_string(i["airports"]["departure"])
+            arrival = magic_string(i["airports"]["arrival"])
+            departure = magic_string(i["airports"]["departure"])
 
-                # the keys for ID, name, start, end, description,imageurl,airports,dept, and arrivals
-                data = {
-                    "data": [
-                        {
-                            "id": i["id"],
-                            "name": i["name"],
-                            "start_timestamp": str(i["start"])[:16],
-                            "end_timestamp": str(i["end"])[:16],
-                            "description": i["description"],
-                            "image_url": i["image_url"],
-                            "departure_icao": departure,
-                            "arrival_icao": arrival,
-                            "slug": slug
-                        }
-                    ]
-                }
+            # the keys for ID, name, start, end, description,imageurl,airports,dept, and arrivals
+            data = {
+                "data": [
+                    {
+                        "id": i["id"],
+                        "name": i["name"],
+                        "start_timestamp": str(i["start"])[:16],
+                        "end_timestamp": str(i["end"])[:16],
+                        "description": i["description"],
+                        "image_url": i["image_url"],
+                        "departure_icao": departure,
+                        "arrival_icao": arrival,
+                        "slug": slug
+                    }
+                ]
+            }
 
-                asyncio.run(stow_event(data))
+            asyncio.run(stow_event(data))
         else:
-            print("Event is outside of period, ignoring...")
+            print("Event is outside of period, ignoring!")
 
 
 def magic_string(stron):
@@ -163,7 +163,7 @@ async def stow_event(data):
     """
 
     # stowing the fetched events in the DB
-    print("Stowing Events in DB...")
+    print("Stowing Events in DB!")
     cur = connectSQL.cursor()
 
     # Extract all event IDs from the incoming data
@@ -171,13 +171,13 @@ async def stow_event(data):
 
     try:
         # Batch fetch existing event IDs from the database
-        print("Selecting event IDs to check for updates...")
+        print("Selecting event IDs to check for updates!")
         cur.execute("SELECT id FROM events WHERE id IN (%s)" % ','.join(['?'] * len(event_ids)), event_ids)
         existing_event_ids = set(row[0] for row in cur.fetchall())
         print("Existing event IDs fetched.")
     except mariadb.Error as db_error:
-        print(f"Error fetching existing event IDs: {db_error}")
-        send_webhook(f"Error fetching existing event IDs: {db_error}")
+        print(f"Error fetching existing event IDs! {db_error}")
+        send_webhook(f"Error fetching existing event IDs! {db_error}")
         sys.exit(1)
 
     # Loop through the events in the data payload
@@ -194,7 +194,7 @@ async def stow_event(data):
 
         # Check if the event already exists using the cached set
         if id in existing_event_ids:
-            print(f"Event {id} exists, updating...")
+            print(f"Event {id} exists, updating!")
             try:
                 cur.execute(
                     "UPDATE events SET name = ?, start_timestamp = ?, end_timestamp = ?, description = ?, "
@@ -217,7 +217,7 @@ async def stow_event(data):
                 send_webhook(f"Iterative Error while updating event {id}: {db_error}")
                 sys.exit(1)
         else:
-            print(f"Event {id} not found, inserting...")
+            print(f"Event {id} not found, inserting!")
             try:
                 cur.execute(
                     "INSERT INTO events (id, name, start_timestamp, end_timestamp, description, image_url, "
@@ -265,7 +265,7 @@ def fetch_roster():
     # Using the vatsium API to fetch the user roster
     """
 
-    print("Fetching Users...")
+    print("Fetching Users!")
     try:
         req = requests.get(APIUsers + simKey, timeout=5)
     except requests.exceptions.RequestException as request_exception:
@@ -274,8 +274,9 @@ def fetch_roster():
     resp = req.json()
     for i in resp["data"]["controllers"]:
         print("CID =", i["cid"])
-        rating_short = conv_rating(i["rating"])
         fullname = i["first_name"] + " " + i["last_name"]
+        facility_join = i.get("facility_join")
+        rating_short = conv_rating(i["rating"])
         print("Users Full Name:", fullname)
         asyncio.run(
             stow_roster(
@@ -285,6 +286,7 @@ def fetch_roster():
                 i["rating"],
                 i["email"],
                 fullname,
+                facility_join,
                 rating_short,
             )
         )
@@ -297,7 +299,7 @@ def fetch_visit_roster():
     """
     # Using the vatsium API to fetch the user roster
 
-    print("Fetching Visitors...")
+    print("Fetching Visitors!")
     try:
         req = requests.get(APIUsers + simKey, timeout=5)
     except requests.exceptions.RequestException as request_exception:
@@ -306,8 +308,15 @@ def fetch_visit_roster():
     resp = req.json()
     for i in resp["data"]["visitors"]:
         print("CID =", i["cid"])
-        rating_short = conv_rating(i["rating"])
         fullname = i["first_name"] + " " + i["last_name"]
+        facility_join = None
+        for vf in i.get("visiting_facilities", []):
+            if vf["fir"]["name_long"] == "Vancouver FIR":
+                dt = datetime.strptime(vf["created_at"].rstrip("Z"), "%Y-%m-%dT%H:%M:%S.%f")
+                facility_join = dt.strftime("%Y-%m-%d %H:%M:%S")
+                break
+
+        rating_short = conv_rating(i["rating"])
         print("Users Full Name:", fullname)
         asyncio.run(
             stow_visit_roster(
@@ -317,6 +326,7 @@ def fetch_visit_roster():
                 i["rating"],
                 i["email"],
                 fullname,
+                facility_join,
                 rating_short,
             )
         )
@@ -332,232 +342,221 @@ def conv_rating(rating):
         rating (int): the input integer rating
 
     Returns:
-        Str: the output rating string
+        str: the output rating string
     """
-    if rating == 1:
-        return "OBS"
-    elif rating == 2:
-        return "S1"
-    elif rating == 3:
-        return "S2"
-    elif rating == 4:
-        return "S3"
-    elif rating == 5:
-        return "C1"
-    elif rating == 6:
-        return "C2"
-    elif rating == 7:
-        return "C3"
-    elif rating == 8:
-        return "I1"
-    elif rating == 9:
-        return "I2"
-    elif rating == 10:
-        return "I3"
-    elif rating == 11:
-        return "SUP"
-    elif rating == 12:
-        return "ADM"
-    else:
-        print("not a valid rating!")
-        # sys.exit()
+    rating_map = {
+        1: "OBS",
+        2: "S1",
+        3: "S2",
+        4: "S3",
+        5: "C1",
+        6: "C2",
+        7: "C3",
+        8: "I1",
+        9: "I2",
+        10: "I3",
+        11: "SUP",
+        12: "ADM"
+    }
 
+    try:
+        return rating_map[rating]
+    except KeyError:
+        raise ValueError(f"Not a valid rating {rating}")
 
 def trim_roster():
     """
     Cleans up the roster and returns a list of players
     """
-    print("Cleaning up roster")
+    print("Cleaning up roster!")
     cur = connectSQL.cursor()
     bye = connectSQL.cursor()
-    cur.execute("SELECT cid FROM roster")
+    cur.execute("SELECT user_id FROM roster")
     for i in cur:
         str_cid = str(i)[1:-2]
         db_cid = int(str_cid)
         if db_cid not in CIDSTOR:
             print("invalid CID:", db_cid)
             bye.execute("DELETE FROM session_logs WHERE roster_member_id=?", (db_cid,))
-            bye.execute("DELETE FROM roster WHERE cid=?", (db_cid,))
+            bye.execute("DELETE FROM roster WHERE user_id=?", (db_cid,))
             bye.execute(
                 "UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
             print("Invalid CID Removed from DB... BUH BYE")
 
-
-async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_short):
+async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_join, rating_short):
     """
-    stores new users in the roster
+    Stores new users in the roster or updates existing ones
     """
-    print("Stowing users in DB...")
-    cur = connectSQL.cursor()
-    sto = connectSQL.cursor()
-
-    print("Fetching permissions for roster...")
-    cur.execute("SELECT id, permissions FROM users WHERE id IN (?)", (cid,))
-    permissions_map = {row[0]: row[1] for row in cur.fetchall()}
-    print("Permissions fetched for roster.")
-
-    if cid in permissions_map:
-        permissions = permissions_map[cid]
-        print(f"Permissions for {cid}: {permissions}")
-        if permissions > 0:
-            try:
-                sto.execute(
-                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
-                    (email, lname, rating_id, rating_short, "0", cid),
-                )
-                sto.execute(
-                    "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",
-                    (fullname, "0", cid),
-                )
-                sto.execute("SELECT status FROM roster WHERE cid = ?", (cid,))
-                status = sto.fetchone()
-                if status is None or status[0] == "visit":
-                    sto.execute(
-                        "UPDATE roster SET status = 'home' WHERE cid = ?", (cid,)
-                    )
-            except mariadb.Error as db_error:
-                print("Iterative Error:", db_error)
-                send_webhook(f"Iterative Error {db_error}")
-                sys.exit(1)
-        else:
-            try:
-                sto.execute(
-                    "UPDATE roster SET full_name = ?, visit = ?  WHERE user_id = ?",
-                    (fullname, "0", cid),
-                )
-                sto.execute(
-                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",
-                    (email, lname, rating_id, rating_short, "1", "0", cid),
-                )
-            except mariadb.Error as db_error:
-                print("Iterative Error:", db_error)
-                send_webhook(f"Iterative Error {db_error}")
-                sys.exit(1)
-    else:
-        print("Not in DB Moving on...")
+    print(f"Stowing user {cid} in DB...")
 
     try:
-        print("Updating users role...")
-        cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
-        perm = cur.fetchone()
-        if perm is not None:
-            print(f"permissions for {cid}={perm}")
-            if perm[0] <= 1:
-                print(f"{cid}: Guest or Controller, moving on")
-            elif perm[0] == 2:
-                print(f"{cid}: Mentor")
-                m = "mentor"
-                cur.execute(
-                    "UPDATE roster SET staff = ? WHERE cid = ?", (m, cid)
-                )
-            elif perm[0] == 3:
-                print(f"{cid}: Instructor")
-                ins = "ins"
-                cur.execute(
-                    "UPDATE roster SET staff = ? WHERE cid = ?", (ins, cid)
-                )
-            elif perm[0] == 4:
-                print(f"{cid}: Staff")
-                s = "staff"
-                cur.execute(
-                    "UPDATE roster SET staff = ? WHERE cid = ?", (s, cid)
-                )
-            elif perm[0] == 5:
-                print(f"{cid}: Executive")
-                e = "exec"
-                cur.execute(
-                    "UPDATE roster SET staff = ? WHERE cid = ?", (e, cid)
-                )
-            print("complete!")
+        cur = connectSQL.cursor()
+
+        cur.execute("SELECT permissions FROM users WHERE id = ?", (cid,))
+        row = cur.fetchone()
+        permissions = row[0] if row else None
+
+        if permissions is not None:
+            print(f"User {cid} exists with permissions: {permissions}")
+            cur.execute("""
+                UPDATE users 
+                SET email=?, lname=?, rating_id=?, rating_short=?, visitor='0'
+                WHERE id=?
+            """, (email, lname, rating_id, rating_short, cid))
+
+            cur.execute("""
+                UPDATE roster
+                SET full_name=?, visit='0'
+                WHERE user_id=?
+            """, (fullname, cid))
+
+            cur.execute("UPDATE roster SET status='home' WHERE cid=? AND (status='visit' OR status IS NULL)", (cid,))
+            if permissions == 0:
+                cur.execute("UPDATE users SET permissions='1' WHERE id=?", (cid,))
+
         else:
-            print("Not in DB Moving on...")
-    except mariadb.Error as db_error:
-        print(" Iterative Error: ", db_error)
-        send_webhook(f"Iterative Error {db_error}")
+            print(f"User {cid} not in DB. Inserting new user!")
+            cur.execute("""
+                INSERT INTO users (id, email, fname, lname, rating_id, rating_short, permissions, display_fname)
+                VALUES (?, ?, ?, ?, ?, ?, '1', ?)
+            """, (cid, email, fname, lname, rating_id, rating_short, fname))
+
+            cur.execute("""
+                INSERT INTO roster (cid, user_id, full_name, status, active, visit)
+                VALUES (?, ?, ?, 'home', '1', '0')
+            """, (cid, cid, fullname))
+
+        if permissions:
+            role_map = {2: 'mentor', 3: 'ins', 4: 'staff', 5: 'exec'}
+            staff_role = role_map.get(permissions)
+            if staff_role:
+                print(f"Assigning staff role '{staff_role}' to {cid}")
+                cur.execute("UPDATE roster SET staff=? WHERE cid=?", (staff_role, cid))
+
+        cur.execute("""
+            SELECT delgnd, delgnd_t2, twr, twr_t2, dep, app, app_t2, ctr, fss
+            FROM roster WHERE cid=?
+        """, (cid,))
+        certs = cur.fetchone()
+
+        if certs and all(c == 0 for c in certs):
+            cur.execute("SELECT COUNT(*) FROM students WHERE user_id=?", (cid,))
+            is_student = cur.fetchone()[0]
+
+            if is_student == 0:
+                print(f"Adding user {cid} to students table!")
+                cur.execute("""
+                    INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, renewal_expires_at, last_status_change, created_at, updated_at)
+                    VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
+                """, (cid, 0, facility_join))
+                student_id = cur.lastrowid
+
+                cur.execute("""
+                    INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
+                    VALUES
+                        (8, ?, UTC_TIMESTAMP, UTC_TIMESTAMP),
+                        (7, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
+                """, (student_id, student_id,))
+
+                cur.execute("""
+                    INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
+                    VALUES (?, 1, 'Created', CONCAT('Student created automatically by System at ', NOW()), NOW(), NOW())
+                """, (student_id,))
+                print(f"Created user {cid} !")
+
+    except Exception as e:
+        print(f"Error processing user {cid}: {e}")
+        send_webhook(f"Error for user {cid}: {e}")
         sys.exit(1)
-
-    try:
-        cur.execute(
-            "INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname) VALUES (?,?,?,?,?,?,?,?)",
-            (cid, email, fname, lname, rating_id, rating_short, "1", fname),
-        )
-    except mariadb.Error as db_error:
-        print("Error: ", db_error)
-    try:
-        print("Now adding to Roster")
-        cur.execute(
-            "INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",
-            (cid, cid, fullname, "home", "1", "0"),
-        )
-    except mariadb.Error as db_error:
-        print("Error: ", db_error)
-    print("complete!")
+    finally:
+        print(f"Completed User {cid}!")
 
 
-async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, rating_short):
+async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facility_join, rating_short):
     """
-    stores new users in the visit roster
+    Stores new visiting users or updates existing ones as visitors
     """
-    print("Stowing visitors in DB...")
-    cur = connectSQL.cursor()
-    sto = connectSQL.cursor()
+    print(f"Processing visiting user {cid}...")
+    try:
+        cur = connectSQL.cursor()
 
-    print("Fetching permissions for visit roster...")
-    cur.execute("SELECT id, permissions FROM users WHERE id IN (?)", (cid,))
-    permissions_map = {row[0]: row[1] for row in cur.fetchall()}
-    print("Permissions fetched for visit roster.")
+        cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
+        row = cur.fetchone()
+        permissions = row[0] if row else None
 
-    if cid in permissions_map:
-        permissions = permissions_map[cid]
-        print(f"Permissions for {cid}: {permissions}")
-        if permissions > 0:
-            try:
-                sto.execute(
-                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, visitor = ? WHERE id = ?",
-                    (email, lname, rating_id, rating_short, "1", cid),
-                )
-                sto.execute(
-                    "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
-                    (fullname, "1", "visit", cid),
-                )
-            except mariadb.Error as db_error:
-                print("Iterative Error:", db_error)
-                send_webhook(f"Iterative Error {db_error}")
-                sys.exit(1)
+        if permissions is not None:
+            print(f"User {cid} exists with permissions: {permissions}")
+            cur.execute("""
+                UPDATE users 
+                SET email=?, lname=?, rating_id=?, rating_short=?, visitor='1'
+                WHERE id=?
+            """, (email, lname, rating_id, rating_short, cid))
+
+            cur.execute("""
+                UPDATE roster 
+                SET full_name=?, visit='1', status='visit'
+                WHERE user_id=?
+            """, (fullname, cid))
+
+            if permissions == 0:
+                cur.execute("UPDATE users SET permissions='1' WHERE id=?", (cid,))
+
         else:
-            try:
-                sto.execute(
-                    "UPDATE roster SET full_name = ?, visit = ?, status = ? WHERE user_id = ?",
-                    (fullname, "1", "visit", cid),
-                )
-                sto.execute(
-                    "UPDATE users SET email=?, lname = ?, rating_id = ?, rating_short= ?, permissions = ?, visitor = ? WHERE id = ?",
-                    (email, lname, rating_id, rating_short, "1", "1", cid),
-                )
-            except mariadb.Error as db_error:
-                print("Iterative Error:", db_error)
-                send_webhook(f"Iterative Error {db_error}")
-                sys.exit(1)
-    else:
-        print("Not in DB Moving on...")
+            print(f"User {cid} not in DB. Inserting new visitor.")
+            cur.execute("""
+                INSERT INTO users (id, email, fname, lname, rating_id, rating_short, permissions, display_fname, visitor)
+                VALUES (?, ?, ?, ?, ?, ?, '1', ?, '1')
+            """, (cid, email, fname, lname, rating_id, rating_short, fname))
 
-    try:
-        cur.execute(
-            "INSERT INTO users (id, email, fname, lname, rating_id, Rating_short, permissions, display_fname, visitor) VALUES (?,?,?,?,?,?,?,?,?)",
-            (cid, email, fname, lname, rating_id, rating_short, "1", fname, "1"),
-        )
-    except mariadb.Error as db_error:
-        print("Error: ", db_error)
-    try:
-        print("Now adding to Visitor Roster")
-        cur.execute(
-            "INSERT INTO roster (cid, user_id, full_name, status, active, visit) VALUES (?,?,?,?,?,?)",
-            (cid, cid, fullname, "visit", "1", "1"),
-        )
-    except mariadb.Error as db_error:
-        print("Error: ", db_error)
-    print("complete!")
+            cur.execute("""
+                INSERT INTO roster (cid, user_id, full_name, status, active, visit)
+                VALUES (?, ?, ?, 'visit', '1', '1')
+            """, (cid, cid, fullname))
 
+        cur.execute("""
+            SELECT delgnd, delgnd_t2, twr, twr_t2, dep, app, app_t2, ctr, fss
+            FROM roster WHERE cid=?
+        """, (cid,))
+        certs = cur.fetchone()
+
+        if certs and all(c == 0 for c in certs):
+            cur.execute("SELECT COUNT(*) FROM students WHERE user_id=?", (cid,))
+            is_student = cur.fetchone()[0]
+
+            if is_student == 0:
+                print(f"Adding user {cid} to visitor students table!")
+                cur.execute("""
+                    INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, renewal_expires_at, last_status_change, created_at, updated_at)
+                    VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
+                """, (cid, 3, facility_join))
+                student_id = cur.lastrowid
+
+                cur.execute("""
+                    INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
+                    VALUES
+                        (9, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
+                """, (student_id,))
+
+                cur.execute("SELECT division_code FROM users WHERE id=?", (cid,))
+                division_row = cur.fetchone()
+                division_code = division_row[0] if division_row else None
+                vat_label = 17 if division_code == 'CAN' else 16
+                cur.execute("""
+                    INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
+                    VALUES (?, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
+                """, (vat_label, student_id))
+
+                cur.execute("""
+                    INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
+                    VALUES (?, 1, 'Created', CONCAT('Student created automatically by System at ', NOW()), NOW(), NOW())
+                """, (student_id,))
+
+    except Exception as e:
+        print(f"Error processing visiting user {cid}: {e}")
+        send_webhook(f"Visitor error for user {cid}: {e}")
+        sys.exit(1)
+    finally:
+        print(f"Finished processing visiting user {cid}!")
 
 def reset_activity():
     """
@@ -588,6 +587,5 @@ except Exception as e:
     error_message = str(e)
     send_webhook(error_message)
     sys.exit()
-
 
 connectSQL.close()

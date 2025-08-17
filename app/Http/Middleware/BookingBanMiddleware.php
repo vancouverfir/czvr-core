@@ -22,7 +22,7 @@ class BookingBanMiddleware
                 return $next($request);
             }
             $ban = ControllerBookingsBan::where('user_id', Auth::id())->firstOrFail();
-            abort(403, 'You have been banned from using the CZQO booking system for: '.$ban->reason.'. If you wish to dispute this, please email the FIR Chief.');
+            abort(403, 'You have been banned from using the CZVR booking system for: '.$ban->reason.'. If you wish to dispute this, please email the FIR Chief!');
         }
 
         return redirect('/');

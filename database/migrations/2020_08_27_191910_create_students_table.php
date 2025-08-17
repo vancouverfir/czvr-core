@@ -17,12 +17,16 @@ class CreateStudentsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('status')->default(0);
+            $table->text('times')->nullable();
+            $table->integer('position');
+            $table->integer('status');
             $table->integer('instructor_id')->unsigned()->nullable();
             $table->foreign('instructor_id')->references('id')->on('instructors');
+            $table->string('renewal_token')->nullable();
+            $table->dateTime('renewed_at')->nullable();
+            $table->dateTime('renewal_expires_at')->nullable();
             $table->dateTime('last_status_change')->nullable();
             $table->timestamps();
-            $table->integer('accepted_application')->nullable();
         });
     }
 

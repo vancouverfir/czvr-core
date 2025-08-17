@@ -254,10 +254,8 @@
                                                 <div class="modal-body">
                                                     <p style="font-weight:bold">Name: {{$controller->user->fullName('FL')}}</p>
                                                     <p style="font-weight:bold">CID: {{$controller->cid}}</p>
-                                                    <h3 style="font-weight:bold; color:red">Are you sure you want to do
-                                                        this?</h3>
-                                                    <p style="font-weight:bold">Deleting this member from the roster
-                                                        will delete their session logs.</p>
+                                                    <h3 style="font-weight:bold; color:red">Are you sure you want to do this?</h3>
+                                                    <p style="font-weight:bold">Deleting this member from the roster will delete their session logs and reset them back to the guest permissions.</p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <form method="GET"
@@ -600,5 +598,6 @@
         </div>
     </div>
     <!--End add Visitor controller modal-->
+</div>
 
 @stop

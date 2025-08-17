@@ -1,5 +1,7 @@
 @extends('layouts.master')
+
 @section('content')
+
     <div class="container py-4">
         <h1 data-step="1" data-intro="Welcome to the CZVR Dashboard! This is your central hub for all things Vancouver. Here you can interact with our FIR, and manage your account." class="blue-text font-weight-bold">Dashboard</h1>
         <br class="my-2">
@@ -25,18 +27,20 @@
                                 <div data-step="4" data-intro="Here you can link your Discord account to receive reminders for training sessions, and gain access to the CZVR Discord.">
                                     <h5 class="mt-2">Discord</h5>
                                     <hr>
-                                   @if (!Auth::user()->hasDiscord())
-                                        <p class="mt-1">You don't have a linked Discord account.</p>
-                                        <a href="#" data-toggle="modal" data-target="#discordModal" class="mt-1">Link a Discord account</a>
+                                    @if (!Auth::user()->hasDiscord())
+                                        <p class="mt-1"><i class="fa fa-times-circle" style="color:red"></i> You don't have a linked Discord account!</p>
+                                        <a href="#" class="btn-sm btn-primary m-0" data-toggle="modal" data-target="#discordModal" class="mt-1">Link Discord Account</a>
+                                        <hr>
                                     @else
-                                        <p class="mt-1"><img style="border-radius:50%; height: 30px;" class="img-fluid" src="{{Auth::user()->getDiscordAvatar()}}" alt="">&nbsp;&nbsp;{{Auth::user()->getDiscordUser()->username}}
+                                        <p class="mt-1"><i class="fa fa-check-circle" style="color:green"> </i> <img style="border-radius:50%; height: 30px;" class="img-fluid"
+                                            src="{{Auth::user()->getDiscordAvatar()}}" alt="">&nbsp;&nbsp;{{Auth::user()->getDiscordUser()->username}}
                                         </p>
                                         @if(!Auth::user()->memberOfCZVRGuild())
                                             <a href="#" data-toggle="modal" data-target="#joinDiscordServerModal"
                                                class="mt-1">Join The CZVR Discord</a><br/>
                                         @endif
-                                        <a href="#" data-toggle="modal" data-target="#discordModal"
-                                           class="mt-1">Unlink</a>
+                                        <a href="#" class="btn-sm btn-danger m-0" data-toggle="modal" data-target="#discordModal" class="mt-1">Unlink</a>
+                                        <hr>
                                     @endif
                                 </div>
 
@@ -165,7 +169,7 @@
                 </div>
             </div>
         </div>
-        <a href="javascript:void(0);" onclick="javascript:introJs().setOption('showProgress', true).start();">View the tutorial</a>
+        <a style="color: white" href="javascript:void(0);" onclick="javascript:introJs().setOption('showProgress', true).start();">Dashboard Tutorial</a>
     </div>
 
     <!-- Start Rating Change modal -->
@@ -268,11 +272,9 @@
                             </div>
                         </div>
                         @if(Auth::user()->hasDiscord())
-                            or use your Discord avatar (refreshes every 6 hours)<br/>
-                            <p class="mt-1"><img style="border-radius:50%; height: 60px;" class="img-fluid"
-                                                 src="{{Auth::user()->getDiscordAvatar()}}" alt=""><a
-                                    href="{{route('users.changeavatar.discord')}}"
-                                    class="btn btn-outline-success bg-CZQO-blue-light mt-3">Use Discord Avatar</a>
+                            or use your Discord avatar (refreshes every 3 hours)<br/>
+                            <p class="mt-1"><img style="border-radius:50%; height: 60px;" class="img-fluid" src="{{Auth::user()->getDiscordAvatar()}}" alt="">
+                            <a href="{{route('users.changeavatar.discord')}}"class="btn btn-outline-success bg-CZQO-blue-light mt-3">Use Discord Avatar</a>
                         @endif
                     </div>
                     <div class="modal-footer">
@@ -329,8 +331,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <img style="height: 50px;" src="{{asset('/img/discord/CZVRplusdiscord.png')}}"
-                             class="img-fluid mb-2" alt="">
+                        <img style="height: 70px;" src="{{ asset('/img/discord/czvrdiscord.png') }}" class="img-fluid mb-2 d-block mx-auto" alt="">
                         <p>Linking your Discord account with Vancouver FIR allows you to:</p>
                         <ul>
                             <li>Join our Discord community</li>
@@ -356,7 +357,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Fair Warning: Unlinking your account will:</p>
+                        <p>Fair Warning! Unlinking your account will:</p>
                         <ul>
                             <li>Remove you from the CZVR Discord, if you're a member</li>
                             <li>Remove a Discord avatar if you have it selected</li>
@@ -382,14 +383,14 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Join the Vancouver FIR Discord server</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Join the Vancouver FIR Discord server!</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <p>Joining the Vancouver FIR Discord server allows you to join the Vancouver FIR controller and pilot
-                        community.</p>
+                        community!</p>
                     <h5>Rules</h5>
                     <ul>
                         <li>1. The VATSIM Code of Conduct applies.</li>

@@ -35,9 +35,4 @@ class Instructor extends Model
     {
         return $this->hasMany(InstructingSession::class);
     }
-
-    public function CbtModuleAssign()
-    {
-        return $this->hasMany(CbtModuleAssign::class);
-    }
 }

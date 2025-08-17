@@ -18,15 +18,13 @@
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title text-center">{{ $file }}</h5>
                             <hr>
-                            <div class="file-preview d-flex justify-content-center align-items-center" style="flex-grow: 1;">
+                            <div class="file-preview d-flex justify-content-center align-items-center" style="flex-grow: 1; height: 250px;">
                                 @if(preg_match('/\.(jpg|jpeg|png|gif)$/i', $file))
-                                    <img src="{{asset('storage/files/uploads/' . $file)}}" alt="{{$file}}" class="img-fluid" style="max-width: 210px; max-height: 297px; object-fit: contain;">
+                                    <img src="{{ asset('storage/files/uploads/' . $file) }}" alt="{{ $file }}" class="img-fluid" style="max-width: 210px; max-height: 250px; object-fit: contain;">
                                 @elseif(preg_match('/\.(pdf)$/i', $file))
-                                    <div style="overflow: auto; height: 297px; width: 210px;">
-                                        <embed src="{{asset('storage/files/uploads/' . $file)}}" type="application/pdf" style="width: 100%; height: 100%;">
-                                    </div>
+                                    <i class="far fa-file-pdf" style="font-size: 11em;"></i>
                                 @else
-                                    <i class="fas fa-file" style="font-size: 4em;"></i>
+                                    <i class="fas fa-file text-secondary" style="font-size: 11em;"></i>
                                 @endif
                             </div>
                             <div class="mt-2 text-center">
@@ -42,7 +40,7 @@
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">View File: {{ $file }}</h5>
+                                <h5 class="modal-title">View File {{ $file }}</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>

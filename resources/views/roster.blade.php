@@ -53,7 +53,7 @@
             </li>
             @if (Auth::check() && Auth::user()->permissions >= 3)
             <li class="nav-item">
-                <a class="nav-link" href="{{route('roster.index')}}" style="color:brown">Edit Roster</a>
+                <a class="nav-link" href="{{route('roster.index')}}">Edit Roster</a>
             @endif
           </ul>
         <div class="tab-content" id="myTabContent">

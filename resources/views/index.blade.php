@@ -1,15 +1,16 @@
 @extends('layouts.master')
-@section('description', 'Welcome to Vancouver - located in the left of Canada on the VATSIM network.')
+
+@section('description', 'Welcome to Vancouver - located in the left of Canada on the VATSIM network!')
 
 
 @section('content')
         <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
-            <div class="mask"
-                style="z-index: -1; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background-image: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0)), url({{ $background->url }}); background-size: cover; background-position: center; animation: heroZoom 10s ease-in-out infinite alternate;">
+            <div class="winnipeg-blue"
+                style="z-index: -1; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background-image: url({{ $background->url }}); background-size: cover; background-position: center; animation: heroZoom 10s ease-in-out infinite alternate;">
             </div>
 
             <style>
-            @keyframes heroZoom {0% { transform: scale(1); }100% { transform: scale(1.03); }}
+                @keyframes heroZoom {0% { transform: scale(1); }100% { transform: scale(1.03); }}
             </style>
 
             <div class="container" style="text-align: center; padding-top: 30px; padding-bottom: 30px;">
@@ -18,7 +19,7 @@
                         <span class="corner">From Sea to Sky!</span>
                     </h1>
                     <h4 class="vancouver-text mt-2" style="text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);">
-                        <a href="#mid" id="discoverMore" class="blue-text" style="color: #fff; text-decoration: none;">Come explore Canada's West Coast<i class="fas fa-arrow-down ml-2"></i></a>
+                        <a href="#A" id="discoverMore" class="blue-text" style="color: #fff; text-decoration: none;">Come explore Canada's West Coast<i class="fas fa-arrow-down ml-2"></i></a>
                     </h4>
                     <small style="color: #fff; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">
                         <i>Screenshot by {{$background->credit}}</i>
@@ -26,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="container mt-4" id="mid">
+            <div class="container mt-4" style="padding: 90px" id="A">
                 <div class="row">
                     <!-- First column -->
                     <div class="col-md-6">
@@ -126,7 +127,7 @@
             <!-- Weather Section -->
             <div class="row">
                 <div class="col-12">
-                    <div class="card card-background" style="opacity: 90%;">
+                    <div class="card card-background" style="opacity: 90%; margin-bottom: 30px;">
                         <div class="card-header card-hf-padding blue-text">
                             <h2 class="font-weight-bold card-header-size text-center"><i class="fas fa-sun mr-2"></i>Weather</h2>
                         </div>
@@ -152,7 +153,6 @@
                     </div>
                 </div>
             </div>
-            <br>
         </div>
     </div>
 @stop

@@ -14,6 +14,12 @@ body, html {
     scroll-behavior: smooth;
 }
 
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 11rem;
+}
+
 #czqoHeaderLight, .page-footer {
     background-color: rgb(0, 0, 0);
 }
@@ -26,14 +32,22 @@ body, html {
     margin-bottom: 4px;
     height: 100%;
 }
+
+::placeholder {
+  color: white !important;
+  opacity: 0.3 !important;
+}
+
 @media (max-width: 768px) {
     #czqoHeaderImg {
         margin-left: 10px;
     }
 }
+
 .jumbotron {
     border-radius: 0;
 }
+
 .dropdown-menu .dropdown-item {
     padding-left: 15px !important;
 }
@@ -327,6 +341,9 @@ div.notes{
     color: #E6E8E6;
 }
 
+.close {
+  color: white !important;
+}
 
 .modal-content{
     background: #2E2F2F;

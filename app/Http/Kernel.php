@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'executive' => \App\Http\Middleware\CheckExecutive::class,
         'staff' => \App\Http\Middleware\CheckStaff::class,
         'instructor' => \App\Http\Middleware\CheckInstructor::class,
+        'student' => \App\Http\Middleware\CheckStudent::class,
         'certified' => \App\Http\Middleware\CheckCertified::class,
         'notcertified' => \App\Http\Middleware\CheckNotCertified::class,
         'privacy' => \App\Http\Middleware\CheckIfPrivacy::class,

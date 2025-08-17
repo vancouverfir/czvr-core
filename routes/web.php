@@ -17,7 +17,7 @@ Route::view('/airports', 'airports')->name('airports');
 Route::get('/roster', 'AtcTraining\RosterController@showPublic')->name('roster.public');
 Route::get('/roster/{id}', 'Users\UserController@viewProfile');
 Route::get('/roster/{id}/connections', 'Users\UserController@viewConnections');
-Route::get('/join', 'AtcTraining\ApplicationsController@joinvancouver')->name('join.public');
+Route::get('/join', 'AtcTraining\TrainingController@joinvancouver')->name('join.public');
 Route::get('/staff', 'Users\StaffListController@index')->name('staff');
 Route::get('/policies', 'Publications\PoliciesController@index')->name('policies');
 Route::get('/meetingminutes', 'News\NewsController@minutesIndex')->name('meetingminutes');
@@ -30,7 +30,7 @@ Route::view('/about', 'about')->name('about');
 Route::view('/branding', 'branding')->name('branding');
 Route::get('/news/{slug}', 'News\NewsController@viewArticlePublic')->name('news.articlepublic');
 Route::get('/news', 'News\NewsController@viewAllPublic')->name('news');
-Route::get('/training', 'AtcTraining\TrainingController@trainingTime')->name('training');
+Route::get('/trainingtimes', 'AtcTraining\TrainingController@trainingTime')->name('trainingtimes');
 Route::get('/controllerbookings', 'ControllerBookings\ControllerBookingsController@indexPublic')->name('controllerbookings');
 Route::view('/mochi', 'mochi')->name('mochi');
 Route::view('/pdc', 'pdc')->name('pdc');
@@ -66,12 +66,6 @@ Route::group(['middleware' => 'auth'], function () {
     //Privacy accept
     Route::get('/privacyaccept', 'Users\UserController@privacyAccept');
     Route::get('/privacydeny', 'Users\UserController@privacyDeny');
-
-    //Visiting/Join Applications
-    // Route::group(['middleware' => 'notcertified'], function () {
-    //    Route::get('/dashboard/application', 'AtcTraining\ApplicationsController@startApplicationProcess')->name('application.start');
-    //   Route::post('/dashboard/application', 'AtcTraining\ApplicationsController@submitApplication')->name('application.submit');
-    // });
 
     //User Tickets
     Route::get('/dashboard/tickets', 'Tickets\TicketsController@index')->name('tickets.index');
@@ -120,7 +114,6 @@ Route::group(['middleware' => 'auth'], function () {
         //Assigning Instructor
         Route::prefix('instructor')->group(function () {
             Route::post('/add', 'AtcTraining\TrainingController@assignStudent')->name('instructor.student.add');
-            Route::post('/add', 'AtcTraining\TrainingController@newStudent')->name('instructor.student.add.new');
             Route::get('/delete/{id}', 'AtcTraining\TrainingController@deleteStudent')->name('instructor.student.delete');
         });
     });
@@ -149,7 +142,6 @@ Route::group(['middleware' => 'auth'], function () {
     //Dashboard
     Route::prefix('dashboard')->group(function () {
         Route::get('/', 'DashboardController@index')->name('dashboard.index');
-        Route::get('/cbtdismiss/{id}', 'DashboardController@dismissCbtNotification')->name('cbt.notification.dismiss');
         Route::post('/users/changeavatar', 'Users\UserController@changeAvatar')->name('users.changeavatar');
         Route::get('/users/changeavatar/discord', 'Users\UserController@changeAvatarDiscord')->name('users.changeavatar.discord');
         Route::get('/users/resetavatar', 'Users\UserController@resetAvatar')->name('users.resetavatar');
@@ -178,20 +170,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/emailpref', 'Users\DataController@emailPref')->name('dashboard.emailpref');
         Route::get('/emailpref/subscribe', 'Users\DataController@subscribeEmails');
         Route::get('/emailpref/unsubscribe', 'Users\DataController@unsubscribeEmails');
-
-        //Applications
-        Route::get('/application/list', 'AtcTraining\ApplicationsController@viewApplications')->name('application.list');
-        Route::get('/application/{application_id}', 'AtcTraining\ApplicationsController@viewApplication')->name('application.view');
-        Route::get('/application/{application_id}/withdraw', 'AtcTraining\ApplicationsController@withdrawApplication');
-
-        //Applications View/Accept/Deny
-        Route::group(['middleware' => 'executive'], function () {
-            Route::get('/training/applications', 'AtcTraining\ApplicationsController@viewAllApplications')->name('training.applications');
-            Route::get('/training/applications/{id}', 'AtcTraining\TrainingController@viewApplication')->name('training.viewapplication');
-            Route::get('/training/applications/{id}/accept', 'AtcTraining\TrainingController@acceptApplication')->name('training.application.accept');
-            Route::get('/training/applications/{id}/deny', 'AtcTraining\TrainingController@denyApplication')->name('training.application.deny');
-            Route::post('/training/applications/{id}/', 'AtcTraining\TrainingController@editStaffComment')->name('training.application.savestaffcomment');
-        });
     });
     // '/me'
     Route::prefix('dashboard/me')->group(function () {
@@ -241,51 +219,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'staff'], function () {
         Route::post('/atcresources', 'Publications\AtcResourcesController@uploadResource')->name('atcresources.upload');
         Route::get('/atcresources/delete/{id}', 'Publications\AtcResourcesController@deleteResource')->name('atcresources.delete');
-    });
-
-    //View CBT
-    Route::prefix('dashboard/training/cbt')->group(function () {
-        Route::get('/', 'AtcTraining\CBTController@index')->name('cbt.index');
-        Route::get('/module', 'AtcTraining\CBTController@moduleindex')->name('cbt.module');
-        Route::get('/module/view/{id}/{progress}', 'AtcTraining\CBTController@viewmodule')->name('cbt.module.view');
-        Route::get('/module/finish/{id}', 'AtcTraining\CBTController@completeModule')->name('cbt.module.complete');
-        Route::get('/exam', 'AtcTraining\CBTController@examindex')->name('cbt.exam');
-        Route::get('/exam/start/{id}', 'AtcTraining\CBTController@startExam')->name('cbt.exam.begin');
-        Route::get('/exam/{id}', 'AtcTraining\CBTController@exam')->name('cbt.exam.start');
-        Route::post('exam/grade/{id}', 'AtcTraining\CBTController@gradeExam')->name('cbt.exam.grade');
-        Route::get('exam/results/{id}/{sid}', 'AtcTraining\CBTController@examResults')->name('cbt.exam.results');
-        //Mentor
-        Route::group(['middleware' => 'mentor'], function () {
-            Route::get('/moduleadmin', 'AtcTraining\CBTController@moduleindexadmin')->name('cbt.module.admin');
-        });
-        //Instructor
-        Route::group(['middleware' => 'instructor'], function () {
-            Route::post('/exam/assign', 'AtcTraining\TrainingController@assignExam')->name('cbt.exam.assign');
-            Route::post('/module/assign', 'AtcTraining\TrainingController@assignModule')->name('cbt.module.assign');
-            Route::get('/module/unassign/{id}', 'AtcTraining\TrainingController@ModuleUnassign')->name('cbt.module.unassign');
-            Route::get('/examadmin', 'AtcTraining\CBTController@examadminview')->name('cbt.exam.adminview');
-            Route::get('/examadmin/view/{id}', 'AtcTraining\CBTController@questionBank')->name('cbt.exam.questions');
-            Route::get('/examadmin/unassign/{id}', 'AtcTraining\TrainingController@unassignExam')->name('cbt.exam.unassign');
-            Route::get('/module/edit/{id}', 'AtcTraining\CBTController@editModule')->name('cbt.module.edit');
-        });
-        //Staff/Admin
-        Route::group(['middleware' => 'instructor'], function () {
-            Route::post('/addexam', 'AtcTraining\CBTController@addExam')->name('cbt.exam.add');
-            Route::get('/deleteexam/{id}', 'AtcTraining\CBTController@deleteExam')->name('cbt.exam.delete');
-            Route::post('/module/add', 'AtcTraining\CBTController@addModule')->name('cbt.module.add');
-            Route::post('/module/editdetails/{id}', 'AtcTraining\CBTController@editModuleDetails')->name('cbt.edit.moduledetails');
-            Route::get('/module/assignall/{id}', 'AtcTraining\CBTController@assignModuleAll')->name('cbt.module.assignall');
-            Route::get('/module/unassignall/{id}', 'AtcTraining\CBTController@moduleUnassignall')->name('cbt.module.unassignall');
-            Route::get('/module/admin/{id}', 'AtcTraining\CBTController@viewAdminModule')->name('cbt.module.view.admin');
-            Route::get('/module/delete/{id}', 'AtcTraining\CBTController@deleteModule')->name('cbt.module.delete');
-            Route::post('/lesson/add/{id}', 'AtcTraining\CBTController@addLesson')->name('cbt.lesson.add');
-            Route::get('/lesson/e/{id}', 'AtcTraining\CBTController@editLesson')->name('cbt.lesson.edit');
-            Route::post('/lesson/edit/{id}', 'AtcTraining\CBTController@processEditLesson')->name('cbt.lesson.submit');
-            Route::get('/lesson/delete/{id}', 'AtcTraining\CBTController@deleteLesson')->name('cbt.lesson.delete');
-            Route::post('/examadmin/add/{id}', 'AtcTraining\CBTController@addQuestion')->name('cbt.exam.question.add');
-            Route::post('/examadmin/update/{id}', 'AtcTraining\CBTController@updateQuestion')->name('cbt.exam.question.update');
-            Route::get('/examadmin/delete/{id}', 'AtcTraining\CBTController@deleteQuestion')->name('cbt.exam.question.delete');
-        });
     });
 
     //ADMIN ONLY
@@ -340,33 +273,51 @@ Route::group(['middleware' => 'certified'], function () {
     Route::post('/dashboard/bookings/create', 'ControllerBookings\ControllerBookingsController@createPost')->name('controllerbookings.create.post');
 });
 
-//AtcTraining
-Route::get('/dashboard/training', 'AtcTraining\TrainingController@index')->name('training.index');
-Route::post('/training', 'AtcTraining\TrainingController@editTrainingTime')->middleware('staff')->name('waittime.edit');
-Route::group(['middleware' => 'instructor'], function () {
-    Route::get('/dashboard/training/sessions', 'AtcTraining\TrainingController@instructingSessionsIndex')->name('training.instructingsessions.index');
-    Route::get('/dashboard/training/sessions/{id}', 'AtcTraining\TrainingController@viewInstructingSession')->name('training.instructingsessions.viewsession');
-    Route::view('/dashboard/training/sessions/create', 'dashboard.training.instructingsessions.create')->name('training.instructingsessions.createsessionindex');
-    Route::get('/dashboard/training/sessions/create', 'AtcTraining\TrainingController@createInstructingSession')->name('training.instructingsessions.createsession');
-    Route::get('/dashboard/training/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
-    Route::get('/dashboard/training/students/current', 'AtcTraining\TrainingController@currentStudents')->name('training.students.current');
-    Route::get('/dashboard/training/students/new', 'AtcTraining\TrainingController@newStudents')->name('training.students.new');
-    Route::get('/dashboard/training/students/completed', 'AtcTraining\TrainingController@completedStudents')->name('training.students.completed');
-    Route::get('/dashboard/training/students/waitlist', 'AtcTraining\TrainingController@newStudents')->name('training.students.waitlist');
-    Route::get('/dashboard/training/students/{id}', 'AtcTraining\TrainingController@viewStudent')->name('training.students.view');
-    Route::post('/dashboard/training/students/{id}/assigninstructor', 'AtcTraining\TrainingController@assignInstructorToStudent')->name('training.students.assigninstructor');
-    Route::post('/dashboard/training/students/{id}/setstatus', 'AtcTraining\TrainingController@changeStudentStatus')->name('training.students.setstatus');
-    Route::get('/dashboard/trainingnotes/{id}', 'AtcTraining\TrainingController@viewNote')->name('trainingnote.view');
-    //  Route::get('/dashboard/trainingnotes/{id}/delete', 'AtcTraining\TrainingNotesController@delete')->name('trainingnotes.delete');
-    Route::post('/dashboard/trainingnotes/add/{id}', 'AtcTraining\TrainingController@addNote')->name('add.trainingnote');
-    Route::get('/dashboard/trainingnotes/create/{id}', 'AtcTraining\TrainingController@newNoteView')->name('view.add.note');
-    Route::post('/training/solorequest/{id}', 'AtcTraining\TrainingController@soloRequest')->name('training.solo.request');
-
+Route::domain('training.czvr.ca')->group(function () {
     //AtcTraining
-    Route::get('/dashboard/training/students/delete/{id}', 'AtcTraining\TrainingController@showDeleteForm')->name('training.students.delete');
-    Route::delete('/dashboard/training/students/delete/{id}', 'AtcTraining\TrainingController@removeStudent')->name('training.students.destroy');
-    Route::post('/dashboard/training/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
+    Route::get('/training', 'AtcTraining\TrainingController@index')->name('training.index');
+    Route::post('/trainingtimes', 'AtcTraining\TrainingController@editTrainingTime')->middleware('staff')->name('waittime.edit');
+    Route::group(['middleware' => 'mentor'], function () {
+        //Vatcan
+
+        //Label
+        Route::post('/training/students/{id}/assign/label', 'AtcTraining\LabelController@assignLabel')->name('training.students.assign.label');
+        Route::get('/training/students/{id}/drop/label/{student_label_id}', 'AtcTraining\LabelController@dropLabel')->name('training.students.drop.label');
+
+        //AtcTraining
+        Route::post('/training/students/{student}/complete', 'AtcTraining\TrainingController@completeTraining')->name('training.students.completeTraining');
+        Route::get('/training/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
+        Route::get('/training/students', 'AtcTraining\TrainingController@AllStudents')->name('training.students.students');
+        Route::post('/add', 'AtcTraining\TrainingController@newStudent')->name('instructor.student.add.new');
+        Route::get('/training/students/completed', 'AtcTraining\TrainingController@completedStudents')->name('training.students.completed');
+        Route::get('/training/students/waitlist', 'AtcTraining\TrainingController@newStudents')->name('training.students.waitlist');
+        Route::get('/training/students/{id}', 'AtcTraining\TrainingController@viewStudent')->name('training.students.view');
+        Route::post('/training/students/{id}/assigninstructor', 'AtcTraining\TrainingController@assignInstructorToStudent')->name('training.students.assigninstructor');
+        Route::post('/dashboard/trainingnotes/add/{id}', 'AtcTraining\TrainingController@addNote')->name('add.trainingnote');
+        Route::get('/dashboard/trainingnotes/create/{id}', 'AtcTraining\TrainingController@newNoteView')->name('view.add.note');
+        Route::post('/training/solorequest/{id}', 'AtcTraining\TrainingController@soloRequest')->name('training.solo.request');
+        Route::post('/waitlist/sort', 'AtcTraining\TrainingController@sort')->name('waitlist.sort');
+        Route::post('/visitor-waitlist/sort', 'AtcTraining\TrainingController@sortVisitor')->name('visitor.sort');
+        Route::get('/training/students/delete/{id}', 'AtcTraining\TrainingController@showDeleteForm')->name('training.students.delete');
+        Route::delete('/training/students/delete/{id}', 'AtcTraining\TrainingController@removeStudent')->name('training.students.destroy');
+        Route::post('/training/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
+        Route::patch('/training/students/checklist/{id}/complete', 'AtcTraining\ChecklistController@completeItem')->name('training.students.checklist.complete');
+        Route::post('/training/students/{student}/checklist/complete-multiple', 'AtcTraining\ChecklistController@completeMultiple')->name('training.students.checklist.completeMultiple');
+        Route::post('/training/students/{student}/promote', 'AtcTraining\ChecklistController@promoteStudent')->name('training.students.promote');
+        Route::post('/training/students/{student}/promote-visitor', 'AtcTraining\ChecklistController@promoteVisitor')->name('training.students.promoteVisitor');
+        Route::post('/students/{student}/assign-t2', 'AtcTraining\ChecklistController@assignT2Checklist')->name('training.students.assignT2');
+    });
+
+    //Students and Instructors
+    Route::group(['middleware' => 'student'], function () {
+        Route::get('/api/training-notes', 'AtcTraining\VatcanController@getVatcanNotes')->name('vatcan.notes.all');
+        Route::get('/training/resources', 'AtcTraining\TrainingController@viewResources')->name('training.resources');
+        Route::get('/training/students/{id}/allnotes', 'AtcTraining\TrainingController@allNotes')->name('training.students.allnotes');
+        Route::get('/training/renew/{token}', 'AtcTraining\TrainingController@renewTraining')->name('training.renew');
+        Route::post('/training/students/{student}/edittimes', 'AtcTraining\TrainingController@editTimes')->name('training.students.editTimes');
+    });
 });
+
 //Admin and CI
 Route::group(['middleware' => 'executive'], function () {
     Route::get('/training/solo/approve/{id}', 'AtcTraining\TrainingController@approveSoloRequest')->name('training.solo.approve');

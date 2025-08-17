@@ -7,6 +7,7 @@ use App\Console\Commands\CheckVisitHours;
 use App\Console\Commands\CurrencyCheck;
 use App\Console\Commands\EventReminders;
 use App\Console\Commands\RatingUpdate;
+use App\Console\Commands\RenewNotification;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Artisan;
@@ -32,8 +33,9 @@ class Kernel extends ConsoleKernel
     {
         // * * * * * schedulers
         $schedule->command(ActivityLog::class)->everyMinute()->evenInMaintenanceMode()->sentryMonitor();
-        $schedule->command('backup:clean')->daily()->at('00:30');
-        $schedule->command('backup:run')->daily()->at('01:00');
+        $schedule->command(RenewNotification::class)->hourly();
+        $schedule->command('backup:clean')->daily()->at('00:31');
+        $schedule->command('backup:run')->daily()->at('01:01');
         // $schedule->command(EventReminders::class)->everyMinute();
 
         // 0 0 * * * schedulers
