@@ -4,10 +4,8 @@ namespace App\Http\Controllers\AtcTraining;
 
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Student;
-use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Http\Request;
 
 class VatcanController extends Controller
 {
@@ -35,7 +33,8 @@ class VatcanController extends Controller
 
             return $notes;
         } catch (RequestException $e) {
-            \Log::error('Error fetching training notes from Vatcan API ' . $e->getMessage());
+            \Log::error('Error fetching training notes from Vatcan API '.$e->getMessage());
+
             return [];
         }
     }
