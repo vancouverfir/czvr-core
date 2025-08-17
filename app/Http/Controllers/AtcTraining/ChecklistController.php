@@ -118,6 +118,7 @@ class ChecklistController extends Controller
             $student->labels()->delete();
             $student->checklistItems()->delete();
             $student->update(['status' => 9]);
+
             return back()->with('success', 'Completed training for '.$student->user->fullName('FLC').'!');
         }
 
@@ -175,6 +176,7 @@ class ChecklistController extends Controller
             $student->labels()->delete();
             $student->checklistItems()->delete();
             $student->update(['status' => 9]);
+
             return back()->with('success', 'Completed training for '.$student->user->fullName('FLC').'!');
         }
 

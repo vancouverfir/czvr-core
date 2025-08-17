@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers\AtcTraining;
 
-use App\Http\Controllers\AtcTraining\VatcanController;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Checklist;
 use App\Models\AtcTraining\Instructor;
 use App\Models\AtcTraining\RosterMember;
-use App\Models\AtcTraining\LabelChecklistMap;
-use App\Models\AtcTraining\LabelChecklistVisitorMap;
 use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
@@ -32,8 +29,7 @@ class TrainingController extends Controller
         $instructor = Instructor::where('user_id', $user->id)->first();
 
         $labels = $student
-            ? StudentLabel::cursor()->filter(fn ($label) =>
-                ! StudentInteractiveLabels::where('student_id', $student->id)
+            ? StudentLabel::cursor()->filter(fn ($label) => ! StudentInteractiveLabels::where('student_id', $student->id)
                     ->where('student_label_id', $label->id)
                     ->exists()
             )
@@ -274,8 +270,7 @@ class TrainingController extends Controller
             return $item->checklistItem->checklist->name;
         });
 
-        $labels = StudentLabel::cursor()->filter(fn ($label) => 
-            ! StudentInteractiveLabels::where('student_id', $student->id)
+        $labels = StudentLabel::cursor()->filter(fn ($label) => ! StudentInteractiveLabels::where('student_id', $student->id)
                 ->where('student_label_id', $label->id)
                 ->exists()
         );
@@ -287,7 +282,7 @@ class TrainingController extends Controller
         $trainingOrder = $ChecklistController->getTrainingOrder($isVisitor);
 
         $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
-        $currentLabel = collect($trainingOrder)->first(fn($label) => in_array($label, $labelNames));
+        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
 
         $currentIndex = array_search($currentLabel, $trainingOrder);
         $nextLabel = $trainingOrder[$currentIndex + 1] ?? null;
