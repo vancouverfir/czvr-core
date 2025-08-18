@@ -202,8 +202,8 @@ class TrainingController extends Controller
             'instructor_id' => $instructor,
             'position' => $position,
             'status' => $status,
-            'last_status_change' => now(),
             'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         if (in_array($status, [0, 3])) {
@@ -344,7 +344,6 @@ class TrainingController extends Controller
             return redirect()->route('training.index')->withError('Your renewal period has expired and training cannot be renewed!');
         }
 
-        $student->last_status_change = now();
         $student->renewal_token = null;
         $student->save();
 

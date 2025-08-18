@@ -446,7 +446,7 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
             if is_student == 0:
                 print(f"Adding user {cid} to students table!")
                 cur.execute("""
-                    INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, renewal_expires_at, last_status_change, created_at, updated_at)
+                    INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, created_at, updated_at)
                     VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
                 """, (cid, 0, facility_join))
                 student_id = cur.lastrowid
@@ -526,7 +526,7 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
             if is_student == 0:
                 print(f"Adding user {cid} to visitor students table!")
                 cur.execute("""
-                    INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, renewal_expires_at, last_status_change, created_at, updated_at)
+                    INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, created_at, updated_at)
                     VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
                 """, (cid, 3, facility_join))
                 student_id = cur.lastrowid

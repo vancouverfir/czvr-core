@@ -273,7 +273,6 @@ Route::group(['middleware' => 'certified'], function () {
     Route::post('/dashboard/bookings/create', 'ControllerBookings\ControllerBookingsController@createPost')->name('controllerbookings.create.post');
 });
 
-Route::domain('training.czvr.ca')->group(function () {
     //AtcTraining
     Route::get('/training', 'AtcTraining\TrainingController@index')->name('training.index');
     Route::post('/trainingtimes', 'AtcTraining\TrainingController@editTrainingTime')->middleware('staff')->name('waittime.edit');
@@ -316,7 +315,7 @@ Route::domain('training.czvr.ca')->group(function () {
         Route::get('/training/renew/{token}', 'AtcTraining\TrainingController@renewTraining')->name('training.renew');
         Route::post('/training/students/{student}/edittimes', 'AtcTraining\TrainingController@editTimes')->name('training.students.editTimes');
     });
-});
+
 
 //Admin and CI
 Route::group(['middleware' => 'executive'], function () {
