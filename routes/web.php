@@ -273,49 +273,48 @@ Route::group(['middleware' => 'certified'], function () {
     Route::post('/dashboard/bookings/create', 'ControllerBookings\ControllerBookingsController@createPost')->name('controllerbookings.create.post');
 });
 
+//AtcTraining
+Route::get('/training', 'AtcTraining\TrainingController@index')->name('training.index');
+Route::post('/trainingtimes', 'AtcTraining\TrainingController@editTrainingTime')->middleware('staff')->name('waittime.edit');
+Route::group(['middleware' => 'mentor'], function () {
+    //Vatcan
+
+    //Label
+    Route::post('/training/students/{id}/assign/label', 'AtcTraining\LabelController@assignLabel')->name('training.students.assign.label');
+    Route::get('/training/students/{id}/drop/label/{student_label_id}', 'AtcTraining\LabelController@dropLabel')->name('training.students.drop.label');
+
     //AtcTraining
-    Route::get('/training', 'AtcTraining\TrainingController@index')->name('training.index');
-    Route::post('/trainingtimes', 'AtcTraining\TrainingController@editTrainingTime')->middleware('staff')->name('waittime.edit');
-    Route::group(['middleware' => 'mentor'], function () {
-        //Vatcan
+    Route::post('/training/students/{student}/complete', 'AtcTraining\TrainingController@completeTraining')->name('training.students.completeTraining');
+    Route::get('/training/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
+    Route::get('/training/students', 'AtcTraining\TrainingController@AllStudents')->name('training.students.students');
+    Route::post('/add', 'AtcTraining\TrainingController@newStudent')->name('instructor.student.add.new');
+    Route::get('/training/students/completed', 'AtcTraining\TrainingController@completedStudents')->name('training.students.completed');
+    Route::get('/training/students/waitlist', 'AtcTraining\TrainingController@newStudents')->name('training.students.waitlist');
+    Route::get('/training/students/{id}', 'AtcTraining\TrainingController@viewStudent')->name('training.students.view');
+    Route::post('/training/students/{id}/assigninstructor', 'AtcTraining\TrainingController@assignInstructorToStudent')->name('training.students.assigninstructor');
+    Route::post('/dashboard/trainingnotes/add/{id}', 'AtcTraining\TrainingController@addNote')->name('add.trainingnote');
+    Route::get('/dashboard/trainingnotes/create/{id}', 'AtcTraining\TrainingController@newNoteView')->name('view.add.note');
+    Route::post('/training/solorequest/{id}', 'AtcTraining\TrainingController@soloRequest')->name('training.solo.request');
+    Route::post('/waitlist/sort', 'AtcTraining\TrainingController@sort')->name('waitlist.sort');
+    Route::post('/visitor-waitlist/sort', 'AtcTraining\TrainingController@sortVisitor')->name('visitor.sort');
+    Route::get('/training/students/delete/{id}', 'AtcTraining\TrainingController@showDeleteForm')->name('training.students.delete');
+    Route::delete('/training/students/delete/{id}', 'AtcTraining\TrainingController@removeStudent')->name('training.students.destroy');
+    Route::post('/training/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
+    Route::patch('/training/students/checklist/{id}/complete', 'AtcTraining\ChecklistController@completeItem')->name('training.students.checklist.complete');
+    Route::post('/training/students/{student}/checklist/complete-multiple', 'AtcTraining\ChecklistController@completeMultiple')->name('training.students.checklist.completeMultiple');
+    Route::post('/training/students/{student}/promote', 'AtcTraining\ChecklistController@promoteStudent')->name('training.students.promote');
+    Route::post('/training/students/{student}/promote-visitor', 'AtcTraining\ChecklistController@promoteVisitor')->name('training.students.promoteVisitor');
+    Route::post('/students/{student}/assign-t2', 'AtcTraining\ChecklistController@assignT2Checklist')->name('training.students.assignT2');
+});
 
-        //Label
-        Route::post('/training/students/{id}/assign/label', 'AtcTraining\LabelController@assignLabel')->name('training.students.assign.label');
-        Route::get('/training/students/{id}/drop/label/{student_label_id}', 'AtcTraining\LabelController@dropLabel')->name('training.students.drop.label');
-
-        //AtcTraining
-        Route::post('/training/students/{student}/complete', 'AtcTraining\TrainingController@completeTraining')->name('training.students.completeTraining');
-        Route::get('/training/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
-        Route::get('/training/students', 'AtcTraining\TrainingController@AllStudents')->name('training.students.students');
-        Route::post('/add', 'AtcTraining\TrainingController@newStudent')->name('instructor.student.add.new');
-        Route::get('/training/students/completed', 'AtcTraining\TrainingController@completedStudents')->name('training.students.completed');
-        Route::get('/training/students/waitlist', 'AtcTraining\TrainingController@newStudents')->name('training.students.waitlist');
-        Route::get('/training/students/{id}', 'AtcTraining\TrainingController@viewStudent')->name('training.students.view');
-        Route::post('/training/students/{id}/assigninstructor', 'AtcTraining\TrainingController@assignInstructorToStudent')->name('training.students.assigninstructor');
-        Route::post('/dashboard/trainingnotes/add/{id}', 'AtcTraining\TrainingController@addNote')->name('add.trainingnote');
-        Route::get('/dashboard/trainingnotes/create/{id}', 'AtcTraining\TrainingController@newNoteView')->name('view.add.note');
-        Route::post('/training/solorequest/{id}', 'AtcTraining\TrainingController@soloRequest')->name('training.solo.request');
-        Route::post('/waitlist/sort', 'AtcTraining\TrainingController@sort')->name('waitlist.sort');
-        Route::post('/visitor-waitlist/sort', 'AtcTraining\TrainingController@sortVisitor')->name('visitor.sort');
-        Route::get('/training/students/delete/{id}', 'AtcTraining\TrainingController@showDeleteForm')->name('training.students.delete');
-        Route::delete('/training/students/delete/{id}', 'AtcTraining\TrainingController@removeStudent')->name('training.students.destroy');
-        Route::post('/training/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
-        Route::patch('/training/students/checklist/{id}/complete', 'AtcTraining\ChecklistController@completeItem')->name('training.students.checklist.complete');
-        Route::post('/training/students/{student}/checklist/complete-multiple', 'AtcTraining\ChecklistController@completeMultiple')->name('training.students.checklist.completeMultiple');
-        Route::post('/training/students/{student}/promote', 'AtcTraining\ChecklistController@promoteStudent')->name('training.students.promote');
-        Route::post('/training/students/{student}/promote-visitor', 'AtcTraining\ChecklistController@promoteVisitor')->name('training.students.promoteVisitor');
-        Route::post('/students/{student}/assign-t2', 'AtcTraining\ChecklistController@assignT2Checklist')->name('training.students.assignT2');
-    });
-
-    //Students and Instructors
-    Route::group(['middleware' => 'student'], function () {
-        Route::get('/api/training-notes', 'AtcTraining\VatcanController@getVatcanNotes')->name('vatcan.notes.all');
-        Route::get('/training/resources', 'AtcTraining\TrainingController@viewResources')->name('training.resources');
-        Route::get('/training/students/{id}/allnotes', 'AtcTraining\TrainingController@allNotes')->name('training.students.allnotes');
-        Route::get('/training/renew/{token}', 'AtcTraining\TrainingController@renewTraining')->name('training.renew');
-        Route::post('/training/students/{student}/edittimes', 'AtcTraining\TrainingController@editTimes')->name('training.students.editTimes');
-    });
-
+//Students and Instructors
+Route::group(['middleware' => 'student'], function () {
+    Route::get('/api/training-notes', 'AtcTraining\VatcanController@getVatcanNotes')->name('vatcan.notes.all');
+    Route::get('/training/resources', 'AtcTraining\TrainingController@viewResources')->name('training.resources');
+    Route::get('/training/students/{id}/allnotes', 'AtcTraining\TrainingController@allNotes')->name('training.students.allnotes');
+    Route::get('/training/renew/{token}', 'AtcTraining\TrainingController@renewTraining')->name('training.renew');
+    Route::post('/training/students/{student}/edittimes', 'AtcTraining\TrainingController@editTimes')->name('training.students.editTimes');
+});
 
 //Admin and CI
 Route::group(['middleware' => 'executive'], function () {
