@@ -8,7 +8,7 @@
 
 @section('title', 'ATC Resources')
 @section('description', 'Sector Files & Resources for Vancouver Controllers')
-tc
+
 @section('content')
 <div class="container" style="margin-top: 20px;">
     <div class="container" style="margin-top: 20px;">

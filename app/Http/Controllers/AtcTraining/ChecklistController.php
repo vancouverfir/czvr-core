@@ -30,13 +30,14 @@ class ChecklistController extends Controller
         ]);
 
         $student = Student::findOrFail($studentId);
-        $itemIds = $request->input('checklist_items');
+        $items = $student->checklistItems()->whereIn('id', $request->checklist_items)->get();
 
-        StudentChecklistItem::whereIn('id', $itemIds)
-            ->where('student_id', $student->id)
-            ->update(['completed' => true]);
+        foreach ($items as $item) {
+            $item->completed = !$item->completed;
+            $item->save();
+        }
 
-        return back()->with('success', 'Checklist items marked as completed!');
+        return back()->with('success', 'Checklist items updated successfully!');
     }
 
     public function getTrainingOrder(bool $visitor = false): array
@@ -142,7 +143,7 @@ class ChecklistController extends Controller
 
     private function assignNewLabel(Student $student, string $labelName, string $tierType, bool $visitor = false)
     {
-        $student->labels()->delete();
+        $student->labels()->whereHas('label', fn($q) => $q->where('exclusive', 1))->delete();
 
         $nextLabel = StudentLabel::where('name', $labelName)->firstOrFail();
         StudentInteractiveLabels::create([

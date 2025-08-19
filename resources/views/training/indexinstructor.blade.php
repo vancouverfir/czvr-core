@@ -98,10 +98,8 @@
                             <span>No Instructor Assigned!</span>
                         @endif
 
-                        @if ($student->status == 0)
-                            <h5 class="mt-3 font-weight-bold">Availability</h5>
-                            <span>{{$student->times ?? 'Not yet submitted!'}}</span>
-                        @endif
+                        <h5 class="mt-3 font-weight-bold">Availability</h5>
+                        <span>{{$student->times ?? 'Not yet submitted!'}}</span>
                     </div>
                 </div>
 
@@ -187,6 +185,8 @@
 
                 @else
                     <h3>Your Training has Started!</h3>
+
+                    <button class="btn btn-sm btn-outline-info mt-2 mb-3" id="editTimes">Edit Availability</button>
                 @endif
 
                 <div id="timesFormContainer" class="mt-3" style="display:none;">
@@ -194,7 +194,7 @@
                         @csrf
                         <div class="form-group">
                             <label for="timesInput">Session Times</label>
-                            <textarea name="times" id="timesInput" rows="3" class="form-control" placeholder="Enter your availability here!"></textarea>
+                            <textarea name="times" id="timesInput" rows="3" class="form-control" placeholder="Enter your availability here! Times in Z!"></textarea>
                         </div>
 
                         <div class="d-flex gap-2">

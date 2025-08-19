@@ -379,7 +379,6 @@ class TrainingController extends Controller
         $student = Student::findOrFail($id);
 
         $student->trainingNotes()->delete();
-        $student->solorequest()->delete();
         $student->instructingSessions()->delete();
         $student->labels()->delete();
         $student->checklistItems()->delete();

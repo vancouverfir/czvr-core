@@ -96,7 +96,7 @@
                             <i class="text-center text-light" style="margin-top: 20px;">No Students for this List</i>
                         @else
                             @php($loopIndex = 1)
-                            @foreach($list->students as $student)
+                            @foreach($list->students->sortBy(function($student) { return $student->student->user->fullName('FLC'); }) as $student)
                                 <a href="{{url('/training/students/' . $student->student_id)}}" class="list-group-item rounded list-group-item-action waves-effect text-light" style="background-color: transparent; flex-shrink: 0;">
                                     <div class="d-flex flex-column">
                                         <div class="d-flex flex-wrap mb-1">
@@ -106,10 +106,25 @@
                                             @endforeach
                                         </div>
                                     </div>
-                                    <p class="h3">
-                                        <span class="badge badge-hidden mr-1">{{$loopIndex}}</span>
+                                    <div class="d-flex justify-content-between">
+                                        <p class="h3 mb-0">
+                                            <span class="badge badge-hidden mr-1">{{$loopIndex}}</span>
                                             {{$student->student->user->fullName('FLC')}}
                                         </p>
+
+                                        @if($student->student->instructor)
+                                        <span class="font-weight-bold text-white d-flex align-items-center justify-content-center"
+                                            style="width: 28px; height: 28px; font-size: 0.8rem; margin-top: -11px;"
+                                            title="{{ $student->student->instructor->user->fullName('FLC') }}">
+                                            {{ strtoupper(substr($student->student->instructor->user->fname, 0, 1)) }}
+                                            {{ strtoupper(substr($student->student->instructor->user->lname, 0, 1)) }}
+                                        </span>
+                                        @else
+                                            <span class="text-white d-flex align-items-center justify-content-center align-self-start"
+                                                style="width: 28px; height: 28px; font-size: 0.8rem; margin-top: -11px;"
+                                                title="No Instructor!">!</span>
+                                        @endif
+                                    </div>
                                 </a>
                                 @php($loopIndex++)
                             @endforeach

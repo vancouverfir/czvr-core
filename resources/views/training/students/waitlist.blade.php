@@ -27,6 +27,18 @@
         color: red !important;
         font-size: 16px;
     }
+    .dot {
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .purple-dot {
+        background-color: purple;
+    }
+    .blue-dot {
+        background-color: blue;
+    }
 </style>
 
 @section('content')
@@ -49,6 +61,7 @@
             @endif
         </div>
         <hr class="bg-light">
+        <div> <span class="dot blue-dot"></span> Times submitted &nbsp;&nbsp;&nbsp; <span class="dot purple-dot"></span> Times not submitted </div>
         <div class="row border p-3 rounded" style="margin-top: 30px; margin-bottom: 30px;">
             <!-- Student Waitlist -->
             <div class="col-md-6">
@@ -61,6 +74,7 @@
                         <tr class="text-center">
                             <th>#</th>
                             <th>CID</th>
+                            <th></th>
                             <th>Student Name</th>
                             <th>Email</th>
                         </tr>
@@ -75,6 +89,13 @@
                             <tr class="text-center" data-id="{{ $student->id }}">
                                 <th scope="row" class="drag-sortable">{{ $loop->iteration }}</th>
                                 <td>{{ $student->user->id }}</td>
+                                <td>
+                                    @if(is_null($student->times))
+                                        <span class="dot purple-dot"></span>
+                                    @else
+                                        <span class="dot blue-dot"></span>
+                                    @endif
+                                </td>
                                 <td>
                                     <a href="{{ route('training.students.view', $student->id) }}" class="font-weight-bold text-primary blue-text">
                                         {{ $student->user->fullName('FL') }}
@@ -103,6 +124,7 @@
                         <tr class="text-center">
                             <th>#</th>
                             <th>CID</th>
+                            <th></th>
                             <th>Visitor Name</th>
                             <th>Email</th>
                         </tr>
@@ -116,6 +138,13 @@
                         <tr class="text-center" data-id="{{ $visitor->id }}">
                             <th scope="row" class="drag-sortable">{{ $loop->iteration }}</th>
                             <td>{{ $visitor->user->id }}</td>
+                            <td>
+                                @if(is_null($visitor->times))
+                                    <span class="dot purple-dot"></span>
+                                @else
+                                    <span class="dot blue-dot"></span>
+                                @endif
+                            </td>
                             <td>
                                 <a href="{{ route('training.students.view', $visitor->id) }}" class="font-weight-bold text-primary blue-text">
                                     {{ $visitor->user->fullName('FL') }}

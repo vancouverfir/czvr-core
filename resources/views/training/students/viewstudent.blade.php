@@ -8,7 +8,11 @@
 
 <style>
     .instructor:hover {
-    color: #2ca32c;
+    color: #2cb82c;
+    }
+
+    .editable:hover {
+        color: #2cb82c;
     }
 
     #training-notes-container {
@@ -42,10 +46,9 @@
                             </h5>
                         </div>
                     </div>
-                    <h5 class="mt-3 font-weight-bold">Instructor</h5>
+                    <h5 class="mt-3 font-weight-bold instructor" style="cursor: pointer;" data-toggle="modal" data-target="#confirmRemoveInstructorModal">Instructor</h5>
                     @if ($student->instructor && auth()->user()->permissions >= 3)
-                        <h5 class="instructor list-group-item" style="background-color: transparent; border: none; cursor: pointer;"
-                            data-toggle="modal" data-target="#confirmRemoveInstructorModal">
+                        <h5 class="list-group-item" style="background-color: transparent; border: none;">
                             <img src="{{ $student->instructor->user->avatar() }}" style="height: 27px; width: 27px; margin-right: 5px; border-radius: 70%;">
                             {{ $student->instructor->user->fullName('FLC') }}
                         </h5>
@@ -59,8 +62,25 @@
                     @else
                         <span>Instructor not set!</span>
                     @endif
-                    <h5 class="mt-3 font-weight-bold">Availability</h5>
-                    <span>{{$student->times ?? 'Student has not yet submitted!'}}</span>
+
+                    <div class="d-flex mt-3" style="gap: 1rem;">
+                        <div class="flex-fill">
+                            <h6 class="mb-1 font-weight-bold" style="font-size: 0.8rem;">Activity</h6>
+                            <span style="font-size: 0.85rem;">
+                                @if (($student->user->rosterProfile?->currency ?? 0) == 0)
+                                    No hours recorded
+                                @else
+                                    {{ decimal_to_hm($student->user->rosterProfile->currency) }} hours recorded
+                                @endif
+                            </span>
+                        </div>
+                        <div class="flex-fill">
+                            <h6 class="editable mb-1 font-weight-bold" style="font-size: 0.8rem; cursor: pointer;"  data-toggle="modal" data-target="#editTimesModal">Availability</h6>
+                            <span>
+                                {{ $student->times ?? 'Not submitted yet' }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -71,10 +91,10 @@
                         <div class="d-flex justify-content-between align-items-center mb-3 sticky-top p-2" style="background-color: #2e2f2f;">
                             <h3 class="font-weight-bold blue-text mb-0">Student Checklist</h3>
                             <div class="d-flex align-items-center gap-2">
-                                <form method="POST" action="{{ route('training.students.checklist.completeMultiple', $student->id) }}" class="mb-0 d-flex align-items-center">
+                                <form method="POST" action="{{ route('training.students.checklist.completeMultiple', $student->id) }}" class="mb-0 d-flex align-items-center gap-2">
                                     @csrf
-                                    <button type="submit" class="btn btn-success btn-sm" id="header-complete-selected" disabled>
-                                        Complete Selected
+                                    <button type="submit" class="btn btn-primary btn-sm" id="header-apply-selected" disabled>
+                                        Apply
                                     </button>
                                 </form>
                                 <button id="toggle-completed" class="btn btn-sm btn-outline-info">
@@ -93,22 +113,17 @@
                                 <thead>
                                     <tr>
                                         <th>Item</th>
-                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($items as $item)
-                                    <tr class="{{ $item->completed ? 'completed-row' : '' }}" style="{{ $item->completed ? 'text-decoration: line-through; color: grey' : '' }}">
-                                        <td>{{ $item->checklistItem->item }}
-                                            <td class="text-center">
-                                                @if ($item->completed)
-                                                    Completed
-                                                @else
-                                                    <button type="button" class="btn btn-sm btn-outline-success toggle-select-btn" data-item-id="{{ $item->id }}">Complete</button>
-                                                @endif
+                                        <tr>
+                                            <td>
+                                                <span class="toggle-select-item" data-item-id="{{ $item->id }}" data-completed="{{ $item->completed }}" style="cursor:pointer; {{ $item->completed ? 'text-decoration: line-through; color: grey;' : '' }}">
+                                                    {{ $item->checklistItem->item }}
+                                                </span>
                                             </td>
-                                        </td>
-                                    </tr>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -180,8 +195,10 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="font-weight-bold blue-text mb-0">Latest Vatcan Notes</h3>
                         <div>
-                            <a href="{{ route('training.students.allnotes', $student->id) }}" 
-                            class="text-primary btn btn-sm btn-outline-info ms-2">View All</a>
+                            <a href="https://vatcan.ca/manage/training/notes/controller/{{ $student->user_id }}" target="_blank" class="btn btn-sm btn-success ms-2">
+                                New Vatcan
+                            </a>
+                            <a href="{{ route('training.students.allnotes', $student->id) }}" class="text-primary btn btn-sm btn-outline-info ms-2">View All</a>
                         </div>
                     </div>
                     <div class="text-muted small mt-1">
@@ -276,6 +293,35 @@
                 </div>
             </div>
         </div>
+        </div>
+
+        <!-- Edit Times Modal -->
+        <div class="modal fade" id="editTimesModal" tabindex="-1" aria-labelledby="editTimesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width:395px;" role="document">
+                <div class="modal-content">
+                    <form method="POST" action="{{ route('training.students.editTimes', $student->id) }}">
+                        @csrf
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editTimesModalLabel">Edit Availability</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="timesInputModal">Times</label>
+                                    <textarea name="times" id="timesInputModal" rows="3" class="form-control" placeholder="Times in Z!">{{ $student->times }}</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Complete Student Modal -->
@@ -480,21 +526,40 @@
 
         updateConfirmButtonState();
 
-        const globalButton = document.getElementById('header-complete-selected');
+        const globalButton = document.getElementById('header-apply-selected');
         if (globalButton) {
             const globalForm = globalButton.closest('form');
             const selectedItems = new Set();
 
-            document.querySelectorAll('.toggle-select-btn').forEach(button => {
-                button.addEventListener('click', function () {
+            document.querySelectorAll('.toggle-select-item').forEach(item => {
+                const isCompleted = item.dataset.completed === '1';
+
+                if (isCompleted) {
+                    item.style.textDecoration = 'line-through';
+                    item.style.color = 'grey';
+                }
+
+                item.addEventListener('click', function () {
                     const itemId = this.dataset.itemId;
 
                     if (selectedItems.has(itemId)) {
                         selectedItems.delete(itemId);
-                        this.classList.replace('btn-success', 'btn-outline-success');
+                        if (isCompleted) {
+                            this.style.textDecoration = 'line-through';
+                            this.style.color = 'grey';
+                        } else {
+                            this.style.textDecoration = 'none';
+                            this.style.color = '';
+                        }
                     } else {
                         selectedItems.add(itemId);
-                        this.classList.replace('btn-outline-success', 'btn-success');
+                        if (isCompleted) {
+                            this.style.textDecoration = 'none';
+                            this.style.color = '';
+                        } else {
+                            this.style.textDecoration = 'line-through';
+                            this.style.color = 'grey';
+                        }
                     }
 
                     globalButton.disabled = selectedItems.size === 0;
