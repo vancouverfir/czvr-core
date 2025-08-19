@@ -33,7 +33,7 @@ class ChecklistController extends Controller
         $items = $student->checklistItems()->whereIn('id', $request->checklist_items)->get();
 
         foreach ($items as $item) {
-            $item->completed = !$item->completed;
+            $item->completed = ! $item->completed;
             $item->save();
         }
 
@@ -143,7 +143,7 @@ class ChecklistController extends Controller
 
     private function assignNewLabel(Student $student, string $labelName, string $tierType, bool $visitor = false)
     {
-        $student->labels()->whereHas('label', fn($q) => $q->where('exclusive', 1))->delete();
+        $student->labels()->whereHas('label', fn ($q) => $q->where('exclusive', 1))->delete();
 
         $nextLabel = StudentLabel::where('name', $labelName)->firstOrFail();
         StudentInteractiveLabels::create([
