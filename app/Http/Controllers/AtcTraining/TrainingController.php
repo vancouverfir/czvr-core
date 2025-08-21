@@ -22,7 +22,7 @@ class TrainingController extends Controller
     {
         $user = Auth::user();
 
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->guest(route('auth.connect.login'));
         }
 
