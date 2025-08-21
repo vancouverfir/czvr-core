@@ -2,6 +2,19 @@
 
 @section('description', 'Welcome to Vancouver - located in the left of Canada on the VATSIM network!')
 
+<style>
+@media (min-width: 769px) {
+    .card-background {
+        height: 210px;
+    }
+}
+
+@media (max-width: 769px) {
+    .container {
+        padding: 15px !important;
+    }
+}
+</style>
 
 @section('content')
         <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
@@ -18,7 +31,7 @@
                     <h1 class="vancouver-text display-3" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); color: #fff;">
                         <span class="corner">From Sea to Sky!</span>
                     </h1>
-                    <h4 class="vancouver-text mt-2" style="text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);">
+                    <h4 class="vancouver-text mt-2" style="text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.1);">
                         <a href="#A" id="discoverMore" class="blue-text" style="color: #fff; text-decoration: none;">Come explore Canada's West Coast<i class="fas fa-arrow-down ml-2"></i></a>
                     </h4>
                     <small style="color: #fff; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">

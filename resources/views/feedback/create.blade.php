@@ -81,7 +81,7 @@
     </div>
     <script>
         /*
-        Show/hide message form bsaed on whether the user has selected a feedback type
+        Show/hide message form based on whether the user has selected a feedback type
         */
         $("#feedbackTypeSelect").on('change', function() {
             if (this.value) {

@@ -21,8 +21,9 @@ class TrainingController extends Controller
     public function index(VatcanController $vatcan)
     {
         $user = Auth::user();
-        if (! $user) {
-            abort(403);
+
+        if (!Auth::check()) {
+            return redirect()->guest(route('auth.connect.login'));
         }
 
         $student = Student::where('user_id', $user->id)->first();
@@ -344,6 +345,7 @@ class TrainingController extends Controller
             return redirect()->route('training.index')->withError('Your renewal period has expired and training cannot be renewed!');
         }
 
+        $student->renewed_at = now();
         $student->renewal_token = null;
         $student->save();
 

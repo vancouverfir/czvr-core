@@ -18,15 +18,17 @@
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('dashboard/training') }}" href="{{route('training.index')}}">Home</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{ Request::is('dashboard/training/instructors/*') || Request::is('dashboard/training/instructors') }}" href="{{route('training.instructors')}}">Instructors</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ Request::is('dashboard/training/resources') || Request::is('dashboard/training/resources')}}" href="{{route('training.resources')}}">Resources</a>
-            </li>
             {{--<li>
                 <a class="nav-link {{Request::is(route('training.instructingsessions.index'))}}" href="{{route('training.instructingsessions.index')}}">Instructing Sessions</a>
             </li>--}}
+            @if (auth()->user()->permissions >= 3)
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('dashboard/training/instructors/*') || Request::is('dashboard/training/instructors') }}" href="{{route('training.instructors')}}">Instructors</a>
+            </li>
+            @endif
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('dashboard/training/resources') || Request::is('dashboard/training/resources')}}" href="{{route('training.resources')}}">Resources</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('dashboard/training/students/students') }}" style="color:white" href="{{ route('training.students.students') }}">Students</a>
             </li>

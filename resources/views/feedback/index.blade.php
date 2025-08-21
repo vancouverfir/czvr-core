@@ -20,11 +20,11 @@
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     @if (count($controller_feedback) < 1)
                         <br>
-                        No controller feedback.
+                        No controller feedback!
                         <br><br>
                     @else
                         <br>
-                        <p>There are {{count($controller_feedback)}} controller feedback submissions. <text class="font-weight-bold">{{count($controller_feedback_attention) == 0 ? "" :count($controller_feedback_attention).' needs your attention.'}}</text><text class="btn-link float-right" data-toggle="modal" data-target="#iconsModal">What do the icons mean?</text></p>
+                        <p>There are {{count($controller_feedback)}} controller feedback submissions! <text class="font-weight-bold">{{count($controller_feedback_attention) == 0 ? "" :count($controller_feedback_attention).' needs your attention.'}}</text><text class="btn-link float-right" data-toggle="modal" data-target="#iconsModal">What do the icons mean?</text></p>
                         <table id="dataTable" class="table table-hover">
                             <thead>
                             <tr>
@@ -60,11 +60,11 @@
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     @if (count($website_feedback) < 1)
                         <br>
-                        No website feedback.
+                        No website feedback!
                         <br><br>
                     @else
                         <br>
-                        <p>There are {{count($website_feedback) }} website feedback submissions.</p>
+                        <p>There are {{count($website_feedback) }} website feedback submissions!</p>
                         <table id="dataTable" class="table table-hover">
                             <thead>
                             <tr>

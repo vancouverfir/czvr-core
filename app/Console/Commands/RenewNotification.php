@@ -42,16 +42,15 @@ class RenewNotification extends Command
         foreach ($students as $student) {
             $token = Str::random(31);
             $student->renewal_token = $token;
-            $student->renewed_at = Carbon::now();
-            $student->save();
-
             $student->user->notify(new RenewalNotification($student));
+            $student->renewal_notified_at = Carbon::now();
+            $student->save();
         }
 
         $expirationDays = 11;
         $expiredStudents = Student::whereIn('status', [0, 3])
-            ->whereNotNull('renewed_at')
-            ->where('renewed_at', '<=', Carbon::now()->subDays($expirationDays))
+            ->whereNotNull('renewal_notified_at')
+            ->where('renewal_notified_at', '<=', Carbon::now()->subDays($expirationDays))
             ->get();
 
         foreach ($expiredStudents as $student) {

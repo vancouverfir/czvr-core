@@ -65,23 +65,12 @@
                     </div>
                 </div>
             </div>
-            @if (Auth::user()->permissions >= 3)
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header">Actions</div>
-                        <div class="card-body"><a href="#" data-toggle="modal" data-target="#addInstructorModal" class="card-link">Add New Instructor</a></div>
-                    </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">Actions</div>
+                    <div class="card-body"><a href="#" data-toggle="modal" data-target="#addInstructorModal" class="card-link">Add New Instructor</a></div>
                 </div>
-            @else
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header">Actions</div>
-                        <div class="card-body">
-                            <span>I don't know what to put here for mentors sorry lol</span>
-                        </div>
-                    </div>
-                </div>
-            @endif
+            </div>
         </div>
     </div>
     <br><br>

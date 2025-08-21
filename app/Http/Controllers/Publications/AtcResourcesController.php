@@ -19,22 +19,21 @@ class AtcResourcesController extends Controller
     {
         $this->validate($request, [
             'title' => 'required',
+            'font_awesome' => 'required|string',
             'description' => 'required',
             'url' => 'required|url',
+            'atc_only' => 'required|boolean',
         ]);
 
         $resource = new AtcResource();
         $resource->title = $request->get('title');
+        $resource->font_awesome = $request->get('font_awesome');
         $resource->description = $request->get('description');
         $resource->url = $request->get('url');
-
-        if ($request->get('atc_only') == 'on') {
-            $resource->atc_only = true;
-        }
-
+        $resource->atc_only = $request->get('atc_only');
         $resource->save();
 
-        return redirect()->route('atcresources.index')->with('success', 'Resource uploaded!');
+        return redirect()->route('training.resources')->with('success', 'Resource uploaded!');
     }
 
     public function deleteResource($id)
@@ -43,6 +42,6 @@ class AtcResourcesController extends Controller
 
         $resource->delete();
 
-        return redirect()->back()->with('info', 'Resource deleted.');
+        return redirect()->back()->with('info', 'Resource deleted!');
     }
 }

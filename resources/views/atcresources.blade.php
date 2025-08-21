@@ -7,21 +7,23 @@
 @stop
 
 @section('title', 'ATC Resources')
-@section('description', 'Sector Files & Resources for Vancouver Controllers')
+@section('description', 'ATC Resources for Vancouver Controllers!')
 
 @section('content')
+
+@include('includes.trainingMenu')
 <div class="container" style="margin-top: 20px;">
     <div class="container" style="margin-top: 20px;">
     <h1 class="blue-text font-weight-bold mt-2">ATC Resources</h1>
     <div class="list-group list-group-flush">
         @foreach ($resources as $resource)
-        @break($resource->atc_only && Auth::check() && !Auth::user()->rosterProfile)
+        @continue($resource->atc_only && Auth::check() && !Auth::user()->rosterProfile)
         <div class="list-group-item">
             <div class="row">
                 <div class="col"><b>{{$resource->title}}</b></div>
                 <div class="col-sm-4">
-                <a href="{{$resource->url}}" target="_blank"><i class="fa fa-eye"></i>&nbsp;View Resource</a>&nbsp;&nbsp;
-                <a href="#" data-toggle="modal" data-target="#detailsModal{{$resource->id}}"><i class="fa fa-window-close"></i>&nbsp Delete Resource</a>
+                <a href="{{$resource->url}}" class="white-text" target="_blank"><i class="fa fa-eye"></i>&nbsp;View Resource</a>&nbsp;&nbsp;
+                <a href="#" data-toggle="modal" class="white-text" data-target="#detailsModal{{$resource->id}}"><i class="fa fa-window-close"></i>&nbsp Delete Resource</a>
                 </div>
             </div>
         </div>
@@ -59,19 +61,45 @@
         </div>
         <div class="form-group">
             <p>Description</p>
-            <textarea id="descriptionField" name="description" cols="30" rows="10"></textarea>
+            <textarea id="descriptionField" name="description" cols="30" rows="10" required></textarea>
             <script>
                 var simplemde = new SimpleMDE({ element: document.getElementById("descriptionField") });
             </script>
         </div>
         <div class="form-group">
             <p>Link to Resource</p>
-            <input type="url" class="form-control" name="url">
+            <input type="url" class="form-control" name="url" required>
         </div>
         <div class="form-group">
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="atc_only" id="atc_only">
-                <label class="custom-control-label" for="atc_only">ATC Only</label>
+            <div class="d-flex align-items-center">
+                <span id="iconPreview" style="font-size: 1.5rem; color: #f1f1f1; margin-right: 8px;">
+                    <i class="fa fa-cloud"></i>
+                </span>
+                <p class="mb-0">Icon</p>
+            </div>
+            <div class="d-flex align-items-center">
+                <select id="iconSelect" name="font_awesome" class="form-control mr-3" required>
+                    <option value="fa-cloud">Weather</option>
+                    <option value="fa-headset">ATC</option>
+                    <option value="fa-plane-departure">Notam</option>
+                    <option value="fa-book">Document</option>
+                    <option value="fa-map">Map</option>
+                    <option value="fa-comments">Chat</option>
+                    <option value="fa-graduation-cap">Training</option>
+                    <option value="fa-exclamation-triangle">Alert</option>
+                    <option value="fa-info-circle">Info</option>
+                    <option value="fa-video">Video</option>
+                    <option value="fa-file-alt">Other</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                    <input type="hidden" name="atc_only" value="0">
+                    <input type="checkbox" class="custom-control-input" name="atc_only" id="atc_only" value="1">
+                    <label class="custom-control-label" for="atc_only">ATC Only</label>
+                </div>
             </div>
         </div>
         <br/>
@@ -79,4 +107,16 @@
     </form>
     @endif
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const select = document.getElementById("iconSelect");
+        const preview = document.getElementById("iconPreview").querySelector("i");
+
+        select.addEventListener("change", function () {
+            preview.className = "fa " + this.value;
+        });
+    });
+</script>
+
 @stop

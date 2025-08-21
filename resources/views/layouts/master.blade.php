@@ -148,7 +148,7 @@
                                                 Hide as we will try and automatically fetch events-->
                             <a href="{{route('events.index')}}" class="nav-link">Events</a>
                         </li>
-                        <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources') ? 'active' : '' }}">
+                        <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources')}}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                             {{--<a class="dropdown-item" href="{{route('controllerbookings')}}">Bookings</a>--}}

@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class Student extends Model
 {
     protected $fillable = [
-        'user_id', 'times', 'position', 'status', 'instructor_id', 'renewal_token', 'renewed_at',
+        'user_id', 'times', 'position', 'status', 'instructor_id', 'renewal_token', 'renewed_at', 'renewal_notified_at',
     ];
 
     public function user()

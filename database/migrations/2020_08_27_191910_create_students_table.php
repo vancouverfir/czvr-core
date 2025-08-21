@@ -24,6 +24,7 @@ class CreateStudentsTable extends Migration
             $table->foreign('instructor_id')->references('id')->on('instructors');
             $table->string('renewal_token')->nullable();
             $table->dateTime('renewed_at')->nullable();
+            $table->dateTime('renewal_notified_at')->nullable();
             $table->timestamps();
         });
     }

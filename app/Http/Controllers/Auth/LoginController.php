@@ -87,7 +87,7 @@ class LoginController extends Controller
             }
         });
 
-        return redirect('/index')->with('success', 'Logged in!');
+        return redirect()->intended()->with('success', 'Logged in!');
     }
 
     /**
@@ -208,6 +208,6 @@ class LoginController extends Controller
             $prefs->save();
         }
 
-        return redirect('')->with('success', 'Logged in!');
+        return redirect()->intended('/')->with('success', 'Logged in!');
     }
 }

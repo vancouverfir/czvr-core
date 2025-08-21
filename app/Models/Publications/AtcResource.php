@@ -10,7 +10,7 @@ class AtcResource extends Model
     use HasMarkdownFields;
 
     protected $fillable = [
-        'user_id', 'title', 'description', 'url', 'atc_only',
+        'user_id', 'title', 'font_awesome','description', 'url', 'atc_only',
     ];
 
     /**

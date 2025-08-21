@@ -46,21 +46,17 @@
                             </h5>
                         </div>
                     </div>
-                    <h5 class="mt-3 font-weight-bold instructor" style="cursor: pointer;" data-toggle="modal" data-target="#confirmRemoveInstructorModal">Instructor</h5>
-                    @if ($student->instructor && auth()->user()->permissions >= 3)
-                        <h5 class="list-group-item" style="background-color: transparent; border: none;">
-                            <img src="{{ $student->instructor->user->avatar() }}" style="height: 27px; width: 27px; margin-right: 5px; border-radius: 70%;">
-                            {{ $student->instructor->user->fullName('FLC') }}
+                    @if ($student->instructor)
+                        <h5 class="mt-3 font-weight-bold instructor" style="cursor: pointer;" data-toggle="modal" data-target="#confirmRemoveInstructorModal">
+                            Instructor
                         </h5>
-                    @elseif (!$student->instructor && auth()->user()->permissions >= 3)
-                        <h7 class="instructor" style="color: #2cb82c; cursor: pointer" data-toggle="modal" data-target="#assignInstructorModal">Assign Instructor</h7>
-                    @elseif ($student->instructor)
                         <h5 class="list-group-item" style="background-color: transparent; border: none;">
                             <img src="{{ $student->instructor->user->avatar() }}" style="height: 27px; width: 27px; margin-right: 5px; border-radius: 70%;">
                             {{ $student->instructor->user->fullName('FLC') }}
                         </h5>
                     @else
-                        <span>Instructor not set!</span>
+                        <h5 class="mt-3 font-weight-bold instructor" style="cursor: pointer;" data-toggle="modal" data-target="#confirmRemoveInstructorModal">Instructor</h5>
+                        <span>Instructor not assigned</span>
                     @endif
 
                     <div class="d-flex mt-3" style="gap: 1rem;">
@@ -117,7 +113,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($items as $item)
-                                        <tr>
+                                        <tr class="{{ $item->completed ? 'completed-row' : '' }}">
                                             <td>
                                                 <span class="toggle-select-item" data-item-id="{{ $item->id }}" data-completed="{{ $item->completed }}" style="cursor:pointer; {{ $item->completed ? 'text-decoration: line-through; color: grey;' : '' }}">
                                                     {{ $item->checklistItem->item }}
@@ -253,6 +249,7 @@
     </div>
 
     <!-- Staff Comments -->
+     @if (auth()->user()->permissions >= 3)
     <div class="row">
         <div class="col">
             <div class="card">
@@ -293,6 +290,7 @@
                 </div>
             </div>
         </div>
+        @endif
         </div>
 
         <!-- Edit Times Modal -->
@@ -386,80 +384,48 @@
             </div>
         </div>
 
-        <!-- Assign Instructor Modal -->
-        <div class="modal fade" id="assignInstructorModal" tabindex="-1" role="dialog">
+        <!-- Edit Instructor Modal -->
+        <div class="modal fade" id="confirmRemoveInstructorModal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Assign Instructor</h5>
+                        <h5 class="modal-title">Edit Instructor</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ route('training.students.assigninstructor', $student->id) }}" method="POST">
+                    <form action="{{ route('training.students.assigninstructor', $student->id) }}" method="POST" id="instructorForm">
                         @csrf
                         <div class="modal-body">
-                        <div class="form-group">
-                            <select name="instructor" required class="custom-select">
-                                <option value="" selected hidden>Please choose one!</option>
-                                @foreach ($instructors as $instructor)
-                                    @if ($instructor->id != 1)
-                                        <option value="{{ $instructor->id }}">{{ $instructor->user->fullName('FLC') }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
+                            <div class="form-group">
+                                <br>
+                                <div class="text-center">
+                                    Change Instructor
+                                </div>
+                                <select name="instructor" class="custom-select" id="instructorSelect">
+                                    <option value="">— No Change —</option>
+                                    @foreach ($instructors as $instructor)
+                                        @if ($instructor->id != 1)
+                                            <option value="{{ $instructor->id }}">{{ $instructor->user->fullName('FLC') }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        <hr>
+                        <div class="text-center">OR</div>
+                            <div class="form-group mt-3 text-center">
+                                <button type="button" class="btn btn-outline-danger" id="unassignBtn">
+                                    <i class="fas fa-user-slash"></i> Unassign Current Instructor
+                                </button>
+                                <input type="hidden" name="remove_instructor" id="removeInstructor" value="0">
+                            </div>
                         </div>
                         <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Assign</button>
-                        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-outline-success" id="confirmBtn" disabled>Confirm</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
-
-        <!-- Edit Instructor Modal -->
-        <div class="modal fade" id="confirmRemoveInstructorModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Instructor</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('training.students.assigninstructor', $student->id) }}" method="POST" id="instructorForm">
-                    @csrf
-                    <div class="modal-body">
-                    <div class="form-group">
-                        <br>
-                        <div class="text-center">
-                            Change Instructor
-                        </div>
-                        <select name="instructor" class="custom-select" id="instructorSelect">
-                            <option value="">— No Change —</option>
-                            @foreach ($instructors as $instructor)
-                                @if ($instructor->id != 1)
-                                    <option value="{{ $instructor->id }}">{{ $instructor->user->fullName('FLC') }}</option>
-                                @endif
-                            @endforeach
-                        </select>
-                    </div>
-                    <hr>
-                    <div class="text-center">OR</div>
-                        <div class="form-group mt-3 text-center">
-                            <button type="button" class="btn btn-outline-danger" id="unassignBtn">
-                                <i class="fas fa-user-slash"></i> Unassign Current Instructor
-                            </button>
-                            <input type="hidden" name="remove_instructor" id="removeInstructor" value="0">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-outline-success" id="confirmBtn" disabled>Confirm</button>
-                        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>

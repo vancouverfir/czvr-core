@@ -18,10 +18,11 @@ class CreateAtcResourcesTable extends Migration
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('title');
+            $table->string('font_awesome');
             $table->text('description')->nullable();
             $table->string('url');
+            $table->boolean('atc_only');
             $table->timestamps();
-            $table->integer('atc_only');
         });
     }
 
