@@ -49,11 +49,11 @@
         <!-- JQuery -->
         <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
         <!-- Bootstrap tooltips -->
-        <script type="text/javascript" src="{{ asset('js/popper.min.js') }}" defer></script>
+        <script type="text/javascript" src="{{ asset('js/popper.min.js') }}"></script>
         <!-- Bootstrap core JavaScript -->
-        <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}" defer></script>
+        <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
         <!-- MDB core JavaScript -->
-        <script type="text/javascript" src="{{ asset('js/mdb.min.js') }}" defer></script>
+        <script type="text/javascript" src="{{ asset('js/mdb.min.js') }}"></script>
         <!--CZQO specific CSS-->
         @if (Auth::check())
         @switch (Auth::user()->preferences)
@@ -67,9 +67,7 @@
         <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
         @endif
         <!--Leaflet-->
-        <link rel="stylesheet" href="{{ asset('css/leaflet.css') }}">
         <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-        <script src="{{asset('/js/leaflet.rotatedMarker.js')}}" defer></script>
         <!--TinyMCE-->
         <script src="{{ asset('js/tinymce.min.js') }}" referrerpolicy="origin" defer></script>
         <!--DataTables-->
