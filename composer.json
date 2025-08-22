@@ -8,12 +8,14 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "ext-json": "*",
         "aws/aws-sdk-php": "^3.168",
         "doctrine/dbal": "^3.0",
         "fakerphp/faker": "^1.24",
+        "graham-campbell/markdown": "^16.0",
         "guzzlehttp/guzzle": "^7.0",
+        "inertiajs/inertia-laravel": "^2.0",
         "intervention/image": "^2.5",
         "laravel-notification-channels/discord": "^1.1",
         "laravel/framework": "^10.0",
@@ -26,8 +28,7 @@
         "spatie/laravel-html": "^3.12",
         "spatie/laravel-permission": "^6.10",
         "vatsim/sso": "3.*",
-        "wohali/oauth2-discord-new": "^1.0",
-        "graham-campbell/markdown": "^16.0"
+        "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.1",
