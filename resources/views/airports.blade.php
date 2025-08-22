@@ -18,7 +18,6 @@
 
 <div class="container py-4">
     <h1 class="font-weight-bold blue-text">Airports</h1>
-    <hr> <u> <a class="blue-text" href="https://fltplan.com/" target="_blank" rel="noopener noreferrer"> Vancouver Aeronautical Charts </a> </u> <hr>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="pr-tab" data-toggle="tab" href="#pr" role="tab" aria-controls="pr" aria-selected="true">Preferred Routing</a>
@@ -45,44 +44,46 @@
     <div class="tab-content" id="myTabContent">
 
         <div class="tab-pane fade show active" id="pr" role="tabpanel" aria-labelledby="pr">
-        <br></br>
+        <br>
+        <span><b class="blue-text">#</b> STAR versions vary by AIRAC cycle — always refer to the latest charts for procedures!</span>
+        <br><br>
             <h2 class="font-weight-bold blue-text">Preferred Routing</h2>
             <h3>CYVR</h3>
             <div class='row'>
                 <div class='col' style="justify-items: auto">
                     <h4 class="blue-text">From CYVR</h4>
-                    <h6>CYYJ - YVR APASS8 (EVEN ALT)</h6>
+                    <h6>CYYJ - YVR APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
                     <h6>CYCD - YVR TREEL (EVEN ALT)</h6>
-                    <h6>CYLW - JANEK SEKAB SEKAB5 (ODD ALT)</h6>
+                    <h6>CYLW - JANEK SEKAB SEKAB<b class="blue-text">#</b> (ODD ALT)</h6>
                     <h6>CYXS - EMPOV (EVEN ALT)</h6>
-                    <h6>CYEG - VIDRI Q949 ELLKS ELLKS3 (ODD ALT)</h6>
-                    <h6>CYYC - DAPED PETLI MENBO Q983 NORET IGVEP6 (ODD ALT)</h6>
-                    <h6>KSEA (RNAV Jet) - YVR ROESH MARNR MARNR8 (ODD ALT)</h6>
-                    <h6>KSEA (Prop/Non-RNAV) - YVR JAWBN6 (ODD ALT)</h6>
-                    <h6>KPDX - YVR SEA BUWZO KRATR2 (ODD ALT)</h6>
-                    <h6>KSFO - YYJ ELMAA Q1 ETCHY MLBEC BDEGA3 (ODD ALT)</h6>
+                    <h6>CYEG - VIDRI Q949 ELLKS ELLKS<b class="blue-text">#</b> (ODD ALT)</h6>
+                    <h6>CYYC - DAPED PETLI MENBO Q983 NORET IGVEP<b class="blue-text">#</b> (ODD ALT)</h6>
+                    <h6>KSEA (RNAV Jet) - YVR ROESH MARNR MARNR<b class="blue-text">#</b> (ODD ALT)</h6>
+                    <h6>KSEA (Prop/Non-RNAV) - YVR JAWBN<b class="blue-text">#</b> (ODD ALT)</h6>
+                    <h6>KPDX - YVR SEA BUWZO KRATR<b class="blue-text">#</b> (ODD ALT)</h6>
+                    <h6>KSFO - YYJ ELMAA Q1 ETCHY MLBEC BDEGA<b class="blue-text">#</b> (ODD ALT)</h6>
                 </div>
                 <div class='col'>
                     <h4 class="blue-text">To CYVR</h4>
                         <u><h5>08L/08R</h5></u>
-                            <h6>CYYJ - OMVEX ILAND6 (ODD ALT)</h6>
-                            <h6>CYCD - ILATI MEPMU ILAND6 (ODD ALT)</h6>
-                            <h6>CYLW - MERYT BOOTH CANUC5 (EVEN ALT)</h6>
-                            <h6>CYXS - YXS YWL Q800 ELIDI WHSLR7 (ODD ALT)</h6>
-                            <h6>CYEG - ANDIE Q860 MERYT BOOTH CANUC5 (EVEN ALT)</h6>
-                            <h6>CYYC - BOTAG Q894 BOOTH CANUC5 (EVEN ALT)</h6>
-                            <h6>KSEA - PAE GRIZZ7 (EVEN ALT)</h6>
-                            <h6>KPDX - BTG J1 SEA PAE GRIZZ7 (EVEN ALT)</h6>
+                            <h6>CYYJ - OMVEX ILAND<b class="blue-text">#</b> (ODD ALT)</h6>
+                            <h6>CYCD - ILATI MEPMU ILAND<b class="blue-text">#</b> (ODD ALT)</h6>
+                            <h6>CYLW - MERYT BOOTH CANUC<b class="blue-text">#</b> (EVEN ALT)</h6>
+                            <h6>CYXS - YXS YWL Q800 ELIDI WHSLR<b class="blue-text">#</b> (ODD ALT)</h6>
+                            <h6>CYEG - ANDIE Q860 MERYT BOOTH CANUC<b class="blue-text">#</b> (EVEN ALT)</h6>
+                            <h6>CYYC - BOTAG Q894 BOOTH CANUC<b class="blue-text">#</b> (EVEN ALT)</h6>
+                            <h6>KSEA - PAE GRIZZ<b class="blue-text">#</b> (EVEN ALT)</h6>
+                            <h6>KPDX - BTG J1 SEA PAE GRIZZ<b class="blue-text">#</b> (EVEN ALT)</h6>
                             <br></br>
                         <u><h5>26L/26R</h5></u>
-                            <h6>CYYJ - BUICK DUXUM5 (ODD ALT)</h6>
-                            <h6>CYCD - ILATI BUICK DUXUM5 (ODD ALT)</h6>
-                            <h6>CYLW - MERYT BOOTH CANUC5 (EVEN ALT)</h6>
-                            <h6>CYXS - YXS YWL Q800 ELIDI WHSLR7 (ODD ALT)</h6>
-                            <h6>CYEG - ANDIE Q860 MERYT BOOTH CANUC5 (EVEN ALT)</h6>
-                            <h6>CYYC - BOTAG Q894 BOOTH CANUC5 (EVEN ALT)</h6>
-                            <h6>KSEA - PAE GRIZZ7 (EVEN ALT)</h6>
-                            <h6>KPDX - BTG J1 SEA PAE GRIZZ7 (EVEN ALT)</h6>
+                            <h6>CYYJ - BUICK DUXUM<b class="blue-text">#</b> (ODD ALT)</h6>
+                            <h6>CYCD - ILATI BUICK DUXUM<b class="blue-text">#</b> (ODD ALT)</h6>
+                            <h6>CYLW - MERYT BOOTH CANUC<b class="blue-text">#</b> (EVEN ALT)</h6>
+                            <h6>CYXS - YXS YWL Q800 ELIDI WHSLR<b class="blue-text">#</b> (ODD ALT)</h6>
+                            <h6>CYEG - ANDIE Q860 MERYT BOOTH CANUC<b class="blue-text">#</b> (EVEN ALT)</h6>
+                            <h6>CYYC - BOTAG Q894 BOOTH CANUC<b class="blue-text">#</b> (EVEN ALT)</h6>
+                            <h6>KSEA - PAE GRIZZ<b class="blue-text">#</b> (EVEN ALT)</h6>
+                            <h6>KPDX - BTG J1 SEA PAE GRIZZ<b class="blue-text">#</b> (EVEN ALT)</h6>
                 </div>
             </div>
                 
@@ -91,21 +92,21 @@
                 <div class='row'?>
                     <div class='col'>
                         <h4 class="blue-text">From CYYJ</h4>
-                        <h6>CYLW - HUH YDC PIGLU5 (ODD ALT)</h6>
-                        <h6>CYYC - HUH DAPED PETLI MENBO Q983 NORET IGVEP6 (ODD ALT)</h6>
-                        <h6>CYEG - HUH DAPED PETLI ROMRA Q949 ELLKS ELLKS3 (ODD ALT)</h6>
+                        <h6>CYLW - HUH YDC PIGLU<b class="blue-text">#</b> (ODD ALT)</h6>
+                        <h6>CYYC - HUH DAPED PETLI MENBO Q983 NORET IGVEP<b class="blue-text">#</b> (ODD ALT)</h6>
+                        <h6>CYEG - HUH DAPED PETLI ROMRA Q949 ELLKS ELLKS<b class="blue-text">#</b> (ODD ALT)</h6>
                         <h6>CYXS - UQQ EMPOV (ODD ALT)</h6>
-                        <h6>KSEA - JIGEB MARNR8 (ODD ALT)</h6>
-                        <h6>KPDX - SEA HELNS KRATR2 (ODD ALT)</h6>
+                        <h6>KSEA - JIGEB MARNR<b class="blue-text">#</b> (ODD ALT)</h6>
+                        <h6>KPDX - SEA HELNS KRATR<b class="blue-text">#</b> (ODD ALT)</h6>
                     </div>
                  <br></br>
                  <div class='col'>
                     <h4 class="blue-text">To CYYJ</h4>
-                    <h6>CYYC - BOTAG Q894 BOOTH APASS7 (EVEN ALT)</h6>
-                    <h6>CYEG - ANDIE Q860 MERYT BOOTH APASS7 (EVEN ALT)</h6>
-                    <h6>CYXS - YXS YVR AP APASS7 (EVEN ALT)</h6>
-                    <h6>KSEA - ARRIE DISCO DISCO5 (EVEN ALT)</h6>
-                    <h6>KPDX - BTG OLM DISCO DISCO5 (EVEN ALT)</h6>
+                    <h6>CYYC - BOTAG Q894 BOOTH APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
+                    <h6>CYEG - ANDIE Q860 MERYT BOOTH APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
+                    <h6>CYXS - YXS YVR AP APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
+                    <h6>KSEA - ARRIE DISCO DISCO<b class="blue-text">#</b> (EVEN ALT)</h6>
+                    <h6>KPDX - BTG OLM DISCO DISCO<b class="blue-text">#</b> (EVEN ALT)</h6>
                  </div>
                 </div>
                 
@@ -114,47 +115,48 @@
             <div class='row'>
                 <div class='col'>
                     <h4 class="blue-text">From CYLW</h4>
-                    <h6>CYYJ - MERYT BOOTH APASS7 (EVEN ALT)</h6>
-                    <h6>CYYC - WHATS MENBO Q983 IGVEP IGVEP6 (ODD ALT)</h6>
-                    <h6>CYEG - ROMRA Q949 ELLKS ELLKS3 (ODD ALT)</h6>
+                    <h6>CYYJ - MERYT BOOTH APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
+                    <h6>CYYC - WHATS MENBO Q983 IGVEP IGVEP<b class="blue-text">#</b> (ODD ALT)</h6>
+                    <h6>CYEG - ROMRA Q949 ELLKS ELLKS<b class="blue-text">#</b> (ODD ALT)</h6>
                     <h6>CYXS - YWB YXS (EVEN ALT)</h6>
-                    <h6>KSEA - MERYT BOOTH YVR MARNR MARNR8 (EVEN ALT)</h6>
+                    <h6>KSEA - MERYT BOOTH YVR MARNR MARNR<b class="blue-text">#</b> (EVEN ALT)</h6>
                 </div>
             <br></br>
             <div class='col'>
                 <h4 class="blue-text">To CYLW</h4>
-                <h6>CYYC - BOTAG SIMTA BINVO ROBTI NORIP5 (EVEN ALT)</h6>
+                <h6>CYYC - BOTAG SIMTA BINVO ROBTI NORIP<b class="blue-text">#</b> (EVEN ALT)</h6>
                 <h6>CYEG - ANDIE NADPI ENDBY HUMEK WTMAN (EVEN ALT)</h6>
                 <h6>CYXS - WTMAN (ODD ALT)</h6>
-                <h6>KSEA - SEA ALPSE YDC PIGLU5 (ODD ALT)</h6>
+                <h6>KSEA - SEA ALPSE YDC PIGLU<b class="blue-text">#</b> (ODD ALT)</h6>
             </div>
             </div>
                 
             <br></br>
         </div>
 
-        <div class="tab-pane fade" id="cyvr" role="tabpanel" aria-labelledby="cyvr"><br>
-            <div class="row">
-                    @if(\App\Classes\WeatherHelper::getAtisLetter('CYVR') == true)
+            <div class="tab-pane fade" id="cyvr" role="tabpanel" aria-labelledby="cyvr"><br>
+                <div class="row">
+                    @if(isset($weather['CYVR']))
                         <div class="col">
-                            <div class="card"
-                                style="width: 25%; float:left; min-height: 100%;">
+                            <div class="card" style="width: 25%; float:left; min-height: 100%;">
                                 <div class="card-body corner">
                                     <div class="CYWG" style="text-align: center;">
                                         <div class="ATIS">
                                             <h5>ATIS</h5>
-                                            <h1 style="font-size:45px;"><b>{{\App\Classes\WeatherHelper::getAtisLetter('CYVR')}}</b></h1>
+                                            <h1 style="font-size:45px;">
+                                                <b>{{ $weather['CYVR']->station->atis ?? 'N/A' }}</b>
+                                            </h1>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col">
-                            <div class="card"
-                                style="width: 175%; float: right;">
+                            <div class="card" style="width: 175%; float: right;">
                                 <div class="card-body corner">
                                     <h3>Current ATIS/METAR</h3>
-                                    {{\App\Classes\WeatherHelper::getAtis('CYVR')}}
+                                    <p>{{ $weather['CYVR']->raw_text ?? 'No data' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +165,7 @@
                             <div class="card">
                                 <div class="card-body corner">
                                     <h3>Current ATIS/METAR</h3>
-                                    {{\App\Classes\WeatherHelper::getAtis('CYVR')}}
+                                    <p>No data available</p>
                                 </div>
                             </div>
                         </div>
