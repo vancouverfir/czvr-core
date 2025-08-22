@@ -15,8 +15,6 @@
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-        <!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="theme-color" content="#6CC24A">
         <title>@yield('title', 'Vancouver FIR')</title>
@@ -24,87 +22,37 @@
         <meta name="theme-color" content="#6CC24A">
         <meta name="og:title" content="@yield('title', 'Vancouver FIR')">
         <meta name="og:description" content="@yield('description', '')">
-        <meta name="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-        <!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
-        <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lato&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&display=swap">
-        </noscript>
-        <link rel="preload" as="style" href="{{ asset('css/bootstrap.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" as="style" href="{{ asset('css/mdb.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" as="style" href="{{ asset('css/all.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" as="style" href="{{ asset('css/main.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript>
-            <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('css/mdb.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('css/all.css') }}">
-            <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-        </noscript>
+        <meta name="og:image" content="@yield('image','https://czvr.ca/storage/files/branding/czvr-logomark.png')">
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>@yield('title', 'Vancouver FIR')</title>
+
+        <!-- Vite Build -->
+        @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
         <!-- Font Awesome -->
-        <link href="{{ asset('css/all.css') }}" rel="stylesheet">
-        <!-- Bootstrap core CSS -->
-        <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-        <!-- Material Design Bootstrap -->
-        <link href="{{ asset('css/mdb.min.css') }}" rel="stylesheet">
-        <!--SimpleMDE Editor-->
-        <link href="{{ asset('css/simplemde.min.css') }}" rel="stylesheet">
-        <script src="{{ asset('js/simplemde.min.js') }}" defer></script>
-        <!-- JQuery -->
-        <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
-        <!-- Bootstrap tooltips -->
-        <script type="text/javascript" src="{{ asset('js/popper.min.js') }}" defer></script>
-        <!-- Bootstrap core JavaScript -->
-        <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}" defer></script>
-        <!-- MDB core JavaScript -->
-        <script type="text/javascript" src="{{ asset('js/mdb.min.js') }}" defer></script>
-        <!--CZQO specific CSS-->
-        @if (Auth::check())
-        @switch (Auth::user()->preferences)
-            @case("default")
-            <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
-            @break
-            @default
-            <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
-        @endswitch
-        @else
-        <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
-        @endif
-        <!--Leaflet-->
-        <link rel="stylesheet" href="{{ asset('css/leaflet.css') }}">
-        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-        <script src="{{asset('/js/leaflet.rotatedMarker.js')}}" defer></script>
-        <!--TinyMCE-->
-        <script src="{{ asset('js/tinymce.min.js') }}" referrerpolicy="origin" defer></script>
-        <!--DataTables-->
-        <link rel="stylesheet" type="text/css" href="{{ asset('css/dataTables.bootstrap4.min.css') }}"/>
-        <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}" defer></script>
-        <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap4.min.js') }}" defer></script>
-        <!--CSS Emoticons-->
-        <link href="{{asset('css/jquery.cssemoticons.css')}}" media="screen" rel="stylesheet" type="text/css" />
-        <script src="{{asset('/js/jquery.cssemoticons.js')}}" type="text/javascript" defer></script>
-        <!--Fullcalendar-->
-        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js" defer></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.js" defer></script>
-        <noscript><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css"></noscript>
-        <!--IntroJS-->
-        <link rel="stylesheet" href="{{asset('introjs/introjs.min.css')}}">
-        <script src="{{asset('introjs/intro.min.js')}}" defer></script>
-        <!--Date picker-->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+
+        <!-- Core JS -->
+        <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/popper.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
+        <!-- Core CSS -->
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/mdb.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/dataTables.bootstrap4.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
-        <script src="{{ asset('js/flatpickr.min.js') }}" defer></script>
-        <!--SimpleMDE-->
         <link rel="stylesheet" href="{{ asset('css/simplemde.min.css') }}">
-        <script src="{{ asset('js/simplemde.min.js') }}" defer></script>
-        <!--Dropzone-->
-        <script src="{{asset('js/dropzone.js')}}"></script>
-        <!--JqueryValidate-->
-        <script src="{{ asset('js/jquery.validate.min.js') }}" defer></script>
-        <!---->
-        <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
+        <link rel="stylesheet" href="{{ asset('css/czqo.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/czqomd.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/jquery.cssemoticons.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/leaflet.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/structure.css') }}">
+        <link rel="stylesheet" href="{{ asset('introjs/introjs.min.css') }}">
     </head>
     <body class="background">
     <!--Header-->

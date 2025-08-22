@@ -9,7 +9,7 @@
     <h1 class="font-weight-bold blue-text" style="font-size: 24px;"><strong>Available Gates</strong></h1>
 
     <!-- Map -->
-    <div id="last-updated">Last Updated: </div>
+    <div id="last-updated">Last Updated </div>
     <div class="row">
         <div class="col-md-12">
             <div id="map" style="height: 600px;"></div>

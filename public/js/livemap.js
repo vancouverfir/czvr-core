@@ -84,155 +84,110 @@ var stands = [
 	{ name: "Gate 96B", coordinates: [49.19531725,  -123.17293111], callsign: null, annotation: "USA Flights" }
 ];
 
+const refreshCooldown = 2 * 60 * 1000;
+let lastRefreshTime = 0;
+let isRefreshing = false;
+
+const map = L.map('map').setView([49.194, -123.18], 15);
+const standGroup = L.featureGroup().addTo(map);
+
+L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
+    minZoom: 0,
+    maxZoom: 20,
+    ext: 'png'
+}).addTo(map);
+
 async function fetchVatsimData() {
     try {
         const response = await fetch('https://data.vatsim.net/v3/vatsim-data.json');
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         displayErrorMessage();
+        return null;
     }
 }
 
 function displayErrorMessage() {
     const mapContainer = document.getElementById('map');
     const overlay = document.createElement('div');
-    overlay.style.position = 'absolute';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    overlay.style.zIndex = '1000';
+    Object.assign(overlay.style, {
+        position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000
+    });
+
     const errorMessageContainer = document.createElement('div');
-    errorMessageContainer.style.position = 'absolute';
-    errorMessageContainer.style.top = '50%';
-    errorMessageContainer.style.left = '50%';
-    errorMessageContainer.style.transform = 'translate(-50%, -50%)';
-    errorMessageContainer.style.padding = '20px';
-    errorMessageContainer.style.borderRadius = '10px';
-    errorMessageContainer.style.textAlign = 'center';
+    Object.assign(errorMessageContainer.style, {
+        position: 'absolute', top: '50%', left: '50%',
+        transform: 'translate(-50%, -50%)', padding: '20px',
+        borderRadius: '10px', textAlign: 'center'
+    });
+
     const errorMessage = document.createElement('p');
     errorMessage.textContent = 'Unable to fetch VATSIM data, please check back later!';
-    errorMessage.style.color = 'red';
-    errorMessage.style.fontSize = '18px';
+    Object.assign(errorMessage.style, { color: 'red', fontSize: '18px' });
+
     errorMessageContainer.appendChild(errorMessage);
     overlay.appendChild(errorMessageContainer);
     mapContainer.appendChild(overlay);
-}
-
-async function checkNearbyUsers(coordinates, vatsimData) {
-    try {
-        if (!vatsimData) return [];
-        const nearbyUsers = vatsimData.pilots.filter(pilot => {
-            const distance = getDistance(coordinates[0], coordinates[1], pilot.latitude, pilot.longitude);
-            return distance <= 0.03;
-        });
-        return nearbyUsers;
-    } catch (error) {
-        console.error('Error checking nearby aircraft:', error);
-        return [];
-    }
-}
-
-function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c;
-    return d;
 }
 
 function deg2rad(deg) {
     return deg * (Math.PI / 180);
 }
 
-var map = L.map('map').setView([49.194, -123.18], 15);
-const standGroup = L.featureGroup().addTo(map);
-var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
-    minZoom: 0,
-    maxZoom: 20,
-    attribution: 'Encoded',
-    ext: 'png'
-});
-Stadia_AlidadeSmoothDark.addTo(map);
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
 
-async function renderStands() {
+async function checkNearbyUsers(coordinates, vatsimData) {
+    if (!vatsimData) return [];
+    return vatsimData.pilots.filter(pilot => getDistance(coordinates[0], coordinates[1], pilot.latitude, pilot.longitude) <= 0.03);
+}
+
+function createTooltipContent(stand) {
+    return `<b>${stand.name}</b><br>${stand.annotation}${stand.taken ? `<br><b>${stand.callsign}</b>` : ''}`;
+}
+
+function renderStands() {
     stands.forEach(stand => {
-        let color = stand.taken ? 'red' : 'green';
+        const color = stand.taken ? 'red' : 'green';
         const existingStand = standGroup.getLayers().find(layer => layer.options.name === stand.name);
+
         if (!existingStand) {
             const newStand = L.circle(stand.coordinates, {
-                color: color,
-                fillColor: color,
-                fillOpacity: 0.5,
-                radius: 17,
-                name: stand.name
+                color, fillColor: color, fillOpacity: 0.5, radius: 17, name: stand.name
             }).addTo(standGroup);
-            const tooltipContent = '<b>' + stand.name + '</b><br>' + stand.annotation + (stand.taken ? '<br><b>' + stand.callsign + '</b>' : '');
-            newStand.bindTooltip(tooltipContent);
+            newStand.bindTooltip(createTooltipContent(stand));
         } else {
-            existingStand.setStyle({
-                color: color,
-                fillColor: color
-            });
-            if (stand.taken) {
-                existingStand.setTooltipContent('<b>' + stand.name + '</b><br>' + stand.annotation + (stand.taken ? '<br><b>' + stand.callsign + '</b>' : ''));
-            }
+            existingStand.setStyle({ color, fillColor: color });
+            existingStand.setTooltipContent(createTooltipContent(stand));
         }
     });
 }
 
-document.addEventListener("DOMContentLoaded", initializeMap);
-
-const refreshCooldown = 2 * 60 * 1000;
-let lastRefreshTime = 0;
-let isRefreshing = false;
-
-async function initializeMap() {
-    try {
-        await refreshMap();
-        setInterval(refreshMapIfReady, 2 * 60 * 1000);
-    } catch (error) {
-        console.error('Error initializing map:', error);
-    }
-}
-
-let isItRefreshing = false;
-
-async function refreshMapIfReady() {
-    const currentTime = Date.now();
-    if (!isItRefreshing && currentTime - lastRefreshTime >= refreshCooldown) {
-        isItRefreshing = true;
-        try {
-            await refreshMap();
-        } catch (error) {
-            console.error('Error refreshing map:', error);
-        } finally {
-            isItRefreshing = false;
-        }
-    }
+function updateLastUpdated(date) {
+    document.getElementById("last-updated").textContent = "Last Updated: " + date.toLocaleString();
 }
 
 async function refreshMap() {
-    if (isRefreshing) {
-        return;
-    }
+    if (isRefreshing) return;
     isRefreshing = true;
+
     try {
         const vatsimData = await fetchVatsimData();
         if (!vatsimData) return;
-        const promises = stands.map(async stand => {
-            const usersNearby = await checkNearbyUsers(stand.coordinates, vatsimData);
-            const isStandOccupied = usersNearby.length > 0;
-            stand.taken = isStandOccupied;
-            stand.callsign = isStandOccupied ? usersNearby[0].callsign : null;
-        });
-        await Promise.all(promises);
+
+        await Promise.all(stands.map(async stand => {
+            const nearbyUsers = await checkNearbyUsers(stand.coordinates, vatsimData);
+            stand.taken = nearbyUsers.length > 0;
+            stand.callsign = nearbyUsers[0]?.callsign || null;
+        }));
+
         renderStands();
         updateLastUpdated(new Date());
         lastRefreshTime = Date.now();
@@ -241,16 +196,13 @@ async function refreshMap() {
     }
 }
 
-function updateLastUpdated(lastUpdatedDate) {
-    const lastUpdatedElement = document.getElementById("last-updated");
-    const formattedDate = lastUpdatedDate.toLocaleString();
-    lastUpdatedElement.textContent = "Last Updated: " + formattedDate;
+async function initializeMap() {
+    await refreshMap();
+    setInterval(async () => {
+        if (Date.now() - lastRefreshTime >= refreshCooldown) {
+            await refreshMap();
+        }
+    }, refreshCooldown);
 }
 
-fetchVatsimData()
-    .then(() => {
-        initializeMap();
-    })
-    .catch(error => {
-        console.error(error);
-    });
+document.addEventListener("DOMContentLoaded", initializeMap);

@@ -16,19 +16,19 @@ class WeatherHelper
      */
     public static function getAtisLetter($icao)
     {
-        $atis_letter = null;
-
-        $client = new Client();
-        $response = $client->request('GET', 'https://data.vatsim.net/v3/vatsim-data.json');
-        $atis = json_decode($response->getBody()->getContents())->atis;
+        $atis = Cache::remember('vancouver.atis', 300, function () {
+            $client = new Client();
+            $response = $client->request('GET', 'https://data.vatsim.net/v3/vatsim-data.json');
+            return json_decode($response->getBody()->getContents())->atis ?? [];
+        });
 
         foreach ($atis as $a) {
             if (Str::startsWith($a->callsign, $icao)) {
-                $atis_letter = $a->atis_code;
+                return $a->atis_code ?? null;
             }
         }
 
-        return $atis_letter;
+        return null;
     }
 
     /**
@@ -39,46 +39,32 @@ class WeatherHelper
      */
     public static function getAtis($icao)
     {
-        $text_atis = '';
-
-        $client = new Client();
-        $response = $client->request('GET', 'https://data.vatsim.net/v3/vatsim-data.json');
-        $atis = json_decode($response->getBody()->getContents())->atis;
+        $atis = Cache::remember('vancouver.atis', 300, function () {
+            $client = new Client();
+            $response = $client->request('GET', 'https://data.vatsim.net/v3/vatsim-data.json');
+            return json_decode($response->getBody()->getContents())->atis ?? [];
+        });
 
         foreach ($atis as $a) {
-            if (Str::startsWith($a->callsign, $icao)) {
-                $text_atis = $a->text_atis;
+            if (Str::startsWith($a->callsign, $icao) && !empty($a->text_atis)) {
+                return implode(' ', $a->text_atis);
             }
         }
 
-        if ($text_atis) {
-            $text = '';
-            foreach ($text_atis as $t) {
-                $text .= $t.' ';
+        return Cache::remember('metar.data.'.$icao, 900, function () use ($icao) {
+            $c = new Client();
+            try {
+                $res = $c->request('GET', 'https://api.checkwx.com/metar/'.$icao, [
+                    'headers' => [
+                        'X-API-Key' => env('AIRPORT_API_KEY'),
+                    ],
+                ]);
+
+                $metar = json_decode($res->getBody()->getContents())->data ?? null;
+                return $metar[0] ?? 'No Weather Data!';
+            } catch (\Exception $e) {
+                return 'No Weather Data!';
             }
-        } else {
-            $text = Cache::remember('metar.data.'.$icao, 900, function () use ($icao) {
-                $c = new Client();
-                try {
-                    $res = $c->request('GET', 'https://api.checkwx.com/metar/'.$icao, [
-                        'headers' => [
-                            'X-API-Key' => env('AIRPORT_API_KEY'),
-                        ],
-                    ]);
-
-                    $metar = json_decode($res->getBody()->getContents())->data;
-
-                    if (! $metar) {
-                        return 'No weather data.';
-                    }
-
-                    return $metar[0];
-                } catch (\Exception $e) {
-                    return 'No weather data.';
-                }
-            });
-        }
-
-        return $text;
+        });
     }
 }
