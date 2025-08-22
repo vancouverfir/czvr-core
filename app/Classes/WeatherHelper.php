@@ -19,6 +19,7 @@ class WeatherHelper
         $atis = Cache::remember('vancouver.atis', 300, function () {
             $client = new Client();
             $response = $client->request('GET', 'https://data.vatsim.net/v3/vatsim-data.json');
+
             return json_decode($response->getBody()->getContents())->atis ?? [];
         });
 
@@ -42,11 +43,12 @@ class WeatherHelper
         $atis = Cache::remember('vancouver.atis', 300, function () {
             $client = new Client();
             $response = $client->request('GET', 'https://data.vatsim.net/v3/vatsim-data.json');
+
             return json_decode($response->getBody()->getContents())->atis ?? [];
         });
 
         foreach ($atis as $a) {
-            if (Str::startsWith($a->callsign, $icao) && !empty($a->text_atis)) {
+            if (Str::startsWith($a->callsign, $icao) && ! empty($a->text_atis)) {
                 return implode(' ', $a->text_atis);
             }
         }
@@ -61,6 +63,7 @@ class WeatherHelper
                 ]);
 
                 $metar = json_decode($res->getBody()->getContents())->data ?? null;
+
                 return $metar[0] ?? 'No Weather Data!';
             } catch (\Exception $e) {
                 return 'No Weather Data!';
