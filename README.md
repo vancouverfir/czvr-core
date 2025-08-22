@@ -30,7 +30,7 @@ Guidelines for submitting a **pull request**:
 1. Rename `.env.example` to `.env` and fill required fields. The VATSIM connect demo URI is already placed in there. Get your ID and put your redirect URI into http://auth-dev.vatsim.net
 1. Run `php artisan migrate --seed` (runs database migrations and seeds with required rows)
 1. Run `php artisan key:generate`
-1. Login with one of the accounts found at [http://wiki.vatsim.net/connect](https://vatsim.dev/services/connect/sandbox)
+1. Login with one of the accounts found at https://vatsim.dev/services/connect/sandbox
 1. Give that new account in the `users` table a `permissions` value of `5`
 
 
