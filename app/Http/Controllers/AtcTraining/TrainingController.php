@@ -262,7 +262,11 @@ class TrainingController extends Controller
 
     public function viewStudent($id, VatcanController $vatcan)
     {
-        $student = Student::findOrFail($id);
+        $student = Student::with([
+            'checklistItems.checklistItem.checklist',
+            'labels.label',
+        ])->findOrFail($id);
+
         $instructors = Instructor::all();
         $checklists = Checklist::all();
         $times = $student->times;
@@ -271,10 +275,11 @@ class TrainingController extends Controller
             return $item->checklistItem->checklist->name;
         });
 
-        $labels = StudentLabel::cursor()->filter(fn ($label) => ! StudentInteractiveLabels::where('student_id', $student->id)
-                ->where('student_label_id', $label->id)
-                ->exists()
-        );
+        $interactiveLabelIds = StudentInteractiveLabels::where('student_id', $student->id)
+                                    ->pluck('student_label_id')
+                                    ->toArray();
+
+        $labels = StudentLabel::whereNotIn('id', $interactiveLabelIds)->get();
 
         $ChecklistController = new \App\Http\Controllers\AtcTraining\ChecklistController();
 
