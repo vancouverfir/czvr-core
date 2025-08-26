@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Booking;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class BookingController extends Controller
 {
@@ -33,20 +33,20 @@ class BookingController extends Controller
     {
         $data = $request->validate([
             'callsign' => 'required|string',
-            'type'     => 'nullable|string',
-            'start'    => 'required',
-            'end'      => 'required',
+            'type' => 'nullable|string',
+            'start' => 'required',
+            'end' => 'required',
         ]);
 
         $user = auth()->user();
 
         $apiData = [
-            'callsign'    => $data['callsign'],
-            'cid'         => $user->id,
-            'type'        => $data['type'] ?? 'booking',
-            'start'       => gmdate('Y-m-d H:i:s', strtotime($data['start'])),
-            'end'         => gmdate('Y-m-d H:i:s', strtotime($data['end'])),
-            'division'    => $user->division_code ?? null,
+            'callsign' => $data['callsign'],
+            'cid' => $user->id,
+            'type' => $data['type'] ?? 'booking',
+            'start' => gmdate('Y-m-d H:i:s', strtotime($data['start'])),
+            'end' => gmdate('Y-m-d H:i:s', strtotime($data['end'])),
+            'division' => $user->division_code ?? null,
             'subdivision' => $user->subdivision_code ?? null,
         ];
 
@@ -77,20 +77,20 @@ class BookingController extends Controller
     {
         $data = $request->validate([
             'callsign' => 'required|string',
-            'type'     => 'nullable|string',
-            'start'    => 'required',
-            'end'      => 'required',
+            'type' => 'nullable|string',
+            'start' => 'required',
+            'end' => 'required',
         ]);
 
         $user = auth()->user();
 
         $apiData = [
-            'callsign'    => $data['callsign'],
-            'cid'         => $user->id,
-            'type'        => $data['type'] ?? 'booking',
-            'start'       => gmdate('Y-m-d H:i:s', strtotime($data['start'])),
-            'end'         => gmdate('Y-m-d H:i:s', strtotime($data['end'])),
-            'division'    => $user->division_code ?? null,
+            'callsign' => $data['callsign'],
+            'cid' => $user->id,
+            'type' => $data['type'] ?? 'booking',
+            'start' => gmdate('Y-m-d H:i:s', strtotime($data['start'])),
+            'end' => gmdate('Y-m-d H:i:s', strtotime($data['end'])),
+            'division' => $user->division_code ?? null,
             'subdivision' => $user->subdivision_code ?? null,
         ];
 
