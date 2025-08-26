@@ -38,7 +38,7 @@
             <link rel="stylesheet" href="{{ asset('css/main.css') }}">
         </noscript>
         <!-- Font Awesome -->
-        <link href="{{ asset('css/all.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
         <!-- Bootstrap core CSS -->
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         <!-- Material Design Bootstrap -->
@@ -190,9 +190,6 @@
                     <ul class="navbar-nav ml-auto nav-flex-icons">
                         @unless (Auth::check())
                         <li class="nav-item d-flex align-items-center">
-                            {{-- <a href="{{route('auth.connect.login')}}" class="nav-link waves-effect waves-light">
-                                <i class="fas fa-sign-in-alt"></i>&nbsp;Login
-                            </a> --}}
                             <a href="{{route('auth.connect.login')}}" class="nav-link waves-effect waves-light">
                                 <i class="fas fa-sign-in-alt"></i>&nbsp;Login
                             </a>
@@ -205,25 +202,15 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right dropdown-default py-0" aria-labelledby="navbarDropdownMenuLink-333">
-                                    <a class="dropdown-item {{ Request::is('dashboard') || Request::is('dashboard/*')}}" href="{{route('dashboard.index')}}">
-                                        <i class="fas fas fa-tachometer-alt mr-2"></i>Dashboard
-                                    </a>
+                                    <a class="dropdown-item" href="{{route('dashboard.index')}}"> <i class="fas fas fa-tachometer-alt mr-2"></i> Dashboard </a>
                                 @if (auth()->check() && (auth()->user()->instructorProfile))
-                                    <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
-                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Instructors
-                                    </a>
+                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Instructors </a>
                                 @elseif (auth()->check() && auth()->user()->permissions == 2)
-                                    <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
-                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Mentors
-                                    </a>
+                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Mentors </a>
                                 @elseif (auth()->check() && (auth()->user()->studentProfile))
-                                    <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
-                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Training
-                                    </a>
+                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Training </a>
                                 @endif
-                                    <a class="dropdown-item red-text" href="{{route('auth.logout')}}">
-                                        <i class="fa fa-sign-out-alt mr-2"></i>&nbsp;Logout
-                                    </a>
+                                    <a class="dropdown-item red-text" href="{{route('auth.logout')}}"> <i class="fa fa-sign-out-alt mr-2"> </i> &nbsp; Logout </a>
                             </div>
                         </li>
                         @endauth

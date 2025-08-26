@@ -61,7 +61,7 @@
             @endif
         </div>
         <hr class="bg-light">
-        <div> <span class="dot blue-dot"></span> Times submitted &nbsp;&nbsp;&nbsp; <span class="dot purple-dot"></span> Times not submitted </div>
+        <div style="display: flex; align-items: center; gap: 10px;"> <div style="display: flex; align-items: center; gap: 5px;"> <span class="dot blue-dot"></span> <span>Times submitted</span> </div> <div style="display: flex; align-items: center; gap: 5px;"> <span class="dot purple-dot"></span> <span>Times not submitted</span> </div> </div>
         <div class="row border p-3 rounded" style="margin-top: 30px; margin-bottom: 30px;">
             <!-- Student Waitlist -->
             <div class="col-md-6">
