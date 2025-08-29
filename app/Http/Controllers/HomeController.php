@@ -8,10 +8,10 @@ use App\Models\Network\SessionLog;
 use App\Models\News\News;
 use App\Models\Settings\HomepageImages;
 use Carbon\Carbon;
-use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Exception;
 
 class HomeController extends Controller
 {
@@ -36,7 +36,7 @@ class HomeController extends Controller
                     if (
                         isset($c->callsign, $c->facility) &&
                         Str::startsWith($c->callsign, $prefixes) &&
-                        ! Str::endsWith($c->callsign, ['ATIS', 'OBS']) &&
+                        !Str::endsWith($c->callsign, ['ATIS', 'OBS']) &&
                         $c->facility != 0
                     ) {
                         $finalPositions[] = $c;
@@ -99,7 +99,7 @@ class HomeController extends Controller
 
                 $weatherArray = [];
 
-                if (! empty($resp->data)) {
+                if (!empty($resp->data)) {
                     foreach ($resp->data as $w) {
                         $icao = $w->icao ?? 'UNKNOWN';
                         $w->flight_category = $w->flight_category ?? 'N/A';
@@ -107,26 +107,18 @@ class HomeController extends Controller
                         $w->wind = $w->wind ?? null;
 
                         switch ($icao) {
-                            case 'CYVR': $weatherArray[0] = $w;
-                                break;
-                            case 'CYYJ': $weatherArray[1] = $w;
-                                break;
-                            case 'CYLW': $weatherArray[2] = $w;
-                                break;
-                            case 'CYXS': $weatherArray[3] = $w;
-                                break;
-                            case 'CYXX': $weatherArray[4] = $w;
-                                break;
-                            case 'CYQQ': $weatherArray[5] = $w;
-                                break;
-                            default: $weatherArray[] = (object) ['error' => 'No weather data'];
-                                break;
+                            case 'CYVR': $weatherArray[0] = $w; break;
+                            case 'CYYJ': $weatherArray[1] = $w; break;
+                            case 'CYLW': $weatherArray[2] = $w; break;
+                            case 'CYXS': $weatherArray[3] = $w; break;
+                            case 'CYXX': $weatherArray[4] = $w; break;
+                            case 'CYQQ': $weatherArray[5] = $w; break;
+                            default: $weatherArray[] = (object)['error' => 'No weather data']; break;
                         }
                     }
                 }
 
                 ksort($weatherArray);
-
                 return $weatherArray;
             });
         } catch (Exception $e) {

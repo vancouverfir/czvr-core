@@ -27,6 +27,6 @@ class CreateLabelChecklistVisitorMapTable extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('label_checklist_visitor_map');
     }
-}
+};
