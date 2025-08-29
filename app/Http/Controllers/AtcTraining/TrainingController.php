@@ -61,7 +61,7 @@ class TrainingController extends Controller
             $student->load('checklistItems.checklistItem', 'checklistItems.checklistItem.checklist');
 
             $studentChecklistGroups = $student->checklistItems->groupBy(
-                fn($item) => $item->checklistItem->checklist->name
+                fn ($item) => $item->checklistItem->checklist->name
             );
 
             $vatcanNotes = collect($vatcan->getVatcanNotes($student->id))
