@@ -13,7 +13,6 @@
 
 // Booking Subdomain
 Route::group(['domain' => 'booking.czvr.ca'], function () {
-
     // Public Booking
     Route::get('/', 'Booking\BookingController@indexPublic')->name('booking');
 
@@ -26,10 +25,8 @@ Route::group(['domain' => 'booking.czvr.ca'], function () {
     });
 });
 
-
 // Training Subdomain
 Route::group(['domain' => 'training.czvr.ca'], function () {
-
     // Index
     Route::get('/', 'AtcTraining\TrainingController@index')->name('training.index');
     Route::post('/trainingtimes', 'AtcTraining\TrainingController@editTrainingTime')->middleware('staff')->name('waittime.edit');
@@ -39,11 +36,11 @@ Route::group(['domain' => 'training.czvr.ca'], function () {
         // Atc Resources Edit
         Route::get('/atcresources', 'Publications\AtcResourcesController@index')->middleware('atc')->name('atcresources.index');
 
-        // 
+        //
         Route::post('/students/{id}/assign/label', 'AtcTraining\LabelController@assignLabel')->name('training.students.assign.label');
         Route::get('/students/{id}/drop/label/{student_label_id}', 'AtcTraining\LabelController@dropLabel')->name('training.students.drop.label');
 
-        // 
+        //
         Route::post('/students/{student}/complete', 'AtcTraining\TrainingController@completeTraining')->name('training.students.completeTraining');
         Route::get('/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
         Route::get('/allstudents', 'AtcTraining\TrainingController@AllStudents')->name('training.students.students');
@@ -74,9 +71,7 @@ Route::group(['domain' => 'training.czvr.ca'], function () {
         Route::get('/renew/{token}', 'AtcTraining\TrainingController@renewTraining')->name('training.renew');
         Route::post('/students/{student}/edittimes', 'AtcTraining\TrainingController@editTimes')->name('training.students.editTimes');
     });
-
 });
-
 
 //ALL Public Views
 Route::get('/', 'HomeController@view')->name('index');
@@ -326,6 +321,5 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 });
-
 
 //Admin and CI
