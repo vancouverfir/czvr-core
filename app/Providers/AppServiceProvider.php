@@ -17,8 +17,13 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Schema::defaultStringLength(191);
-        URL::forceRootUrl(config('app.url'));
-        URL::forceScheme('https');
+
+        if ($this->app->environment('production')) {
+            if (config('app.url')) {
+                URL::forceRootUrl(config('app.url'));
+            }
+            URL::forceScheme('https');
+        }
     }
 
     /**

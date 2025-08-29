@@ -11,120 +11,128 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Exception;
 
 class HomeController extends Controller
 {
     public function view()
     {
-        //Vancouver online controllers
-        $client = new Client();
-        $response = $client->request('GET', VatsimHelper::getDatafeedUrl());
-        $controllers = json_decode($response->getBody()->getContents())->controllers;
-
         $finalPositions = [];
+        $news = collect();
+        $nextEvents = collect();
+        $topControllersArray = [];
+        $weather = [];
+        $background = null;
 
-        $prefixes = [
+        // Vancouver online controllers
+        try {
+            $client = new Client();
+            $response = $client->request('GET', VatsimHelper::getDatafeedUrl());
+            $controllers = json_decode($response->getBody()->getContents());
 
-            'CZVR_',
-            'ZVR_',
-            'CYVR_',
-            'CYYJ_',
-            'CYLW_',
-            'CYXS_',
-            'CYXX_',
-            'CYCD_',
-        ];
-
-        foreach ($controllers as $c) {
-            if (Str::startsWith($c->callsign, $prefixes) && ! Str::endsWith($c->callsign, ['ATIS', 'OBS']) && $c->facility != 0) {
-                $finalPositions[] = $c;
+            if (isset($controllers->controllers)) {
+                $prefixes = ['CZVR_', 'ZVR_', 'CYVR_', 'CYYJ_', 'CYLW_', 'CYXS_', 'CYXX_', 'CYCD_'];
+                foreach ($controllers->controllers as $c) {
+                    if (
+                        isset($c->callsign, $c->facility) &&
+                        Str::startsWith($c->callsign, $prefixes) &&
+                        !Str::endsWith($c->callsign, ['ATIS', 'OBS']) &&
+                        $c->facility != 0
+                    ) {
+                        $finalPositions[] = $c;
+                    }
+                }
             }
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch VATSIM controllers: '.$e->getMessage());
         }
 
-        //News
-        $news = News::where('visible', true)->get()->sortByDesc('published')->take(3);
+        // News
+        try {
+            $news = News::where('visible', true)->get()->sortByDesc('published')->take(3);
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch news: '.$e->getMessage());
+        }
 
-        //Event
-        $nextEvents = Event::where('start_timestamp', '>', Carbon::now())->get()->sortBy('start_timestamp')->take(3);
+        // Events
+        try {
+            $nextEvents = Event::where('start_timestamp', '>', Carbon::now())
+                               ->get()->sortBy('start_timestamp')->take(3);
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch events: '.$e->getMessage());
+        }
 
-        //Top Controllers
-        $topControllersArray = [];
+        // Top Controllers
+        try {
+            $colourArray = ['#6CC24A', '#B2D33C', '#E3B031', '#F15025', '#8C8C8C'];
+            $monthStart = Carbon::now()->startOfMonth()->toISOString();
+            $monthEnd = Carbon::now()->endOfMonth()->toISOString();
 
-        $colourArray = [
-            0 => '#6CC24A',
-            1 => '#B2D33C',
-            2 => '#E3B031',
-            3 => '#F15025',
-            4 => '#8C8C8C',
-        ];
-
-        $monthStart = Carbon::now()->startOfMonth()->toISOString();
-        $monthEnd = Carbon::now()->endOfMonth()->toISOString();
-        $topControllers = SessionLog::selectRaw('sum(duration) as duration, cid')
+            $topControllers = SessionLog::selectRaw('sum(duration) as duration, cid')
                                         ->whereBetween('session_start', [$monthStart, $monthEnd])
                                         ->groupBy('cid')
                                         ->get()->sortByDesc('duration')->take(5);
 
-        $n = -1;
-        foreach ($topControllers as $top) {
-            $top = [
-                'id' => $n += 1,
-                'cid' => $top['cid'],
-                'time' => decimal_to_hm($top['duration']),
-                'colour' => $colourArray[$n],
-            ];
-            array_push($topControllersArray, $top);
+            $n = -1;
+            foreach ($topControllers as $top) {
+                $topControllersArray[] = [
+                    'id' => $n += 1,
+                    'cid' => $top->cid ?? 'N/A',
+                    'time' => function_exists('decimal_to_hm') ? decimal_to_hm($top->duration ?? 0) : 0,
+                    'colour' => $colourArray[$n] ?? '#000000',
+                ];
+            }
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch top controllers: '.$e->getMessage());
         }
 
-        //Weather
-        $weather = Cache::remember('weather.data', 900, function () {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://api.checkwx.com/metar/CYVR,CYYJ,CYLW,CYXS,CYXX,CYQQ/decoded?pretty=1');
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-API-Key: '.env('AIRPORT_API_KEY')]);
+        // Weather
+        try {
+            $weather = Cache::remember('weather.data', 900, function () {
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://api.checkwx.com/metar/CYVR,CYYJ,CYLW,CYXS,CYXX,CYQQ/decoded?pretty=1');
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-API-Key: '.env('AIRPORT_API_KEY')]);
 
-            $resp = json_decode(curl_exec($ch));
+                $resp = json_decode(curl_exec($ch));
+                curl_close($ch);
 
-            curl_close($ch);
+                $weatherArray = [];
 
-            $weatherArray = [];
+                if (!empty($resp->data)) {
+                    foreach ($resp->data as $w) {
+                        $icao = $w->icao ?? 'UNKNOWN';
+                        $w->flight_category = $w->flight_category ?? 'N/A';
+                        $w->temperature = $w->temperature ?? null;
+                        $w->wind = $w->wind ?? null;
 
-            if ($resp) {
-                foreach ($resp->data as $w) {
-                    switch ($w->icao) {
-                        case 'CYVR':
-                            $weatherArray[0] = $w;
-                            break;
-                        case 'CYYJ':
-                            $weatherArray[1] = $w;
-                            break;
-                        case 'CYLW':
-                            $weatherArray[2] = $w;
-                            break;
-                        case 'CYXS':
-                            $weatherArray[3] = $w;
-                            break;
-                        case 'CYXX':
-                            $weatherArray[4] = $w;
-                            break;
-                        case 'CYQQ':
-                            $weatherArray[5] = $w;
-                            break;
-                        default:
-                            $weatherArray[] = (object) [
-                                'error' => 'No weather data'];
-                            break;
+                        switch ($icao) {
+                            case 'CYVR': $weatherArray[0] = $w; break;
+                            case 'CYYJ': $weatherArray[1] = $w; break;
+                            case 'CYLW': $weatherArray[2] = $w; break;
+                            case 'CYXS': $weatherArray[3] = $w; break;
+                            case 'CYXX': $weatherArray[4] = $w; break;
+                            case 'CYQQ': $weatherArray[5] = $w; break;
+                            default: $weatherArray[] = (object)['error' => 'No weather data']; break;
+                        }
                     }
                 }
-            }
 
-            ksort($weatherArray);
+                ksort($weatherArray);
+                return $weatherArray;
+            });
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch weather: '.$e->getMessage());
+            $weather = [];
+        }
 
-            return $weatherArray;
-        });
-
-        //Background Image
-        $background = HomepageImages::all()->random();
+        // Background Image
+        try {
+            $background = HomepageImages::all()->random();
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch background image: '.$e->getMessage());
+            $background = null;
+        }
 
         return view('index', compact('finalPositions', 'news', 'nextEvents', 'topControllersArray', 'weather', 'background'));
     }
