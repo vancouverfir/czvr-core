@@ -139,13 +139,7 @@
                         </a>
                         <div class="collapse px-3 py-2" id="controllerBookingInfo">
                             <p>
-                                A <strong>controller booking</strong> is a scheduled time slot where a certified air traffic controller 
-                                is available to manage flights in a specific airspace. These bookings allow pilots and trainees 
-                                to plan their sessions and ensure that air traffic control coverage is available.
-                            </p>
-                            <p>
-                                Bookings can include normal shifts, exams, mentoring sessions, or special events. 
-                                Proper scheduling helps maintain safety, efficiency, and training opportunities within the virtual ATC network.
+                                I don't know what to put here!
                             </p>
                         </div>
                     </div>

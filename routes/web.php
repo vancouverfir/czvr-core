@@ -16,9 +16,13 @@ Route::group(['domain' => 'booking.czvr.ca'], function () {
     // Public Booking
     Route::get('/', 'Booking\BookingController@indexPublic')->name('booking');
 
+    // Protected Create Booking
+    Route::group(['middleware' => 'booking_certified'], function () {
+        Route::post('/', 'Booking\BookingController@create')->name('booking.create');
+    });
+
     // Protected Booking
     Route::group(['middleware' => 'certified'], function () {
-        Route::post('/', 'Booking\BookingController@create')->name('booking.create');
         Route::get('/{id}/edit', 'Booking\BookingController@edit')->name('booking.edit');
         Route::put('/{id}', 'Booking\BookingController@update')->name('booking.update');
         Route::delete('/{id}', 'Booking\BookingController@delete')->name('booking.delete');

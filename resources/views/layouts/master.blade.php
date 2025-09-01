@@ -30,8 +30,7 @@
         <link rel="preload" as="style" href="{{ asset('css/bootstrap.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/mdb.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/all.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" as="style" href="{{ asset('css/main.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <!-- Bootstrap core CSS -->
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         <!-- Material Design Bootstrap -->
@@ -75,7 +74,7 @@
         <script src="{{asset('introjs/intro.min.js')}}" defer></script>
         <!--Date picker-->
         <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
-        <script src="{{ asset('js/flatpickr.min.js') }}" defer></script>
+        <script src="{{ asset('js/flatpickr.min.js') }}"></script>
         <!--SimpleMDE-->
         <link rel="stylesheet" href="{{ asset('css/simplemde.min.css') }}">
         <script src="{{ asset('js/simplemde.min.js') }}" defer></script>
@@ -134,7 +133,7 @@
                         <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources')}}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="{{route('index')}}">ATC Booking</a>
+                            <a class="dropdown-item" href="{{route('booking')}}">ATC Booking</a>
                             <a class="dropdown-item" href="{{route('roster.public')}}">Roster</a>
                             @if(Auth::check() && Auth::user()->permissions >= 3)
                                 <a class="dropdown-item {{ Request::is('roster') ? 'active white-text' : '' }}" href="{{route('roster.index')}}">Manage Roster</a>

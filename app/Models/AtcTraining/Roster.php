@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Roster extends Model
 {
-    protected $table = 'members';
+    protected $table = 'roster';
 
     protected $fillable = [
-        'cid',  'fname', 'lname', 'email', 'rating', 'visit', 'home_fir',
+        'cid', 'user_id', 'full_name', 'status', 'active', 'currency', 'rating_hours', 'fss', 'delgnd', 'delgnd_t2', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr', 'remarks', 'visit',
     ];
 
     public function user()

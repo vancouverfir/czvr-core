@@ -24,40 +24,49 @@ class HomeController extends Controller
         $weather = [];
         $background = null;
 
-        // Vancouver online controllers
+        // Vancouver Online Controllers
         try {
-            $client = new Client();
-            $response = $client->request('GET', VatsimHelper::getDatafeedUrl());
-            $controllers = json_decode($response->getBody()->getContents());
+            $finalPositions = Cache::remember('vatsim.controllers', 30, function () {
+                $client = new Client();
+                $response = $client->request('GET', VatsimHelper::getDatafeedUrl());
+                $controllers = json_decode($response->getBody()->getContents());
 
-            if (isset($controllers->controllers)) {
-                $prefixes = ['CZVR_', 'ZVR_', 'CYVR_', 'CYYJ_', 'CYLW_', 'CYXS_', 'CYXX_', 'CYCD_'];
-                foreach ($controllers->controllers as $c) {
-                    if (
-                        isset($c->callsign, $c->facility) &&
-                        Str::startsWith($c->callsign, $prefixes) &&
-                        ! Str::endsWith($c->callsign, ['ATIS', 'OBS']) &&
-                        $c->facility != 0
-                    ) {
-                        $finalPositions[] = $c;
+                $finalPositions = [];
+                if (isset($controllers->controllers)) {
+                    $prefixes = ['CZVR_', 'ZVR_', 'CYVR_', 'CYYJ_', 'CYLW_', 'CYXS_', 'CYXX_', 'CYCD_'];
+                    foreach ($controllers->controllers as $c) {
+                        if (
+                            isset($c->callsign, $c->facility) &&
+                            Str::startsWith($c->callsign, $prefixes) &&
+                            ! Str::endsWith($c->callsign, ['ATIS', 'OBS']) &&
+                            $c->facility != 0
+                        ) {
+                            $finalPositions[] = $c;
+                        }
                     }
                 }
-            }
+                return $finalPositions;
+            });
         } catch (Exception $e) {
             \Log::error('Failed to fetch VATSIM controllers: '.$e->getMessage());
         }
 
         // News
         try {
-            $news = News::where('visible', true)->get()->sortByDesc('published')->take(3);
+            $news = News::where('visible', true)
+                        ->orderBy('published', 'desc')
+                        ->take(3)
+                        ->get();
         } catch (Exception $e) {
             \Log::error('Failed to fetch news: '.$e->getMessage());
         }
 
         // Events
         try {
-            $nextEvents = Event::where('start_timestamp', '>', Carbon::now())
-                               ->get()->sortBy('start_timestamp')->take(3);
+            $nextEvents = Event::where('start_timestamp', '>', now())
+                               ->orderBy('start_timestamp')
+                               ->take(3)
+                               ->get();
         } catch (Exception $e) {
             \Log::error('Failed to fetch events: '.$e->getMessage());
         }
@@ -65,21 +74,22 @@ class HomeController extends Controller
         // Top Controllers
         try {
             $colourArray = ['#6CC24A', '#B2D33C', '#E3B031', '#F15025', '#8C8C8C'];
-            $monthStart = Carbon::now()->startOfMonth()->toISOString();
-            $monthEnd = Carbon::now()->endOfMonth()->toISOString();
+            $monthStart = now()->startOfMonth()->toISOString();
+            $monthEnd = now()->endOfMonth()->toISOString();
 
-            $topControllers = SessionLog::selectRaw('sum(duration) as duration, cid')
+            $topControllers = SessionLog::selectRaw('cid, sum(duration) as duration')
                                         ->whereBetween('session_start', [$monthStart, $monthEnd])
                                         ->groupBy('cid')
-                                        ->get()->sortByDesc('duration')->take(5);
+                                        ->orderByDesc('duration')
+                                        ->take(5)
+                                        ->get();
 
-            $n = -1;
-            foreach ($topControllers as $top) {
+            foreach ($topControllers as $index => $top) {
                 $topControllersArray[] = [
-                    'id' => $n += 1,
+                    'id' => $index,
                     'cid' => $top->cid ?? 'N/A',
                     'time' => function_exists('decimal_to_hm') ? decimal_to_hm($top->duration ?? 0) : 0,
-                    'colour' => $colourArray[$n] ?? '#000000',
+                    'colour' => $colourArray[$index] ?? '#000000',
                 ];
             }
         } catch (Exception $e) {
@@ -134,9 +144,9 @@ class HomeController extends Controller
             $weather = [];
         }
 
-        // Background Image
+        // Random Background Image
         try {
-            $background = HomepageImages::all()->random();
+            $background = HomepageImages::inRandomOrder()->first();
         } catch (Exception $e) {
             \Log::error('Failed to fetch background image: '.$e->getMessage());
             $background = null;

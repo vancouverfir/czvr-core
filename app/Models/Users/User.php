@@ -4,7 +4,6 @@ namespace App\Models\Users;
 
 use App\Classes\DiscordClient;
 use App\Models\AtcTraining;
-use App\Models\ControllerBookings;
 use App\Models\Events;
 use App\Models\News;
 use App\Models\Tickets;
@@ -154,15 +153,6 @@ class User extends Authenticatable
     public function certified()
     {
         if (! $this->rosterProfile()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function bookingBanned()
-    {
-        if (! ControllerBookings\ControllerBookingsBan::where('user_id', $this->id)->first()) {
             return false;
         }
 

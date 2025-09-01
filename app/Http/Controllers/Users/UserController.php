@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Users;
 use App\Classes\DiscordClient;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\RosterMember;
-use App\Models\ControllerBookings\ControllerBookingsBan;
 use App\Models\Network\SessionLog;
 use App\Models\Settings\AuditLogEntry;
 use App\Models\Users\User;
@@ -40,7 +39,7 @@ class UserController extends Controller
         $user->save();
         $user->notify(new WelcomeNewUser($user));
 
-        return redirect('/dashboard')->with('success', 'Welcome to Vancouver, '.$user->fname.'! We are glad to have you on board.');
+        return redirect('/dashboard')->with('success', 'Welcome to Vancouver, '.$user->fname.'! We are glad to have you on board!');
     }
 
     public function privacyDeny()
@@ -56,7 +55,7 @@ class UserController extends Controller
         $preferences->delete();
         $user->delete();
 
-        return redirect()->route('index')->with('info', 'Your account has been removed as you have not accepted the privacy policy.');
+        return redirect()->route('index')->with('info', 'Your account has been removed as you have not accepted the privacy policy!');
     }
 
     public function viewAllUsers()
@@ -541,33 +540,6 @@ class UserController extends Controller
         $user = User::whereId($id)->firstOrFail();
 
         return view('dashboard.me.publicuserprofile', compact('user'));
-    }
-
-    public function createBookingBan(Request $request, $id)
-    {
-        //Validate and get user
-        $this->validate($request, [
-            'reason' => 'required',
-        ]);
-        $user = User::whereId($id)->firstOrFail();
-
-        //Is the user banned?
-        if ($user->bookingBan()) {
-            abort(403, 'This user is already banned.');
-        }
-
-        //No... let's create a ban
-        $ban = new ControllerBookingsBan;
-        $ban->reason = $request->get(Auth::user()->fullName('FLC').' at '.date('Y-m-d H:i:s').' '.$request->get('reason'));
-        $ban->user_id = $user->id;
-        $ban->timestamp = date('Y-m-d H:i:s');
-        $ban->save();
-
-        //Notify them
-    }
-
-    public function removeBookingBan(Request $request, $id)
-    {
     }
 
     public function linkDiscord()

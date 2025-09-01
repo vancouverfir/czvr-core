@@ -154,7 +154,7 @@ def magic_string(stron):
         # it just makes it easier to submit multiple
         return spool.join(stron)
     else:
-        return "YXE"  # My hometown, people have to go SOMEWHERE.
+        return "YXE"  # My hometown, people have to go SOMEWHERE
 
 
 async def stow_event(data):
@@ -219,9 +219,11 @@ async def stow_event(data):
         else:
             print(f"Event {id} not found, inserting!")
             try:
+                user_id = 1
+
                 cur.execute(
                     "INSERT INTO events (id, name, start_timestamp, end_timestamp, description, image_url, "
-                    "departure_icao, arrival_icao, slug) VALUES (?,?,?,?,?,?,?,?,?)",
+                    "departure_icao, arrival_icao, slug, user_id) VALUES (?,?,?,?,?,?,?,?,?,?)",
                     (
                         id,
                         name,
@@ -232,6 +234,7 @@ async def stow_event(data):
                         departure_icao,
                         arrival_icao,
                         slug,
+                        user_id,
                     ),
                 )
                 print(f"Insert complete for event {id}!")
