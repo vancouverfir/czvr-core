@@ -276,7 +276,7 @@ def fetch_roster():
         exit()
     resp = req.json()
     for i in resp["data"]["controllers"]:
-        print("CID =", i["cid"])
+        print("\nCID =", i["cid"])
         fullname = i["first_name"] + " " + i["last_name"]
         facility_join = i.get("facility_join")
         rating_short = conv_rating(i["rating"])
@@ -310,7 +310,7 @@ def fetch_visit_roster():
         exit()
     resp = req.json()
     for i in resp["data"]["visitors"]:
-        print("CID =", i["cid"])
+        print("\nCID =", i["cid"])
         fullname = i["first_name"] + " " + i["last_name"]
         facility_join = None
         for vf in i.get("visiting_facilities", []):
@@ -407,13 +407,6 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
                 WHERE id=?
             """, (email, lname, rating_id, rating_short, cid))
 
-            cur.execute("""
-                UPDATE roster
-                SET full_name=?, visit='0'
-                WHERE user_id=?
-            """, (fullname, cid))
-
-            cur.execute("UPDATE roster SET status='home' WHERE cid=? AND (status='visit' OR status IS NULL)", (cid,))
             if permissions == 0:
                 cur.execute("UPDATE users SET permissions='1' WHERE id=?", (cid,))
 
@@ -424,6 +417,23 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
                 VALUES (?, ?, ?, ?, ?, ?, '1', ?)
             """, (cid, email, fname, lname, rating_id, rating_short, fname))
 
+
+        cur.execute("SELECT user_id FROM roster WHERE cid = ?", (cid,))
+        row = cur.fetchone()
+        roster_test = row[0] if row else None
+
+        if roster_test:
+            print(f"User {cid} exists in roster, updating")
+            cur.execute("""
+                UPDATE roster
+                SET full_name=?, visit='0'
+                WHERE user_id=?
+            """, (fullname, cid))
+
+            cur.execute("UPDATE roster SET status='home' WHERE cid=? AND (status='visit' OR status IS NULL)", (cid,))
+
+        else:
+            print(f"Adding user {cid} to roster")
             cur.execute("""
                 INSERT INTO roster (cid, user_id, full_name, status, active, visit)
                 VALUES (?, ?, ?, 'home', '1', '0')
@@ -450,7 +460,7 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
                 print(f"Adding user {cid} to students table!")
                 cur.execute("""
                     INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, created_at, updated_at)
-                    VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
+                    VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
                 """, (cid, 0, facility_join))
                 student_id = cur.lastrowid
 
@@ -495,11 +505,6 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                 WHERE id=?
             """, (email, lname, rating_id, rating_short, cid))
 
-            cur.execute("""
-                UPDATE roster 
-                SET full_name=?, visit='1', status='visit'
-                WHERE user_id=?
-            """, (fullname, cid))
 
             if permissions == 0:
                 cur.execute("UPDATE users SET permissions='1' WHERE id=?", (cid,))
@@ -511,6 +516,21 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                 VALUES (?, ?, ?, ?, ?, ?, '1', ?, '1')
             """, (cid, email, fname, lname, rating_id, rating_short, fname))
 
+
+        cur.execute("SELECT user_id FROM roster WHERE cid = ?", (cid,))
+        row = cur.fetchone()
+        roster_test = row[0] if row else None
+
+        if roster_test:
+            print(f"User {cid} exists in roster, updating")
+            cur.execute("""
+                UPDATE roster 
+                SET full_name=?, visit='1', status='visit'
+                WHERE user_id=?
+            """, (fullname, cid))
+
+        else:
+            print(f"Adding user {cid} to roster")
             cur.execute("""
                 INSERT INTO roster (cid, user_id, full_name, status, active, visit)
                 VALUES (?, ?, ?, 'visit', '1', '1')
@@ -530,7 +550,7 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                 print(f"Adding user {cid} to visitor students table!")
                 cur.execute("""
                     INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, created_at, updated_at)
-                    VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
+                    VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
                 """, (cid, 3, facility_join))
                 student_id = cur.lastrowid
 
