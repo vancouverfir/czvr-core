@@ -7,7 +7,6 @@ use App\Models\Events\Event;
 use App\Models\Network\SessionLog;
 use App\Models\News\News;
 use App\Models\Settings\HomepageImages;
-use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
@@ -45,6 +44,7 @@ class HomeController extends Controller
                         }
                     }
                 }
+
                 return $finalPositions;
             });
         } catch (Exception $e) {
