@@ -120,8 +120,6 @@ Route::get('/github', function () {
 
 //Authentication
 
-Route::get('/sso/login', 'Auth\LoginController@ssoLogin')->middleware('guest')->name('auth.sso.login');
-Route::get('/sso/validate', 'Auth\LoginController@validateSsoLogin')->middleware('guest');
 Route::get('/connect/login', 'Auth\LoginController@connectLogin')->middleware('guest')->name('auth.connect.login');
 Route::get('/connect/validate', 'Auth\LoginController@validateConnectLogin')->middleware('guest');
 Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth')->name('auth.logout');

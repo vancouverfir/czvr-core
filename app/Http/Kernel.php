@@ -52,6 +52,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'vatsim_token' => \App\Http\Middleware\CheckVatsimToken::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'booking_certified' => \App\Http\Middleware\BookingIsCertified::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,

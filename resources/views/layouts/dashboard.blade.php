@@ -204,8 +204,13 @@
                             </a>
                         </li>
                         <li class="nav-item d-flex align-items-center">
+                            <a href="https://www.instagram.com/czvrfir/" class="nav-link waves-effect waves-light" target="_BLANK" >
+                                <i style="font-size: 1.7em;" class="fab fa-instagram"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item d-flex align-items-center">
                             <a class="nav-link waves-effect waves-light" data-toggle="modal" data-target="#discordTopModal" target="_BLANK" >
-                                <i style="height: 22px; font-size: 1.7em;width: 28px;padding-left: 5px;padding-top: 2px;" class="fab fa-discord"></i>
+                                <i style="font-size: 1.7em;" class="fab fa-discord"></i>
                             </a>
                         </li>
                     </ul>

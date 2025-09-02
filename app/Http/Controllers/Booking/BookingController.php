@@ -55,6 +55,18 @@ class BookingController extends Controller
         $response = Http::withToken($this->apiKey)->get($this->bookingUrl, $query);
         $bookings = $response->successful() ? collect($response->json()) : collect();
 
+        // The API should do this not me...
+        $now = now()->utc();
+
+        $bookings->each(function ($b) use ($now) {
+            if (\Carbon\Carbon::parse($b['end'], 'UTC')->lt($now)) {
+                Http::withToken($this->apiKey)->delete("{$this->bookingUrl}/{$b['id']}");
+            }
+        });
+
+        $bookings = Http::withToken($this->apiKey)->get($this->bookingUrl, $query);
+        $bookings = $bookings->successful() ? collect($bookings->json()) : collect();
+
         return view('booking', ['bookings' => $bookings, 'callsigns' => $callsigns]);
     }
 
@@ -70,9 +82,9 @@ class BookingController extends Controller
         $end = strtotime($data['end']);
         $durationMinutes = ($end - $start) / 60;
 
-        if ($durationMinutes < 45 || $durationMinutes > 180) {
+        if ($durationMinutes < 45 || $durationMinutes > 300) {
             return back()->withErrors([
-                'duration' => 'Booking must be at least 45 minutes and no more than 3 hours!',
+                'duration' => 'Booking must be at least 45 minutes and no more than 5 hours!',
             ])->withInput();
         }
 

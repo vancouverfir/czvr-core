@@ -25,7 +25,7 @@ class HomeController extends Controller
 
         // Vancouver Online Controllers
         try {
-            $finalPositions = Cache::remember('vatsim.controllers', 30, function () {
+            $finalPositions = Cache::remember('vatsim.controllers', 300, function () {
                 $client = new Client();
                 $response = $client->request('GET', VatsimHelper::getDatafeedUrl());
                 $controllers = json_decode($response->getBody()->getContents());
