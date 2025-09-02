@@ -1,11 +1,13 @@
 @extends('layouts.master')
+@section('title', 'Booking - Vancouver FIR')
+@section('description', 'Vancouver FIR\'s Booking')
 
 @section('navbarprim')
     @parent
 @stop
 
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
 
 <style>
     #calendar {background: #1f1f2e; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); color: #f8f9fa; }
@@ -37,11 +39,11 @@
 @section('content')
 <div class="container my-4">
 
-    <h1 class="blue-text">Controller Booking</h1>
+    <h1 class="blue-text">Booking – Calendar View</h1>
 
     <div class="row">
         <div class="col-md-8">
-            <h4>Calendar View</h4>
+            <div id="utcClock" class="text-white mb-2" style="font-weight: bold;">--:--:-- UTC</div>
             <small class="d-block mb-2">All times listed are in Zulu time!</small>
             <div id="calendar"></div>
         </div>
@@ -72,12 +74,12 @@
 
                             <div class="form-group">
                                 <label for="startAccordion">Start (UTC)</label>
-                                <input type="datetime-local" class="form-control" name="start" id="startAccordion" required>
+                                <input type="datetime-local" class="form-control" name="start" id="startAccordion" min="{{ now()->format('Y-m-d\TH:i') }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="endAccordion">End (UTC)</label>
-                                <input type="datetime-local" class="form-control" name="end" id="endAccordion" required>
+                                <input type="datetime-local" class="form-control" name="end" id="endAccordion" min="{{ now()->format('Y-m-d\TH:i') }}" required>
                             </div>
 
                             <button type="submit" class="btn btn-primary mt-2" id="bookingSubmitAccordion">Create Booking</button>
@@ -113,18 +115,20 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Start (UTC)</label>
-                                                <input type="datetime-local" class="form-control startInput" name="start" required>
+                                                <input type="datetime-local" class="form-control startInput" name="start" min="{{ now()->format('Y-m-d\TH:i') }}" required>
                                             </div>
                                             <div class="form-group">
                                                 <label>End (UTC)</label>
-                                                <input type="datetime-local" class="form-control endInput" name="end" required>
+                                                <input type="datetime-local" class="form-control endInput" name="end" min="{{ now()->format('Y-m-d\TH:i') }}" required>
                                             </div>
                                             <button type="submit" class="btn btn-success mt-2">Update Booking</button>
                                         </form>
                                     </div>
                                 </div>
                             @empty
-                                <p class="px-1 text-light">No Bookings found!</p>
+                                <div class="list-group-item bg-dark text-light py-3">
+                                    No bookings found!
+                                </div>
                             @endforelse
                         </div>
                     </div>
@@ -138,12 +142,37 @@
                             What is a controller booking?
                         </a>
                         <div class="collapse px-3 py-2" id="controllerBookingInfo">
-                            <p>
-                                I don't know what to put here!
-                            </p>
+                            <p>Here you can check out the times and positions booked by CZVR controllers! We do our best to keep things updated, but remember bookings are just estimates, coverage for the whole time isn’t guaranteed!</p>
                         </div>
                     </div>
                 </div>
+                @if(Auth::check() && Auth::user()->permissions >= 4)
+                    <div class="card mt-3">
+                        <div class="card-header text-white">
+                            Admin – Manage All Bookings
+                        </div>
+                        <div class="list-group list-group-flush">
+                            @forelse($bookings as $b)
+                                <div class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ $b['callsign'] }}</strong> – {{ $b['cid'] }}
+                                        <br>
+                                        {{ \Carbon\Carbon::parse($b['start'])->format('d M Y H:i') }} → {{ \Carbon\Carbon::parse($b['end'])->format('d M Y H:i') }}
+                                    </div>
+                                    <form action="{{ route('booking.delete', $b['id']) }}" method="POST" class="m-0 p-0">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            @empty
+                                <div class="list-group-item bg-dark text-light py-3">
+                                    No bookings found!
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -240,5 +269,11 @@ document.querySelectorAll('.edit-booking-btn').forEach(btn => {
     });
 });
 
+setInterval(() => {
+    const now = new Date();
+    document.getElementById('utcClock').textContent = now.toUTCString().split(' ')[4] + ' UTC';
+}, 1000);
+
 </script>
+
 @stop
