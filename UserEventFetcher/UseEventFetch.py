@@ -573,6 +573,7 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                     INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
                     VALUES (?, 1, 'Created', CONCAT('Student created automatically by System at ', NOW()), NOW(), NOW())
                 """, (student_id,))
+                print(f"Created user {cid} !")
 
     except Exception as e:
         print(f"Error processing visiting user {cid}: {e}")
