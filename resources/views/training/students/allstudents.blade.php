@@ -97,7 +97,7 @@
                         @else
                             @php($loopIndex = 1)
                             @foreach($list->students->sortBy(function($student) { return $student->student->user->fullName('FLC'); }) as $student)
-                                <a href="{{url('/training/students/' . $student->student_id)}}" class="list-group-item rounded list-group-item-action waves-effect text-light" style="background-color: transparent; flex-shrink: 0;">
+                                <a href="{{ route('training.students.view', $student->student_id) }}" class="list-group-item rounded list-group-item-action waves-effect text-light" style="background-color: transparent; flex-shrink: 0;">
                                     <div class="d-flex flex-column">
                                         <div class="d-flex flex-wrap mb-1">
                                             @foreach($student->student->labels as $label)

@@ -166,6 +166,7 @@
                 @if ($student->status == 3)
                     <p>There are currently <strong>{{ $Visitors }}</strong> visitors total!</p>
                     <span>Visitor training at Vancouver runs on a first come first served basis! Keep an eye out for pings on <a href="https://discord.com/channels/589477926961938443/981664706953625640" class="blue-text">#visitor-training</a>!</span>
+                    <button class="btn btn-sm btn-outline-info mt-2 mb-3" id="editTimes">Edit Availability</button>
                     <hr class="bg-light">
                     <small class="d-block mb-3"> You last renewed your training request {{ $student->renewed_at?->format('F j, Y H:i') ?? 'not renewed yet' }} </small>
 

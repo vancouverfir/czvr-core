@@ -7,7 +7,7 @@ use App\Models\Events\Event;
 use App\Models\Network\SessionLog;
 use App\Models\News\News;
 use App\Models\Settings\HomepageImages;
-use Carbon\Carbon;
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -16,115 +16,141 @@ class HomeController extends Controller
 {
     public function view()
     {
-        //Vancouver online controllers
-        $client = new Client();
-        $response = $client->request('GET', VatsimHelper::getDatafeedUrl());
-        $controllers = json_decode($response->getBody()->getContents())->controllers;
-
         $finalPositions = [];
-
-        $prefixes = [
-
-            'CZVR_',
-            'ZVR_',
-            'CYVR_',
-            'CYYJ_',
-            'CYLW_',
-            'CYXS_',
-            'CYXX_',
-            'CYCD_',
-        ];
-
-        foreach ($controllers as $c) {
-            if (Str::startsWith($c->callsign, $prefixes) && ! Str::endsWith($c->callsign, ['ATIS', 'OBS']) && $c->facility != 0) {
-                $finalPositions[] = $c;
-            }
-        }
-
-        //News
-        $news = News::where('visible', true)->get()->sortByDesc('published')->take(3);
-
-        //Event
-        $nextEvents = Event::where('start_timestamp', '>', Carbon::now())->get()->sortBy('start_timestamp')->take(3);
-
-        //Top Controllers
+        $news = collect();
+        $nextEvents = collect();
         $topControllersArray = [];
+        $weather = [];
+        $background = null;
 
-        $colourArray = [
-            0 => '#6CC24A',
-            1 => '#B2D33C',
-            2 => '#E3B031',
-            3 => '#F15025',
-            4 => '#8C8C8C',
-        ];
+        // Vancouver Online Controllers
+        try {
+            $finalPositions = Cache::remember('vatsim.controllers', 300, function () {
+                $client = new Client();
+                $response = $client->request('GET', VatsimHelper::getDatafeedUrl());
+                $controllers = json_decode($response->getBody()->getContents());
 
-        $monthStart = Carbon::now()->startOfMonth()->toISOString();
-        $monthEnd = Carbon::now()->endOfMonth()->toISOString();
-        $topControllers = SessionLog::selectRaw('sum(duration) as duration, cid')
-                                        ->whereBetween('session_start', [$monthStart, $monthEnd])
-                                        ->groupBy('cid')
-                                        ->get()->sortByDesc('duration')->take(5);
-
-        $n = -1;
-        foreach ($topControllers as $top) {
-            $top = [
-                'id' => $n += 1,
-                'cid' => $top['cid'],
-                'time' => decimal_to_hm($top['duration']),
-                'colour' => $colourArray[$n],
-            ];
-            array_push($topControllersArray, $top);
-        }
-
-        //Weather
-        $weather = Cache::remember('weather.data', 900, function () {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://api.checkwx.com/metar/CYVR,CYYJ,CYLW,CYXS,CYXX,CYQQ/decoded?pretty=1');
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-API-Key: '.env('AIRPORT_API_KEY')]);
-
-            $resp = json_decode(curl_exec($ch));
-
-            curl_close($ch);
-
-            $weatherArray = [];
-
-            if ($resp) {
-                foreach ($resp->data as $w) {
-                    switch ($w->icao) {
-                        case 'CYVR':
-                            $weatherArray[0] = $w;
-                            break;
-                        case 'CYYJ':
-                            $weatherArray[1] = $w;
-                            break;
-                        case 'CYLW':
-                            $weatherArray[2] = $w;
-                            break;
-                        case 'CYXS':
-                            $weatherArray[3] = $w;
-                            break;
-                        case 'CYXX':
-                            $weatherArray[4] = $w;
-                            break;
-                        case 'CYQQ':
-                            $weatherArray[5] = $w;
-                            break;
-                        default:
-                            $weatherArray[] = (object) [
-                                'error' => 'No weather data'];
-                            break;
+                $finalPositions = [];
+                if (isset($controllers->controllers)) {
+                    $prefixes = ['CZVR_', 'ZVR_', 'CYVR_', 'CYYJ_', 'CYLW_', 'CYXS_', 'CYXX_', 'CYCD_'];
+                    foreach ($controllers->controllers as $c) {
+                        if (
+                            isset($c->callsign, $c->facility) &&
+                            Str::startsWith($c->callsign, $prefixes) &&
+                            ! Str::endsWith($c->callsign, ['ATIS', 'OBS']) &&
+                            $c->facility != 0
+                        ) {
+                            $finalPositions[] = $c;
+                        }
                     }
                 }
+
+                return $finalPositions;
+            });
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch VATSIM controllers: '.$e->getMessage());
+        }
+
+        // News
+        try {
+            $news = News::where('visible', true)
+                        ->orderBy('published', 'desc')
+                        ->take(3)
+                        ->get();
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch news: '.$e->getMessage());
+        }
+
+        // Events
+        try {
+            $nextEvents = Event::where('start_timestamp', '>', now())
+                               ->orderBy('start_timestamp')
+                               ->take(3)
+                               ->get();
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch events: '.$e->getMessage());
+        }
+
+        // Top Controllers
+        try {
+            $colourArray = ['#6CC24A', '#B2D33C', '#E3B031', '#F15025', '#8C8C8C'];
+            $monthStart = now()->startOfMonth()->toISOString();
+            $monthEnd = now()->endOfMonth()->toISOString();
+
+            $topControllers = SessionLog::selectRaw('cid, sum(duration) as duration')
+                                        ->whereBetween('session_start', [$monthStart, $monthEnd])
+                                        ->groupBy('cid')
+                                        ->orderByDesc('duration')
+                                        ->take(5)
+                                        ->get();
+
+            foreach ($topControllers as $index => $top) {
+                $topControllersArray[] = [
+                    'id' => $index,
+                    'cid' => $top->cid ?? 'N/A',
+                    'time' => function_exists('decimal_to_hm') ? decimal_to_hm($top->duration ?? 0) : 0,
+                    'colour' => $colourArray[$index] ?? '#000000',
+                ];
             }
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch top controllers: '.$e->getMessage());
+        }
 
-            ksort($weatherArray);
+        // Weather
+        try {
+            $weather = Cache::remember('weather.data', 900, function () {
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://api.checkwx.com/metar/CYVR,CYYJ,CYLW,CYXS,CYXX,CYQQ/decoded?pretty=1');
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-API-Key: '.env('AIRPORT_API_KEY')]);
 
-            return $weatherArray;
-        });
+                $resp = json_decode(curl_exec($ch));
+                curl_close($ch);
 
-        //Background Image
-        $background = HomepageImages::all()->random();
+                $weatherArray = [];
+
+                if (! empty($resp->data)) {
+                    foreach ($resp->data as $w) {
+                        $icao = $w->icao ?? 'UNKNOWN';
+                        $w->flight_category = $w->flight_category ?? 'N/A';
+                        $w->temperature = $w->temperature ?? null;
+                        $w->wind = $w->wind ?? null;
+
+                        switch ($icao) {
+                            case 'CYVR': $weatherArray[0] = $w;
+                                break;
+                            case 'CYYJ': $weatherArray[1] = $w;
+                                break;
+                            case 'CYLW': $weatherArray[2] = $w;
+                                break;
+                            case 'CYXS': $weatherArray[3] = $w;
+                                break;
+                            case 'CYXX': $weatherArray[4] = $w;
+                                break;
+                            case 'CYQQ': $weatherArray[5] = $w;
+                                break;
+                            default: $weatherArray[] = (object) ['error' => 'No weather data'];
+                                break;
+                        }
+                    }
+                }
+
+                ksort($weatherArray);
+
+                return $weatherArray;
+            });
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch weather: '.$e->getMessage());
+            $weather = [];
+        }
+
+        // Random Background Image
+        try {
+            $background = HomepageImages::inRandomOrder()->first();
+        } catch (Exception $e) {
+            \Log::error('Failed to fetch background image: '.$e->getMessage());
+            $background = null;
+        }
 
         return view('index', compact('finalPositions', 'news', 'nextEvents', 'topControllersArray', 'weather', 'background'));
     }

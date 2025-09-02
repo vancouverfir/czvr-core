@@ -30,15 +30,7 @@
         <link rel="preload" as="style" href="{{ asset('css/bootstrap.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/mdb.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
         <link rel="preload" as="style" href="{{ asset('css/all.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" as="style" href="{{ asset('css/main.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript>
-            <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('css/mdb.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('css/all.css') }}">
-            <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-        </noscript>
-        <!-- Font Awesome -->
-        <link href="{{ asset('css/all.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <!-- Bootstrap core CSS -->
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         <!-- Material Design Bootstrap -->
@@ -77,17 +69,12 @@
         <!--CSS Emoticons-->
         <link href="{{asset('css/jquery.cssemoticons.css')}}" media="screen" rel="stylesheet" type="text/css" />
         <script src="{{asset('/js/jquery.cssemoticons.js')}}" type="text/javascript" defer></script>
-        <!--Fullcalendar-->
-        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js" defer></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.js" defer></script>
-        <noscript><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css"></noscript>
         <!--IntroJS-->
         <link rel="stylesheet" href="{{asset('introjs/introjs.min.css')}}">
         <script src="{{asset('introjs/intro.min.js')}}" defer></script>
         <!--Date picker-->
         <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
-        <script src="{{ asset('js/flatpickr.min.js') }}" defer></script>
+        <script src="{{ asset('js/flatpickr.min.js') }}"></script>
         <!--SimpleMDE-->
         <link rel="stylesheet" href="{{ asset('css/simplemde.min.css') }}">
         <script src="{{ asset('js/simplemde.min.js') }}" defer></script>
@@ -119,9 +106,6 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        {{-- <li class="nav-item">
-                            <a href="{{route('controllerbookings.public')}}" class="nav-link {{ Request::is('bookings/*') || Request::is('bookings') ? 'active' : '' }}">Bookings</a>
-                        </li> --}}
                         <li class="nav-item {{ Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
                             @if(Auth::check() && Auth::user()->permissions >= 4)
                             <li class="nav-item dropdown {{ Request::is('news') || Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
@@ -149,7 +133,7 @@
                         <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources')}}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            {{--<a class="dropdown-item" href="{{route('controllerbookings')}}">Bookings</a>--}}
+                            <a class="dropdown-item" href="{{route('booking')}}">ATC Booking</a>
                             <a class="dropdown-item" href="{{route('roster.public')}}">Roster</a>
                             @if(Auth::check() && Auth::user()->permissions >= 3)
                                 <a class="dropdown-item {{ Request::is('roster') ? 'active white-text' : '' }}" href="{{route('roster.index')}}">Manage Roster</a>
@@ -190,9 +174,6 @@
                     <ul class="navbar-nav ml-auto nav-flex-icons">
                         @unless (Auth::check())
                         <li class="nav-item d-flex align-items-center">
-                            {{-- <a href="{{route('auth.connect.login')}}" class="nav-link waves-effect waves-light">
-                                <i class="fas fa-sign-in-alt"></i>&nbsp;Login
-                            </a> --}}
                             <a href="{{route('auth.connect.login')}}" class="nav-link waves-effect waves-light">
                                 <i class="fas fa-sign-in-alt"></i>&nbsp;Login
                             </a>
@@ -205,25 +186,15 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right dropdown-default py-0" aria-labelledby="navbarDropdownMenuLink-333">
-                                    <a class="dropdown-item {{ Request::is('dashboard') || Request::is('dashboard/*')}}" href="{{route('dashboard.index')}}">
-                                        <i class="fas fas fa-tachometer-alt mr-2"></i>Dashboard
-                                    </a>
+                                    <a class="dropdown-item" href="{{route('dashboard.index')}}"> <i class="fas fas fa-tachometer-alt mr-2"></i> Dashboard </a>
                                 @if (auth()->check() && (auth()->user()->instructorProfile))
-                                    <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
-                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Instructors
-                                    </a>
+                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Instructors </a>
                                 @elseif (auth()->check() && auth()->user()->permissions == 2)
-                                    <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
-                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Mentors
-                                    </a>
+                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Mentors </a>
                                 @elseif (auth()->check() && (auth()->user()->studentProfile))
-                                    <a class="dropdown-item {{ Request::is('training') || Request::is('/training/')}}" href="{{route('training.index')}}">
-                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Training
-                                    </a>
+                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Training </a>
                                 @endif
-                                    <a class="dropdown-item red-text" href="{{route('auth.logout')}}">
-                                        <i class="fa fa-sign-out-alt mr-2"></i>&nbsp;Logout
-                                    </a>
+                                    <a class="dropdown-item red-text" href="{{route('auth.logout')}}"> <i class="fa fa-sign-out-alt mr-2"> </i> &nbsp; Logout </a>
                             </div>
                         </li>
                         @endauth
@@ -233,8 +204,13 @@
                             </a>
                         </li>
                         <li class="nav-item d-flex align-items-center">
+                            <a href="https://www.instagram.com/czvrfir/" class="nav-link waves-effect waves-light" target="_BLANK" >
+                                <i style="font-size: 1.7em;" class="fab fa-instagram"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item d-flex align-items-center">
                             <a class="nav-link waves-effect waves-light" data-toggle="modal" data-target="#discordTopModal" target="_BLANK" >
-                                <i style="height: 22px; font-size: 1.7em;width: 28px;padding-left: 5px;padding-top: 2px;" class="fab fa-discord"></i>
+                                <i style="font-size: 1.7em;" class="fab fa-discord"></i>
                             </a>
                         </li>
                     </ul>

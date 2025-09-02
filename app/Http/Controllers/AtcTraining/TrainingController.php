@@ -58,6 +58,8 @@ class TrainingController extends Controller
                 $waitlistPosition = $index !== false ? $index + 1 : null;
             }
 
+            $student->load('checklistItems.checklistItem', 'checklistItems.checklistItem.checklist');
+
             $studentChecklistGroups = $student->checklistItems->groupBy(
                 fn ($item) => $item->checklistItem->checklist->name
             );
@@ -113,7 +115,7 @@ class TrainingController extends Controller
         $instructor = Instructor::where('user_id', Auth::id())->first();
 
         if (! $instructor) {
-            return redirect("/training/students/{$student->id}")->withError('Insufficient Permissions!');
+            return redirect()->route('training.students.view', ['id' => $student->id])->withError('Insufficient Permissions!');
         }
 
         StudentNote::create([
@@ -124,7 +126,7 @@ class TrainingController extends Controller
             'created_at' => now(),
         ]);
 
-        return redirect("/training/students/{$student->id}")->withSuccess('Staff Comment added for '.$student->user->fullName('FLC').'!');
+        return redirect()->route('training.students.view', ['id' => $student->id])->withSuccess('Staff Comment added for '.$student->user->fullName('FLC').'!');
     }
 
     public function completeTraining(Request $request, Student $student)
@@ -224,13 +226,15 @@ class TrainingController extends Controller
             }
         }
 
-        return redirect("/training/students/{$student->id}")->withSuccess('Added New Visitor/Student - '.$student->user->fullName('FLC').'!');
+        return redirect()->route('training.students.view', ['id' => $student->id])->withSuccess('Added New Visitor/Student - '.$student->user->fullName('FLC').'!');
     }
 
     public function AllStudents()
     {
-        $students = Student::all();
-        $potentialstudent = User::all();
+        $students = Student::with(['user', 'labels.label', 'instructor'])->get();
+
+        $potentialstudent = User::has('studentProfile', '<', 1)->get();
+
         $instructors = Instructor::all();
 
         $lists = StudentLabel::where('visible_home', true)->get();

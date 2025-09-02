@@ -20,6 +20,7 @@
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="{{ asset('js/livemap.js') }}"></script>
 
 @endsection
