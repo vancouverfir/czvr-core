@@ -10,10 +10,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Vatsim\OAuth2\Client\Provider\Vatsim;
 use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -26,13 +24,13 @@ class LoginController extends Controller
 
         $query = http_build_query([
             'response_type' => 'code',
-            'client_id'     => config('connect.client_id'),
-            'redirect_uri'  => config('connect.redirect'),
-            'scope'         => 'full_name vatsim_details email',
-            'state'         => $state,
+            'client_id' => config('connect.client_id'),
+            'redirect_uri' => config('connect.redirect'),
+            'scope' => 'full_name vatsim_details email',
+            'state' => $state,
         ]);
 
-        return redirect(config('connect.url') . '/oauth/authorize?' . $query);
+        return redirect(config('connect.url').'/oauth/authorize?'.$query);
     }
 
     public function logout()
@@ -68,10 +66,10 @@ class LoginController extends Controller
         Session::put('connect_token_expires', time() + $sessionDuration);
 
         try {
-            $response = $http->get(config('connect.url') . '/api/user', [
+            $response = $http->get(config('connect.url').'/api/user', [
                 'headers' => [
-                    'Accept'        => 'application/json',
-                    'Authorization' => 'Bearer ' . $tokenData['access_token'],
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer '.$tokenData['access_token'],
                 ],
             ]);
         } catch (ClientException $e) {
@@ -82,7 +80,7 @@ class LoginController extends Controller
 
         $regDate = null;
         try {
-            $coreResponse = $http->get('https://api.vatsim.net/v2/members/' . $response->data->cid, [
+            $coreResponse = $http->get('https://api.vatsim.net/v2/members/'.$response->data->cid, [
                 'headers' => [
                     'Accept' => 'application/json',
                 ],
@@ -90,7 +88,6 @@ class LoginController extends Controller
             $coreData = json_decode($coreResponse->getBody());
             $regDate = $coreData->data->reg_date ?? null;
         } catch (ClientException $e) {
-
         }
 
         if (! isset($response->data->cid)) {
@@ -124,7 +121,6 @@ class LoginController extends Controller
             'division_name' => $response->data->vatsim->division->name,
             'used_connect' => true,
         ]);
-
 
         if ($user->display_fname === null) {
             $user->display_fname = isset($response->data->personal->name_first) ? utf8_decode($response->data->personal->name_first) : $response->data->cid;
