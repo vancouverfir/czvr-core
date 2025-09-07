@@ -74,7 +74,7 @@
         <script src="{{asset('introjs/intro.min.js')}}" defer></script>
         <!--Date picker-->
         <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
-        <script src="{{ asset('js/flatpickr.min.js') }}" defer></script>
+        <script src="{{ asset('js/flatpickr.min.js') }}"></script>
         <!--SimpleMDE-->
         <link rel="stylesheet" href="{{ asset('css/simplemde.min.css') }}">
         <script src="{{ asset('js/simplemde.min.js') }}" defer></script>

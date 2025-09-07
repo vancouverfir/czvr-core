@@ -27,7 +27,7 @@
         "spatie/laravel-backup": "^9.2",
         "spatie/laravel-html": "^3.12",
         "spatie/laravel-permission": "^6.10",
-        "vatsim/sso": "3.*",
+        "vatsim/oauth2-vatsim": "^1.0",
         "wohali/oauth2-discord-new": "^1.0"
     },
     "require-dev": {

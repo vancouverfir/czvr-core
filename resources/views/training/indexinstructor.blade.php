@@ -15,8 +15,8 @@
 
 @section('content')
     <!-- Instructors -->
-    @include('includes.trainingMenu')
     @if (Auth::check() && Auth::user()->permissions >= 2)
+    @include('includes.trainingMenu')
     <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
         <h2 class="font-weight-bold blue-text">Instructor Portal</h2>
         <hr>
@@ -67,6 +67,7 @@
     @elseif (auth()->user()->studentProfile)
 
     <!-- User -->
+    @include('includes.trainingMenu')
     <div class="container" style="margin-top: 20px; margin-bottom: 30px;">
         <div class="row">
             <div class="col">
@@ -319,7 +320,30 @@
     </script>
 
     @else
-        {{ abort(403) }}
+        <div class="d-flex justify-content-center align-items-center min-vh-100" style="margin-top: 50px; margin-bottom: 50px;">
+            <div class="text-center" style="max-width: 700px; width: 100%;">
+                <h1 class="font-weight-bold blue-text mb-3">
+                    <i class="fas fa-info-circle"></i> Uh Oh! 👀
+                </h1>
+
+                <p style="font-size: 1.2em; margin-bottom: 1.5rem;">
+                    You’ve wandered into a page reserved for home and visiting controllers only!<br><br>
+                    Don’t worry — here are some useful links to get you back on track!
+                </p>
+
+                <div class="d-flex justify-content-center flex-wrap gap-2">
+                    <a href="{{ route('trainingtimes') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-book"></i> Training FAQ
+                    </a>
+                    <a href="{{ route('join.public') }}" class="btn btn-outline-success">
+                        <i class="fas fa-plane-departure"></i> Join Our FIR
+                    </a>
+                    <a href="{{ route('staff') }}" class="btn btn-outline-info">
+                        <i class="fas fa-envelope"></i> Contact Staff
+                    </a>
+                </div>
+            </div>
+        </div>
     @endif
 
 @stop

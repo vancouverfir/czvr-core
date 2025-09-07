@@ -40,11 +40,11 @@ Route::group(['domain' => 'training.czvr.ca'], function () {
         // Atc Resources Edit
         Route::get('/atcresources', 'Publications\AtcResourcesController@index')->middleware('atc')->name('atcresources.index');
 
-        //
+        // Labels Edit
         Route::post('/students/{id}/assign/label', 'AtcTraining\LabelController@assignLabel')->name('training.students.assign.label');
         Route::get('/students/{id}/drop/label/{student_label_id}', 'AtcTraining\LabelController@dropLabel')->name('training.students.drop.label');
 
-        //
+        // Students Edit
         Route::post('/students/{student}/complete', 'AtcTraining\TrainingController@completeTraining')->name('training.students.completeTraining');
         Route::get('/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
         Route::get('/allstudents', 'AtcTraining\TrainingController@AllStudents')->name('training.students.students');
@@ -120,10 +120,8 @@ Route::get('/github', function () {
 
 //Authentication
 
-Route::get('/sso/login', 'Auth\LoginController@ssoLogin')->middleware('guest')->name('auth.sso.login');
-Route::get('/sso/validate', 'Auth\LoginController@validateSsoLogin')->middleware('guest');
-Route::get('/connect/login', 'Auth\LoginController@connectLogin')->middleware('guest')->name('auth.connect.login');
-Route::get('/connect/validate', 'Auth\LoginController@validateConnectLogin')->middleware('guest');
+Route::get('/connect/login', 'Auth\LoginController@AuthLogin')->middleware('guest')->name('auth.connect.login');
+Route::get('/connect/validate', 'Auth\LoginController@validateAuthLogin')->middleware('guest');
 Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth')->name('auth.logout');
 
 //Base level authentication
