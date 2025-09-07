@@ -267,6 +267,7 @@ def fetch_roster():
     """
     # Using the vatsium API to fetch the user roster
     """
+    # Using the vatsium API to fetch the user roster
 
     print("Fetching Users!")
     try:
@@ -275,11 +276,14 @@ def fetch_roster():
         print("User Fetch Failed!", request_exception)
         exit()
     resp = req.json()
-    for i in resp["data"]["controllers"]:
-        print("\nCID =", i["cid"])
+
+    users_sorted = sorted(resp["data"]["controllers"], key=lambda u: u.get("facility_join") or datetime.max)
+
+    for i in users_sorted:
         fullname = i["first_name"] + " " + i["last_name"]
         facility_join = i.get("facility_join")
         rating_short = conv_rating(i["rating"])
+        print("\nCID =", i["cid"])
         print("Users Full Name:", fullname)
         asyncio.run(
             stow_roster(
@@ -309,8 +313,17 @@ def fetch_visit_roster():
         print("Visitor Fetch Failed!", request_exception)
         exit()
     resp = req.json()
-    for i in resp["data"]["visitors"]:
-        print("\nCID =", i["cid"])
+
+    def visitor_join(v):
+        for vf in v.get("visiting_facilities", []):
+            if vf["fir"]["name_long"] == "Vancouver FIR":
+                dt = datetime.strptime(vf["created_at"].rstrip("Z"), "%Y-%m-%dT%H:%M:%S.%f")
+                return dt
+        return datetime.max
+
+    visitors_sorted = sorted(resp["data"]["visitors"], key=visitor_join)
+
+    for i in visitors_sorted:
         fullname = i["first_name"] + " " + i["last_name"]
         facility_join = None
         for vf in i.get("visiting_facilities", []):
@@ -320,6 +333,7 @@ def fetch_visit_roster():
                 break
 
         rating_short = conv_rating(i["rating"])
+        print("\nCID =", i["cid"])
         print("Users Full Name:", fullname)
         asyncio.run(
             stow_visit_roster(
@@ -458,10 +472,15 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
 
             if is_student == 0:
                 print(f"Adding user {cid} to students table!")
+
+                cur.execute("SELECT COALESCE(MAX(position), 0) FROM students FOR UPDATE")
+                max_position = cur.fetchone()[0]
+                new_position = max_position + 1
+
                 cur.execute("""
                     INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, created_at, updated_at)
-                    VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
-                """, (cid, 0, facility_join))
+                    VALUES (?, NULL, ?, ?, NULL, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
+                """, (cid, new_position, 0, facility_join))
                 student_id = cur.lastrowid
 
                 cur.execute("""
@@ -469,7 +488,7 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
                     VALUES
                         (8, ?, UTC_TIMESTAMP, UTC_TIMESTAMP),
                         (7, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
-                """, (student_id, student_id,))
+                """, (student_id, student_id))
 
                 cur.execute("""
                     INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
@@ -477,7 +496,10 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
                 """, (student_id,))
                 print(f"Created user {cid} !")
 
+        connectSQL.commit()
+
     except Exception as e:
+        connectSQL.rollback()
         print(f"Error processing user {cid}: {e}")
         send_webhook(f"Error for user {cid}: {e}")
         sys.exit(1)
@@ -548,10 +570,15 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
 
             if is_student == 0:
                 print(f"Adding user {cid} to visitor students table!")
+
+                cur.execute("SELECT COALESCE(MAX(position), 0) FROM students FOR UPDATE")
+                max_position = cur.fetchone()[0]
+                new_position = max_position + 1
+
                 cur.execute("""
                     INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, created_at, updated_at)
-                    VALUES (?, NULL, 1, ?, NULL, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
-                """, (cid, 3, facility_join))
+                    VALUES (?, NULL, ?, ?, NULL, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
+                """, (cid, new_position, 3, facility_join))
                 student_id = cur.lastrowid
 
                 cur.execute("""
@@ -573,14 +600,18 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                     INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
                     VALUES (?, 1, 'Created', CONCAT('Student created automatically by System at ', NOW()), NOW(), NOW())
                 """, (student_id,))
-                print(f"Created user {cid} !")
+                print(f"Created visiting student {cid}!")
+
+        connectSQL.commit()
 
     except Exception as e:
+        connectSQL.rollback()
         print(f"Error processing visiting user {cid}: {e}")
         send_webhook(f"Visitor error for user {cid}: {e}")
         sys.exit(1)
     finally:
         print(f"Finished processing visiting user {cid}!")
+
 
 def reset_activity():
     """

@@ -62,9 +62,6 @@ class LoginController extends Controller
         $tokenData = json_decode((string) $response->getBody(), true);
         Session::put('connect_token', $tokenData);
 
-        $sessionDuration = config('connect.session_lifetime');
-        Session::put('connect_token_expires', time() + $sessionDuration);
-
         try {
             $response = $http->get(config('connect.url').'/api/user', [
                 'headers' => [
