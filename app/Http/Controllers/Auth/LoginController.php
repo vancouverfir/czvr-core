@@ -12,103 +12,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Vatsim\OAuth2\Client\Provider\Vatsim;
+use Illuminate\Support\Facades\Session;
 
-/**
- * Class LoginController.
- */
+
 class LoginController extends Controller
 {
-    /**
-     * LoginController Contructor
-     */
     public function AuthLogin()
     {
-        $provider = new Vatsim([
-            'clientId'     => env('VATSIM_CLIENT_ID'),
-            'clientSecret' => env('VATSIM_CLIENT_SECRET'),
-            'redirectUri'  => env('VATSIM_REDIRECT_URI'),
+        Session::forget(['connect_state', 'connect_token']);
+
+        $state = Str::random(40);
+        Session::put('connect_state', $state);
+
+        $query = http_build_query([
+            'response_type' => 'code',
+            'client_id'     => config('connect.client_id'),
+            'redirect_uri'  => config('connect.redirect'),
+            'scope'         => 'full_name vatsim_details email',
+            'state'         => $state,
         ]);
 
-        $authorizationUrl = $provider->getAuthorizationUrl([
-            'scope' => 'full_name vatsim_details email',
-        ]);
-
-        session(['oauth2state' => $provider->getState()]);
-
-        return redirect($authorizationUrl);
+        return redirect(config('connect.url') . '/oauth/authorize?' . $query);
     }
 
-    /**
-     * Validate the VATSIM OAuth2 login and log the user in.
-     */
-    public function validateAuthLogin(Request $request)
-    {
-        $provider = new Vatsim([
-            'clientId'     => env('VATSIM_CLIENT_ID'),
-            'clientSecret' => env('VATSIM_CLIENT_SECRET'),
-            'redirectUri'  => env('VATSIM_REDIRECT_URI'),
-        ]);
-
-        if (empty($request->state) || $request->state !== session('oauth2state')) {
-            session()->forget('oauth2state');
-            abort(403, 'Invalid state');
-        }
-
-        try {
-            $token = $provider->getAccessToken('authorization_code', ['code' => $request->code]);
-        } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
-            return redirect('/')->with('error', 'Failed to get access token: ' . $e->getMessage());
-        }
-
-        session([
-            'vatsim_token' => $token->getToken(),
-            'vatsim_refresh_token' => $token->getRefreshToken(),
-            'vatsim_token_expires' => $token->getExpires(),
-        ]);
-
-        if (session('vatsim_token_expires') && session('vatsim_token_expires') < time()) {
-            $token = $provider->getAccessToken('refresh_token', [
-                'refresh_token' => session('vatsim_refresh_token'),
-            ]);
-            session([
-                'vatsim_token' => $token->getToken(),
-                'vatsim_refresh_token' => $token->getRefreshToken(),
-                'vatsim_token_expires' => $token->getExpires(),
-            ]);
-        }
-
-        try {
-            $AuthUser = $provider->getResourceOwner($token);
-        } catch (\Exception $e) {
-            return redirect('/')->with('error', 'Failed to fetch user details: ' . $e->getMessage());
-        }
-
-        $user = User::updateOrCreate(['id' => $AuthUser->id], [
-            'email' => $AuthUser->email,
-            'fname' => utf8_decode($AuthUser->name_first),
-            'lname' => $AuthUser->name_last,
-            'rating_id' => $AuthUser->rating->id,
-            'rating_short' => $AuthUser->rating->short,
-            'rating_long' => $AuthUser->rating->long,
-            'rating_GRP' => $AuthUser->rating->GRP,
-            'reg_date' => $AuthUser->reg_date,
-            'subdivision_code' => $AuthUser->subdivision->code,
-            'subdivision_name' => $AuthUser->subdivision->name,
-            'display_fname' => $AuthUser->name_first,
-        ]);
-
-        Auth::login($user, true);
-
-        UserPreferences::firstOrCreate(['user_id' => $user->id]);
-
-        return redirect()->intended('/')->with('success', 'Logged in!');
-    }
-
-    /**
-     * Log the user out.
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
     public function logout()
     {
         Auth::logout();
@@ -116,32 +42,7 @@ class LoginController extends Controller
         return redirect('/')->with('success', 'Logged out!');
     }
 
-    /*
-    Connect integration
-    */
-    public function connectLogin()
-    {
-        session()->forget('state');
-        session()->forget('token');
-        session()->put('state', $state = Str::random(40));
-
-        $query = http_build_query([
-            'client_id' => config('connect.client_id'),
-            'redirect_uri' => config('connect.redirect'),
-            'response_type' => 'code',
-            'scope' => 'full_name vatsim_details email',
-            'required_scopes' => 'vatsim_details',
-            'state' => $state,
-        ]);
-
-        return redirect(config('connect.url').'/oauth/authorize?'.$query);
-    }
-
-    /**
-     * @param  Request  $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function validateConnectLogin(Request $request)
+    public function validateAuthLogin(Request $request)
     {
         //Written by Harrison Scott
         $http = new Client;
@@ -160,13 +61,17 @@ class LoginController extends Controller
             return redirect()->route('index')->with('error-modal', $e->getResponse()->getBody());
         }
 
-        session()->put('connect_token', json_decode((string) $response->getBody(), true));
+        $tokenData = json_decode((string) $response->getBody(), true);
+        Session::put('connect_token', $tokenData);
+
+        $sessionDuration = config('connect.session_lifetime');
+        Session::put('connect_token_expires', time() + $sessionDuration);
 
         try {
-            $response = (new \GuzzleHttp\Client)->get(config('connect.url').'/api/user', [
+            $response = $http->get(config('connect.url') . '/api/user', [
                 'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Bearer '.session()->get('connect_token.access_token'),
+                    'Accept'        => 'application/json',
+                    'Authorization' => 'Bearer ' . $tokenData['access_token'],
                 ],
             ]);
         } catch (ClientException $e) {
@@ -174,6 +79,19 @@ class LoginController extends Controller
         }
 
         $response = json_decode($response->getBody());
+
+        $regDate = null;
+        try {
+            $coreResponse = $http->get('https://api.vatsim.net/v2/members/' . $response->data->cid, [
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+            ]);
+            $coreData = json_decode($coreResponse->getBody());
+            $regDate = $coreData->data->reg_date ?? null;
+        } catch (ClientException $e) {
+
+        }
 
         if (! isset($response->data->cid)) {
             return redirect()->route('index')->with('error-modal', 'There was an error processing data from Connect (No CID)');
@@ -199,7 +117,7 @@ class LoginController extends Controller
             'rating_short' => $response->data->vatsim->rating->short,
             'rating_long' => $response->data->vatsim->rating->long,
             'rating_GRP' => $response->data->vatsim->rating->long,
-            'reg_date' => null,
+            'reg_date' => $regDate,
             'region_code' => $response->data->vatsim->region->id,
             'region_name' => $response->data->vatsim->region->name,
             'division_code' => $response->data->vatsim->division->id,
