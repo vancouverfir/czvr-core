@@ -41,7 +41,7 @@ class NewWebsiteFeedback extends Notification
     {
         return (new MailMessage)
                     ->greeting('Hello,')
-                    ->line('A user has submitted feedback on the website.')
+                    ->line('A user has submitted feedback on the Website!')
                     ->line('User: '.$this->feedback->user->fullName('FLC'))
                     ->line('Email: '.$this->feedback->user->email)
                     ->line('Subject: '.$this->feedback->subject)

@@ -13,6 +13,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" id="event-tab" data-toggle="tab" href="#event" role="tab" aria-controls="event" aria-selected="false">
+                        Event Feedback
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Website Feedback</a>
                 </li>
             </ul>
@@ -52,6 +57,42 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            </tbody>
+                        </table>
+                        <br>
+                    @endif
+                </div>
+                <div class="tab-pane fade" id="event" role="tabpanel" aria-labelledby="event-tab">
+                    @if (count($event_feedback) < 1)
+                        <br>
+                        No event feedback!
+                        <br><br>
+                    @else
+                        <br>
+                        <p>There are {{ count($event_feedback) }} event feedback submissions!</p>
+                        <table id="dataTable" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Author</th>
+                                    <th scope="col">Subject</th>
+                                    <th scope="col">Submitted</th>
+                                    <th scope="col" style="text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($event_feedback as $f)
+                                    <tr>
+                                        <th scope="row">{{ $f->id }}</th>
+                                        <td>{{ $f->user->fullName('FLC') }}</td>
+                                        <td>{{ $f->subject }}</td>
+                                        <td>{{ $f->created_at }}</td>
+                                        <td style="text-align: center;">
+                                            <a href="{{ url('/admin/feedback/event/' . $f->id) }}"><i class="fa fa-eye"></i></a>&nbsp;
+                                            <a href="{{ url('/admin/feedback/event/' . $f->id . '/delete') }}"><i class="fa fa-trash-alt"></i></a>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                         <br>

@@ -5,7 +5,7 @@ namespace App\Models\Feedback;
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
 
-class OperationsFeedback extends Model
+class EventFeedback extends Model
 {
     protected $hidden = ['id'];
 

@@ -1,6 +1,32 @@
 @extends('layouts.master')
+
 @section('title', 'Submit Feedback - Vancouver FIR')
+
 @section('description', 'Submit feedback for our controllers')
+
+
+<style>
+    .select2-container--default .select2-selection--single {
+        background-color: #333 !important;
+        color: #fff !important;
+        height: 30px !important;
+        line-height: 30px !important;
+        border-radius: 0 !important;
+        border: 1px solid #555 !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #ffffff !important;
+    }
+    .select2-dropdown {
+    background-color: #333 !important;
+    color: #fff !important;
+    }
+    .select2-search__field {
+        background-color: #333 !important;
+        color: #000000ff !important;
+    }
+</style>
+
 
 @section('content')
     <div class="container py-4">
@@ -32,6 +58,7 @@
                         <select name="feedbackType" id="feedbackTypeSelect" class="form-control">
                             <option value="0" hidden>Please select one...</option>
                             <option value="controller">Controller Feedback</option>
+                            <option value="event">Event Feedback</option>
                             <option value="website">Website Feedback</option>
                         </select>
                     </div>
@@ -49,10 +76,10 @@
                             <div>
                                 <p>Controller's Name/CID</p>
                             </div>
-                            <select name="controllerCid" class="form-control">
+                            <select name="controllerCid" id="controllerCid" class="form-control">
                                 <option id="0" value="0" hidden>Select a controller...</option>
                             @foreach($controllers as $c)
-                            <option name="controllerName" value={{$c->cid}} id={{$c->cid}}>
+                            <option name="controllerName" value="{{ $c->cid }}" id="{{ $c->cid }}">
                                 @if($c->user->fullName('FL') == $c->cid)
                                     {{$c->cid}}
                                 @else
@@ -65,7 +92,7 @@
                             <p>Position</p>
                             <input type="name" name="position" class="form-control" placeholder="CZVR_CTR">
                         </div>
-                        <div class="md-form" id="subjectGroup" style="display:none">
+                        <div class="md-form" id="subjectGroup" style="display:none" placeholder="">
                             <p>Subject</p>
                             <input type="text" name="subject" class="form-control">
                         </div>
@@ -79,6 +106,10 @@
             <button class="btn btn-success" style="font-size: 1.1em; font-weight: 600;"><i class="fas fa-check"></i>&nbsp;&nbsp;Submit Feedback</button>
         </form>
     </div>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         /*
         Show/hide message form based on whether the user has selected a feedback type
@@ -92,7 +123,7 @@
 
         /*
         Feedback type select to disable/enable the CID field and subject field
-         */
+        */
         $('#feedbackTypeSelect').on('change', function() {
             //Figure out what it is
             if (this.value == 'controller') {
@@ -105,7 +136,23 @@
                 $("#controllerCidGroup").hide();
                 $("#positionGroup").hide()
                 $("#subjectGroup").show();
+
+                if (this.value == 'event') {
+                    $("#subjectGroup input[name='subject']").attr("placeholder", "Cross the Pond 2025, FNO, etc");
+                } else if (this.value == 'website') {
+                    $("#subjectGroup input[name='subject']").attr("placeholder", "Broken link, suggestion, bug report");
+                } else {
+                    $("#subjectGroup input[name='subject']").attr("placeholder", "");
+                }
             }
         })
+
+        $(document).ready(function() {
+            $('#controllerCid').select2({
+                placeholder: "Select a controller...",
+                width: '100%'
+            });
+        });
     </script>
+
 @endsection

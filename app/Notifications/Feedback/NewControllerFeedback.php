@@ -41,7 +41,7 @@ class NewControllerFeedback extends Notification
     {
         return (new MailMessage)
                     ->greeting('Hello,')
-                    ->line('A user has submitted feedback on a controller.')
+                    ->line('A user has submitted feedback on a Controller!')
                     ->line('User: '.$this->feedback->user->fullName('FLC'))
                     ->line('Email: '.$this->feedback->user->email)
                     ->line('Controller CID: '.$this->feedback->controller_cid)

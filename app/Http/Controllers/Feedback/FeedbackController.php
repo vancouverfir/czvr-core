@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Feedback;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Feedback\ControllerFeedback;
+use App\Models\Feedback\EventFeedback;
 use App\Models\Feedback\WebsiteFeedback;
 use App\Models\Settings\AuditLogEntry;
 use App\Models\Settings\CoreSettings;
 use App\Models\Users\User;
 use App\Notifications\Feedback\NewControllerFeedback;
-use App\Notifications\Feedback\NewOperationsFeedback;
+use App\Notifications\Feedback\NewEventFeedback;
 use App\Notifications\Feedback\NewWebsiteFeedback;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,10 +23,11 @@ class FeedbackController extends Controller
     public function index()
     {
         $controller_feedback = ControllerFeedback::all()->sortByDesc('created_at');
+        $event_feedback = EventFeedback::all()->sortByDesc('created_at');
         $website_feedback = WebsiteFeedback::all()->sortByDesc('created_at');
         $controller_feedback_attention = ControllerFeedback::where('approval', 0)->get();
 
-        return view('feedback.index', compact('controller_feedback', 'website_feedback', 'controller_feedback_attention'));
+        return view('feedback.index', compact('controller_feedback', 'event_feedback', 'website_feedback', 'controller_feedback_attention'));
     }
 
     public function yourFeedback()
@@ -175,14 +177,14 @@ class FeedbackController extends Controller
                 $feedback->save();
                 Notification::route('mail', CoreSettings::find(1)->emailwebmaster)->notify(new NewWebsiteFeedback($feedback));
                 break;
-            case 'operations':
-                $feedback = new OperationsFeedback([
+            case 'event':
+                $feedback = new EventFeedback([
                     'user_id' => Auth::id(),
                     'subject' => $request->get('subject'),
                     'content' => $request->get('content'),
                 ]);
                 $feedback->save();
-                Notification::route('mail', CoreSettings::find(1)->emailfacilitye)->notify(new NewOperationsFeedback($feedback));
+                Notification::route('mail', CoreSettings::find(1)->emaileventc)->notify(new NewEventFeedback($feedback));
                 break;
             case 'controller':
                 $feedback = new ControllerFeedback([

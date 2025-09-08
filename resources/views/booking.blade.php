@@ -33,7 +33,6 @@
         background-color: #333 !important;
         color: #fff !important;
     }
-
 </style>
 
 @section('content')

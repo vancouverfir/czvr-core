@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewOperationsFeedback extends Notification
+class NewEventFeedback extends Notification
 {
     use Queueable;
 
@@ -41,7 +41,7 @@ class NewOperationsFeedback extends Notification
     {
         return (new MailMessage)
                     ->greeting('Hello,')
-                    ->line('A user has submitted feedback on Vancouver operations.')
+                    ->line('A user has submitted feedback on a Vancouver event!')
                     ->line('User: '.$this->feedback->user->fullName('FLC'))
                     ->line('Email: '.$this->feedback->user->email)
                     ->line('Subject: '.$this->feedback->subject)
