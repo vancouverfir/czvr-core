@@ -124,6 +124,13 @@ Route::get('/connect/login', 'Auth\LoginController@AuthLogin')->middleware('gues
 Route::get('/connect/validate', 'Auth\LoginController@validateAuthLogin')->middleware('guest');
 Route::get('/logout', 'Auth\LoginController@logout')->middleware('auth')->name('auth.logout');
 
+//Feedback
+
+Route::middleware(['auth_check'])->group(function () {
+    Route::get('/feedback', 'Feedback\FeedbackController@create')->name('feedback.create');
+    Route::post('/feedback', 'Feedback\FeedbackController@createPost')->name('feedback.create.post');
+});
+
 //Base level authentication
 Route::group(['middleware' => 'auth'], function () {
     //Privacy accept
@@ -268,10 +275,6 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/{id}/email', 'Users\UserController@emailStore')->name('users.email.store');
         });
     });
-
-    //Feedback
-    Route::get('/feedback', 'Feedback\FeedbackController@create')->name('feedback.create');
-    Route::post('/feedback', 'Feedback\FeedbackController@createPost')->name('feedback.create.post');
 
     //Upload and Delete ATC Resources
     Route::group(['middleware' => 'staff'], function () {

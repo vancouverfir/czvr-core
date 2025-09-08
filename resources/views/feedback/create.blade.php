@@ -138,9 +138,7 @@
                 $("#subjectGroup").show();
 
                 if (this.value == 'event') {
-                    $("#subjectGroup input[name='subject']").attr("placeholder", "Cross the Pond 2025, FNO, etc");
-                } else if (this.value == 'website') {
-                    $("#subjectGroup input[name='subject']").attr("placeholder", "Broken link, suggestion, bug report");
+                    $("#subjectGroup input[name='subject']").attr("placeholder", "Cross the Pond 2025, FNO, West Coast Weekends...");
                 } else {
                     $("#subjectGroup input[name='subject']").attr("placeholder", "");
                 }
