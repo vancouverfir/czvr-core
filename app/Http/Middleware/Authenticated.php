@@ -9,8 +9,9 @@ class Authenticated
 {
     public function handle($request, Closure $next)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             $request->session()->put('url.intended', $request->fullUrl());
+
             return redirect()->route('auth.connect.login');
         }
 
