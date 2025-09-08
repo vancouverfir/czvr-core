@@ -185,7 +185,7 @@
                                 <img src="{{Auth::user()->avatar()}}" style="height: 27px; width: 27px; margin-right: 7px; margin-bottom: 3px; border-radius: 50%;">&nbsp;<span class="font-weight-bold">{{Auth::user()->fullName("F")}}</span>
                             </a>
 
-                            <div class="dropdown-menu dropdown-menu-right dropdown-default py-0" aria-labelledby="navbarDropdownMenuLink-333">
+                            <div class="dropdown-menu dropdown-default py-0" aria-labelledby="navbarDropdownMenuLink-333">
                                     <a class="dropdown-item" href="{{route('dashboard.index')}}"> <i class="fas fas fa-tachometer-alt mr-2"></i> Dashboard </a>
                                 @if (auth()->check() && (auth()->user()->instructorProfile))
                                     <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Instructors </a>
