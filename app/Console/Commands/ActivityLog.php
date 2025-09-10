@@ -8,6 +8,10 @@ use App\Models\AtcTraining\RosterMember;
 use App\Models\Network\MonitoredPosition;
 use App\Models\Network\SessionLog;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
+use App\Mail\ActivityBot\UnauthorisedConnection;
+use App\Models\Settings\CoreSettings;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -66,6 +70,34 @@ class ActivityLog extends Command
                 if ($controller->callsign == $position->identifier) {
                     $identFound = true; // set flag
                     array_push($onlineControllers, $controller); // Add if the callsign is the same as the position identifier
+                }
+            }
+
+            //Check unauthorized login
+            $rosterMember = RosterMember::where('cid', $controller->cid)->first();
+            if ($identFound && ! $rosterMember) {
+                // Create a unique cache key for this controller + callsign
+                $cacheKey = 'unauth_email_sent_'.$controller->cid.'_'.$controller->callsign;
+
+                // Only send if not sent in the last 15 minutes
+                if (! Cache::has($cacheKey)) {
+                    $core = CoreSettings::find(1);
+
+                    $emails = [
+                        $core->emailfirchief,
+                        $core->emaildepfirchief,
+                        $core->emailcinstructor,
+                    ];
+
+                    foreach ($emails as $email) {
+                        Mail::to($email)->send(new UnauthorisedConnection([
+                            'callsign' => $controller->callsign,
+                            'cid' => $controller->cid,
+                        ]));
+                    }
+
+                    // Set cache for 15 minutes to prevent spam
+                    Cache::put($cacheKey, true, now()->addMinutes(15));
                 }
             }
 

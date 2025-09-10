@@ -30,7 +30,8 @@ class UnauthorisedConnection extends Mailable
     public function build()
     {
         return $this
-            ->view('emails.unauthorisedconnection')
+            ->view('emails.activitybot.unauthorisedconnection')
+            ->with(['timestamp' => now()])
             ->subject('Unauthorised Connection Found');
     }
 }
