@@ -4,17 +4,17 @@ namespace App\Console\Commands;
 
 use App\Classes\HttpHelper;
 use App\Classes\VatsimHelper;
+use App\Mail\ActivityBot\UnauthorisedConnection;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Network\MonitoredPosition;
 use App\Models\Network\SessionLog;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Cache;
-use App\Mail\ActivityBot\UnauthorisedConnection;
 use App\Models\Settings\CoreSettings;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class ActivityLog extends Command
