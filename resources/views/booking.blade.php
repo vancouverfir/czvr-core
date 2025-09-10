@@ -184,7 +184,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         initialView: 'dayGridMonth',
-        themeSystem: 'bootstrap4',
         height: 'auto',
         eventDisplay: 'block',
         eventTextColor: '#fff',
@@ -195,12 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'title' => "{$b['callsign']} ({$b['cid']})",
                 'start' => $b['start'],
                 'end'   => $b['end'],
-                'backgroundColor' => match($b['type'] ?? 'booking') {
-                    'exam' => '#e74c3c',
-                    'mentoring' => '#3498db',
-                    'event' => '#9b59b6',
-                    default => '#28a745',
-                },
+                'backgroundColor' => '#28a745',
                 'borderColor' => 'rgba(255,255,255,0.2)'
             ])->values()->all(),
             JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
@@ -221,14 +215,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 container: 'body'
             });
         },
-        eventClick(info) { openEditModal(info.event.id); }
     });
 
     calendar.render();
 });
 
 $('#callsignAccordion').select2({
-    theme: 'bootstrap4',
     width: '100%',
     placeholder: "Select a callsign"
 });
@@ -270,7 +262,7 @@ document.querySelectorAll('.edit-booking-btn').forEach(btn => {
 
 setInterval(() => {
     const now = new Date();
-    document.getElementById('utcClock').textContent = now.toUTCString().split(' ')[4] + ' UTC';
+    document.getElementById('utcClock').textContent = now.toISOString().slice(11,19) + ' UTC';
 }, 1000);
 
 </script>

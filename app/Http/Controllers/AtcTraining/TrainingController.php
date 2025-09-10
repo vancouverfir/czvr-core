@@ -368,13 +368,13 @@ class TrainingController extends Controller
         if ($request->filled('remove_instructor') && $request->remove_instructor == 1) {
             $student->update(['instructor_id' => null]);
 
-            return back()->withSuccess("Unassigned {$student->user->fullName('FLC')} from Instructor.");
+            return back()->withSuccess("Unassigned {$student->user->fullName('FLC')} from Instructor!");
         }
 
         if ($request->filled('instructor')) {
             $student->update(['instructor_id' => $request->instructor]);
 
-            return back()->withSuccess("Paired {$student->user->fullName('FLC')} with Instructor {$student->instructor->user->fullName('FLC')}.");
+            return back()->withSuccess("Paired {$student->user->fullName('FLC')} with Instructor {$student->instructor->user->fullName('FLC')}!");
         }
     }
 
