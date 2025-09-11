@@ -9,6 +9,11 @@
     }
 }
 
+@media (max-width: 769px) {
+    .container {
+        padding: 15px !important;
+    }
+
 .navbar .container {
     display: flex !important;
     align-items: center;

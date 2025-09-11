@@ -25,10 +25,10 @@
             <div class="col-3" style="text-align: center">
                 {{$feedback->approval == 0 ? 'Actions (needs your attention):' : 'Actions:'}}
                 <br>
-                <a href="#" data-toggle="modal" data-target="#editModal" style="color: black"><i class="fa fa-pencil-alt"></i></a>&nbsp;
-                <a href="{{url('/admin/feedback/controller/'.$id.'/approve')}}"><i class="fa fa-check" style={{$feedback->approval == 2 ? 'color:green' : 'color:black'}}></i></a>&nbsp;
-                <a href="{{url('/admin/feedback/controller/'.$id.'/deny')}}"><i class="fa fa-times" style={{$feedback->approval == 1 ? 'color:red' : 'color:black'}}></i></a>&nbsp;
-                <a href="{{url('/admin/feedback/controller/'.$id.'/delete')}}"><i class="fa fa-trash-alt" style="color: black;"></i></a>
+                <a href="#" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil-alt"></i></a>&nbsp;
+                <a href="{{url('/admin/feedback/controller/'.$id.'/approve')}}"><i class="fa fa-check" style={{$feedback->approval == 2 ? 'color: green' : 'color: white'}}></i></a>&nbsp;
+                <a href="{{url('/admin/feedback/controller/'.$id.'/deny')}}"><i class="fa fa-times" style={{$feedback->approval == 1 ? 'color: red' : 'color: white'}}></i></a>&nbsp;
+                <a href="{{url('/admin/feedback/controller/'.$id.'/delete')}}"><i class="fa fa-trash-alt"></i></a>
             </div>
         </div>
         <h6 style="white-space: pre-line;">Feedback: {{$feedback->content}}</h6>

@@ -92,7 +92,7 @@ class LoginController extends Controller
         }
 
         if (! isset($response->data->vatsim->rating)) {
-            return redirect()->route('index')->with('error-modal', 'We cannot create an account without VATSIM details.');
+            return redirect()->route('index')->with('error-modal', 'We cannot create an account without VATSIM details!');
         }
 
         $checkrating = RosterMember::where('cid', $response->data->cid)->first();
@@ -118,6 +118,8 @@ class LoginController extends Controller
             'division_name' => $response->data->vatsim->division->name,
             'used_connect' => true,
         ]);
+
+        $user = User::find($response->data->cid);
 
         if ($user->display_fname === null) {
             $user->display_fname = isset($response->data->personal->name_first) ? utf8_decode($response->data->personal->name_first) : $response->data->cid;

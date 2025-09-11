@@ -99,6 +99,22 @@ class FeedbackController extends Controller
         return redirect()->to(route('staff.feedback.index'))->withSuccess('Controller Feedback ID#'.$id.' has been deleted!');
     }
 
+    public function viewEventFeedback($id)
+    {
+        $submitter = User::where('id', EventFeedback::where('id', $id)->firstOrFail()->user_id)->firstOrFail();
+        $feedback = EventFeedback::where('id', $id)->firstOrFail();
+
+        return view('feedback.eventview', compact('id', 'submitter', 'feedback'));
+    }
+
+    public function deleteEventFeedback($id)
+    {
+        $feedback = EventFeedback::where('id', $id)->firstOrFail();
+        $feedback->delete();
+
+        return redirect()->to(route('staff.feedback.index'))->withSuccess('Event Feedback ID#'.$id.' has been deleted!');
+    }
+
     public function viewWebsiteFeedback($id)
     {
         $submitter = User::where('id', WebsiteFeedback::where('id', $id)->firstOrFail()->user_id)->firstOrFail();

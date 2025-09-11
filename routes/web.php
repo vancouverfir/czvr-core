@@ -157,6 +157,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/feedback/controller/{id}/approve', 'Feedback\FeedbackController@approveControllerFeedback');
             Route::get('/feedback/controller/{id}/deny', 'Feedback\FeedbackController@denyControllerFeedback');
             Route::get('/feedback/controller/{id}/delete', 'Feedback\FeedbackController@deleteControllerFeedback');
+            Route::get('/feedback/event/{id}', 'Feedback\FeedbackController@viewEventFeedback')->name('staff.feedback.event');
+            Route::get('/feedback/event/{id}/delete', 'Feedback\FeedbackController@deleteEventFeedback');
             Route::get('/feedback/website/{id}', 'Feedback\FeedbackController@viewWebsiteFeedback')->name('staff.feedback.website');
             Route::get('/feedback/website/{id}/delete', 'Feedback\FeedbackController@deleteWebsiteFeedback');
         });
