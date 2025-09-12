@@ -6,85 +6,87 @@
 
 @stop
 
+<style>
+    #calendar {
+        background: #323234ff;
+        border-radius: 3px;
+        padding: 15px 15px 30px 15px;
+    }
+    .fc-col-header-cell { background: #3d3d42ff; }
+    .fc-day-today { background: #328d50ff !important; }
+</style>
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
+
 @section('content')
-    @include('includes.trainingMenu')
-    <div class="container" style="margin-top: 20px;">
-        <h1>Instructing Sessions</h1>
-        <hr>
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        Upcoming Sessions
-                    </div>
-                    <div class="card-body">
-                        @if ($sessions !== null)
-                        <div class="list-group">
-                            @foreach ($upcomingSessions as $session)
-                            <a href="{{route('training.instructingsessions.viewsession', $session->id)}}" class="list-group-item d-flex justify-content-between align-items-center @if (Auth::user()->instructingProfile === $session->instructor) bg-primary @endif">
-                                {{$session->student->user->fullName('FLC')}}<br/>
-                                {{$session->type}} | {{$session->date}} {{$session->start_time}} to {{$session->end_time}}<br/>
-                                Instructor: {{$session->instructor->user->fullName('FLC')}}
-                            </a>
-                            @endforeach
-                        </div>
-                        @else
-                        No upcoming sessions.
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        Actions
-                    </div>
-                    <div class="card-body">
-                    <a href="{{ route('training.instructingsessions.createsession') }}" role="button" class="btn btn-primary">Create Session</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br/>
-        <h3>Calendar</h3>
-            <script type='importmap'>
-                {
-                    "imports": {
-                    "@fullcalendar/core": "https://cdn.skypack.dev/@fullcalendar/core@6.1.15",
-                    "@fullcalendar/daygrid": "https://cdn.skypack.dev/@fullcalendar/daygrid@6.1.15",
-                    "@fullcalendar/interaction":"https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.15/+esm"
-                    }
-                }
-            </script>
+@include('includes.trainingMenu')
 
-            <script type='module'>
-                import { Calendar } from '@fullcalendar/core'
-                import interactionPlugin from '@fullcalendar/interaction'
-                import dayGridPlugin from '@fullcalendar/daygrid'
+<div class="container my-5">
+    <h1>Instructing Sessions</h1>
 
-                const calendarEl = document.getElementById('calendar')
-                const calendar = new Calendar(calendarEl, {
-                    timeZone: 'UTC',
-                    headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                    },
-                plugins: [
-                    interactionPlugin,
-                    dayGridPlugin
-                ],
-                initialView: 'dayGridMonth',
-                editable: true,
-                selectable: true,
-                events: [
-                    { title: 'Meeting', start: new Date() }
-                ]
-                })
-                    calendar.render()
-            </script>
-        <div class="card-body" id='calendar'></div>
-        <br>
-        <br>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 id="utcClock" class="fw-bold m-0">--:--:-- UTC</h3>
+        <a href="{{ route('training.instructingsessions.new') }}" class="btn btn-outline-primary">New Instructing Session</a>
     </div>
+
+    <div id="calendar"></div>
+</div>
+
+<script type="module">
+document.addEventListener('DOMContentLoaded', function () {
+    const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+        initialView: 'dayGridMonth',
+        height: 700,
+        eventDisplay: 'block',
+        eventTextColor: '#fff',
+        headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
+        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
+        events: {!! json_encode(
+            $upcomingSessions->map(fn($s) => [
+                'id' => $s->id,
+                'sessionTitle' => $s->title,
+                'instructor' => $s->instructorUser() ? $s->instructorUser()->fullName('FLC') : null,
+                'student' => ($s->student && $s->student->user) ? $s->student->user->fullName('FLC') : null,
+                'start' => $s->start_time->toIso8601String(),
+                'end' => $s->end_time->toIso8601String(),
+                'backgroundColor' => '#007bff',
+                'borderColor' => 'rgba(255,255,255,0.2)',
+            ])->values()->all(),
+            JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+        ) !!},
+        eventContent(info) {
+            const fmt = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+            const start = info.event.start, end = info.event.end;
+            const timeText = start && end ? `${fmt.format(start)} – ${fmt.format(end)} UTC` : start ? fmt.format(start) + ' UTC' : '';
+            const instructor = info.event.extendedProps.instructor;
+            return { html: `<div><div>${timeText}</div><div><strong>${instructor}</strong></div></div>` };
+        },
+        eventDidMount(info) {
+            const instructor = info.event.extendedProps.instructor;
+            const student = info.event.extendedProps.student;
+            const sessionTitle = info.event.extendedProps.sessionTitle;
+
+            $(info.el).tooltip({
+                title: `<div><strong>${sessionTitle}</strong></div>${instructor}<br>${student}<br>`,
+                placement: 'top',
+                trigger: 'hover',
+                html: true,
+                container: 'body'
+            });
+        },
+        eventClick(info) {
+            window.location.href = `/training/instructingsessions/${info.event.id}`;
+        }
+    });
+
+    calendar.render();
+});
+
+setInterval(() => {
+    const now = new Date();
+    document.getElementById('utcClock').textContent = now.toISOString().slice(11,19) + ' UTC';
+}, 1000);
+</script>
+
 @stop
