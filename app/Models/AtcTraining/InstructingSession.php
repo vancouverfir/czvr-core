@@ -2,8 +2,8 @@
 
 namespace App\Models\AtcTraining;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Users\User;
+use Illuminate\Database\Eloquent\Model;
 
 class InstructingSession extends Model
 {
@@ -13,7 +13,7 @@ class InstructingSession extends Model
 
     protected $casts = [
         'start_time' => 'datetime',
-        'end_time'   => 'datetime',
+        'end_time' => 'datetime',
     ];
 
     public function instructor()
@@ -34,5 +34,4 @@ class InstructingSession extends Model
     {
         return $this->belongsTo(Student::class);
     }
-
 }

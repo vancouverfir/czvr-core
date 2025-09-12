@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\AtcTraining;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\AtcTraining\Student;
-use App\Models\AtcTraining\Instructor;
-use App\Models\AtcTraining\InstructingSession;
-use Illuminate\Support\Facades\Auth;
 use App\Mail\InstructingSession as InstructingSessionMail;
+use App\Models\AtcTraining\InstructingSession;
+use App\Models\AtcTraining\Instructor;
+use App\Models\AtcTraining\Student;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class InstructingSessionsController extends Controller
@@ -56,6 +56,7 @@ class InstructingSessionsController extends Controller
     {
         $session->delete();
         $this->sendSessionMail($session, 'cancelled');
+
         return redirect()->route('training.instructingsessions.index')->with('success', 'Session cancelled and notification sent!');
     }
 
@@ -66,6 +67,7 @@ class InstructingSessionsController extends Controller
         $session = InstructingSession::create($data);
 
         $this->sendSessionMail($session, 'created');
+
         return redirect()->route('training.instructingsessions.index')->with('success', 'Session created and notification sent!');
     }
 
@@ -78,6 +80,7 @@ class InstructingSessionsController extends Controller
         $session->refresh();
 
         $this->sendSessionMail($session, 'updated');
+
         return redirect()->route('training.instructingsessions.index')->with('success', 'Session updated and notification sent!');
     }
 
@@ -85,6 +88,7 @@ class InstructingSessionsController extends Controller
     {
         $students = Student::with('user')->get();
         $instructors = Instructor::with('user')->get();
+
         return compact('students', 'instructors');
     }
 

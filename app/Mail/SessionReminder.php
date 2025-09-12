@@ -28,10 +28,10 @@ class SessionReminder extends Mailable
     public function build()
     {
         return $this->to($this->recipient->email)
-                    ->subject("Upcoming Instructing Session")
+                    ->subject('Upcoming Instructing Session')
                     ->view('emails.instructingsession.reminder')
                     ->with([
-                        'session'   => $this->session,
+                        'session' => $this->session,
                         'recipient' => $this->recipient,
                     ]);
     }
