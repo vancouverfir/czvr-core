@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Models\AtcTraining\InstructingSession;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\SessionReminder;
+use App\Models\AtcTraining\InstructingSession;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 
 class SendSessionReminder extends Command
 {
@@ -31,16 +31,16 @@ class SendSessionReminder extends Command
     {
         $now = Carbon::now();
         $start = $now->copy()->addHours(3)->startOfMinute();
-        $end   = $now->copy()->addHours(3)->endOfMinute();
+        $end = $now->copy()->addHours(3)->endOfMinute();
 
         $sessions = InstructingSession::whereBetween('start_time', [$start, $end])->get();
 
         foreach ($sessions as $session) {
             $instructorUser = $session->instructorUser();
-            Mail::to($instructorUser->email)->queue(new SessionReminder( $instructorUser, $session ));
+            Mail::to($instructorUser->email)->queue(new SessionReminder($instructorUser, $session));
 
             $studentUser = $session->student->user;
-            Mail::to($studentUser->email)->queue(new SessionReminder( $studentUser, $session ));
+            Mail::to($studentUser->email)->queue(new SessionReminder($studentUser, $session));
         }
     }
 }
