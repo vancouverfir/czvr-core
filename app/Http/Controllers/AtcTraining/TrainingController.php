@@ -342,7 +342,7 @@ class TrainingController extends Controller
     {
         $student = Student::where('renewal_token', $token)->first();
 
-        if (!$student) {
+        if (! $student) {
             return redirect()->route('training.index')
                 ->withError('Invalid link!');
         }
