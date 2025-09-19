@@ -43,8 +43,8 @@ class RenewNotification extends Command
             $token = Str::random(31);
             $student->renewal_token = $token;
             $student->user->notify(new RenewalNotification($student));
-            $student->renewal_notified_at = Carbon::now();
             $student->save();
+            $student->renewal_notified_at = Carbon::now();
         }
 
         $expirationDays = 11;

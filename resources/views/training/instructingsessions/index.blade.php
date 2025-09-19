@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         },
         eventClick(info) {
-            window.location.href = `/training/instructingsessions/${info.event.id}`;
+            window.location.href = `/instructingsessions/${info.event.id}`;
         }
     });
 
