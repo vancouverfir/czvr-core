@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
             center: 'title', 
             right: 'dayGridMonth,timeGridWeek,timeGridDay' 
         },
-        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' },
+        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
         events: {!! json_encode(
             collect($bookings)->map(fn($b) => [
                 'id' => 'booking-'.$b['id'],
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventContent(info) {
             const start = info.event.start;
             const end = info.event.end;
-            const fmt = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+            const fmt = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
             const timeText = start && end ? `${fmt.format(start)} – ${fmt.format(end)}` : start ? fmt.format(start) : '';
 
             if (info.event.extendedProps.type === 'event') {
