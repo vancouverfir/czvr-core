@@ -6,8 +6,8 @@ use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
 use App\Models\AtcTraining\StudentNote;
-use App\Notifications\RenewalNotification;
 use App\Notifications\RenewalExpiredNotification;
+use App\Notifications\RenewalNotification;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
@@ -77,7 +77,7 @@ class RenewNotification extends Command
                 'updated_at' => Carbon::now(),
             ]);
             $student->status = 4;
-            $student->renewal_notified_at = NULL;
+            $student->renewal_notified_at = null;
             $student->save();
             $student->user->notify(new RenewalExpiredNotification($student));
         }

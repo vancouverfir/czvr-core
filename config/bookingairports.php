@@ -50,5 +50,5 @@ return [
         'CYYD' => ['F_TWR'],
         'CYYF' => ['F_TWR', 'F_GND'],
         'CYWH' => ['F_TWR'],
-    ]
+    ],
 ];
