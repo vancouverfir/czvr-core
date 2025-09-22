@@ -4,9 +4,9 @@ namespace App\Notifications;
 
 use App\Models\AtcTraining\Student;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class RenewalExpiredNotification extends Notification implements ShouldQueue
 {
@@ -37,7 +37,7 @@ class RenewalExpiredNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Your Renewal Period Has Expired')
-            ->view('emails.renewalexpirednotification', ['student' => $this->student,]);
+            ->view('emails.renewalexpirednotification', ['student' => $this->student]);
     }
 
     /**
