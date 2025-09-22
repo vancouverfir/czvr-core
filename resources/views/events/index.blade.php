@@ -10,7 +10,7 @@
         <hr>
         <ul class="list-unstyled">
             @if (count($events) == 0)
-            <li>No Events... Stay tuned!</li>
+                <li>No Events Stay tuned!</li>
             @endif
             @foreach($events as $e)
             <div class="card my-2" style="@if($e->image_url) background-image:url({{$e->image_url}}); background-size: cover; background-position: center; color: white; @endif">

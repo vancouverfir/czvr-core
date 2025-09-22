@@ -10,9 +10,10 @@
 }
 
 @media (max-width: 769px) {
-    .container {
+    .mobile-container {
         padding: 15px !important;
     }
+}
 
 .navbar .container {
     display: flex !important;
@@ -31,7 +32,7 @@
                 @keyframes heroZoom {0% { transform: scale(1); }100% { transform: scale(1.03); }}
             </style>
 
-            <div class="container" style="text-align: center; padding-top: 30px; padding-bottom: 30px;">
+            <div class="mobile-container container" style="text-align: center; padding-top: 30px; padding-bottom: 30px;">
                 <div style="display: inline-block; position: relative; z-index: 1; padding: 30px;">
                     <h1 class="vancouver-text display-3" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); color: #fff;">
                         <span class="corner">From Sea to Sky!</span>
@@ -45,7 +46,7 @@
                 </div>
             </div>
 
-            <div class="container mt-4" style="padding: 90px" id="A">
+            <div class="mobile-container container mt-4" style="padding: 90px" id="A">
                 <div class="row">
                     <!-- First column -->
                     <div class="col-md-6">

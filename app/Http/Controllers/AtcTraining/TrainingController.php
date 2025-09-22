@@ -340,13 +340,18 @@ class TrainingController extends Controller
 
     public function renewTraining($token)
     {
-        $student = Student::where('renewal_token', $token)->firstOrFail();
+        $student = Student::where('renewal_token', $token)->first();
 
-        $expirationDays = 11;
+        if (! $student) {
+            return redirect()->route('training.index')
+                ->withError('Invalid link!');
+        }
+
+        $expirationDays = 14;
 
         if (
             $student->status == 4 ||
-            ($student->renewed_at && $student->renewed_at->lte(now()->subDays($expirationDays)))
+            ($student->renewal_notified_at && $student->renewal_notified_at->lte(now()->subDays($expirationDays)))
         ) {
             $student->renewal_token = null;
             $student->save();
@@ -356,6 +361,15 @@ class TrainingController extends Controller
 
         $student->renewed_at = now();
         $student->renewal_token = null;
+        $student->renewal_notified_at = null;
+        StudentNote::create([
+            'student_id' => $student->id,
+            'author_id' => 1,
+            'title' => 'Renewal Successful',
+            'content' => 'Student successfully renewed their training within the 14 day time frame!',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
         $student->save();
 
         return redirect()->route('training.index')->withSuccess('Your training has been renewed!');

@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
 
 <style>
-    #calendar {background: #1f1f2e; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); color: #f8f9fa; }
+    #calendar {background: #1f1f2e; padding: 15px 15px 30px 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); color: #f8f9fa; }
     .fc-toolbar { background: #2c2c3a; border-radius: 8px; padding: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
     .fc-toolbar-title { font-weight: 700; color: #fff; font-size: 1.25rem; }
     .fc-button { background: #4b4b63; color: #fff; border: none; font-weight: 600; }
@@ -20,19 +20,10 @@
     .fc-event { border-radius: 6px; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.5); opacity: 0.9; }
     .fc-event:hover { opacity: 1; transform: scale(1.05); transition: 0.2s; }
     .fc-daygrid-day-frame { border: 1px solid rgba(255,255,255,0.05); }
-    .select2-container--default .select2-selection--single {
-    background-color: #333 !important;
-    color: #fff !important;
-    border: 1px solid #777 !important;
-    }
-    .select2-dropdown {
-    background-color: #333 !important;
-    color: #fff !important;
-    }
-    .select2-search__field {
-        background-color: #333 !important;
-        color: #fff !important;
-    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered { color: #fff !important; }
+    .select2-container--default .select2-selection--single { background-color: #333 !important; color: #fff !important; border: 1px solid #777 !important; }
+    .select2-dropdown { background-color: #333 !important; color: #fff !important; }
+    .select2-search__field { background-color: #333 !important; color: #fff !important; }
 </style>
 
 @section('content')
@@ -42,8 +33,18 @@
 
     <div class="row">
         <div class="col-md-8">
-            <div id="utcClock" class="text-white mb-2" style="font-weight: bold;">--:--:-- UTC</div>
+            <h5 id="utcClock" class="text-white mb-2" style="font-weight: bold;">--:--:-- UTC</h5>
             <small class="d-block mb-2">All times listed are in Zulu time!</small>
+
+            <div class="mb-2" style="display: flex; align-items: center; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.3rem;">
+                    <span class=" d-inline-block" style="width:12px; height:12px; background:#28a745;"> </span> <span> Booking </span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.3rem;">
+                    <span class="d-inline-block" style="width:12px; height:12px; background:#007bff;"> </span> <span> Event </span>
+                </div>
+            </div>
+
             <div id="calendar"></div>
         </div>
 
@@ -64,23 +65,28 @@
                                 <select class="form-control" name="callsign" id="callsignAccordion" required>
                                     <option value="">Select a callsign</option>
                                     @foreach($callsigns as $cs)
-                                        <option value="{{ $cs }}" {{ old('callsign', $booking->callsign ?? '') === $cs ? 'selected' : '' }}>
+                                        <option value="{{ $cs }}" {{ ($booking->callsign ?? '') === $cs ? 'selected' : '' }}>
                                             {{ $cs }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
-
+                            @php
+                                $nowUtc = now()->utc();
+                                $oneHourLaterUtc = $nowUtc->copy()->addHour();
+                            @endphp
                             <div class="form-group">
                                 <label for="startAccordion">Start (UTC)</label>
-                                <input type="datetime-local" class="form-control" name="start" id="startAccordion" min="{{ now()->format('Y-m-d\TH:i') }}" required>
+                                <input type="datetime-local" class="form-control" name="start" id="startAccordion"
+                                    value="{{ $nowUtc->format('Y-m-d\TH:i') }}"
+                                    min="{{ $nowUtc->format('Y-m-d\TH:i') }}" required>
                             </div>
-
                             <div class="form-group">
                                 <label for="endAccordion">End (UTC)</label>
-                                <input type="datetime-local" class="form-control" name="end" id="endAccordion" min="{{ now()->format('Y-m-d\TH:i') }}" required>
+                                <input type="datetime-local" class="form-control" name="end" id="endAccordion"
+                                    value="{{ $oneHourLaterUtc->format('Y-m-d\TH:i') }}"
+                                    min="{{ $nowUtc->format('Y-m-d\TH:i') }}" required>
                             </div>
-
                             <button type="submit" class="btn btn-primary mt-2" id="bookingSubmitAccordion">Create Booking</button>
                         </form>
                     </div>
@@ -141,37 +147,10 @@
                             What is a controller booking?
                         </a>
                         <div class="collapse px-3 py-2" id="controllerBookingInfo">
-                            <p>Here you can check out the times and positions booked by CZVR controllers! We do our best to keep things updated, but remember bookings are just estimates, coverage for the whole time isn’t guaranteed!</p>
+                            <p>A controller booking is a scheduled time slot during which a controller has reserved a position to control. Bookings help you see who is expected to be online and when. Please note that bookings are approximate and coverage for the entire period may not be guaranteed!</p>
                         </div>
                     </div>
                 </div>
-                @if(Auth::check() && Auth::user()->permissions >= 4)
-                    <div class="card mt-3">
-                        <div class="card-header text-white">
-                            Admin – Manage All Bookings
-                        </div>
-                        <div class="list-group list-group-flush">
-                            @forelse($bookings as $b)
-                                <div class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{{ $b['callsign'] }}</strong> – {{ $b['cid'] }}
-                                        <br>
-                                        {{ \Carbon\Carbon::parse($b['start'])->format('d M Y H:i') }} → {{ \Carbon\Carbon::parse($b['end'])->format('d M Y H:i') }}
-                                    </div>
-                                    <form action="{{ route('booking.delete', $b['id']) }}" method="POST" class="m-0 p-0">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
-                                </div>
-                            @empty
-                                <div class="list-group-item bg-dark text-light py-3">
-                                    No bookings found!
-                                </div>
-                            @endforelse
-                        </div>
-                    </div>
-                @endif
             </div>
         </div>
     </div>
@@ -180,41 +159,64 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+@php
+    $cids = $bookings->pluck('cid')->toArray();
+    $userLookup = \App\Models\Users\User::whereIn('id', $cids)
+        ->get()
+        ->mapWithKeys(fn($u) => [$u->id => trim($u->fname.' '.$u->lname)]);
+@endphp
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         initialView: 'dayGridMonth',
-        height: 'auto',
+        height: 700,
         eventDisplay: 'block',
         eventTextColor: '#fff',
-        headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
+        headerToolbar: { 
+            left: 'prev,next today', 
+            center: 'title', 
+            right: 'dayGridMonth,timeGridWeek,timeGridDay' 
+        },
+        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' },
         events: {!! json_encode(
-            $bookings->map(fn($b) => [
-                'id' => $b['id'],
-                'title' => "{$b['callsign']} ({$b['cid']})",
+            collect($bookings)->map(fn($b) => [
+                'id' => 'booking-'.$b['id'],
+                'title' => "{$b['callsign']} (".($userLookup[$b['cid']] ?? $b['cid']).")",
+                'callsign' => $b['callsign'],
+                'name' => $userLookup[$b['cid']] ?? $b['cid'],
                 'start' => $b['start'],
                 'end'   => $b['end'],
                 'backgroundColor' => '#28a745',
-                'borderColor' => 'rgba(255,255,255,0.2)'
-            ])->values()->all(),
+                'borderColor' => 'rgba(255,255,255,0.2)',
+                'type' => 'booking',
+            ])->merge(
+                collect($events)->map(fn($e) => [
+                    'id' => 'event-'.$e->id,
+                    'title' => $e->name,
+                    'start' => $e->start_timestamp,
+                    'end'   => $e->end_timestamp,
+                    'backgroundColor' => '#007bff',
+                    'borderColor' => 'rgba(255,255,255,0.2)',
+                    'type' => 'event',
+                ])
+            )->values()->all(),
             JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
         ) !!},
-        eventDidMount(info) {
-            const formatTimeOnly = (isoString) => {
-                return isoString.substring(11, 16) + ' UTC';
-            };
+        eventContent(info) {
+            const start = info.event.start;
+            const end = info.event.end;
+            const fmt = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+            const timeText = start && end ? `${fmt.format(start)} – ${fmt.format(end)}` : start ? fmt.format(start) : '';
 
-            const startUTC = formatTimeOnly(info.event.start.toISOString());
-            const endUTC   = formatTimeOnly(info.event.end.toISOString());
+            if (info.event.extendedProps.type === 'event') {
+                return { html: `<div style="white-space: normal; line-height:1.1;">${info.event.title}</div><div>${timeText}</div>` };
+            }
 
-            $(info.el).tooltip({
-                title: `<strong>${info.event.title}</strong><br>${startUTC} – ${endUTC}`,
-                placement: 'top',
-                trigger: 'hover',
-                html: true,
-                container: 'body'
-            });
-        },
+            const callsign = info.event.extendedProps.callsign;
+            const name = info.event.extendedProps.name;
+            return { html: `<div style="white-space: normal; line-height:1.1;">${callsign} [${name}]</div><div>${timeText}</div>` };
+        }
     });
 
     calendar.render();
