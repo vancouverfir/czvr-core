@@ -199,6 +199,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     'backgroundColor' => '#007bff',
                     'borderColor' => 'rgba(255,255,255,0.2)',
                     'type' => 'event',
+                    'url' => 'https://czvr.ca/events/' . $e->slug,
+                    'target' => '_blank'
                 ])
             )->values()->all(),
             JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
@@ -210,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const timeText = start && end ? `${fmt.format(start)} – ${fmt.format(end)}` : start ? fmt.format(start) : '';
 
             if (info.event.extendedProps.type === 'event') {
-                return { html: `<div style="white-space: normal; line-height:1.1;">${info.event.title}</div><div>${timeText}</div>` };
+                return { html: `<div style="white-space: normal; line-height:1.1;"><a href="${info.event.url}" target="_blank" style="color:#fff; text-decoration:none;">${info.event.title}</a></div><div>${timeText}</div>` };
             }
 
             const callsign = info.event.extendedProps.callsign;
