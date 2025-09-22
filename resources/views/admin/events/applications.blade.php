@@ -50,7 +50,7 @@
                             data-target="#confirmApp{{$a->id}}">Confirm Controller</a>
                         <a href="{{route('events.admin.controllerapps.delete', [$event->slug, $a->user_id])}}"
                             class="btn btn-sm btn-danger">Delete</a>
-                    </div>                       
+                    </div>
                 </div>
             </div>
 

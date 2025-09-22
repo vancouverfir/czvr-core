@@ -10,12 +10,6 @@
 @section('description', "Vancouver FIR's Controller Roster")
 
 @section('content')
-
-    <head>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css"; rel="stylesheet" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js";></script>
-    </head>
-
     <div class="container" style="margin-top: 20px;">
         <a href="{{route('dashboard.index')}}" class="blue-text" style="font-size: 1.2em;"> <i
                 class="fas fa-arrow-left"></i> Dashboard</a>
@@ -88,7 +82,7 @@
 
 
                     <!--Vancouver CONTROLLERS ROSTER-->
-                    <table id="rosterVisitTable" class="table table-hover">
+                    <table id="rosterTable" class="table table-hover">
                         <thead>
                         <tr>
                             <th style="text-align:center" scope="col"><b>CID</b></th>
@@ -132,9 +126,9 @@
                                 @else
                                 <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
                                 @endif
-                           
+
 <!--Delivery/Ground-->
-                            <td align="center">
+                                <td align="center">
                                     @if ($controller->delgnd == "0")
                                         <i class="fa fa-times-circle icon-no-cert"></i>
                                     @elseif ($controller->delgnd == "1")
@@ -149,7 +143,7 @@
                                         <i class="fa fa-user-circle icon-mentor"></i>
                                     @elseif ($controller->delgnd_t2 == "3")
                                         <i class="fa fa-check-circle icon-certified"></i>
-@endif</td>
+                                @endif</td>
 <!--Tower-->
                                 <td align="center">
                                     @if ($controller->twr == "0")
@@ -598,6 +592,20 @@
         </div>
     </div>
     <!--End add Visitor controller modal-->
+    <br>
 </div>
+
+<script>
+        $(document).ready(function() {
+            $.fn.dataTable.enum(['S1', 'S2', 'S3', 'C1', 'C3', 'I1', 'I3', 'SUP', 'ADM'])
+            $('#rosterTable').DataTable({
+                "order": [[0, "asc"]],
+                "columnDefs": [
+                    { "orderable": false, "targets": [-1, -2] }
+                ]
+            });
+        } );
+</script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/enum.js"></script>
 
 @stop

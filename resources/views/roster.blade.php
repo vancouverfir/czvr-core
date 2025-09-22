@@ -24,22 +24,23 @@
                         <th style="text-align:center" scope="col"><b>With Supervision</b></th>
                         <th style="text-align:center" scope="col"><b>Solo Approved</b></th>
                         <th style="text-align:center" scope="col"><b>Certified</b></th>
-                        </tr>
+                    </tr>
                 </thead>
-                 <tr>
-                    <th scope="row">Unrestricted Positions</th>
-                        <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
-                        <td class="text-center align-middle"><i class="far fa-user-circle icon-mentor"></td>
-                        <td class="text-center align-middle"><i class="fa fa-minus-circle icon-solo"></td>
-                        <td class="text-center align-middle"><i class="far fa-check-circle icon-certified"></td>
-                </tr>
-                <tr>
-                    <th scope="row">Tier 2 Positions: CYVR and FSS</th>
-                        <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
-                        <td class="text-center align-middle"><i class="fa fa-user-circle icon-mentor"></td>
-                        <td class="text-center align-middle"><i class="fa fa-plus-circle icon-solo"></td>
-                        <td class="text-center align-middle"><i class="fa fa-check-circle icon-certified"></td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th scope="row">Unrestricted Positions</th>
+                            <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
+                            <td class="text-center align-middle"><i class="far fa-user-circle icon-mentor"></td>
+                            <td class="text-center align-middle"><i class="fa fa-minus-circle icon-solo"></td>
+                            <td class="text-center align-middle"><i class="far fa-check-circle icon-certified"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Tier 2 Positions: CYVR and FSS</th>
+                            <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
+                            <td class="text-center align-middle"><i class="fa fa-user-circle icon-mentor"></td>
+                            <td class="text-center align-middle"><i class="fa fa-plus-circle icon-solo"></td>
+                            <td class="text-center align-middle"><i class="fa fa-check-circle icon-certified"></td>
+                    </tr>
                 </thead>
             </table>
         </div>
@@ -54,6 +55,7 @@
             @if (Auth::check() && Auth::user()->permissions >= 3)
             <li class="nav-item">
                 <a class="nav-link" href="{{route('roster.index')}}">Edit Roster</a>
+            </li>
             @endif
           </ul>
         <div class="tab-content" id="myTabContent">

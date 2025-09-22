@@ -12,12 +12,12 @@
 @section('content')
 
 @include('includes.trainingMenu')
-<div class="container" style="margin-top: 20px;">
-    <div class="container" style="margin-top: 20px;">
+
+@if(Auth::check() && Auth::user()->permissions >= 3)
+<div class="container" style="margin-top: 30px;">
     <h1 class="blue-text font-weight-bold mt-2">ATC Resources</h1>
     <div class="list-group list-group-flush">
         @foreach ($resources as $resource)
-        @continue($resource->atc_only && Auth::check() && !Auth::user()->rosterProfile)
         <div class="list-group-item">
             <div class="row">
                 <div class="col"><b>{{$resource->title}}</b></div>
@@ -27,6 +27,7 @@
                 </div>
             </div>
         </div>
+
         <div class="modal fade" id="detailsModal{{$resource->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -38,20 +39,19 @@
                     </div>
                     <div class="modal-body">
                         <small>Description</small><br/>
-                         {{$resource->toHtml('description')}}
+                        {{$resource->toHtml('description')}}
                     </div>
                     <div class="modal-footer">
-                        @if (Auth::check() && Auth::user()->permissions >= 3)
                         <a href="{{route('atcresources.delete', $resource->id)}}" role="button" class="btn btn-danger">Delete Resource</a>
-                        @endif
                     </div>
                 </div>
             </div>
         </div>
         @endforeach
     </div>
-    <br/><br>
-    @if (Auth::check() && Auth::user()->permissions >= 3)
+
+    <br/><br/>
+
     <form method="POST" action="{{route('atcresources.upload')}}">
         @csrf
         <h3 class="blue-text">Add Resource</h3>
@@ -59,6 +59,7 @@
             <p>Title</p>
             <input required class="form-control" type="text" name="title">
         </div>
+
         <div class="form-group">
             <p>Description</p>
             <textarea id="descriptionField" name="description" cols="30" rows="10" required></textarea>
@@ -66,10 +67,12 @@
                 var simplemde = new SimpleMDE({ element: document.getElementById("descriptionField") });
             </script>
         </div>
+
         <div class="form-group">
             <p>Link to Resource</p>
             <input type="url" class="form-control" name="url" required>
         </div>
+
         <div class="form-group">
             <div class="d-flex align-items-center">
                 <span id="iconPreview" style="font-size: 1.5rem; color: #f1f1f1; margin-right: 8px;">
@@ -93,19 +96,18 @@
                 </select>
             </div>
         </div>
+
         <div class="form-group">
-            <div class="form-group">
-                <div class="custom-control custom-checkbox">
-                    <input type="hidden" name="atc_only" value="0">
-                    <input type="checkbox" class="custom-control-input" name="atc_only" id="atc_only" value="1">
-                    <label class="custom-control-label" for="atc_only">ATC Only</label>
-                </div>
+            <div class="custom-control custom-checkbox">
+                <input type="hidden" name="atc_only" value="0">
+                <input type="checkbox" class="custom-control-input" name="atc_only" id="atc_only" value="1">
+                <label class="custom-control-label" for="atc_only">ATC Only</label>
             </div>
         </div>
+
         <br/>
-        <input value="Submit" type="submit" class="btn btn-block btn-success"><br></br>
+        <input value="Submit" type="submit" class="btn btn-block btn-success"><br>
     </form>
-    @endif
 </div>
 
 <script>
@@ -118,5 +120,9 @@
         });
     });
 </script>
+
+@else
+    @php abort(403); @endphp
+@endif
 
 @stop

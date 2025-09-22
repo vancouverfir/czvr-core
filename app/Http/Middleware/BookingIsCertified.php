@@ -44,7 +44,7 @@ class BookingIsCertified
 
         if (! $this->userHasCertification($roster, $callsign)) {
             return redirect()->back()
-                ->withErrors(['certification' => 'Nice Try! 🤣🤣🤣'])
+                ->withErrors(['certification' => 'You are not certified for this position!'])
                 ->withInput();
         }
 
@@ -55,7 +55,7 @@ class BookingIsCertified
     {
         [$icao, $position] = explode('_', $callsign, 2);
 
-        $airportMap = config('bookingairports');
+        $airportMap = config('bookingairports.certifiedairports');
         $mapping = $airportMap[$icao] ?? null;
 
         if (! $mapping) {

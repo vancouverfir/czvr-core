@@ -2,21 +2,36 @@
 
 namespace App\Models\AtcTraining;
 
+use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
 
 class InstructingSession extends Model
 {
     protected $fillable = [
-        'student_id', 'instructor_id', 'type', 'start_time', 'end_time', 'network_callsign', 'instructor_comments', 'status',
+        'instructor_id', 'student_id', 'title', 'start_time', 'end_time', 'instructor_comment',
     ];
 
-    public function student()
-    {
-        return $this->belongsTo(Student::class);
-    }
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
 
     public function instructor()
     {
         return $this->belongsTo(Instructor::class);
+    }
+
+    public function instructorUser()
+    {
+        if ($this->instructor) {
+            return $this->instructor->user;
+        }
+
+        return User::find($this->instructor_id);
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
     }
 }

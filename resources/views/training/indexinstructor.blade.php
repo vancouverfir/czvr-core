@@ -32,7 +32,22 @@
                             @foreach ($yourStudents as $student)
                             <a href="{{route('training.students.view', $student->id)}}" class="list-group-item d-flex justify-content-between align-items-center"> <img src="{{$student->user->avatar()}}" style="height: 30px; width: 30px; margin-right: 15px; border-radius: 50%;">
                                 {{$student->user->fullName('FLC')}}
-                                {{-- <i class="text-dark">Session planned at {date}</i> --}}
+                                @php
+                                    $nextSession = $student->instructingSessions()
+                                        ->where('start_time', '>=', now())
+                                        ->orderBy('start_time', 'asc')
+                                        ->first();
+                                @endphp
+
+                                <i>
+                                    @if ($nextSession)
+                                        @if ($nextSession->start_time->isToday())
+                                            Session planned at {{ $nextSession->start_time->format('H:i') }} UTC
+                                        @else
+                                            Session planned at {{ $nextSession->start_time->format('d M Y') }}
+                                        @endif
+                                    @endif
+                                </i>
                                 @if ($student->status == 4)
                                     <span class="btn-sm btn-danger">
                                         <h6 class="p-0 m-0">On Hold</h6>
@@ -54,11 +69,50 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        <text class="font-weight-bold">Upcoming Sessions</text>
+                        <text class="font-weight-bold">Upcoming Instructing Sessions</text>
                     </div>
 
                     <div class="card-body">
-                        // Coming Soon!
+                        @php
+                            $upcomingSessions = collect();
+
+                            if ($yourStudents && $yourStudents->isNotEmpty()) {
+                                foreach ($yourStudents as $student) {
+                                    $upcomingSessions = $upcomingSessions->merge(
+                                        $student->instructingSessions()
+                                            ->where('start_time', '>=', now())
+                                            ->orderBy('start_time', 'asc')
+                                            ->get()
+                                    );
+                                }
+
+                                $upcomingSessions = $upcomingSessions->sortBy('start_time')->take(5);
+                            }
+                        @endphp
+
+
+                        @if ($upcomingSessions->count() > 0)
+                            <ul class="list-group">
+                                @foreach ($upcomingSessions as $session)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <a href="{{ route('training.instructingsessions.viewsession', $session->id) }}" class="text-white">
+                                                <strong>{{ $session->student->user->fullName('FLC') }}</strong>
+                                                <br>
+                                                <small>
+                                                    {{ $session->start_time->isToday() 
+                                                        ? 'Today at ' . $session->start_time->format('H:i') . ' UTC'
+                                                        : $session->start_time->format('d M Y H:i') }}
+                                                </small>
+                                            </a>
+                                        </div>
+                                        <span class="badge bg-info">Instructing Session</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <span>No upcoming sessions scheduled!</span>
+                        @endif
                     </div>
                 </div>
             </div>

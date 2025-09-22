@@ -17,7 +17,7 @@
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
-                    <a href="{{ url('training/students/' . $student->id) }}" class="btn btn-light">Cancel</a>
+                    <a href="{{ route('training.students.view', $student->id) }}" class="btn btn-light">Cancel</a>
                 </form>
             </div>
         </div>
