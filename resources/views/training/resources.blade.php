@@ -55,7 +55,7 @@
 
                                     <div class="mt-auto w-100">
                                         <a href="{{ $resource->url }}" target="_blank" class="btn btn-sm btn-outline-light w-100">
-                                            View Resources
+                                            View Resource
                                         </a>
                                     </div>
                                 </div>

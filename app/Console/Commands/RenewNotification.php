@@ -7,6 +7,7 @@ use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
 use App\Models\AtcTraining\StudentNote;
 use App\Notifications\RenewalNotification;
+use App\Notifications\RenewalExpiredNotification;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
@@ -37,17 +38,18 @@ class RenewNotification extends Command
             ->where(function ($query) use ($days) {
                 $query->where('renewed_at', '<=', Carbon::now()->subDays($days));
             })
+            ->whereNull('renewal_notified_at')
             ->get();
 
         foreach ($students as $student) {
             $token = Str::random(31);
             $student->renewal_token = $token;
-            $student->user->notify(new RenewalNotification($student));
-            $student->save();
             $student->renewal_notified_at = Carbon::now();
+            $student->save();
+            $student->user->notify(new RenewalNotification($student));
         }
 
-        $expirationDays = 11;
+        $expirationDays = 14;
         $expiredStudents = Student::whereIn('status', [0, 3])
             ->whereNotNull('renewal_notified_at')
             ->where('renewal_notified_at', '<=', Carbon::now()->subDays($expirationDays))
@@ -69,13 +71,15 @@ class RenewNotification extends Command
             StudentNote::create([
                 'student_id' => $student->id,
                 'author_id' => 1,
-                'title' => 'Renewal Failed',
+                'title' => 'Renewal Timed Out',
                 'content' => 'Student did not respond in time and has been marked for removal!',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
             $student->status = 4;
+            $student->renewal_notified_at = NULL;
             $student->save();
+            $student->user->notify(new RenewalExpiredNotification($student));
         }
     }
 }

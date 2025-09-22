@@ -18,7 +18,7 @@
         border: 1px solid #555 !important;
     }
     .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: #ffffff !important;
+        color: #fff !important;
     }
     .select2-dropdown {
         background-color: #333 !important;
@@ -91,14 +91,20 @@
             <input type="text" name="title" id="title" class="form-control" value="{{ $session->title ?? '' }}" required>
         </div>
 
+        @php
+            $nowUtc = now()->utc();
+            $startUtc = isset($session) ? $session->start_time->utc()->format('Y-m-d\TH:i') : $nowUtc->format('Y-m-d\TH:i');
+            $endUtc   = isset($session) ? $session->end_time->utc()->format('Y-m-d\TH:i') : $nowUtc->copy()->addHour()->format('Y-m-d\TH:i');
+        @endphp
+
         <div class="form-group mt-3">
             <label for="start_time">Start Time</label>
-            <input type="datetime-local" name="start_time" id="start_time" class="form-control" min="{{ now()->format('Y-m-d\TH:i') }}" value="{{ isset($session) ? $session->start_time->format('Y-m-d\TH:i') : '' }}" required>
+            <input type="datetime-local" name="start_time" id="start_time" class="form-control" min="{{ now()->utc()->format('Y-m-d\TH:i') }}" value="{{ isset($session) ? $session->start_time->utc()->format('Y-m-d\TH:i') : now()->utc()->format('Y-m-d\TH:i') }}" required>
         </div>
 
         <div class="form-group mt-3">
             <label for="end_time">End Time</label>
-            <input type="datetime-local" name="end_time" id="end_time" class="form-control" min="{{ now()->format('Y-m-d\TH:i') }}" value="{{ isset($session) ? $session->end_time->format('Y-m-d\TH:i') : '' }}" required>
+            <input type="datetime-local" name="end_time" id="end_time" class="form-control" min="{{ now()->utc()->format('Y-m-d\TH:i') }}" value="{{ isset($session) ? $session->end_time->utc()->format('Y-m-d\TH:i') : now()->utc()->addHour()->format('Y-m-d\TH:i') }}" required>
         </div>
 
         <div class="form-group mt-3">
@@ -122,20 +128,6 @@ $(document).ready(function() {
     $('#student_id').select2({
         placeholder: "Select a student",
         width: '100%'
-    });
-
-    flatpickr("#start_time", {
-        enableTime: true,
-        time_24hr: true,
-        dateFormat: "Y-m-d H:i",
-        minDate: new Date()
-    });
-
-    flatpickr("#end_time", {
-        enableTime: true,
-        time_24hr: true,
-        dateFormat: "Y-m-d H:i",
-        minDate: new Date()
     });
 });
 </script>

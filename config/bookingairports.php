@@ -1,6 +1,7 @@
 <?php
 
-    return [
+return [
+    'certifiedairports' => [
         'CZVR' => ['columns' => ['ctr'], 'positions' => ['CTR']],
         'CYVR' => ['columns' => ['delgnd_t2', 'twr_t2', 'app_t2'], 'positions' => ['APP', 'DEP', 'TWR', 'GND', 'DEL']],
         'CYQQ' => ['columns' => ['delgnd', 'twr', 'dep', 'app'], 'positions' => ['APP', 'DEP', 'TWR', 'GND', 'DEL']],
@@ -24,4 +25,30 @@
         'CYYD' => ['columns' => ['fss'], 'positions' => ['F_TWR']],
         'CYYF' => ['columns' => ['fss'], 'positions' => ['F_TWR', 'F_GND']],
         'CYWH' => ['columns' => ['fss'], 'positions' => ['F_TWR']],
-    ];
+    ],
+
+    'airports' => [
+        'CZVR' => ['CTR', 'A_CTR', 'N_CTR', 'S_CTR', 'E_CTR', 'W_CTR', 'X_CTR', 'H_CTR', 'Z_CTR', 'K_CTR', 'Y_CTR', 'C_CTR', 'F_CTR'],
+        'CYVR' => ['APP', 'X_APP', 'L_APP', 'T_APP', 'DEP', 'N_DEP', 'TWR', 'N_TWR', 'O_TWR', 'N_GND', 'GND', 'A_GND', 'DEL'],
+        'CYQQ' => ['APP', 'DEP', 'GND', 'TWR'],
+        'CYYJ' => ['APP', 'DEP', 'TWR', 'O_TWR', 'GND', 'DEL'],
+        'CYXX' => ['TWR', 'GND'],
+        'CYPK' => ['TWR', 'GND'],
+        'CYNJ' => ['TWR', 'GND'],
+        'CZBB' => ['TWR', 'O_TWR', 'GND'],
+        'CYLW' => ['APP', 'TWR', 'GND'],
+        'CYXS' => ['TWR', 'GND'],
+        'CYHC' => ['TWR', 'DEL'],
+        'CYZT' => ['F_TWR'],
+        'CYCD' => ['F_TWR', 'F_GND'],
+        'CYCG' => ['F_TWR'],
+        'CYBL' => ['F_TWR'],
+        'CYKA' => ['F_TWR', 'DEL'],
+        'CYWL' => ['F_TWR'],
+        'CYXC' => ['F_TWR'],
+        'CYXT' => ['F_TWR'],
+        'CYYD' => ['F_TWR'],
+        'CYYF' => ['F_TWR', 'F_GND'],
+        'CYWH' => ['F_TWR'],
+    ]
+];

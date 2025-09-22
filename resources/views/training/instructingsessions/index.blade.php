@@ -41,22 +41,22 @@ document.addEventListener('DOMContentLoaded', function () {
         eventDisplay: 'block',
         eventTextColor: '#fff',
         headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
-        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
+        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' },
         events: {!! json_encode(
             $upcomingSessions->map(fn($s) => [
                 'id' => $s->id,
                 'sessionTitle' => $s->title,
                 'instructor' => $s->instructorUser() ? $s->instructorUser()->fullName('FLC') : null,
                 'student' => ($s->student && $s->student->user) ? $s->student->user->fullName('FLC') : null,
-                'start' => $s->start_time->toIso8601String(),
-                'end' => $s->end_time->toIso8601String(),
+                'start' => $s->start_time->utc()->format('Y-m-d\TH:i:s\Z'),
+                'end' => $s->end_time->utc()->format('Y-m-d\TH:i:s\Z'),
                 'backgroundColor' => '#007bff',
                 'borderColor' => 'rgba(255,255,255,0.2)',
             ])->values()->all(),
             JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
         ) !!},
         eventContent(info) {
-            const fmt = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+            const fmt = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
             const start = info.event.start, end = info.event.end;
             const timeText = start && end ? `${fmt.format(start)} – ${fmt.format(end)} UTC` : start ? fmt.format(start) + ' UTC' : '';
             const instructor = info.event.extendedProps.instructor;
