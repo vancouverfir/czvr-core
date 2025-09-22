@@ -62,7 +62,7 @@
       </div>
 
       <div class="modal-footer d-flex justify-content-center align-items-center gap-2">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
 
         <form action="{{ route('training.instructingsessions.cancel', $session->id) }}" method="POST" class="m-0">
           @csrf
