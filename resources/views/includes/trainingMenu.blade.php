@@ -18,9 +18,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{route('training.index')}}">Home</a>
             </li>
-            {{--<li>
+            <li>
                 <a class="nav-link" href="{{route('training.instructingsessions.index')}}">Instructing Sessions</a>
-            </li>--}}
+            </li>
             @if (auth()->user()->permissions >= 3)
             <li class="nav-item">
                 <a class="nav-link" href="{{route('training.instructors')}}">Instructors</a>

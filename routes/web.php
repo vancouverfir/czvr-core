@@ -35,10 +35,25 @@ Route::group(['domain' => 'training.czvr.ca'], function () {
     Route::get('/', 'AtcTraining\TrainingController@index')->name('training.index');
     Route::post('/trainingtimes', 'AtcTraining\TrainingController@editTrainingTime')->middleware('staff')->name('waittime.edit');
 
+    // Instructor-only +
+    Route::group(['middleware' => 'instructor'], function () {
+        Route::get('/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
+        Route::post('/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
+    });
+
     // Mentor-only +
     Route::group(['middleware' => 'mentor'], function () {
         // Atc Resources Edit
         Route::get('/atcresources', 'Publications\AtcResourcesController@index')->middleware('atc')->name('atcresources.index');
+
+        // Instructing Session
+        Route::get('/instructingsessions', 'AtcTraining\InstructingSessionsController@index')->name('training.instructingsessions.index');
+        Route::get('/instructingsessions/new', 'AtcTraining\InstructingSessionsController@createForm')->name('training.instructingsessions.new');
+        Route::post('/instructingsessions', 'AtcTraining\InstructingSessionsController@create')->name('training.instructingsessions.create');
+        Route::get('/instructingsessions/{session}', 'AtcTraining\InstructingSessionsController@show')->name('training.instructingsessions.viewsession');
+        Route::get('/instructingsessions/{session}/edit', 'AtcTraining\InstructingSessionsController@edit')->name('training.instructingsessions.edit');
+        Route::put('/instructingsessions/{session}', 'AtcTraining\InstructingSessionsController@update')->name('training.instructingsessions.update');
+        Route::delete('/instructingsessions/{session}', 'AtcTraining\InstructingSessionsController@cancel')->name('training.instructingsessions.cancel');
 
         // Labels Edit
         Route::post('/students/{id}/assign/label', 'AtcTraining\LabelController@assignLabel')->name('training.students.assign.label');
@@ -46,7 +61,6 @@ Route::group(['domain' => 'training.czvr.ca'], function () {
 
         // Students Edit
         Route::post('/students/{student}/complete', 'AtcTraining\TrainingController@completeTraining')->name('training.students.completeTraining');
-        Route::get('/instructors', 'AtcTraining\TrainingController@instructorsIndex')->name('training.instructors');
         Route::get('/allstudents', 'AtcTraining\TrainingController@AllStudents')->name('training.students.students');
         Route::post('/add', 'AtcTraining\TrainingController@newStudent')->name('instructor.student.add.new');
         Route::get('/completed', 'AtcTraining\TrainingController@completedStudents')->name('training.students.completed');
@@ -59,7 +73,6 @@ Route::group(['domain' => 'training.czvr.ca'], function () {
         Route::post('/visitor-waitlist/sort', 'AtcTraining\TrainingController@sortVisitor')->name('visitor.sort');
         Route::get('/students/delete/{id}', 'AtcTraining\TrainingController@showDeleteForm')->name('training.students.delete');
         Route::delete('/students/delete/{id}', 'AtcTraining\TrainingController@removeStudent')->name('training.students.destroy');
-        Route::post('/instructors', 'AtcTraining\TrainingController@addInstructor')->name('training.instructors.add');
         Route::patch('/students/checklist/{id}/complete', 'AtcTraining\ChecklistController@completeItem')->name('training.students.checklist.complete');
         Route::post('/students/{student}/checklist/complete-multiple', 'AtcTraining\ChecklistController@completeMultiple')->name('training.students.checklist.completeMultiple');
         Route::post('/students/{student}/promote', 'AtcTraining\ChecklistController@promoteStudent')->name('training.students.promote');
@@ -328,5 +341,3 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 });
-
-//Admin and CI

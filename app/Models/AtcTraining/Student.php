@@ -40,6 +40,7 @@ class Student extends Model
 
     protected $casts = [
         'renewed_at' => 'datetime',
+        'renewal_notified_at' => 'datetime',
     ];
 
     public function labels()

@@ -5,10 +5,10 @@
     <div class="container py-4">
         <div class="d-flex flex-column justify-content-between align-items-left mb-1">
             <h1 class="blue-text font-weight-bold">Need ATC Coverage for an Event?</h1>
-            <h2 class="pb-8">We've Got You.</h2>
+            <h2 class="pb-8">We've Got You!</h2>
         </div>
         <hr>
-        
+
         <div>
             <p>Vancouver is happy to provide ATC for many events within our airspace!</p>
             <p>To request ATC for your event, we recommend contacting Vancouvers's Events Coordinator by submitting a <a href="{{route('tickets.index')}}">ticket</a> or <a href="{{route('staff')}}">email</a>. If the position is vacant, contact the FIR Chief instead.</p>
