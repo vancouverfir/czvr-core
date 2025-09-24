@@ -24,6 +24,7 @@
     .select2-container--default .select2-selection--single { background-color: #333 !important; color: #fff !important; border: 1px solid #777 !important; }
     .select2-dropdown { background-color: #333 !important; color: #fff !important; }
     .select2-search__field { background-color: #333 !important; color: #fff !important; }
+    @media (max-width: 768px) { .fc-toolbar-chunk:nth-child(3), .fc-today-button {display: none !important;} }
 </style>
 
 @section('content')
@@ -168,15 +169,27 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+    const calendarEl = document.getElementById('calendar');
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        height: 700,
+        height: window.innerWidth < 768 ? 'auto' : 700,
         eventDisplay: 'block',
         eventTextColor: '#fff',
         headerToolbar: { 
             left: 'prev,next today', 
             center: 'title', 
             right: 'dayGridMonth,timeGridWeek,timeGridDay' 
+        },
+        views: {
+            dayGridMonth: { dayMaxEventRows: true },
+            timeGridWeek: { dayMaxEventRows: true },
+            timeGridDay: { dayMaxEventRows: true }
+        },
+        windowResize: function() {
+            if (window.innerWidth < 768) {
+                calendar.setOption('height', 'auto'); 
+            }
         },
         eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
         events: {!! json_encode(
@@ -206,17 +219,22 @@ document.addEventListener('DOMContentLoaded', function () {
             JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
         ) !!},
         eventContent(info) {
+            const isMobile = window.innerWidth < 768;
             const start = info.event.start;
             const end = info.event.end;
             const fmt = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
             const timeText = start && end ? `${fmt.format(start)} – ${fmt.format(end)}` : start ? fmt.format(start) : '';
 
             if (info.event.extendedProps.type === 'event') {
-                return { html: `<div style="white-space: normal; line-height:1.1;"><a href="${info.event.url}" target="_blank" style="color:#fff; text-decoration:none;">${info.event.title}</a></div><div>${timeText}</div>` };
+                const title = isMobile ? info.event.title : `<a href="${info.event.url}" target="_blank" style="color:#fff; text-decoration:none;">${info.event.title}</a>`;
+                return { html: `<div style="white-space: normal; line-height:1.1;">${title}</div>${isMobile ? '' : `<div>${timeText}</div>`}` };
             }
 
             const callsign = info.event.extendedProps.callsign;
             const name = info.event.extendedProps.name;
+            if (isMobile) {
+                return { html: `<div>${callsign}</div><div>${timeText}</div>` };
+            }
             return { html: `<div style="white-space: normal; line-height:1.1;">${callsign} [${name}]</div><div>${timeText}</div>` };
         }
     });

@@ -7,13 +7,10 @@
 @stop
 
 <style>
-    #calendar {
-        background: #323234ff;
-        border-radius: 3px;
-        padding: 15px 15px 30px 15px;
-    }
+    #calendar { background: #323234ff; border-radius: 3px; padding: 15px 15px 30px 15px; }
     .fc-col-header-cell { background: #3d3d42ff; }
     .fc-day-today { background: #328d50ff !important; }
+    @media (max-width: 768px) { .fc-toolbar-chunk:nth-child(3), .fc-today-button {display: none !important;} }
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.css" rel="stylesheet">
@@ -37,9 +34,14 @@
 document.addEventListener('DOMContentLoaded', function () {
     const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         initialView: 'dayGridMonth',
-        height: 700,
+        height: window.innerWidth < 768 ? 'auto' : 900,
         eventDisplay: 'block',
         eventTextColor: '#fff',
+        windowResize: function() {
+            if (window.innerWidth < 768) {
+                calendar.setOption('height', 'auto'); 
+            }
+        },
         headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
         eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' },
         events: {!! json_encode(
