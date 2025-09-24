@@ -26,7 +26,7 @@
     }
     .select2-search__field {
         background-color: #333 !important;
-        color: #000000ff !important;
+        color: #fff !important;
     }
     #instructor_comment {
         height: 90px;
