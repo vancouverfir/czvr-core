@@ -37,7 +37,6 @@ Route::group(['domain' => 'training.czvr.ca'], function () {
 
     // Instructor-only +
     Route::group(['middleware' => 'instructor'], function () {
-
         // Atc Resources Edit
         Route::get('/atcresources', 'Publications\AtcResourcesController@index')->middleware('atc')->name('atcresources.index');
 
