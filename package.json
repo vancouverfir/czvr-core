@@ -12,7 +12,7 @@
         "axios": "^1.11",
         "babel-preset-react": "^6.24.1",
         "bootstrap": "^5.3.7",
-        "cross-env": "^10.0",
+        "cross-env": "^10.1",
         "jquery": "^3.7",
         "laravel-vite-plugin": "^2.0.0",
         "lodash": "^4.17.19",
