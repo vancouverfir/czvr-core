@@ -19,7 +19,8 @@ class CheckStudent
         $user = Auth::user();
 
         if (! $user) {
-            abort(403, 'Unauthorized');
+            session(['url.intended' => url()->full()]);
+            return redirect()->route('auth.connect.login');
         }
 
         if ($user->permissions >= 1 || $user->instructorProfile !== null) {
