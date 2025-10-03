@@ -7,9 +7,11 @@ use App\Models\Events\Event;
 use App\Models\Network\SessionLog;
 use App\Models\News\News;
 use App\Models\Settings\HomepageImages;
+use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class HomeController extends Controller
@@ -22,6 +24,7 @@ class HomeController extends Controller
         $topControllersArray = [];
         $weather = [];
         $background = null;
+        $banner = DB::table('core_info')->first();
 
         // Vancouver Online Controllers
         try {
@@ -63,10 +66,43 @@ class HomeController extends Controller
 
         // Events
         try {
-            $nextEvents = Event::where('start_timestamp', '>', now())
-                               ->orderBy('start_timestamp')
+            $nextEvents = Event::where('end_timestamp', '>', now())
+                               ->orderBy('end_timestamp')
                                ->take(3)
                                ->get();
+
+            $now = Carbon::now('UTC');
+
+            $ongoingEvent = $nextEvents->first(function ($event) use ($now) {
+                return $now->between(
+                    Carbon::parse($event->start_timestamp),
+                    Carbon::parse($event->end_timestamp)
+                );
+            });
+
+            if ($ongoingEvent) {
+                DB::table('core_info')->update([
+                    'banner' => "🎉 Happening Now! {$ongoingEvent->name}",
+                    'bannerLink' => url('/events/'.$ongoingEvent->slug),
+                    'bannerMode' => 'success',
+                    'updated_at' => now(),
+                ]);
+
+                $banner->banner = "🎉 Happening Now! {$ongoingEvent->name}";
+                $banner->bannerLink = url('/events/'.$ongoingEvent->slug);
+                $banner->bannerMode = 'success';
+            } else {
+                DB::table('core_info')->update([
+                    'banner' => '',
+                    'bannerLink' => '',
+                    'bannerMode' => '',
+                    'updated_at' => now(),
+                ]);
+
+                $banner->banner = '';
+                $banner->bannerLink = '';
+                $banner->bannerMode = '';
+            }
         } catch (Exception $e) {
             \Log::error('Failed to fetch events: '.$e->getMessage());
         }
@@ -152,6 +188,6 @@ class HomeController extends Controller
             $background = null;
         }
 
-        return view('index', compact('finalPositions', 'news', 'nextEvents', 'topControllersArray', 'weather', 'background'));
+        return view('index', compact('finalPositions', 'news', 'nextEvents', 'topControllersArray', 'weather', 'background', 'banner'));
     }
 }

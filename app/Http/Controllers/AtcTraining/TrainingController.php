@@ -13,6 +13,7 @@ use App\Models\AtcTraining\StudentNote;
 use App\Models\AtcTraining\TrainingWaittime;
 use App\Models\Publications\AtcResource;
 use App\Models\Users\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

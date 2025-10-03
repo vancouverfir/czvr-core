@@ -78,8 +78,22 @@ class RenewNotification extends Command
             ]);
             $student->status = 4;
             $student->renewal_notified_at = null;
+            $student->renewed_at = null;
+            $student->position = null;
             $student->save();
             $student->user->notify(new RenewalExpiredNotification($student));
+        }
+
+        foreach ([0, 3] as $queueStatus) {
+            $pos = 1;
+            $queueStudents = Student::where('status', $queueStatus)
+                ->orderBy('position')
+                ->get();
+
+            foreach ($queueStudents as $s) {
+                $s->position = $pos++;
+                $s->save();
+            }
         }
     }
 }

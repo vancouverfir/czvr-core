@@ -75,18 +75,6 @@ class LoginController extends Controller
 
         $response = json_decode($response->getBody());
 
-        $regDate = null;
-        try {
-            $coreResponse = $http->get('https://api.vatsim.net/v2/members/'.$response->data->cid, [
-                'headers' => [
-                    'Accept' => 'application/json',
-                ],
-            ]);
-            $coreData = json_decode($coreResponse->getBody());
-            $regDate = $coreData->data->reg_date ?? null;
-        } catch (ClientException $e) {
-        }
-
         if (! isset($response->data->cid)) {
             return redirect()->route('index')->with('error-modal', 'There was an error processing data from Connect (No CID)');
         }
@@ -111,7 +99,7 @@ class LoginController extends Controller
             'rating_short' => $response->data->vatsim->rating->short,
             'rating_long' => $response->data->vatsim->rating->long,
             'rating_GRP' => $response->data->vatsim->rating->long,
-            'reg_date' => $regDate,
+            'reg_date' => null,
             'region_code' => $response->data->vatsim->region->id,
             'region_name' => $response->data->vatsim->region->name,
             'division_code' => $response->data->vatsim->division->id,

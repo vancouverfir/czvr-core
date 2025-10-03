@@ -80,7 +80,7 @@
                         </div>
                         <div class="card-body">
                             @if(count($finalPositions) == 0)
-                                <h5 class="text-colour text-center">No Controllers Online</h5>
+                                <h5 class="text-colour text-center">No Controllers Online – See Controller <a class="text-white" href="https://booking.czvr.ca">Bookings!</h5>
                             @endif
                             @foreach($finalPositions as $p)
                                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -133,9 +133,21 @@
                                 <h5 class="text-colour text-center">Stay tuned here for Upcoming Events!</h5>
                             @endif
                             @foreach($nextEvents as $e)
+                                @php
+                                    $now = \Carbon\Carbon::now();
+                                    $start = \Carbon\Carbon::parse($e->start_timestamp);
+                                    $end = \Carbon\Carbon::parse($e->end_timestamp);
+
+                                    $HappeningNow = $now->between($start, $end);
+                                @endphp
+
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <a href="{{url('/events').'/'.$e->slug}}" class="text-colour">{{$e->name}}</a>
-                                    <span class="badge main-colour">{{$e->start_timestamp_pretty()}}</span>
+                                    <a href="{{ url('/events').'/'.$e->slug }}" class="text-colour">
+                                        {{$e->name}}
+                                    </a>
+                                    <span class="badge {{ $HappeningNow ? 'badge-success' : 'main-colour' }}">
+                                        {{ $HappeningNow ? 'Happening Now!' : $start->format('M d, Y H:i T') }}
+                                    </span>
                                 </div>
                             @endforeach
                         </div>
