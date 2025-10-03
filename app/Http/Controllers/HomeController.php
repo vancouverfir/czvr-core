@@ -7,12 +7,12 @@ use App\Models\Events\Event;
 use App\Models\Network\SessionLog;
 use App\Models\News\News;
 use App\Models\Settings\HomepageImages;
+use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -73,7 +73,7 @@ class HomeController extends Controller
 
             $now = Carbon::now('UTC');
 
-            $ongoingEvent = $nextEvents->first(function($event) use ($now) {
+            $ongoingEvent = $nextEvents->first(function ($event) use ($now) {
                 return $now->between(
                     Carbon::parse($event->start_timestamp),
                     Carbon::parse($event->end_timestamp)
@@ -83,15 +83,14 @@ class HomeController extends Controller
             if ($ongoingEvent) {
                 DB::table('core_info')->update([
                     'banner' => "🎉 Happening Now! {$ongoingEvent->name}",
-                    'bannerLink' => url('/events/' . $ongoingEvent->slug),
+                    'bannerLink' => url('/events/'.$ongoingEvent->slug),
                     'bannerMode' => 'success',
                     'updated_at' => now(),
                 ]);
 
                 $banner->banner = "🎉 Happening Now! {$ongoingEvent->name}";
-                $banner->bannerLink = url('/events/' . $ongoingEvent->slug);
+                $banner->bannerLink = url('/events/'.$ongoingEvent->slug);
                 $banner->bannerMode = 'success';
-
             } else {
                 DB::table('core_info')->update([
                     'banner' => '',
@@ -104,7 +103,6 @@ class HomeController extends Controller
                 $banner->bannerLink = '';
                 $banner->bannerMode = '';
             }
-
         } catch (Exception $e) {
             \Log::error('Failed to fetch events: '.$e->getMessage());
         }

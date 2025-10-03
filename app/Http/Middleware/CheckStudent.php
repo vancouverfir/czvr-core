@@ -20,6 +20,7 @@ class CheckStudent
 
         if (! $user) {
             session(['url.intended' => url()->full()]);
+
             return redirect()->route('auth.connect.login');
         }
 
