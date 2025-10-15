@@ -80,7 +80,7 @@
                         </div>
                         <div class="card-body">
                             @if(count($finalPositions) == 0)
-                                <h5 class="text-colour text-center">No Controllers Online – See Controller <a class="text-white" href="https://booking.czvr.ca">Bookings!</h5>
+                                <h5 class="text-colour text-center">No Controllers Online – See Controller <a class="text-white" href="https://booking.czvr.ca">Bookings!</a></h5>
                             @endif
                             @foreach($finalPositions as $p)
                                 <div class="d-flex justify-content-between align-items-center mb-3">

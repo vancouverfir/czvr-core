@@ -24,7 +24,7 @@ class TicketsController extends Controller
         $closedTickets = Ticket::where('user_id', Auth::user()->id)->where('status', 1)->get()->sortByDesc('id');
         $onHoldTickets = Ticket::where('user_id', Auth::user()->id)->where('status', 2)->get()->sortByDesc('id');
         $staff_members = StaffMember::where('user_id', '!=', 1)->whereIn('group_id', [1, 3])->get();
-        $groups = StaffGroup::where('can_recieve_tickets', true)->get();
+        $groups = StaffGroup::where('can_receive_tickets', true)->get();
 
         return view('dashboard.tickets.index', compact('openTickets', 'closedTickets', 'onHoldTickets', 'staff_members', 'groups'));
     }
