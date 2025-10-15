@@ -20,7 +20,7 @@
         "react": "^19.2.0",
         "react-dom": "^19.1.1",
         "semantic-ui-css": "^2.5.0",
-        "vite": "^7.1.7"
+        "vite": "^7.1.10"
     },
     "dependencies": {
         "dotenv": "^17.2.3",
