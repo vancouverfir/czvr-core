@@ -82,13 +82,13 @@ class HomeController extends Controller
 
             if ($ongoingEvent) {
                 DB::table('core_info')->update([
-                    'banner' => "🎉 Happening Now! {$ongoingEvent->name}",
+                    'banner' => "🎉 Happening Now! {$ongoingEvent->name}! 🎉",
                     'bannerLink' => url('/events/'.$ongoingEvent->slug),
                     'bannerMode' => 'success',
                     'updated_at' => now(),
                 ]);
 
-                $banner->banner = "🎉 Happening Now! {$ongoingEvent->name}";
+                $banner->banner = "🎉 Happening Now! {$ongoingEvent->name}! 🎉";
                 $banner->bannerLink = url('/events/'.$ongoingEvent->slug);
                 $banner->bannerMode = 'success';
             } else {
