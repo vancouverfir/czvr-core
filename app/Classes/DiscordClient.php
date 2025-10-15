@@ -16,7 +16,7 @@ class DiscordClient
 {
     private Client $http;
     private string $token;
-    private const AUDIT_CHANNEL = 957082687603105882;
+    private const AUDIT_CHANNEL = 1219713888636108921;
     private const VANCOUVER_GUILD = 589477926961938443;
 
     public function __construct(string $token)

@@ -544,59 +544,59 @@ class UserController extends Controller
 
     public function linkDiscord()
     {
-        Log::info('Linking Discord for '.Auth::id());
-
-        return Socialite::with('discord')->setScopes(['identify'])->redirect();
+        return Socialite::with('discord')->setScopes(['identify', 'guilds.join'])->redirect();
     }
 
     public function linkDiscordRedirect()
     {
         try {
-            $discordUser = Socialite::driver('discord')->stateless()->user();
+            $config = new Config(
+                config('services.discord.client_id'),
+                config('services.discord.client_secret'),
+                config('services.discord.redirect')
+            );
+
+            $discordUser = Socialite::driver('discord')
+                ->setConfig($config)
+                ->stateless()
+                ->user();
+
             if (! $discordUser) {
                 abort(403, 'Discord OAuth failed.');
             }
+
             $user = Auth::user();
+
             if (User::where('discord_user_id', $discordUser->id)->first()) {
                 return redirect()->route('dashboard.index')->with('error-modal', 'This Discord account has already been linked by another user.');
             }
+
             $user->discord_user_id = $discordUser->id;
             $user->discord_dm_channel_id = app(Discord::class)->getPrivateChannel($discordUser->id);
             $user->save();
 
-            Log::info('Successfully linked Discord for '.Auth::id());
+            $discord = new DiscordClient(config('services.discord.token'));
 
-            return redirect()->route('dashboard.index')->with('success', 'Linked with account '.$discordUser->nickname.'!');
+            $discord->AddGuildMember(
+                $discordUser->id,
+                $discordUser->token,
+                $user->fullName('FL'),
+                []
+            );
+
+            try {
+                $user->notify(new DiscordWelcome());
+            } catch (CouldNotSendNotification $e) {
+            }
+
+            return redirect()->route('dashboard.index')
+                ->with('success', 'Linked with account '.$discordUser->nickname.' and joined the Discord!');
         } catch (Exception $e) {
-            return redirect()->route('dashboard.index')->with('error-modal', 'Discord authentication was canceled or failed.');
+            Log::error($e->getMessage());
+
+            return redirect()->route('dashboard.index')
+                ->with('error-modal', 'Discord authentication was canceled or failed.');
         }
-    }
-
-    public function joinDiscordServerRedirect()
-    {
-        $config = new Config(config('services.discord.client_id'), config('services.discord.client_secret'), config('services.discord.redirect_join'));
-
-        return Socialite::with('discord')->setConfig($config)->setScopes(['identify', 'guilds.join'])->redirect();
-    }
-
-    public function joinDiscordServer()
-    {
-        $discord = new DiscordClient(config('services.discord.token'));
-        $config = new Config(config('services.discord.client_id'), config('services.discord.client_secret'), config('services.discord.redirect_join'));
-        $discordUser = Socialite::driver('discord')->setConfig($config)->user();
-        $roles = [];
-
-        $discord->AddGuildMember($discordUser->id, $discordUser->token, Auth::user()->fullName('FL'), $roles);
-
-        try {
-            Auth::user()->notify(new DiscordWelcome());
-        } catch (CouldNotSendNotification $e) {
-            // do nothing
-        }
-
-        $discord->SendAuditMessage('<@'.$discordUser->id.'> ('.Auth::id().') has joined.');
-
-        return redirect()->route('dashboard.index')->with('success', 'You have joined the Vancouver Discord server!');
     }
 
     public function unlinkDiscord()
