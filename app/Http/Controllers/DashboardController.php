@@ -7,7 +7,6 @@ use App\Models\AtcTraining\Student;
 use App\Models\Events\ControllerApplication;
 use App\Models\Events\Event;
 use App\Models\Events\EventConfirm;
-use App\Models\Publications\AtcResource;
 use App\Models\Tickets\Ticket;
 use Auth;
 use Carbon\Carbon;
@@ -27,12 +26,12 @@ class DashboardController extends Controller
         $profile = $rosterMember;
 
         $statusBadges = [
-            'certified'     => ['success', 'fa-check', 'CZVR Certified'],
+            'certified' => ['success', 'fa-check', 'CZVR Certified'],
             'not_certified' => ['danger', 'fa-times', 'Not Certified to Control'],
-            'training'      => ['warning', 'fa-book-open', 'In Training'],
-            'home'          => ['info', 'fa-user-check', 'CZVR Controller', '#2E2F2F'],
-            'visit'         => ['info', 'fa-plane', 'CZVR Visiting Controller'],
-            'instructor'    => ['info', 'fa-chalkboard-teacher', 'CZVR Instructor'],
+            'training' => ['warning', 'fa-book-open', 'In Training'],
+            'home' => ['info', 'fa-user-check', 'CZVR Controller', '#2E2F2F'],
+            'visit' => ['info', 'fa-plane', 'CZVR Visiting Controller'],
+            'instructor' => ['info', 'fa-chalkboard-teacher', 'CZVR Instructor'],
         ];
 
         $activeBadges = [
@@ -55,10 +54,10 @@ class DashboardController extends Controller
         $staffTickets = Ticket::where('staff_member_cid', $user->id)->where('status', 0)->get();
 
         if ($user->permissions == 0) {
-            return view('dashboard.index2', ['openTickets' => $openTickets, 'confirmedevent' => $confirmedEvents, ]);
+            return view('dashboard.index2', ['openTickets' => $openTickets, 'confirmedevent' => $confirmedEvents]);
         }
 
-        return view('dashboard.index', ['user' => $user, 'yourinstructor' => $student, 'openTickets' => $openTickets, 'staffTickets' => $staffTickets, 'certification' => $certification, 'active' => $active, 'profile' => $profile, 'status' => $status, 'activeStatus' => $activeStatus, 'requiredHours' => $requiredHours, 'unconfirmedapp' => $unconfirmedApp, 'confirmedapp' => $confirmedApp, 'confirmedevent' => $confirmedEvents, ]);
+        return view('dashboard.index', ['user' => $user, 'yourinstructor' => $student, 'openTickets' => $openTickets, 'staffTickets' => $staffTickets, 'certification' => $certification, 'active' => $active, 'profile' => $profile, 'status' => $status, 'activeStatus' => $activeStatus, 'requiredHours' => $requiredHours, 'unconfirmedapp' => $unconfirmedApp, 'confirmedapp' => $confirmedApp, 'confirmedevent' => $confirmedEvents]);
     }
 
     public function postTweet()
