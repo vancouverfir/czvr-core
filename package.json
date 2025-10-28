@@ -9,7 +9,7 @@
         "@babel/preset-react": "^7.27.1",
         "@vitejs/plugin-react": "^5.0.4",
         "@vitejs/plugin-vue": "^6.0.1",
-        "axios": "^1.11",
+        "axios": "^1.13",
         "babel-preset-react": "^6.24.1",
         "bootstrap": "^5.3.7",
         "cross-env": "^10.1",
