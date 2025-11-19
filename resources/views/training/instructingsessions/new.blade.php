@@ -92,13 +92,13 @@
 
         <!-- Start Time -->
         <div class="form-group mt-3">
-            <label for="start_time">Start Time</label>
+            <label for="start_time">Start Time UTC</label>
             <input type="datetime-local" name="start_time" id="start_time" class="form-control" min="{{ $nowUtc->format('Y-m-d\TH:i') }}" value="{{ $nowUtc->format('Y-m-d\TH:i') }}" required>
         </div>
 
         <!-- End Time -->
         <div class="form-group mt-3">
-            <label for="end_time">End Time</label>
+            <label for="end_time">End Time UTC</label>
             <input type="datetime-local" name="end_time" id="end_time" class="form-control" min="{{ $oneHourLaterUtc->format('Y-m-d\TH:i') }}" value="{{ $oneHourLaterUtc->format('Y-m-d\TH:i') }}" required>
         </div>
 

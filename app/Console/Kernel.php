@@ -35,6 +35,8 @@ class Kernel extends ConsoleKernel
         // * * * * * schedulers
         $schedule->command(ActivityLog::class)->everyMinute()->evenInMaintenanceMode()->sentryMonitor();
         $schedule->command(SendSessionReminder::class)->everyMinute();
+        $schedule->command('vancouver:cachevatsim')->everyFiveMinutes();
+        $schedule->command('vancouver:cacheweather')->everyFifteenMinutes();
         $schedule->command(RenewNotification::class)->hourly();
         $schedule->command('backup:clean')->daily()->at('00:31');
         $schedule->command('backup:run')->daily()->at('01:01');

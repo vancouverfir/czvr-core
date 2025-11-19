@@ -99,32 +99,49 @@
                             </div>
                         </div>
                         @foreach ($studentChecklistGroups as $checklistName => $items)
-                        <div class="mb-3 border p-3 rounded">
-                        <div class="d-flex justify-content-center mb-3" style="min-height: 40px;">
-                            <h3 class="font-weight-bold mb-0">{{ $checklistName }}</h3>
-                        </div>
-                        <form method="POST" action="{{ route('training.students.checklist.completeMultiple', $student->id) }}" id="checklist-form-{{ Str::slug($checklistName) }}">
-                            @csrf
-                            <table class="table table-sm table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Item</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($items as $item)
-                                        <tr class="{{ $item->completed ? 'completed-row' : '' }}">
-                                            <td>
-                                                <span class="toggle-select-item" data-item-id="{{ $item->id }}" data-completed="{{ $item->completed }}" style="cursor:pointer; {{ $item->completed ? 'text-decoration: line-through; color: grey;' : '' }}">
-                                                    {{ $item->checklistItem->item }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </form>
-                        </div>
+                            <div class="mb-3 border p-3 rounded">
+                                <div class="d-flex justify-content-center mb-3" style="min-height: 40px;">
+                                    <h3 class="font-weight-bold mb-0">{{ $checklistName }}</h3>
+                                </div>
+
+                                @php
+                                    // Check if this checklist group is fully completed
+                                    $allCompleted = $items->count() > 0 && $items->every(fn($item) => $item->completed);
+                                @endphp
+
+                                @if ($allCompleted)
+                                    <div class="text-center py-3">
+                                        <h5 class="text-success font-weight-bold">
+                                            ✅ {{ $checklistName }} checklist completed in its entirety!
+                                        </h5>
+                                    </div>
+                                @else
+                                    <form method="POST" action="{{ route('training.students.checklist.completeMultiple', $student->id) }}" id="checklist-form-{{ Str::slug($checklistName) }}">
+                                        @csrf
+                                        <table class="table table-sm table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($items as $item)
+                                                    <tr class="{{ $item->completed ? 'completed-row' : '' }}">
+                                                        <td>
+                                                            <span class="toggle-select-item"
+                                                                  data-item-id="{{ $item->id }}"
+                                                                  data-completed="{{ $item->completed }}"
+                                                                  style="cursor:pointer; {{ $item->completed ? 'text-decoration: line-through; color: grey;' : '' }}">
+                                                                {{ $item->checklistItem->item }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                @endif
+                            </div>
                         @endforeach
                     @else
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -142,12 +159,18 @@
                 <div class="card-body">
                     <h3 class="font-weight-bold blue-text pb-2">Info</h3>
                         @php
+                            $isWaitlist = in_array($student->status, [0, 3]);
                             $isVisitor = in_array($student->status, [3, 5]);
 
                             $routeName = $isVisitor ? 'training.students.promoteVisitor' : 'training.students.promote';
 
-                            $buttonLabel = $isVisitor ? 'Promote Visitor' : 'Promote Student';
-
+                            if ($isWaitlist && $isVisitor) {
+                                $buttonLabel = 'Start Visitor Training';
+                            } elseif ($isWaitlist) {
+                                $buttonLabel = 'Start Training';
+                            } else {
+                                $buttonLabel = $isVisitor ? 'Promote Visitor' : 'Promote Student';
+                            }
                         @endphp
 
                         <form method="POST" action="{{ route($routeName, $student->id) }}" style="display: inline;">
@@ -158,7 +181,7 @@
                                     <form method="POST" action="{{ $isVisitor ? route('training.students.promoteVisitor', $student->id) : route('training.students.promote', $student->id) }}" style="display: inline;">
                                         @csrf
                                         <button type="submit" style="all: unset; color: inherit; cursor: pointer;">
-                                            {{ $isVisitor ? 'Promote Visitor' : 'Promote Student' }}
+                                            {{ $buttonLabel }}
                                         </button>
                                     </form>
                                 @else
@@ -189,10 +212,10 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="font-weight-bold blue-text mb-0">Latest Vatcan Notes</h3>
+                        <h3 class="font-weight-bold blue-text mb-0">Latest 3 Vatcan Notes</h3>
                         <div>
                             <a href="https://vatcan.ca/manage/training/notes/controller/{{ $student->user_id }}" target="_blank" class="btn btn-sm btn-success ms-2">
-                                New Vatcan
+                                New VATCAN Note
                             </a>
                             <a href="{{ route('training.students.allnotes', $student->id) }}" class="text-primary btn btn-sm btn-outline-info ms-2">View All</a>
                         </div>

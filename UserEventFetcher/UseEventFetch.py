@@ -83,6 +83,7 @@ def fetch_event():
         req = requests.get(APIEvent + simKey, timeout=5)
     except requests.exceptions.RequestException as request_exception:
         print("Event Fetch Failed! ", request_exception)
+        send_webhook(f"Python script failed to fetch Events {request_exception}")
         sys.exit()
     print("Fetched Events")
     resp = req.json()  # take json output formatted as a dict
@@ -274,6 +275,7 @@ def fetch_roster():
         req = requests.get(APIUsers + simKey, timeout=5)
     except requests.exceptions.RequestException as request_exception:
         print("User Fetch Failed!", request_exception)
+        send_webhook(f"Python script failed to fetch Users {request_exception}")
         exit()
     resp = req.json()
 
@@ -311,6 +313,7 @@ def fetch_visit_roster():
         req = requests.get(APIUsers + simKey, timeout=5)
     except requests.exceptions.RequestException as request_exception:
         print("Visitor Fetch Failed!", request_exception)
+        send_webhook(f"Python script failed to fetch Visitors {request_exception}")
         exit()
     resp = req.json()
 
@@ -455,10 +458,9 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
 
         if permissions:
             role_map = {2: 'mentor', 3: 'ins', 4: 'staff', 5: 'exec'}
-            staff_role = role_map.get(permissions)
-            if staff_role:
-                print(f"Assigning staff role '{staff_role}' to {cid}")
-                cur.execute("UPDATE roster SET staff=? WHERE cid=?", (staff_role, cid))
+            staff_role = role_map.get(permissions) if permissions else None
+            print(f"Assigning staff role '{staff_role}' to {cid}")
+            cur.execute("UPDATE roster SET staff=? WHERE cid=?", (staff_role, cid))
 
         cur.execute("""
             SELECT delgnd, delgnd_t2, twr, twr_t2, dep, app, app_t2, ctr, fss

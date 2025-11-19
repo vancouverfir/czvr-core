@@ -20,13 +20,13 @@
             <p><strong>Instructor:</strong> {{ $session->instructorUser()->fullName('FLC') }}</p>
             <p><strong>Student:</strong> {{ $session->student->user->fullName('FLC') }}</p>
             <p class="mb-3">
-                <strong>Start Time:</strong> 
-                {{ \Carbon\Carbon::parse($session->start_time)->format('d M Y, H:i') }} UTC 
+                <strong>Start Time:</strong>
+                {{ \Carbon\Carbon::parse($session->start_time)->format('d M Y, H:i') }} UTC
                 [{{ \Carbon\Carbon::parse($session->start_time)->diffForHumans() }}]
             </p>
             <p class="mb-3">
-                <strong>End Time:</strong> 
-                {{ \Carbon\Carbon::parse($session->end_time)->format('d M Y, H:i') }} UTC 
+                <strong>End Time:</strong>
+                {{ \Carbon\Carbon::parse($session->end_time)->format('d M Y, H:i') }} UTC
                 [{{ \Carbon\Carbon::parse($session->end_time)->diffForHumans() }}]
             </p>
 

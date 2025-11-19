@@ -28,6 +28,7 @@ class LoginController extends Controller
             'redirect_uri' => config('connect.redirect'),
             'scope' => 'full_name vatsim_details email',
             'state' => $state,
+            'prompt' => 'consent',
         ]);
 
         return redirect(config('connect.url').'/oauth/authorize?'.$query);

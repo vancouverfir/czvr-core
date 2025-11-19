@@ -240,6 +240,9 @@
 
                     <p><strong>Estimated Wait Time:</strong> {{ $training_time->wait_length }}</p>
 
+                @elseif ($student->status == 4)
+                    <button class="btn btn-sm btn-outline-info mt-2 mb-3" id="editTimes">Edit Availability</button>
+
                 @else
                     <h3>Your Training has Started!</h3>
 
