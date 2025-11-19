@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Classes\VatsimHelper;
 use App\Models\Events\Event;
 use App\Models\Network\SessionLog;
 use App\Models\News\News;
 use App\Models\Settings\HomepageImages;
 use Carbon\Carbon;
 use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -35,7 +32,7 @@ class HomeController extends Controller
         $background = Cache::get('home.background', null);
 
         // Background image
-        if (!$background) {
+        if (! $background) {
             try {
                 $background = HomepageImages::inRandomOrder()->first();
             } catch (Exception $e) {
@@ -119,7 +116,7 @@ class HomeController extends Controller
                     'bannerMode' => $banner->bannerMode,
                     'updated_at' => now(),
                 ]);
-            } else if (!empty($banner->banner)) {
+            } elseif (! empty($banner->banner)) {
                 DB::table('core_info')->update([
                     'banner' => '',
                     'bannerLink' => '',
