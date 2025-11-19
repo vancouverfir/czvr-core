@@ -37,7 +37,7 @@ class CacheWeather extends Command
 
             $weatherArray = [];
 
-            if (!empty($resp->data)) {
+            if (! empty($resp->data)) {
                 foreach ($resp->data as $w) {
                     $icao = $w->icao ?? 'UNKNOWN';
                     $w->flight_category = $w->flight_category ?? 'N/A';

@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Classes\VatsimHelper;
-use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Client;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class CacheVatsim extends Command
@@ -42,7 +42,7 @@ class CacheVatsim extends Command
                     if (
                         isset($c->callsign, $c->facility) &&
                         Str::startsWith($c->callsign, $prefixes) &&
-                        !Str::endsWith($c->callsign, ['ATIS', 'OBS']) &&
+                        ! Str::endsWith($c->callsign, ['ATIS', 'OBS']) &&
                         $c->facility != 0
                     ) {
                         $finalPositions[] = $c;
