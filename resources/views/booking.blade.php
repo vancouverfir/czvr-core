@@ -181,11 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
             center: 'title', 
             right: 'dayGridMonth,timeGridWeek,timeGridDay' 
         },
-        views: {
-            dayGridMonth: { dayMaxEventRows: true },
-            timeGridWeek: { dayMaxEventRows: true },
-            timeGridDay: { dayMaxEventRows: true }
-        },
         windowResize: function() {
             if (window.innerWidth < 768) {
                 calendar.setOption('height', 'auto'); 

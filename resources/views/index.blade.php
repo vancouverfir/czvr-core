@@ -164,7 +164,7 @@
                         </div>
                         <div class="card-body">
                             @if(count($weather) == 0)
-                                <h5 class="text-colour text-center">No weather data.</h5>
+                                <h5 class="text-colour text-center">No Weather Data!</h5>
                             @endif
                             <div class="row">
                                 @foreach($weather as $w)

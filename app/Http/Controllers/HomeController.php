@@ -18,61 +18,89 @@ class HomeController extends Controller
 {
     public function view()
     {
-        $finalPositions = [];
-        $news = collect();
-        $nextEvents = collect();
-        $topControllersArray = [];
-        $weather = [];
-        $background = null;
+        // VATSIM Controllers (from cache)
+        $finalPositions = Cache::get('vatsim.controllers', []);
+
+        // Weather (from cache)
+        $weather = Cache::get('weather.data', []);
+
         $banner = DB::table('core_info')->first();
 
-        // Vancouver Online Controllers
-        try {
-            $finalPositions = Cache::remember('vatsim.controllers', 300, function () {
-                $client = new Client();
-                $response = $client->request('GET', VatsimHelper::getDatafeedUrl());
-                $controllers = json_decode($response->getBody()->getContents());
+        // Load cached data or default to empty collections
+        $finalPositions = Cache::get('vatsim.controllers', []);
+        $news = Cache::get('home.news', collect());
+        $nextEvents = Cache::get('home.events', collect());
+        $topControllersArray = Cache::get('home.topControllers', []);
+        $weather = Cache::get('weather.data', []);
+        $background = Cache::get('home.background', null);
 
-                $finalPositions = [];
-                if (isset($controllers->controllers)) {
-                    $prefixes = ['CZVR_', 'ZVR_', 'CYVR_', 'CYYJ_', 'CYLW_', 'CYXS_', 'CYXX_', 'CYCD_'];
-                    foreach ($controllers->controllers as $c) {
-                        if (
-                            isset($c->callsign, $c->facility) &&
-                            Str::startsWith($c->callsign, $prefixes) &&
-                            ! Str::endsWith($c->callsign, ['ATIS', 'OBS']) &&
-                            $c->facility != 0
-                        ) {
-                            $finalPositions[] = $c;
-                        }
-                    }
+        // Background image
+        if (!$background) {
+            try {
+                $background = HomepageImages::inRandomOrder()->first();
+            } catch (Exception $e) {
+                \Log::error('Failed to fetch background image: '.$e->getMessage());
+            }
+        }
+
+        // News (cache for 5 min)
+        if ($news->isEmpty()) {
+            try {
+                $news = News::where('visible', true)
+                            ->orderBy('published', 'desc')
+                            ->take(3)
+                            ->get();
+                Cache::put('home.news', $news, 300);
+            } catch (Exception $e) {
+                \Log::error('Failed to fetch news: '.$e->getMessage());
+            }
+        }
+
+        // Upcoming events (cache for 5 min)
+        if ($nextEvents->isEmpty()) {
+            try {
+                $nextEvents = Event::where('end_timestamp', '>', now())
+                                   ->orderBy('end_timestamp')
+                                   ->take(3)
+                                   ->get();
+                Cache::put('home.events', $nextEvents, 300);
+            } catch (Exception $e) {
+                \Log::error('Failed to fetch events: '.$e->getMessage());
+            }
+        }
+
+        // Top Controllers (cache for 15 min)
+        if (empty($topControllersArray)) {
+            try {
+                $monthStart = now()->startOfMonth()->toISOString();
+                $monthEnd = now()->endOfMonth()->toISOString();
+                $colourArray = ['#6CC24A', '#B2D33C', '#E3B031', '#F15025', '#8C8C8C'];
+
+                $topControllers = SessionLog::selectRaw('cid, sum(duration) as duration')
+                                            ->whereBetween('session_start', [$monthStart, $monthEnd])
+                                            ->groupBy('cid')
+                                            ->orderByDesc('duration')
+                                            ->take(5)
+                                            ->get();
+
+                foreach ($topControllers as $index => $top) {
+                    $topControllersArray[] = [
+                        'id' => $index,
+                        'cid' => $top->cid ?? 'N/A',
+                        'time' => function_exists('decimal_to_hm') ? decimal_to_hm($top->duration ?? 0) : 0,
+                        'colour' => $colourArray[$index] ?? '#000000',
+                    ];
                 }
 
-                return $finalPositions;
-            });
-        } catch (Exception $e) {
-            \Log::error('Failed to fetch VATSIM controllers: '.$e->getMessage());
+                Cache::put('home.topControllers', $topControllersArray, 900);
+            } catch (Exception $e) {
+                \Log::error('Failed to fetch top controllers: '.$e->getMessage());
+            }
         }
 
-        // News
+        // Banner update (only if needed)
         try {
-            $news = News::where('visible', true)
-                        ->orderBy('published', 'desc')
-                        ->take(3)
-                        ->get();
-        } catch (Exception $e) {
-            \Log::error('Failed to fetch news: '.$e->getMessage());
-        }
-
-        // Events
-        try {
-            $nextEvents = Event::where('end_timestamp', '>', now())
-                               ->orderBy('end_timestamp')
-                               ->take(3)
-                               ->get();
-
             $now = Carbon::now('UTC');
-
             $ongoingEvent = $nextEvents->first(function ($event) use ($now) {
                 return $now->between(
                     Carbon::parse($event->start_timestamp),
@@ -81,17 +109,17 @@ class HomeController extends Controller
             });
 
             if ($ongoingEvent) {
-                DB::table('core_info')->update([
-                    'banner' => "🎉 Happening Now! {$ongoingEvent->name}! 🎉",
-                    'bannerLink' => url('/events/'.$ongoingEvent->slug),
-                    'bannerMode' => 'success',
-                    'updated_at' => now(),
-                ]);
-
                 $banner->banner = "🎉 Happening Now! {$ongoingEvent->name}! 🎉";
                 $banner->bannerLink = url('/events/'.$ongoingEvent->slug);
                 $banner->bannerMode = 'success';
-            } else {
+
+                DB::table('core_info')->update([
+                    'banner' => $banner->banner,
+                    'bannerLink' => $banner->bannerLink,
+                    'bannerMode' => $banner->bannerMode,
+                    'updated_at' => now(),
+                ]);
+            } else if (!empty($banner->banner)) {
                 DB::table('core_info')->update([
                     'banner' => '',
                     'bannerLink' => '',
@@ -104,88 +132,7 @@ class HomeController extends Controller
                 $banner->bannerMode = '';
             }
         } catch (Exception $e) {
-            \Log::error('Failed to fetch events: '.$e->getMessage());
-        }
-
-        // Top Controllers
-        try {
-            $colourArray = ['#6CC24A', '#B2D33C', '#E3B031', '#F15025', '#8C8C8C'];
-            $monthStart = now()->startOfMonth()->toISOString();
-            $monthEnd = now()->endOfMonth()->toISOString();
-
-            $topControllers = SessionLog::selectRaw('cid, sum(duration) as duration')
-                                        ->whereBetween('session_start', [$monthStart, $monthEnd])
-                                        ->groupBy('cid')
-                                        ->orderByDesc('duration')
-                                        ->take(5)
-                                        ->get();
-
-            foreach ($topControllers as $index => $top) {
-                $topControllersArray[] = [
-                    'id' => $index,
-                    'cid' => $top->cid ?? 'N/A',
-                    'time' => function_exists('decimal_to_hm') ? decimal_to_hm($top->duration ?? 0) : 0,
-                    'colour' => $colourArray[$index] ?? '#000000',
-                ];
-            }
-        } catch (Exception $e) {
-            \Log::error('Failed to fetch top controllers: '.$e->getMessage());
-        }
-
-        // Weather
-        try {
-            $weather = Cache::remember('weather.data', 900, function () {
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://api.checkwx.com/metar/CYVR,CYYJ,CYLW,CYXS,CYXX,CYQQ/decoded?pretty=1');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-API-Key: '.env('AIRPORT_API_KEY')]);
-
-                $resp = json_decode(curl_exec($ch));
-                curl_close($ch);
-
-                $weatherArray = [];
-
-                if (! empty($resp->data)) {
-                    foreach ($resp->data as $w) {
-                        $icao = $w->icao ?? 'UNKNOWN';
-                        $w->flight_category = $w->flight_category ?? 'N/A';
-                        $w->temperature = $w->temperature ?? null;
-                        $w->wind = $w->wind ?? null;
-
-                        switch ($icao) {
-                            case 'CYVR': $weatherArray[0] = $w;
-                                break;
-                            case 'CYYJ': $weatherArray[1] = $w;
-                                break;
-                            case 'CYLW': $weatherArray[2] = $w;
-                                break;
-                            case 'CYXS': $weatherArray[3] = $w;
-                                break;
-                            case 'CYXX': $weatherArray[4] = $w;
-                                break;
-                            case 'CYQQ': $weatherArray[5] = $w;
-                                break;
-                            default: $weatherArray[] = (object) ['error' => 'No weather data'];
-                                break;
-                        }
-                    }
-                }
-
-                ksort($weatherArray);
-
-                return $weatherArray;
-            });
-        } catch (Exception $e) {
-            \Log::error('Failed to fetch weather: '.$e->getMessage());
-            $weather = [];
-        }
-
-        // Random Background Image
-        try {
-            $background = HomepageImages::inRandomOrder()->first();
-        } catch (Exception $e) {
-            \Log::error('Failed to fetch background image: '.$e->getMessage());
-            $background = null;
+            \Log::error('Failed to update banner: '.$e->getMessage());
         }
 
         return view('index', compact('finalPositions', 'news', 'nextEvents', 'topControllersArray', 'weather', 'background', 'banner'));
