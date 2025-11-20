@@ -6,7 +6,7 @@
         "preview": "vite preview"
     },
     "devDependencies": {
-        "@babel/preset-react": "^7.27.1",
+        "@babel/preset-react": "^7.28.5",
         "@vitejs/plugin-react": "^5.1.0",
         "@vitejs/plugin-vue": "^6.0.1",
         "axios": "^1.13",
