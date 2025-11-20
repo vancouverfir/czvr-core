@@ -568,7 +568,7 @@ class UserController extends Controller
             $user = Auth::user();
 
             if (User::where('discord_user_id', $discordUser->id)->first()) {
-                return redirect()->route('dashboard.index')->with('error-modal', 'This Discord account has already been linked by another user.');
+                return redirect()->route('dashboard.index')->with('error-modal', 'This Discord account has already been linked!');
             }
 
             $user->discord_user_id = $discordUser->id;
@@ -590,12 +590,12 @@ class UserController extends Controller
             }
 
             return redirect()->route('dashboard.index')
-                ->with('success', 'Linked with account '.$discordUser->nickname.' and joined the Discord!');
+                ->with('success', 'Joined the Discord with account '.$discordUser->nickname.'!');
         } catch (Exception $e) {
             Log::error($e->getMessage());
 
             return redirect()->route('dashboard.index')
-                ->with('error-modal', 'Discord authentication was canceled or failed.');
+                ->with('error-modal', 'Discord authentication was canceled or failed!');
         }
     }
 
@@ -606,7 +606,7 @@ class UserController extends Controller
         if ($user->memberOfCZVRGuild()) {
             try {
                 $discord->RemoveGuildMember($user->discord_user_id);
-                $discord->SendAuditMessage('<@'.$user->discord_user_id.'> ('.Auth::id().') has unlinked their account and has been kicked.');
+                $discord->SendAuditMessage('<@'.$user->discord_user_id.'> ('.Auth::id().') has unlinked their account and has been kicked!');
             } catch (Exception $ex) {
                 Log::error($ex->getMessage());
             }
@@ -618,7 +618,7 @@ class UserController extends Controller
         }
         $user->save();
 
-        return redirect()->route('dashboard.index')->with('info', 'Account unlinked.');
+        return redirect()->route('dashboard.index')->with('info', 'Account successfully unlinked!');
     }
 
     public function preferences()

@@ -61,7 +61,7 @@ class EventController extends Controller
 
     public function viewControllers()
     {
-        $events = Event::where('start_timestamp', '>', Carbon::now())->get();
+        $events = Event::where('start_timestamp', '>', Carbon::now())->orderBy('start_timestamp')->get();
         $positions = EventPosition::all();
 
         foreach ($events as $e) {
@@ -78,20 +78,23 @@ class EventController extends Controller
             'availability_start' => 'required',
             'availability_end' => 'required',
         ]);
+
+        if (ControllerApplication::where('user_id', Auth::id())
+                ->where('event_id', $request->get('event_id'))
+                ->exists()) {
+            return redirect()->back()->with('error', 'You’ve already applied for this event!');
+        }
+
         $application = new ControllerApplication([
             'user_id' => Auth::id(),
             'event_id' => $request->get('event_id'),
             'start_availability_timestamp' => $request->get('availability_start'),
             'end_availability_timestamp' => $request->get('availability_end'),
-            'position' => $request->get('position'),
+            'airport' => $request->get('airport'),
             'comments' => $request->get('comments'),
             'submission_timestamp' => date('Y-m-d H:i:s'),
         ]);
         $application->save();
-        /*$webhook = $application->discord_webhook();
-        if (! $webhook) {
-            AuditLogEntry::insert(Auth::user(), 'Webhook failed', Auth::user(), 0);
-        }*/
 
         if (Auth::user()->gdpr_subscribed_emails == 1) {
             $application->user->notify(new EventSignup($application, $event_id = $request->get('event_id')));
@@ -113,7 +116,7 @@ class EventController extends Controller
         $this->validate($request, [
             'start_timestamp' => 'required',
             'end_timestamp' => 'required',
-            'position' => 'required',
+            'airport' => 'required',
         ]);
 
         $event = Event::where('id', $id)->firstorFail();
@@ -123,7 +126,6 @@ class EventController extends Controller
             'start_timestamp' => $request->input('start_timestamp'),
             'end_timestamp' => $request->input('end_timestamp'),
             'airport' => $request->input('airport'),
-            'position' => $request->input('position'),
         ]);
         $applications = ControllerApplication::where('user_id', $request->input('user_cid'))->firstorFail();
         $applications->delete();
@@ -136,7 +138,7 @@ class EventController extends Controller
         $this->validate($request, [
             'start_timestamp' => 'required',
             'end_timestamp' => 'required',
-            'position' => 'required',
+            'airport' => 'required',
         ]);
         $event = Event::where('id', $id)->firstorFail();
         $user = User::where('id', $request->input('newcontroller'))->first();
@@ -146,7 +148,6 @@ class EventController extends Controller
             'start_timestamp' => $request->input('start_timestamp'),
             'end_timestamp' => $request->input('end_timestamp'),
             'airport' => $request->input('airport'),
-            'position' => $request->input('position'),
         ]);
 
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Controller Confirmed for Event!');

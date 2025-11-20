@@ -118,7 +118,7 @@
                             @endif
                         </li>
                         <li class="nav-item {{ Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
-                          <!--  @if(Auth::check() && Auth::user()->permissions >= 4)
+                            @if(Auth::check() && Auth::user()->permissions >= 4)
                             <li class="nav-item dropdown {{ Request::is('events') || Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -127,8 +127,6 @@
                             @else
                                 <a href="{{route('events.index')}}" class="nav-link">Events</a>
                             @endif
-                            Hide as we will try and automatically fetch events-->
-                            <a href="{{route('events.index')}}" class="nav-link">Events</a>
                         </li>
                         <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>

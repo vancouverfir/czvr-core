@@ -36,6 +36,7 @@ class CreateRosterTable extends Migration
             $table->integer('ctr')->default(0);
             $table->text('remarks')->nullable();
             $table->integer('visit');
+            $table->string('staff')->nullable();
         });
     }
 

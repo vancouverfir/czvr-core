@@ -118,7 +118,6 @@ class User extends Authenticatable
 
     public function fullName($format)
     {
-        //display name check
         if ($this->display_cid_only == true) {
             return strval($this->id);
         }

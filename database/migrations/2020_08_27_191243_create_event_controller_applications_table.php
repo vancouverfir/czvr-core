@@ -19,9 +19,9 @@ class CreateEventControllerApplicationsTable extends Migration
             $table->foreign('event_id')->references('id')->on('events');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->string('start_availability_timestamp');
-            $table->string('end_availability_timestamp');
-            $table->string('position');
+            $table->dateTime('start_availability_timestamp');
+            $table->dateTime('end_availability_timestamp');
+            $table->mediumText('airport')->nullable();
             $table->text('comments')->nullable();
             $table->dateTime('submission_timestamp');
             $table->timestamps();

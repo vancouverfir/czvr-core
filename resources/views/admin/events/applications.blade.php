@@ -20,20 +20,8 @@
                         {{$a->user->fullName('FLC')}} ({{$a->user->rating_short}})
                     </div>
                     <div class="card-body">
-                        <b>Position Requested: </b>
-                        @if ($a->position == "Delivery")
-                            Delivery
-                        @elseif ($a->position == "Ground")
-                            Ground
-                        @elseif ($a->position == "Tower")
-                            Tower
-                        @elseif ($a->position == "Departure")
-                            Departure
-                        @elseif ($a->position == "Arrival")
-                            Arrival
-                        @elseif ($a->position == "Centre")
-                            Centre
-                        @endif <br>
+                        <b class="mt-2" for="">Airport</b>
+                        {{ $a->airport }} <br>
                         <b>Available: </b>
                         {{$a->start_availability_timestamp}} to {{$a->end_availability_timestamp}}<br>
                         <b>Email: </b>
@@ -56,6 +44,7 @@
 
 
     <!--Confirm Appliation modal-->
+
     <div class="modal fade" id="confirmApp{{$a->id}}" tabindex="-1" role="dialog"
          aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -83,55 +72,28 @@
                                     <input type="hidden" name="event_date" value="{{$event->start_timestamp}}">
                                     <input type="hidden" name="user_cid" value="{{$a->user_id}}">
                                     <input type="hidden" name="user_name" value="{{$a->user->fullName('FL')}}">
+                                    <input type="hidden" name="airport" value="{{ $a->airport }}">
                                     <label for="">Start Time (zulu)</label>
                                     <input type="datetime" name="start_timestamp" class="form-control flatpickr"
                                            id="start_timestamp">
                                     <label class="mt-2" for="">End Time (zulu)</label>
                                     <input type="datetime" name="end_timestamp" class="form-control flatpickr"
                                            id="end_timestamp">
-                                    <label class="mt-2" for="">Airport</label>
-                                    <input type="text" name="airport" class="form-control" id="airport">
-                                    <label class="mt-2" for="">Position</label>
-                                    <select name="position" class="form-control" id="position">
-                                        <option
-                                            value="Delivery"{{ $a->position == "Delivery" ? "selected=selected" : ""}}>
-                                            Delivery
-                                        </option>
-                                        <option value="Ground"{{ $a->position == "Ground" ? "selected=selected" : ""}}>
-                                            Ground
-                                        </option>
-                                        <option value="Tower"{{ $a->position == "Tower" ? "selected=selected" : ""}}>
-                                            Tower
-                                        </option>
-                                        <option
-                                            value="Departure"{{ $a->position == "Departure" ? "selected=selected" : ""}}>
-                                            Departure
-                                        </option>
-                                        <option
-                                            value="Arrival"{{ $a->position == "Arrival" ? "selected=selected" : ""}}>
-                                            Arrival
-                                        </option>
-                                        <option value="Centre"{{ $a->position == "Centre" ? "selected=selected" : ""}}>
-                                            Centre
-                                        </option>
-                                        <option value="Relief"{{ $a->position == "Relief" ? "selected=selected" : ""}}>
-                                            Relief
-                                        </option>
-                                    </select>
+                                    <label class="mt-2">Airport</label>
+                                    <p align="left">{{ $a->airport }}</p>
                                     @csrf
                                 </td>
                             <script>
                                 flatpickr('#start_timestamp', {
                                     enableTime: true,
-                                    noCalendar: true,
-                                    dateFormat: "H:i",
+                                    dateFormat: "Y-m-d H:i",
                                     time_24hr: true,
                                     defaultDate: "{{$a->start_availability_timestamp}}"
                                 });
+
                                 flatpickr('#end_timestamp', {
                                     enableTime: true,
-                                    noCalendar: true,
-                                    dateFormat: "H:i",
+                                    dateFormat: "Y-m-d H:i",
                                     time_24hr: true,
                                     defaultDate: "{{$a->end_availability_timestamp}}"
                                 });
@@ -148,6 +110,7 @@
             </div>
         </div>
     </div>
+
     <!--End confirm application modal-->
 
     @endforeach
