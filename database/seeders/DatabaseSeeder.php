@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('event_positions')->insert([
-            ['position' => 'Centre']
+            ['position' => 'Centre'],
         ]);
 
         DB::table('homepage_images')->insert([
