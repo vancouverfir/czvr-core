@@ -15,14 +15,13 @@ class CreateEventConfirmsTable extends Migration
     {
         Schema::create('event_confirms', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('event_id')->unsigned();
+            $table->unsignedInteger('event_id');
             $table->foreign('event_id')->references('id')->on('events');
-            $table->integer('user_id')->unsigned();
+            $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->string('start_timestamp');
-            $table->string('end_timestamp');
+            $table->dateTime('start_timestamp');
+            $table->dateTime('end_timestamp');
             $table->mediumText('airport')->nullable();
-            $table->mediumText('position');
             $table->timestamps();
         });
     }

@@ -10,26 +10,29 @@
 
 @section('content')
     <div class="text-white text-left py-1 px-4" style="background-color:#2E2F2F">
-          <div class="container">
-              <div align="center" class="py-5">
-                  <h1 align="center" class="h1" style="font-size: 4em;">{{$event->name}}</h1>
-                  <h4>{{$event->start_timestamp_pretty()}} - {{$event->end_timestamp_pretty()}}</h4>
-                  @if ($event->departure_icao && $event->arrival_icao)
-                  <h3>{{$event->departure_icao}}&nbsp;&nbsp;<i class="fas fa-plane"></i>&nbsp;&nbsp;{{$event->arrival_icao}}</h3>
-                  @endif
-              </div>
-          </div>
-      </div>
+        <div class="container">
+            <div align="center" class="py-5">
+                <h1 align="center" class="h1" style="font-size: 4em;">{{$event->name}}</h1>
+                <h4>{{$event->start_timestamp_pretty()}} - {{$event->end_timestamp_pretty()}}</h4>
+                @if ($event->departure_icao && $event->arrival_icao)
+                <h3>{{$event->departure_icao}}&nbsp;&nbsp;<i class="fas fa-plane"></i>&nbsp;&nbsp;{{$event->arrival_icao}}</h3>
+                @endif
+            </div>
+        </div>
+    </div>
 
-      <div class="container py-4">
-        @if ($event->image_url != null)
-      <img src="{{$event->image_url}}" alt="" title="" width="100%" height="50%" style="background-color: rgb(0, 0, 0, 0.5)">
+    <div class="container py-4">
+    @if ($event->image_url != null)
 
-      @else
-      &nbsp
-      @endif
+        <img src="{{$event->image_url}}" alt="" title="" width="100%" height="50%" style="background-color: rgb(0, 0, 0, 0.5)">
 
-      </div>
+    @else
+
+        &nbsp
+
+    @endif
+
+    </div>
     <div class="container py-4">
         <div class="row">
             <div class="col-md-3">
@@ -81,26 +84,13 @@
                         <input type="hidden" name="event_id" value="{{$event->id}}">
                         <input type="hidden" name="event_name" value="{{$event->name}}">
                         <input type="hidden" name="event_date" value="{{$event->start_timestamp}}">
-                        <p>Submit an application to the Events Coordinator to control during this event through this form.</p>
+                        <p>Submit an application to the Events Coordinator to control during this event through this form!</p>
                         <label for="">Availability start time (zulu)</label>
                         <input type="datetime" name="availability_start" class="form-control flatpickr" id="availability_start">
                         <label class="mt-2" for="">Availability end time (zulu)</label>
-                        <input type="datetime" name="availability_end" class="form-control flatpickr" id="availability_end">
-                        <label class="mt-2" for="">Position Requested</label>
-                        <select name="position" class="form-control" id="position">
-                          @if(Auth::user()->rating_id > 1)
-                          <option value="Delivery">Delivery</option>
-                          <option value="Ground">Ground</option>
-                          <option value="Tower">Tower</option>
-                          @endif
-                          @if(Auth::user()->rating_id > 3)
-                          <option value="Departure">Departure</option>
-                          <option value="Arrival">Arrival</option>
-                          @endif
-                          @if(Auth::user()->rating_id > 4)
-                          <option value="Centre">Centre</option>
-                          @endif
-                        </select>
+                        <input type="datetime" name="availability_end" class="form-control flatpickr" id="availability_end"><br />
+                        <label class="mt-2" for="">Airport Requested</label>
+                        <input type="text" name="airport" class="form-control" id="airport"><br />
                         <label for="" class="mt-2">Comments</label>
                         <textarea name="comments" id="comments" rows="2" class="md-textarea form-control"></textarea>
                         <input type="submit" id="app-form-submit" class="btn btn-outline-submit mt-3" value="Submit">
@@ -108,17 +98,15 @@
                     <script>
                         flatpickr('#availability_start', {
                             enableTime: true,
-                            noCalendar: true,
-                            dateFormat: "H:i",
+                            dateFormat: "Y-m-d H:i",
                             time_24hr: true,
-                            defaultDate: "{{$event->flatpickr_limits()[0]}}"
+                            defaultDate: "{{$event->start_timestamp}}"
                         });
                         flatpickr('#availability_end', {
                             enableTime: true,
-                            noCalendar: true,
-                            dateFormat: "H:i",
+                            dateFormat: "Y-m-d H:i",
                             time_24hr: true,
-                            defaultDate: "{{$event->flatpickr_limits()[1]}}"
+                            defaultDate: "{{$event->start_timestamp}}"
                         });
                     </script>
                 </div>

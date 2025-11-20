@@ -12,7 +12,7 @@ class EventUpdate extends Model
     use HasMarkdownFields;
 
     protected $fillable = [
-        'event_id', 'user_id', 'title', 'content', 'created_timestamp', 'slug',
+        'id', 'event_id', 'user_id', 'title', 'content', 'created_timestamp', 'slug',
     ];
 
     /**
@@ -28,7 +28,7 @@ class EventUpdate extends Model
 
     public function event()
     {
-        return $this->belongTo(Event::class);
+        return $this->belongsTo(Event::class);
     }
 
     public function user()

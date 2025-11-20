@@ -338,9 +338,6 @@
                                 <span class="text-colour">View Your Applications</span>
                             </a>
                         </li>
-                        {{--<li class="mb-2">
-                            <a href="{{route('application.list')}}" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-colour">Training Centre</span></a>
-                        </li>--}}
                     </ul>
                 </div>
             </div>
@@ -355,25 +352,31 @@
                         <h5>There are no scheduled events!</h5>
                     @else
                         @foreach ($confirmedevent as $cevent)
-                            <h5><b><a href="{{ route('events.view', $cevent->slug) }}" class="blue-text">{{ $cevent->name }}</a></b> on {{ $cevent->start_timestamp_pretty() }}</h5>
-                            @foreach ($confirmedapp as $capp)
-                                @if ($cevent->id == $capp->event->id)
-                                    <li>
-                                        <b>Slot:</b> {{ $capp->airport }}
-                                        @if ($capp->position != 'Relief')
-                                            {{ $capp->position }} from
-                                        @endif
-                                        @if ($capp->position == 'Relief')
-                                            <text class="text-danger">{{ $capp->position }}</text>
-                                            from
-                                        @endif
-                                        {{ $capp->start_timestamp }}z - {{ $capp->end_timestamp }}z
-                                    </li>
-                                    <br />
-                                @endif
-                            @endforeach
+                            <div style="margin-bottom: 10px;">
+                                <h5>
+                                    <b>
+                                        <a href="{{ route('events.view', $cevent->slug) }}" class="blue-text">
+                                            {{ $cevent->name }}
+                                        </a>
+                                    </b>
+                                    on {{ $cevent->start_timestamp_pretty() }}
+                                </h5>
+
+                                @foreach ($confirmedapp as $capp)
+                                    @if ($cevent->id == $capp->event->id)
+                                        <div style="margin-left: 10px; margin-bottom: 4px;">
+                                            <b>Confirmed</b> {{ $capp->airport }}
+
+                                            {{ ($capp->start_timestamp)->format('H:i') }}z - {{ ($capp->end_timestamp)->format('H:i') }}z
+                                        </div>
+                                    @endif
+                                @endforeach
+
+                            </div>
+
                         @endforeach
                     @endif
+
                     @if (count($unconfirmedapp) < 1)
                         <span> You have<text class="text-primary"> <b>no</b> </text> active event applications </span>
                     @elseif (count($unconfirmedapp) == 1)

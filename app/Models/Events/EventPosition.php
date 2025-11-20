@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EventPosition extends Model
 {
     protected $fillable = [
-        'id', 'position',
+        'id', 'event_id', 'position',
     ];
 
     public function hasControllers($position, $event_id)

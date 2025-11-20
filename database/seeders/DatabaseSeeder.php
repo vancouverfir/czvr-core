@@ -65,13 +65,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('event_positions')->insert([
-            ['position' => 'Delivery'],
-            ['position' => 'Ground'],
-            ['position' => 'Tower'],
-            ['position' => 'Departure'],
-            ['position' => 'Arrival'],
             ['position' => 'Centre'],
-            ['position' => 'Relief'],
         ]);
 
         DB::table('homepage_images')->insert([

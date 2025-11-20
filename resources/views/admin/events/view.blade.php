@@ -1,33 +1,88 @@
 @extends('layouts.master')
+
 @section('content')
+
+<style>
+  .roster-table th, .roster-table td {
+    border: 1px solid #333 !important;
+    vertical-align: middle;
+  }
+  .roster-table tbody tr:hover {
+    background: #2b2b2b;
+  }
+
+  .sticky-col {
+    position: sticky;
+    left: 0;
+    background: #111;
+    z-index: 5;
+    border-right: 2px solid #333 !important;
+  }
+  .left-col {
+    min-width: 160px;
+  }
+
+  .controller-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 6px;
+    font-weight: 600;
+    font-size: .9rem;
+    color: #fff;
+    position: relative;
+    transition: all .2s ease-in-out;
+  }
+  .controller-block:hover {
+    box-shadow: inset 0 0 0 2px #fff3;
+    z-index: 2;
+  }
+
+  .position-name {
+    font-size: .85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .controller-delete {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    display: none;
+  }
+  .controller-block:hover .controller-delete {
+    display: block;
+  }
+</style>
+
 <div class="container py-4">
     <a href="{{route('events.admin.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Events</a>
     <h1 class="font-weight-bold blue-text">Managing: "{{$event->name}}"</h1>
     <hr>
     <div class="row">
         <div class="col-md-3">
-          <h4 class="font-weight-bold blue-text">Actions</h4>
-          <ul class="list-unstyled mt-3 mb-0" style="font-size: 1.05em;">
-              <li class="mb-2">
-                  <a href="" data-toggle="modal" data-target="#editEvent" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Edit event details</span></a>
-              </li>
-              <li class="mb-2">
-                  <a href="" data-toggle="modal" data-target="#createUpdate" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Create update</span></a>
-              </li>
-              <li class="mb-2">
-                  <a href="" data-toggle="modal" data-target="#confirmController" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Add Controller to Event Roster</span></a>
-              </li>
-               <li class="mb-2">
-                  <a href="{{route('event.viewapplications', [$event->id]) }}" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">View Controller Applications</span></a>
-              </li>
-              <li class="mb-2">
-                  <a href="" data-toggle="modal" data-target="#deleteEvent" style="text-decoration:none;"><span class="red-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Delete event</span></a>
-              </li>
-          </ul>
-                {{-- <li class="mb-2">
+            <h4 class="font-weight-bold blue-text">Actions</h4>
+            <ul class="list-unstyled mt-3 mb-0" style="font-size: 1.05em;">
+                <li class="mb-2">
+                    <a href="" data-toggle="modal" data-target="#editEvent" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Edit event details</span></a>
+                </li>
+                <li class="mb-2">
+                    <a href="" data-toggle="modal" data-target="#createUpdate" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Create update</span></a>
+                </li>
+                <li class="mb-2">
+                    <a href="" data-toggle="modal" data-target="#confirmController" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Add Controller to Event Roster</span></a>
+                </li>
+                <li class="mb-2">
+                    <a href="{{route('event.viewapplications', [$event->id]) }}" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">View Controller Applications</span></a>
+                </li>
+                <li class="mb-2">
+                    <a href="" data-toggle="modal" data-target="#deleteEvent" style="text-decoration:none;"><span class="red-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Delete event</span></a>
+                </li>
+
+            {{-- <li class="mb-2">
                     <a href="" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Export controller applications</span></a>
                 </li> --}}
-
             </ul>
         </div>
         <div class="col-md-9">
@@ -59,7 +114,7 @@
                   @if ($event->image_url)
                   <img src="{{$event->image_url}}" alt="" class="img-fluid w-50 img-thumbnail">
                   @else
-                  No image.
+                  No image!
                   @endif
               </div>
           </div>
@@ -81,38 +136,115 @@
                     </div>
                     <br>
                 @endforeach
-            @endif<hr>
-           <h4 class="font-weight-bold blue-text mt-3">Event Roster</h4>
+            @endif
+
+            <hr>
+
+            <h4 class="font-weight-bold text-light mt-3">Event Roster</h4>
+
             @if (count($eventroster) < 1)
-                Nobody is confirmed to control yet!
+            <div class="alert alert-secondary">Nobody is confirmed to control yet!</div>
             @else
-                    <div class="card p-3">
-                    @foreach($positions as $position)
-                        <h5>{{$position->position}}</h5>
-                        @foreach($eventroster as $roster)
-                            @if($roster->position == $position->position && $roster->position != "Relief")
-                            <form method="POST" action="{{route('event.deletecontroller', [$roster->user_id])}}">
-                                <text class="font-weight-bold">{{$roster->user->fullName('FLC')}}</text> is controlling {{$roster->airport}} {{$roster->position}} from {{$roster->start_timestamp}}z to {{$roster->end_timestamp}}z. <a target="_parent"><button class="btn btn-sm btn-danger" type="submit">Delete</button></a><br>
-                            <input type="hidden" name="id" value="{{$roster->event_id}}"></input>
-                            @csrf
-                            </form>
-                            @endif
-                            @if($roster->position == "Relief" && $position->position == "Relief")
-                            <form method="POST" action="{{route('event.deletecontroller', [$roster->user_id])}}">
-                                <text class="font-weight-bold">{{$roster->user->fullName('FLC')}}</text> is on Stand-by available from {{$roster->start_timestamp}}z to {{$roster->end_timestamp}}z. <input class="btn btn-sm btn-danger" type="submit" value="Delete" style="color: red"><br>
-                                <input type="hidden" name="id" value="{{$roster->event_id}}"></input>
-                                @csrf
-                            </form>
-                            @endif
+                <div class="card bg-dark text-light shadow-sm p-3">
+                    <div class="table-responsive" style="max-height: 600px; overflow: auto;">
+                    <table class="table table-sm mb-0 text-center roster-table">
+                        <thead class="sticky-top">
+                            <tr>
+                                <th class="align-middle text-white sticky-col left-col">Controller</th>
+                                @php
+                                $start = strtotime($event->start_timestamp);
+                                $end   = strtotime($event->end_timestamp);
+                                $slots = [];
+                                while ($start <= $end) {
+                                    $slots[] = date("H:i", $start) . "z";
+                                    $start = strtotime("+30 minutes", $start);
+                                }
+
+                                $positionColors = [
+                                    'CTR' => '#4553ce',
+                                    'APP' => '#4f9fd3',
+                                    'DEP' => '#4f9fd3',
+                                    'TWR' => '#c35454',
+                                    'GND' => '#7dac50',
+                                    'DEL' => '#5889e1',
+                                ];
+                                @endphp
+
+                                @foreach($slots as $slot)
+                                    <th class="small font-weight-bold text-muted px-2">{{ $slot }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($eventroster->groupBy('user_id') as $userId => $assignments)
+                            @php
+                            $user = $assignments->first()->user;
+                            $slotIndex = 0;
+                            $totalSlots = count($slots);
+                            @endphp
+                            <tr>
+                            <td class="font-weight-bold text-light sticky-col left-col">
+                                {{ $user->fullName('FL') }}
+                            </td>
+
+                            @while ($slotIndex < $totalSlots)
+                                @php
+                                $slotTime = strtotime($event->start_timestamp) + ($slotIndex * 1800);
+
+                                $assignment = $assignments->first(function($a) use($slotTime) {
+                                    return $slotTime >= strtotime($a->start_timestamp)
+                                        && $slotTime < strtotime($a->end_timestamp);
+                                });
+                                @endphp
+
+                                @if($assignment)
+                                @php
+                                    $mergeCount = 1;
+                                    while (
+                                    $slotIndex + $mergeCount < $totalSlots &&
+                                    strtotime($event->start_timestamp) + (($slotIndex + $mergeCount) * 1800) < strtotime($assignment->end_timestamp)
+                                    ) {
+                                    $mergeCount++;
+                                    }
+                                    $parts = explode('_', $assignment->airport);
+                                    $pos = strtoupper(end($parts)); // CTR, APP, DEP, etc.
+                                    $color = $positionColors[$pos] ?? '#6c757d';
+                                @endphp
+                                <td colspan="{{ $mergeCount }}" class="p-0 controller-cell">
+                                    <div class="controller-block" style="background-color: {{ $color }};" data-toggle="tooltip" title="{{ $assignment->airport }} {{ date('H:i', strtotime($assignment->start_timestamp)) }}z → {{ date('H:i', strtotime($assignment->end_timestamp)) }}z">
+                                    <span class="position-name">{{ $assignment->airport }}</span>
+                                    <form method="POST" action="{{ route('event.deletecontroller', [$assignment->user_id]) }}" class="controller-delete">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $assignment->event_id }}">
+                                        <button type="submit" class="btn btn-sm btn-link text-light p-0"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                    </div>
+                                </td>
+                                @php $slotIndex += $mergeCount; @endphp
+                                @else
+                                <td></td>
+                                @php $slotIndex++; @endphp
+                                @endif
+                            @endwhile
+                            </tr>
                         @endforeach
-                    @endforeach
-                  </div>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
             @endif
         </div>
     </div>
 </div>
 
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+
 <!--Delete event modal-->
+
 <div class="modal fade" id="deleteEvent" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -123,7 +255,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>This will soft delete the event, so it still exists in the database but cannot be viewed.</p>
+                <p>This will soft delete the event, so it still exists in the database but cannot be viewed!</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
@@ -133,9 +265,11 @@
         </div>
     </div>
 </div>
+
 <!--End delete event modal-->
 
 <!--Edit event modal-->
+
 <div class="modal fade" id="editEvent" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -150,7 +284,7 @@
                 <div class="modal-body">
                     @if($errors->editEventErrors->any())
                     <div class="alert alert-danger">
-                        <h4>There were errors editing the event</h4>
+                        <h4>There were errors editing the event!</h4>
                         <ul class="pl-0 ml-0 list-unstyled">
                             @foreach ($errors->editEventErrors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -223,11 +357,11 @@
                             </a>
                             <div class="step-content w-75 pt-0">
                                 @if ($event->image_url)
-                                <img src="{{$event->image_url}}" alt="" class="img-fluid w-50 img-thumbnail">
+                                    <img src="{{$event->image_url}}" alt="" class="img-fluid w-50 img-thumbnail">
                                 @else
-                                No image.
+                                    No image!
                                 @endif
-                                <p>An image can be displayed for the event. Please ensure we have the right to use the image, and that it is of an acceptable resolution. Make sure the image has no text or logos on it.</p>
+                                <p>An image can be displayed for the event! Please ensure we have the right to use the image, and that it is of an acceptable resolution! Make sure the image has no text or logos on it!</p>
                                 <div class="input-group pb-3">
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input" name="image">
@@ -269,12 +403,14 @@
 
 <!--End edit event modal-->
 
-<!--create update modal-->
+
+<!--Create update modal-->
+
 <div class="modal fade" id="createUpdate" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Create event update</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Create Event Update</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -320,70 +456,48 @@
 @endif
 
 <!--End app update modal-->
+
 <!--Add Confirmed controller modal-->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <div class="modal fade" id="confirmController" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Add Controller to Event {{$event->name}}:</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Controller to Event {{$event->name}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
               <div align="center" class="modal-body">
-  <form id="app-form" method="POST" action="{{ route('event.addcontroller', [$event->id] )}}">
+                    <form id="app-form" method="POST" action="{{ route('event.addcontroller', [$event->id] )}}">
                     <div class="form-group row">
-                        <label for="dropdown" class="col-sm-4 col-form-label text-md-right">Pick a controller.</label>
+                        <label for="dropdown" class="col-sm-4 col-form-label text-md-right">Pick a controller!</label>
 
                         <select class="custom-select" name="user_cid">
-                          @foreach($users as $user)
-                          <option value="{{ $user->id}}">{{$user->id}} - {{$user->fname}} {{$user->lname}}</option>
-                          @endforeach
+                            @foreach($users as $user)
+                            <option value="{{ $user->id}}">{{$user->id}} - {{$user->fname}} {{$user->lname}}</option>
+                            @endforeach
                         </select>
 
                         <div class="col-md-12">
 
                             <td align="center">
-                              <input type="hidden" name="event_id" value="{{$event->id}}">
-                              <input type="hidden" name="event_name" value="{{$event->name}}">
-                              <input type="hidden" name="event_date" value="{{$event->start_timestamp}}">
-                              <label for="">Start Time (zulu)</label>
-                              <input type="datetime" name="start_timestamp" class="form-control flatpickr" value="" id="start_timestamp">
-                              <label class="mt-2" for="">End Time (zulu)</label>
-                              <input type="datetime" name="end_timestamp" class="form-control flatpickr" value="" id="end_timestamp">
-                              <label class="mt-2" for="">Airport Callsign (ex. CYVR_APP)</label>
-                              <input type="text" name="airport" class="form-control" id="airport">
-                              <label class="mt-2" for="">Position</label>
-                              <select name="position" class="form-control" id="position">
-                                <option value="FSS">RAAS/AAS</option>
-                                <option value="Delivery">Delivery</option>
-                                <option value="Ground">Ground</option>
-                                <option value="Tower">Tower</option>
-                                <option value="Departure">Departure</option>
-                                <option value="Arrivals">Arrival</option>
-                                <option value="Centre">Centre</option>
-                                <option value="Relief">Relief</option>
-                              </select>
-                                  @csrf
+                                <input type="hidden" name="event_id" value="{{$event->id}}">
+                                <input type="hidden" name="event_name" value="{{$event->name}}">
+                                <input type="hidden" name="event_date" value="{{$event->start_timestamp}}">
+                                <label for="">Start Time (zulu)</label>
+                                <input type="datetime-local" name="start_timestamp" class="form-control" id="start_timestamp" value="{{ ($event->start_timestamp) }}" min="{{ ($event->start_timestamp) }}" max="{{ ($event->end_timestamp) }}">
+                                <label class="mt-2" for="">End Time (zulu)</label>
+                                <input type="datetime-local" name="end_timestamp" class="form-control" id="end_timestamp" value="{{ ($event->end_timestamp) }}" min="{{ ($event->start_timestamp) }}" max="{{ ($event->end_timestamp) }}">
+                                <label class="mt-2" for="">Airport Callsign (e.g. CZVR_CTR)</label>
+                                <input type="text" name="airport" class="form-control" id="airport">
+                                @csrf
                             </td>
 
-                             <script>
-                                 flatpickr('#start_timestamp', {
-                                     enableTime: true,
-                                     noCalendar: true,
-                                     dateFormat: "H:i",
-                                     time_24hr: true,
-                                     defaultDate: "{{$event->flatpickr_limits()[0]}}"
-                                 });
-                                 flatpickr('#end_timestamp', {
-                                     enableTime: true,
-                                     noCalendar: true,
-                                     dateFormat: "H:i",
-                                     time_24hr: true,
-                                     defaultDate: "{{$event->flatpickr_limits()[1]}}"
-                                 });
-                             </script>
                         </div>
                     </div>
             </div>

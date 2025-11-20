@@ -11,7 +11,7 @@
     <div class="container py-4">
         <a href="{{route('dashboard.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Dashboard</a>
         <h1 class="blue-text font-weight-bold mt-2">Users</h1>
-        
+
         @if (empty($users))
             <div class="alert alert-danger">No users found</div>
         @else

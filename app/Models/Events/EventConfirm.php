@@ -10,7 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 class EventConfirm extends Model
 {
     protected $fillable = [
-        'event_id', 'user_id', 'start_timestamp', 'end_timestamp', 'airport', 'position',
+        'id', 'event_id', 'user_id', 'start_timestamp', 'end_timestamp', 'airport',
+    ];
+
+    protected $casts = [
+        'start_timestamp' => 'datetime',
+        'end_timestamp' => 'datetime',
     ];
 
     public function user()
@@ -20,7 +25,7 @@ class EventConfirm extends Model
 
     public function userHasApplied()
     {
-        if (EventConfirm::where('event_id', $this->id)->where('user_cid', Auth::id())->first()) {
+        if (EventConfirm::where('event_id', $this->id)->where('user_id', Auth::id())->first()) {
             return true;
         }
 
