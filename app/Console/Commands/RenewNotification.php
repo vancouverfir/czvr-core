@@ -34,6 +34,26 @@ class RenewNotification extends Command
     public function handle()
     {
         $days = 31;
+
+        $studentsToUpdate = Student::whereIn('status', [0, 3])
+            ->whereNull('renewed_at')
+            ->get();
+
+        foreach ($studentsToUpdate as $student) {
+            $now = Carbon::now();
+            $student->renewed_at = $now;
+            $student->save();
+
+            StudentNote::create([
+                'student_id' => $student->id,
+                'author_id' => 1,
+                'title' => 'Reinstated Automatically',
+                'content' => 'Student was reinstated automatically after they were unmarked for removal!',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
+
         $students = Student::whereIn('status', [0, 3])
             ->where(function ($query) use ($days) {
                 $query->where('renewed_at', '<=', Carbon::now()->subDays($days));
@@ -64,10 +84,16 @@ class RenewNotification extends Command
                     'student_id' => $student->id,
                 ]);
             }
+
             StudentInteractiveLabels::create([
                 'student_label_id' => 10,
                 'student_id' => $student->id,
             ]);
+
+            StudentInteractiveLabels::where('student_id', $student->id)
+                ->whereIn('student_label_id', [8, 9])
+                ->delete();
+
             StudentNote::create([
                 'student_id' => $student->id,
                 'author_id' => 1,
@@ -76,6 +102,7 @@ class RenewNotification extends Command
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
+
             $student->status = 4;
             $student->renewal_notified_at = null;
             $student->renewed_at = null;
