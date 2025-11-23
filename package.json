@@ -8,7 +8,7 @@
     "devDependencies": {
         "@babel/preset-react": "^7.28.5",
         "@vitejs/plugin-react": "^5.1.1",
-        "@vitejs/plugin-vue": "^6.0.1",
+        "@vitejs/plugin-vue": "^6.0.2",
         "axios": "^1.13",
         "babel-preset-react": "^6.24.1",
         "bootstrap": "^5.3.7",
