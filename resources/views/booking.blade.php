@@ -164,7 +164,7 @@
     $cids = $bookings->pluck('cid')->toArray();
     $userLookup = \App\Models\Users\User::whereIn('id', $cids)
         ->get()
-        ->mapWithKeys(fn($u) => [$u->id => trim($u->fname.' '.$u->lname)]);
+        ->mapWithKeys(fn($u) => [$u->id => trim($u->fullName('FL'))]);
 @endphp
 
 <script>
