@@ -250,35 +250,22 @@ async def stow_event(data):
 
 def rm_deleted_events(data):
     """
-    Removing deleted events from the server, including dependent records
+    Removing deleted events from the server
     """
     print("Removing deleted events")
     cur = connectSQL.cursor()
 
-    # Fetch all event IDs in the DB
     cur.execute("SELECT id FROM events")
-    events_in_db = [row[0] for row in cur.fetchall()]
 
-    # Extract event IDs from the incoming data
-    valid_event_ids = [event["id"] for event in data["data"]]
+    events = [row[0] for row in cur.fetchall()]
 
-    # Loop through DB events and remove any not in the incoming data
-    for event_id in events_in_db:
-        if event_id not in valid_event_ids:
-            print(f"Deleting event {event_id} and dependent records...")
-
-            # Delete dependent records first
+    for event_id in events:
+        if event_id not in data:
             cur.execute("DELETE FROM event_confirms WHERE event_id = ?", (event_id,))
             cur.execute("DELETE FROM event_controller_applications WHERE event_id = ?", (event_id,))
             cur.execute("DELETE FROM event_positions WHERE event_id = ?", (event_id,))
             cur.execute("DELETE FROM event_updates WHERE event_id = ?", (event_id,))
-
-            # Now delete the main event
             cur.execute("DELETE FROM events WHERE id = ?", (event_id,))
-
-    connectSQL.commit()
-    print("Deleted all removed events successfully!")
-
 
 def fetch_roster():
     """
