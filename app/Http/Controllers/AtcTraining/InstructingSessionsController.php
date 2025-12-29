@@ -94,7 +94,8 @@ class InstructingSessionsController extends Controller
 
     private function sendSessionMail(InstructingSession $session, string $type)
     {
-        Mail::send(new InstructingSessionMail($session, $type));
+        Mail::to($session->instructorUser()->email)->send(new InstructingSessionMail($session, $type, 'instructor'));
+        Mail::to($session->student->user->email)->send(new InstructingSessionMail($session, $type, 'student'));
     }
 
     private function validateData(Request $request)

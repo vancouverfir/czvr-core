@@ -11,6 +11,7 @@ class InstructingSession extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $actionRecipient;
     public $session;
     public $action;
 
@@ -58,10 +59,11 @@ class InstructingSession extends Mailable
      * @param  SessionModel  $session
      * @param  string  $action
      */
-    public function __construct(SessionModel $session, string $action = 'created')
+    public function __construct(SessionModel $session, string $action = 'created', string $actionRecipient = 'instructor')
     {
         $this->session = $session;
         $this->action = $action;
+        $this->actionRecipient = $actionRecipient;
     }
 
     /**
@@ -78,18 +80,12 @@ class InstructingSession extends Mailable
             default => 'Instructing Session Notification',
         };
 
-        $recipient = $this->actionRecipient ?? 'instructor';
-        $toEmail = $recipient === 'instructor'
-            ? $this->session->instructorUser()->email
-            : $this->session->student->user->email;
-
-        $email = $this->to($toEmail)
-                    ->subject($subject)
-                    ->view("emails.instructingsession.{$this->action}")
-                    ->with([
-                        'session' => $this->session,
-                        'recipient' => $recipient,
-                    ]);
+        $email = $this->subject($subject)
+                      ->view("emails.instructingsession.{$this->action}")
+                      ->with([
+                          'session' => $this->session,
+                          'recipient' => $this->actionRecipient,
+                      ]);
 
         if (in_array($this->action, ['created', 'updated', 'cancelled'])) {
             $email->attachData(

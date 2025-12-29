@@ -52,16 +52,17 @@
             <div class='row'>
                 <div class='col' style="justify-items: auto">
                     <h4 class="blue-text">From CYVR</h4>
-                    <h6>CYYJ - YVR APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
-                    <h6>CYCD - YVR TREEL (EVEN ALT)</h6>
+                    <h6>CYYJ - AMEBO APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
+                    <h6>CYCD - YVR V342 ARMAC YCD (EVEN ALT)</h6>
                     <h6>CYLW - JANEK SEKAB SEKAB<b class="blue-text">#</b> (ODD ALT)</h6>
-                    <h6>CYXS - EMPOV (EVEN ALT)</h6>
+                    <h6>CYXS - GARRE SEATN YWL YXS (EVEN ALT)</h6>
                     <h6>CYEG - VIDRI Q949 ELLKS ELLKS<b class="blue-text">#</b> (ODD ALT)</h6>
                     <h6>CYYC - DAPED PETLI MENBO Q983 NORET IGVEP<b class="blue-text">#</b> (ODD ALT)</h6>
+                    <h6>PAKT - TREEL V317 ITMAV T719 UQQ YZT Q902 ANN (EVEN ALT)</h6>
                     <h6>KSEA (RNAV Jet) - YVR ROESH MARNR MARNR<b class="blue-text">#</b> (ODD ALT)</h6>
                     <h6>KSEA (Prop/Non-RNAV) - YVR JAWBN<b class="blue-text">#</b> (ODD ALT)</h6>
                     <h6>KPDX - YVR SEA BUWZO KRATR<b class="blue-text">#</b> (ODD ALT)</h6>
-                    <h6>KSFO - YYJ ELMAA Q1 ETCHY MLBEC BDEGA<b class="blue-text">#</b> (ODD ALT)</h6>
+                    <h6>KSFO - VIXOR ELMAA Q1 ERAVE Q1 ETCHY MLBEC BDEGA<b class="blue-text">#</b> (ODD ALT)</h6>
                 </div>
                 <div class='col'>
                     <h4 class="blue-text">To CYVR</h4>
@@ -76,8 +77,8 @@
                             <h6>KPDX - BTG J1 SEA PAE GRIZZ<b class="blue-text">#</b> (EVEN ALT)</h6>
                             <br></br>
                         <u><h5>26L/26R</h5></u>
-                            <h6>CYYJ - BUICK DUXUM<b class="blue-text">#</b> (ODD ALT)</h6>
-                            <h6>CYCD - ILATI BUICK DUXUM<b class="blue-text">#</b> (ODD ALT)</h6>
+                            <h6>CYYJ - VIXOR NALGI DUXUM<b class="blue-text">#</b> (ODD ALT)</h6>
+                            <h6>CYCD - ILATI NALGI DUXUM<b class="blue-text">#</b> (ODD ALT)</h6>
                             <h6>CYLW - MERYT BOOTH CANUC<b class="blue-text">#</b> (EVEN ALT)</h6>
                             <h6>CYXS - YXS YWL Q800 ELIDI WHSLR<b class="blue-text">#</b> (ODD ALT)</h6>
                             <h6>CYEG - ANDIE Q860 MERYT BOOTH CANUC<b class="blue-text">#</b> (EVEN ALT)</h6>
@@ -92,10 +93,10 @@
                 <div class='row'?>
                     <div class='col'>
                         <h4 class="blue-text">From CYYJ</h4>
-                        <h6>CYLW - HUH YDC PIGLU<b class="blue-text">#</b> (ODD ALT)</h6>
-                        <h6>CYYC - HUH DAPED PETLI MENBO Q983 NORET IGVEP<b class="blue-text">#</b> (ODD ALT)</h6>
-                        <h6>CYEG - HUH DAPED PETLI ROMRA Q949 ELLKS ELLKS<b class="blue-text">#</b> (ODD ALT)</h6>
-                        <h6>CYXS - UQQ EMPOV (ODD ALT)</h6>
+                        <h6>CYLW - SQURL YDC PIGLU<b class="blue-text">#</b> (ODD ALT)</h6>
+                        <h6>CYYC - SQURL DAPED PETLI MENBO Q983 NORET IGVEP<b class="blue-text">#</b> (ODD ALT)</h6>
+                        <h6>CYEG - SQURL DAPED PETLI ROMRA Q949 ELLKS ELKKS<b class="blue-text">#</b> (ODD ALT)</h6>
+                        <h6>CYXS - CASDY [ABOVE FL180] (ODD ALT)</h6>
                         <h6>KSEA - JIGEB MARNR<b class="blue-text">#</b> (ODD ALT)</h6>
                         <h6>KPDX - SEA HELNS KRATR<b class="blue-text">#</b> (ODD ALT)</h6>
                     </div>
@@ -104,7 +105,7 @@
                     <h4 class="blue-text">To CYYJ</h4>
                     <h6>CYYC - BOTAG Q894 BOOTH APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
                     <h6>CYEG - ANDIE Q860 MERYT BOOTH APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
-                    <h6>CYXS - YXS YVR AP APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
+                    <h6>CYXS - KEINN APASS<b class="blue-text">#</b> [ABOVE FL180] (EVEN ALT)</h6>
                     <h6>KSEA - ARRIE DISCO DISCO<b class="blue-text">#</b> (EVEN ALT)</h6>
                     <h6>KPDX - BTG OLM DISCO DISCO<b class="blue-text">#</b> (EVEN ALT)</h6>
                  </div>
@@ -118,8 +119,8 @@
                     <h6>CYYJ - MERYT BOOTH APASS<b class="blue-text">#</b> (EVEN ALT)</h6>
                     <h6>CYYC - WHATS MENBO Q983 IGVEP IGVEP<b class="blue-text">#</b> (ODD ALT)</h6>
                     <h6>CYEG - ROMRA Q949 ELLKS ELLKS<b class="blue-text">#</b> (ODD ALT)</h6>
-                    <h6>CYXS - YWB YXS (EVEN ALT)</h6>
-                    <h6>KSEA - MERYT BOOTH YVR MARNR MARNR<b class="blue-text">#</b> (EVEN ALT)</h6>
+                    <h6>CYXS - KEINN APASS<b class="blue-text">#</b> [ABOVE FL180] (EVEN ALT)</h6>
+                    <h6>KSEA - MERYT JAKSN GLASR<b class="blue-text">#</b> (EVEN ALT)</h6>
                 </div>
             <br></br>
             <div class='col'>
@@ -127,7 +128,7 @@
                 <h6>CYYC - BOTAG SIMTA BINVO ROBTI NORIP<b class="blue-text">#</b> (EVEN ALT)</h6>
                 <h6>CYEG - ANDIE NADPI ENDBY HUMEK WTMAN (EVEN ALT)</h6>
                 <h6>CYXS - WTMAN (ODD ALT)</h6>
-                <h6>KSEA - SEA ALPSE YDC PIGLU<b class="blue-text">#</b> (ODD ALT)</h6>
+                <h6>KSEA - ALPSE YDC PIGLU<b class="blue-text">#</b> (ODD ALT)</h6>
             </div>
             </div>
 

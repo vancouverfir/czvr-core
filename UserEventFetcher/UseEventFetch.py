@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # Written by Austin Abbey for Vancouver FIR
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from slugify import slugify
 import configparser
 import sys
@@ -106,7 +106,7 @@ def trim_events(data):
         event = datetime.strptime(str(i["end"])[:16], "%Y-%m-%d %H:%M")
 
         # get current time in YYYY-MM-DD format
-        present = datetime.utcnow()
+        present = datetime.now(UTC)
         present = present.strftime("%Y-%m-%d %H:%M")
         present = datetime.strptime(present, "%Y-%m-%d %H:%M")
 
@@ -255,17 +255,16 @@ def rm_deleted_events(data):
     print("Removing deleted events")
     cur = connectSQL.cursor()
 
-    cur.execute("SELECT id FROM events")
+    now = datetime.now(UTC).strftime("%Y-%m-%d %H:%M")
+    cur.execute("SELECT id FROM events WHERE end_timestamp < ?", (now,))
+    expired = cur.fetchall()
 
-    events = [row[0] for row in cur.fetchall()]
-
-    for event_id in events:
-        if event_id not in data:
-            cur.execute("DELETE FROM event_confirms WHERE event_id = ?", (event_id,))
-            cur.execute("DELETE FROM event_controller_applications WHERE event_id = ?", (event_id,))
-            cur.execute("DELETE FROM event_positions WHERE event_id = ?", (event_id,))
-            cur.execute("DELETE FROM event_updates WHERE event_id = ?", (event_id,))
-            cur.execute("DELETE FROM events WHERE id = ?", (event_id,))
+    for id in expired:
+        cur.execute("DELETE FROM event_confirms WHERE event_id = ?", id)
+        cur.execute("DELETE FROM event_controller_applications WHERE event_id = ?", id)
+        cur.execute("DELETE FROM event_positions WHERE event_id = ?", id)
+        cur.execute("DELETE FROM event_updates WHERE event_id = ?", id)
+        cur.execute("DELETE FROM events WHERE id = ?", id)
 
 def fetch_roster():
     """

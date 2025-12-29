@@ -172,6 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
 
     const calendar = new FullCalendar.Calendar(calendarEl, {
+    timeZone: 'UTC',
         initialView: 'dayGridMonth',
         height: window.innerWidth < 768 ? 'auto' : 700,
         eventDisplay: 'block',
@@ -217,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const isMobile = window.innerWidth < 768;
             const start = info.event.start;
             const end = info.event.end;
-            const fmt = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+            const fmt = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
             const timeText = start && end ? `${fmt.format(start)} – ${fmt.format(end)}` : start ? fmt.format(start) : '';
 
             if (info.event.extendedProps.type === 'event') {

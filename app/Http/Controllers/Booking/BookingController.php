@@ -73,8 +73,8 @@ class BookingController extends Controller
             'callsign' => $data['callsign'],
             'cid' => $user->id,
             'type' => 'booking',
-            'start' => gmdate('Y-m-d H:i:s', strtotime($data['start'])),
-            'end' => gmdate('Y-m-d H:i:s', strtotime($data['end'])),
+            'start' => date('Y-m-d H:i:s', strtotime($data['start'])),
+            'end' => date('Y-m-d H:i:s', strtotime($data['end'])),
             'division' => $user->division_code ?? null,
             'subdivision' => $user->subdivision_code ?? null,
         ];
@@ -124,8 +124,8 @@ class BookingController extends Controller
             'callsign' => $data['callsign'],
             'cid' => $user->id,
             'type' => 'booking',
-            'start' => gmdate('Y-m-d H:i:s', strtotime($data['start'])),
-            'end' => gmdate('Y-m-d H:i:s', strtotime($data['end'])),
+            'start' => date('Y-m-d H:i:s', strtotime($data['start'])),
+            'end' => date('Y-m-d H:i:s', strtotime($data['end'])),
             'division' => $user->division_code ?? null,
             'subdivision' => $user->subdivision_code ?? null,
         ];
