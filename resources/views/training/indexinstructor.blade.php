@@ -42,9 +42,9 @@
                                 <i>
                                     @if ($nextSession)
                                         @if ($nextSession->start_time->isToday())
-                                            Session planned at {{ $nextSession->start_time->format('H:i') }} UTC
+                                            Session planned {{ $nextSession->start_time->format('H:i') }} UTC
                                         @else
-                                            Session planned at {{ $nextSession->start_time->format('d M Y') }}
+                                            Session planned {{ $nextSession->start_time->format('d M Y') }}
                                         @endif
                                     @endif
                                 </i>
