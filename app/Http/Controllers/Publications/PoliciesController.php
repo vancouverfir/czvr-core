@@ -11,8 +11,8 @@ use App\Models\Settings\AuditLogEntry;
 use App\Models\Users\User;
 use Auth;
 use Illuminate\Http\Request;
-use Mail;
 use Illuminate\Support\Facades\Storage;
+use Mail;
 
 class PoliciesController extends Controller
 {
@@ -177,9 +177,9 @@ class PoliciesController extends Controller
             }
 
             $file = $request->file('file');
-            $fileName = time() . '_' . $file->getClientOriginalExtension();
+            $fileName = time().'_'.$file->getClientOriginalExtension();
             Storage::putFileAs('public/files/policies', $file, $fileName);
-            $policy->link = '/storage/files/policies/' . $fileName;
+            $policy->link = '/storage/files/policies/'.$fileName;
         }
 
         $policy->section_id = $request->get('section');
