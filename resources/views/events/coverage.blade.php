@@ -15,7 +15,7 @@
             <p>Thank you for choosing Vancouver!</p>
         </div>
         <div class="pt-4">
-            <h3>For specifics about flying into and out of our airspace during an event please see: <a href="https://czvr.ca/storage/files/uploads/1709591072.pdf">CZVR Streamer and Event Guide</a></h3>
+            <h3>For specifics about flying into and out of our airspace during an event please see: <a href="https://czvr.ca/storage/files/fir-streamer-event-document.pdf">CZVR Streamer and Event Guide</a></h3>
         </div>
     </div>
 @endsection

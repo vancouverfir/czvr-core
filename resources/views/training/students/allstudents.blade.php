@@ -110,6 +110,14 @@
                                         <p class="h3 mb-0">
                                             <span class="badge badge-hidden mr-1">{{$loopIndex}}</span>
                                             {{$student->student->user->fullName('FLC')}}
+
+                                            @if(! $student->student->user->rosterProfile)
+                                                <span class="badge badge-danger ml-2"
+                                                      style="font-size: 0.7rem;"
+                                                      title="User is not certified / not on roster">
+                                                    NOT ON VATCAN
+                                                </span>
+                                            @endif
                                         </p>
 
                                         @if($student->student->instructor)

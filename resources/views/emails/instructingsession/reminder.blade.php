@@ -11,8 +11,8 @@
 
 <ul>
     <li><strong>Title:</strong> {{ $session->title }}</li>
-    <li><strong>Start Time:</strong> {{ $session->start_time->format('Y-m-d H:i') }}</li>
-    <li><strong>End Time:</strong> {{ $session->end_time->format('Y-m-d H:i') }}</li>
+    <li><strong>Start Time:</strong> {{ $session->start_time->format('Y-m-d H:i') }} UTC</li>
+    <li><strong>End Time:</strong> {{ $session->end_time->format('Y-m-d H:i') }} UTC</li>
     <li><strong>Instructor:</strong> {{ $session->instructorUser()->fullName('FLC') }}</li>
     <li><strong>Student:</strong> {{ $session->student->user->fullName('FLC') }}</li>
     @if($session->instructor_comment)

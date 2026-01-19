@@ -121,7 +121,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                      <form method="POST" action="{{route('policies.create')}}" class="form-group">
+                      <form method="POST" action="{{route('policies.create')}}" class="form-group" enctype="multipart/form-data">
 
                           <div class="form-group">
                             <label for="recipient-name" class="col-form-label">Policy Name</label>
@@ -141,14 +141,14 @@
                             <textarea name="details" class="form-control"></textarea>
                           </div>
                           <div class="form-group">
-                            <label for="recipient-name" class="col-form-label">URL</label>
-                            <input type="text" name="link" class="form-control"></input>
+                              <label class="col-form-label">Policy File (PDF)</label>
+                              <input type="file" name="file" class="form-control" accept="application/pdf" required>
                           </div>
                           <div class="form-group">
                             <label for="recipient-name" class="col-form-label">Display Options</label>
                             <select name="embed" class="form-control">
-                                <option value="0">Display</option>
-                                <option value="1">Do Not Display</option>
+                                <option value="1" selected>Display</option>
+                                <option value="0">Do Not Display</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -202,7 +202,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form method="POST" action="{{url('/policies/'.$p->id.'/edit')}}" class="form-group">
+                            <form method="POST" action="{{url('/policies/'.$p->id.'/edit')}}" class="form-group" enctype="multipart/form-data">
 
                                 <div class="form-group">
                                     <label for="recipient-name" class="col-form-label">Policy Name</label>
@@ -222,8 +222,18 @@
                                     <textarea name="details" class="form-control">{{$p->details}}</textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="recipient-name" class="col-form-label">URL</label>
-                                    <input type="text" name="link" class="form-control" value="{{$p->link}}"></input>
+                                    <label class="col-form-label">
+                                        Replace Policy File (PDF)
+                                    </label>
+
+                                    <input type="file" name="file" class="form-control" accept="application/pdf">
+
+                                    <small class="form-text text-muted">
+                                        Leave empty to keep the current file.
+                                        <br>
+                                        Current:
+                                        <a href="{{ $p->link }}" target="_blank">View existing file</a>
+                                    </small>
                                 </div>
                                 <div class="form-group">
                                     <label for="recipient-name" class="col-form-label">Display Options</label>

@@ -145,7 +145,8 @@
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                                 <a class="dropdown-item" href="{{route('airports')}}">Airports</a>
-                                <a class="dropdown-item" href="{{route('livemap')}}">Live Map</a>
+                                <a class="dropdown-item" href="{{route('preferredrouting')}}">Preferred Routing</a>
+                                <a class="dropdown-item" href="{{route('livemap')}}">YVR Live Map</a>
                                 <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
                                 <a class="dropdown-item" href="https://vatsim.net/docs/pilots/pilots" target="_blank">VATSIM Resources</a>
                             </div>

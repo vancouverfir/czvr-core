@@ -133,7 +133,6 @@
       <select name="dep" class="form-control">
         <option value="0"{{ $roster->dep == "0" ? "selected=selected" : ""}}>Not Certified</option>
         <option value="1"{{ $roster->dep == "1" ? "selected=selected" : ""}}>Mentor</option>
-        <option value="2"{{ $roster->dep == "2" ? "selected=selected" : ""}}>Solo</option>
         <option value="3"{{ $roster->dep == "3" ? "selected=selected" : ""}}>Certified</option>
       </select>
     </div>

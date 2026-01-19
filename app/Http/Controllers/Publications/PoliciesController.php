@@ -12,6 +12,7 @@ use App\Models\Users\User;
 use Auth;
 use Illuminate\Http\Request;
 use Mail;
+use Illuminate\Support\Facades\Storage;
 
 class PoliciesController extends Controller
 {
@@ -36,7 +37,7 @@ class PoliciesController extends Controller
             'name' => 'required',
             'section' => 'required',
             'details' => 'required',
-            'link' => 'required',
+            'file' => 'required|mimes:pdf,doc,docx|max:5120',
             'embed' => 'required',
             'staff_only' => 'required',
             'email' => 'required',
@@ -56,11 +57,23 @@ class PoliciesController extends Controller
             $date = date('Y-m-d');
         }
 
+        $file = $request->file('file');
+
+        $fileName = time().'_'.$file->getClientOriginalExtension();
+
+        Storage::putFileAs(
+            'public/files/policies',
+            $file,
+            $fileName
+        );
+
+        $filePath = '/storage/files/policies/'.$fileName;
+
         $policy = new Policy([
             'section_id' => $request->get('section'),
             'name' => $request->get('name'),
             'details' => $request->get('details'),
-            'link' => $request->get('link'),
+            'link' => $filePath,
             'embed' => $request->get('embed'),
             'staff_only' => $request->get('staff_only'),
             'author' => Auth::user()->id,
@@ -144,7 +157,7 @@ class PoliciesController extends Controller
             'name' => 'required',
             'section' => 'required',
             'details' => 'required',
-            'link' => 'required',
+            'file' => 'nullable|mimes:pdf|max:5120',
             'embed' => 'required',
             'staff_only' => 'required',
         ]);
@@ -153,14 +166,29 @@ class PoliciesController extends Controller
             return back()->with('error', 'You need to select a section!');
         }
 
-        if ($request->get('date')) {
-            $date = $request->get('date');
-        } else {
-            $date = date('Y-m-d');
+        $policy = Policy::findOrFail($id);
+
+        if ($request->hasFile('file')) {
+            if ($policy->link) {
+                $oldPath = str_replace('/storage', 'public', $policy->link);
+                if (Storage::exists($oldPath)) {
+                    Storage::delete($oldPath);
+                }
+            }
+
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalExtension();
+            Storage::putFileAs('public/files/policies', $file, $fileName);
+            $policy->link = '/storage/files/policies/' . $fileName;
         }
 
-        $policy = Policy::where('id', $id)
-            ->update(['section_id' => $request->get('section'), 'name' => $request->get('name'), 'details' => $request->get('details'), 'link' => $request->get('link'), 'embed' => $request->get('embed'), 'staff_only' => $request->get('staff_only'), 'author' => Auth::user()->id, 'releaseDate' => $date]);
+        $policy->section_id = $request->get('section');
+        $policy->name = $request->get('name');
+        $policy->details = $request->get('details');
+        $policy->embed = $request->get('embed');
+        $policy->staff_only = $request->get('staff_only');
+        $policy->author = Auth::user()->id;
+        $policy->releaseDate = $request->get('date') ?: date('Y-m-d');
 
         //$entry = new AuditLogEntry([
         //    'user_id' => Auth::user()->id,
@@ -171,12 +199,22 @@ class PoliciesController extends Controller
         //]);
         //$entry->save();
 
+        $policy->save();
+
         return redirect()->route('policies')->with('success', 'Policy <text class="font-weight-bold">'.$request->get('name').'</text> edited!');
     }
 
     public function deletePolicy($id)
     {
         $policy = Policy::where('id', $id)->firstOrFail();
+
+        if ($policy->link) {
+            $filePath = str_replace('/storage', 'public', $policy->link);
+
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
+        }
         //$entry = new AuditLogEntry([
         //   'user_id' => Auth::user()->id,
         //   'affected_id' => 1,

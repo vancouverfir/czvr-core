@@ -96,6 +96,7 @@ Route::group(['domain' => 'training.czvr.ca'], function () {
 //ALL Public Views
 Route::get('/', 'HomeController@view')->name('index');
 Route::view('/airports', 'airports')->name('airports');
+Route::view('/preferredrouting', 'preferredrouting')->name('preferredrouting');
 Route::get('/roster', 'AtcTraining\RosterController@showPublic')->name('roster.public');
 Route::get('/roster/{id}', 'Users\UserController@viewProfile');
 Route::get('/roster/{id}/connections', 'Users\UserController@viewConnections');

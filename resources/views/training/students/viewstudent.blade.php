@@ -227,7 +227,7 @@
 
                 <div class="card-body">
                     @if (empty($vatcanNotes))
-                        <span class="alert">No training notes available!</span>
+                        <span class="alert">No training notes available! Or you refreshed too many times...</span>
                     @else
                         @php
                             $sessionTypes = ['Sweatbox', 'OJT (Monitoring)', 'OTS', 'Generic'];

@@ -35,7 +35,7 @@
 						<li>You will now get your choice to select a region and division to join. To join VATCAN select<span> </span><strong>Americas</strong><span> </span>as your region.</li>
 						<li>In the select a division drop down box, select<span> </span><strong>Canada</strong>.</li>
 						<li>Press<span> </span><strong>Continue</strong><span> </span>to set your selection.</li>
-						<li>Follow the steps on <a href="https://vatcan.ca/How-to-Become-a-Controller" target="_blank" rel="noopener noreferrer">https://vatcan.ca/How-to-Become-a-Controller</a> (if you already have your S1 (or higher) rating, you may skip step 2 on this page.)</li>
+						<li>Follow the steps on <a href="https://vatcan.ca/How-to-Become-a-Controller" target="_blank" rel="noopener noreferrer">https://vatcan.ca/How-to-Become-a-Controller</a> (if you already have your S1 (or higher) rating, you may skip step 3 on this page.)</li>
 					</ol>
 					<br>
 					<h3 class="font-weight-bold blue-text">Step 3 – Join the Vancouver FIR</h3>

@@ -31,7 +31,7 @@
         <div class="card-body">
             <div class="list-group" id="training-notes-container">
                 @if(count($vatcanNotes) === 0)
-                    <div>No Vatcan Notes available!</div>
+                    <div>No Vatcan Notes available! Or you refreshed too many times...</div>
                 @else
                     @php
                         $sessionTypes = ['Sweatbox', 'OJT (Monitoring)', 'OTS', 'Generic'];
