@@ -1515,10 +1515,10 @@ just-diff@^6.0.0:
   version "6.0.2"
   resolved "https://registry.npmjs.org/just-diff/-/just-diff-6.0.2.tgz"
 
-laravel-vite-plugin@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/laravel-vite-plugin/-/laravel-vite-plugin-2.0.1.tgz"
-  integrity sha512-zQuvzWfUKQu9oNVi1o0RZAJCwhGsdhx4NEOyrVQwJHaWDseGP9tl7XUPLY2T8Cj6+IrZ6lmyxlR1KC8unf3RLA==
+laravel-vite-plugin@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/laravel-vite-plugin/-/laravel-vite-plugin-2.1.0.tgz#88d8fed6d0e0bf9e09dc98b9d2b57ad29791e271"
+  integrity sha512-z+ck2BSV6KWtYcoIzk9Y5+p4NEjqM+Y4i8/H+VZRLq0OgNjW2DqyADquwYu5j8qRvaXwzNmfCWl1KrMlV1zpsg==
   dependencies:
     picocolors "^1.0.0"
     vite-plugin-full-reload "^1.1.0"
