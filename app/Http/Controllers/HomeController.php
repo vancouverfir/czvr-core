@@ -108,7 +108,7 @@ class HomeController extends Controller
 
             $isEventBanner = str_contains($banner->banner, 'Happening Now!');
 
-            $isCustomBanner = !empty($banner->banner) && !$isEventBanner;
+            $isCustomBanner = ! empty($banner->banner) && ! $isEventBanner;
 
             if ($isCustomBanner) {
             } elseif ($ongoingEvent) {
@@ -122,7 +122,6 @@ class HomeController extends Controller
                     'bannerMode' => $banner->bannerMode,
                     'updated_at' => now(),
                 ]);
-
             } elseif ($isEventBanner) {
                 DB::table('core_info')->update([
                     'banner' => '',
@@ -135,7 +134,6 @@ class HomeController extends Controller
                 $banner->bannerLink = '';
                 $banner->bannerMode = '';
             }
-
         } catch (Exception $e) {
             \Log::error('Failed to update banner: '.$e->getMessage());
         }
