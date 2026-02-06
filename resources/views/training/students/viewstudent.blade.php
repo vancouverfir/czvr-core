@@ -61,7 +61,7 @@
 
                     <div class="d-flex mt-3" style="gap: 1rem;">
                         <div class="flex-fill">
-                            <h6 class="mb-1 font-weight-bold" style="font-size: 0.8rem;">Activity</h6>
+                            <h6 class="editable mb-1 font-weight-bold" style="font-size: 0.8rem; cursor: pointer;" onclick="window.location='{{ url('/roster/' . $student->user->id . '/connections') }}'"> Activity </h6>
                             <span style="font-size: 0.85rem;">
                                 @if (($student->user->rosterProfile?->currency ?? 0) == 0)
                                     No hours recorded
@@ -105,7 +105,6 @@
                                 </div>
 
                                 @php
-                                    // Check if this checklist group is fully completed
                                     $allCompleted = $items->count() > 0 && $items->every(fn($item) => $item->completed);
                                 @endphp
 
@@ -162,6 +161,8 @@
                             $isWaitlist = in_array($student->status, [0, 3]);
                             $isVisitor = in_array($student->status, [3, 5]);
 
+                            $Actions = in_array($student->status, [4, 9]);
+
                             $routeName = $isVisitor ? 'training.students.promoteVisitor' : 'training.students.promote';
 
                             if ($isWaitlist && $isVisitor) {
@@ -173,38 +174,46 @@
                             }
                         @endphp
 
-                        <form method="POST" action="{{ route($routeName, $student->id) }}" style="display: inline;">
-                            @csrf
-                            <h7 class="list-group-item" style="background: transparent; color: #2cb82c;">
-                                @if ($nextLabel)
-                                    <!-- Promote -->
-                                    <form method="POST" action="{{ $isVisitor ? route('training.students.promoteVisitor', $student->id) : route('training.students.promote', $student->id) }}" style="display: inline;">
-                                        @csrf
-                                        <button type="submit" style="all: unset; color: inherit; cursor: pointer;">
-                                            {{ $buttonLabel }}
+                        @if (!$Actions)
+                            <form method="POST" action="{{ route($routeName, $student->id) }}" style="display: inline;">
+                                @csrf
+                                <h7 class="list-group-item" style="background: transparent; color: #2cb82c;">
+                                    @if ($nextLabel)
+                                        <!-- Promote -->
+                                        <form method="POST" action="{{ $isVisitor ? route('training.students.promoteVisitor', $student->id) : route('training.students.promote', $student->id) }}" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" style="all: unset; color: inherit; cursor: pointer;">
+                                                {{ $buttonLabel }}
+                                            </button>
+                                        </form>
+                                    @else
+                                        <!-- Complete Training -->
+                                        <button type="button" style="all: unset; color: inherit; cursor: pointer;" data-toggle="modal" data-target="#completeTrainingModal">
+                                            Complete Training
                                         </button>
-                                    </form>
-                                @else
-                                    <!-- Complete Training -->
-                                    <button type="button" style="all: unset; color: inherit; cursor: pointer;" data-toggle="modal" data-target="#completeTrainingModal">
-                                        Complete Training
-                                    </button>
-                                @endif
+                                    @endif
+                                </h7>
+                            </form>
+                            <h7 class="list-group-item" style="background: transparent;">
+                                <form method="POST" action="{{ route('training.students.assignT2', $student->id) }}" style="display: inline;">
+                                    @csrf
+                                    <button style="all: unset; color: inherit; cursor: pointer;">Add Tier 2 Checklists</button>
+                                </form>
                             </h7>
-                        </form>
-                    <h7 class="list-group-item" style="background: transparent;">
-                        <form method="POST" action="{{ route('training.students.assignT2', $student->id) }}" style="display: inline;">
-                            @csrf
-                            <button style="all: unset; color: inherit; cursor: pointer;">Add Tier 2 Checklists</button>
-                        </form>
-                    </h7>
-                    @if (auth()->user()->permissions >= 3)
-                        <h7 class="list-group-item" style="background: transparent"><a href="{{ url('/dashboard/roster/edit/' . $student->user->id) }}" style="color: inherit;">Edit Certifications</a></h7>
-                    @endif
-                    <h7 class="list-group-item" style="background: transparent">Created {{$student->created_at?->format('F jS Y')}}</h7>
-                    @if (Auth::user()->permissions >= 4)
-                        <h7 class="list-group-item" style="background: transparent; color: #ff0000; cursor: pointer"><a href="{{ route('training.students.delete', $student->id) }} " style="color: inherit">Delete Student</a></h7>
-                    @endif
+                            @if (auth()->user()->permissions >= 3)
+                                <h7 class="list-group-item" style="background: transparent"><a href="{{ url('/dashboard/roster/edit/' . $student->user->id) }}" style="color: inherit;">Edit Certifications</a></h7>
+                            @endif
+                        @else
+                            @if ($student->status === 9)
+                                <h7 class="list-group-item" style="background: transparent; color: #2cb82c;">
+                                    Training Completed On {{ $student->updated_at?->format('F j, Y') }}
+                                </h7>
+                            @endif
+                        @endif
+                        <h7 class="list-group-item" style="background: transparent">Created {{$student->created_at?->format('F jS Y')}}</h7>
+                        @if (Auth::user()->permissions >= 4)
+                            <h7 class="list-group-item" style="background: transparent; color: #ff0000; cursor: pointer"><a href="{{ route('training.students.delete', $student->id) }} " style="color: inherit">Delete Student</a></h7>
+                        @endif
                 </div>
             </div>
 

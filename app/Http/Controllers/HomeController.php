@@ -98,6 +98,7 @@ class HomeController extends Controller
         // Banner update (only if needed)
         try {
             $now = Carbon::now('UTC');
+
             $ongoingEvent = $nextEvents->first(function ($event) use ($now) {
                 return $now->between(
                     Carbon::parse($event->start_timestamp),
@@ -105,7 +106,12 @@ class HomeController extends Controller
                 );
             });
 
-            if ($ongoingEvent) {
+            $isEventBanner = str_contains($banner->banner, 'Happening Now!');
+
+            $isCustomBanner = !empty($banner->banner) && !$isEventBanner;
+
+            if ($isCustomBanner) {
+            } elseif ($ongoingEvent) {
                 $banner->banner = "🎉 Happening Now! {$ongoingEvent->name}! 🎉";
                 $banner->bannerLink = url('/events/'.$ongoingEvent->slug);
                 $banner->bannerMode = 'success';
@@ -116,7 +122,8 @@ class HomeController extends Controller
                     'bannerMode' => $banner->bannerMode,
                     'updated_at' => now(),
                 ]);
-            } elseif (! empty($banner->banner)) {
+
+            } elseif ($isEventBanner) {
                 DB::table('core_info')->update([
                     'banner' => '',
                     'bannerLink' => '',
@@ -128,6 +135,7 @@ class HomeController extends Controller
                 $banner->bannerLink = '';
                 $banner->bannerMode = '';
             }
+
         } catch (Exception $e) {
             \Log::error('Failed to update banner: '.$e->getMessage());
         }

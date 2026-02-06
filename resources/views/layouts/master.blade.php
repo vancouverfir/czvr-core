@@ -59,9 +59,10 @@
         <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
         @endif
         <!--Leaflet-->
-        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script src="{{ asset('js/leaflet.js') }}"></script>
+        <link rel="stylesheet" href="{{ asset('css/leaflet.css') }}">
         <!--TinyMCE-->
-        <script src="{{ asset('js/tinymce.min.js') }}" referrerpolicy="origin" defer></script>
+        <script src="{{ asset('js/tinymce.min.js') }}" defer></script>
         <!--DataTables-->
         <link rel="stylesheet" type="text/css" href="{{ asset('css/dataTables.bootstrap4.min.css') }}"/>
         <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>

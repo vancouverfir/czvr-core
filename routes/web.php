@@ -295,10 +295,16 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 
-    //Upload and Delete ATC Resources
     Route::group(['middleware' => 'staff'], function () {
+        //Upload and Delete ATC Resources
         Route::post('/atcresources', 'Publications\AtcResourcesController@uploadResource')->name('atcresources.upload');
         Route::get('/atcresources/delete/{id}', 'Publications\AtcResourcesController@deleteResource')->name('atcresources.delete');
+        //Policy creation and settings
+        Route::post('/policies', 'Publications\PoliciesController@addPolicy')->name('policies.create');
+        Route::post('/policies/{id}/edit', 'Publications\PoliciesController@editPolicy');
+        Route::get('/policies/{id}/delete', 'Publications\PoliciesController@deletePolicy');
+        Route::post('/policies/section/create', 'Publications\PoliciesController@addPolicySection')->name('policysection.create');
+        Route::get('/policies/section/{id}/delete', 'Publications\PoliciesController@deletePolicySection');
     });
 
     //ADMIN ONLY
@@ -311,12 +317,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/admin/network/monitoredpositions', 'Network\NetworkController@monitoredPositionsIndex')->name('network.monitoredpositions.index');
         Route::get('/admin/network/monitoredpositions/{position}', 'Network\NetworkController@viewMonitoredPosition')->name('network.monitoredpositions.view');
         Route::post('/admin/network/monitoredpositions/create', 'Network\NetworkController@createMonitoredPosition')->name('network.monitoredpositions.create');
-        //Policy creation and settings
-        Route::post('/policies', 'Publications\PoliciesController@addPolicy')->name('policies.create');
-        Route::post('/policies/{id}/edit', 'Publications\PoliciesController@editPolicy');
-        Route::get('/policies/{id}/delete', 'Publications\PoliciesController@deletePolicy');
-        Route::post('/policies/section/create', 'Publications\PoliciesController@addPolicySection')->name('policysection.create');
-        Route::get('/policies/section/{id}/delete', 'Publications\PoliciesController@deletePolicySection');
 
         //Settings
         Route::prefix('admin/settings')->group(function () {
