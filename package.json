@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "dotenv": "^17.2.4",
-        "npm": "^11.9.0"
+        "npm": "^11.10.0"
     },
     "type": "module"
 }
