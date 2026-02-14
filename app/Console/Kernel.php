@@ -9,6 +9,7 @@ use App\Console\Commands\EventReminders;
 use App\Console\Commands\RatingUpdate;
 use App\Console\Commands\RenewNotification;
 use App\Console\Commands\SendSessionReminder;
+use App\Console\Commands\SyncStudents;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Artisan;
@@ -38,6 +39,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('vancouver:cachevatsim')->everyFiveMinutes();
         $schedule->command('vancouver:cacheweather')->everyFifteenMinutes();
         $schedule->command(RenewNotification::class)->hourly();
+        $schedule->command(SyncStudents::class)->hourly();
         $schedule->command('backup:clean')->daily()->at('00:31');
         $schedule->command('backup:run')->daily()->at('01:01');
         // $schedule->command(EventReminders::class)->everyMinute();

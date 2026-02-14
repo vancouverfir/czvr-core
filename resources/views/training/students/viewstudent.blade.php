@@ -3,9 +3,9 @@
 
 <style>
 .instructor:hover, .editable:hover { color: #2cb82c; }
-.nav-pills .nav-link { color: #aaa; font-weight: 500; border-radius: 10px; transition: all 0.2s; }
-.nav-pills .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
-.nav-pills .nav-link.active { color: #fff; background: rgba(255,255,255,0.15) !important; }
+.student-tabs .nav-link { color: #aaa; font-weight: 500; border-radius: 10px; transition: all 0.2s; }
+.student-tabs .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+.student-tabs .nav-link.active { color: #fff; background: rgba(255,255,255,0.15) !important; }
 .activity-message { display: flex; gap: 12px; margin-bottom: 15px; }
 .activity-icon { width: 36px; height: 36px; background: #2cb82c; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .activity-bubble { flex: 1; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; border-left: 3px solid #2cb82c; }
@@ -15,7 +15,7 @@
 @include('includes.trainingMenu')
 
 <div class="container" style="margin-top: 20px; margin-bottom: 30px;">
-    <ul class="nav nav-pills mb-4" style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 6px;">
+    <ul class="nav nav-pills student-tabs mb-4" style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 6px;">
         <li class="nav-item flex-fill"><a class="nav-link active text-center" data-toggle="tab" href="#student-info"><i class="fas fa-address-card mr-1"></i>Info</a></li>
         @if (auth()->user()->permissions >= 3)
         <li class="nav-item flex-fill"><a class="nav-link text-center" data-toggle="tab" href="#staff-comments"><i class="fas fa-signature mr-1"></i>Comments <span class="badge badge-light ml-1" style="background: rgba(255,255,255,0.1); color: #ccc; font-size: 0.7rem;"></span></a></li>
@@ -175,7 +175,7 @@
                         </div>
                     </div>
                     @empty
-                    <div class="text-center py-5"><i class="fas fa-comments fa-3x mb-3" style="color: #666;"></i><p style="color: #999;">No staff comments yet!</p></div>
+                    <div class="text-center py-5"><i class="fas fa-signature fa-3x mb-3" style="color: #666;"></i><p style="color: #999;">No staff comments yet!</p></div>
                     @endforelse
                 </div>
             </div>

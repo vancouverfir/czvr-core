@@ -92,7 +92,12 @@ class SyncStudents extends Command
         }
 
         DB::transaction(function () use ($cid, $facilityJoin, $isVisitor, $type) {
-            $maxPos = Student::max('position') ?? 0;
+            if ($isVisitor) {
+                $maxPos = Student::whereIn('status', [3, 5])->max('position') ?? 0;
+            } else {
+                $maxPos = Student::whereNotIn('status', [3, 5])->max('position') ?? 0;
+            }
+
             $createdAt = $facilityJoin ? Carbon::parse($facilityJoin) : now();
 
             $student = Student::create([

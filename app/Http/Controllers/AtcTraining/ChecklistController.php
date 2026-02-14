@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\AtcTraining;
 
+use App\Helpers\CreateNote;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Checklist;
 use App\Models\AtcTraining\LabelChecklistMap;
@@ -11,6 +12,7 @@ use App\Models\AtcTraining\StudentChecklistItem;
 use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ChecklistController extends Controller
 {

@@ -394,7 +394,7 @@ class TrainingController extends Controller
         if ($request->filled('instructor')) {
             $student->update(['instructor_id' => $request->instructor]);
 
-            $instructorText = Auth::user()->id === $student->instructor->user->user_id ? 'assigned themselves to student' : 'assigned instructor '.$student->instructor->user->fullName('FLC').' to student';
+            $instructorText = Auth::user()->id === $student->instructor->user_id ? 'assigned themselves to student' : 'assigned instructor '.$student->instructor->user->fullName('FLC').' to student';
 
             CreateNote::newNote($student->id, 'Assigned Instructor', '<u>'.Auth::user()->fullName('FLC').'</u> '.$instructorText);
 
