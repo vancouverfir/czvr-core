@@ -2,15 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\CreateNote;
+use App\Models\AtcTraining\Student;
+use App\Models\Users\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Carbon\Carbon;
-use App\Models\AtcTraining\Student;
-use App\Models\Users\User;
-use App\Helpers\CreateNote;
 
 class SyncStudents extends Command
 {
@@ -19,27 +18,29 @@ class SyncStudents extends Command
 
     public function handle()
     {
-        $this->info('Starting Student Sync ' . now() . '');
+        $this->info('Starting Student Sync '.now().'');
         Log::info('Student Sync Started.');
 
         $apiKey = env('VATCAN_API_KEY');
-        $apiUrl = "https://vatcan.ca/api/v2/facility/roster?api_key=";
+        $apiUrl = 'https://vatcan.ca/api/v2/facility/roster?api_key=';
 
-        if (!$apiKey) {
+        if (! $apiKey) {
             $this->error('VATCAN_API_KEY Missing!');
+
             return;
         }
 
         try {
-            $response = Http::timeout(35)->get($apiUrl . $apiKey);
+            $response = Http::timeout(35)->get($apiUrl.$apiKey);
 
             if ($response->failed()) {
-                $this->error("API Request Failed. Status: " . $response->status());
+                $this->error('API Request Failed. Status: '.$response->status());
+
                 return;
             }
 
             $data = $response->json()['data'];
-            $this->info('Processing ' . count($data['controllers']) . ' home and ' . count($data['visitors']) . ' visiting controllers.');
+            $this->info('Processing '.count($data['controllers']).' home and '.count($data['visitors']).' visiting controllers.');
 
             foreach ($data['controllers'] as $controller) {
                 $this->syncStudentStatus($controller['cid'], $controller['facility_join'], false);
@@ -59,10 +60,9 @@ class SyncStudents extends Command
             }
 
             $this->info('Sync Students Done');
-
         } catch (\Exception $e) {
-            $this->error("Exception: " . $e->getMessage());
-            Log::critical("Student Sync Exception: " . $e->getMessage());
+            $this->error('Exception: '.$e->getMessage());
+            Log::critical('Student Sync Exception: '.$e->getMessage());
         }
     }
 
@@ -71,8 +71,9 @@ class SyncStudents extends Command
         $type = $isVisitor ? 'Visitor' : 'Home';
 
         $roster = DB::table('roster')->where('cid', $cid)->first();
-        if (!$roster) {
+        if (! $roster) {
             $this->warn("[$type] CID $cid: No local roster record. Skipping.");
+
             return;
         }
 
@@ -80,11 +81,13 @@ class SyncStudents extends Command
 
         if ($hasCerts) {
             $this->line("[$type] CID $cid: Certified controller. Skipping.");
+
             return;
         }
 
         if (Student::where('user_id', $cid)->exists()) {
             $this->line("[$type] CID $cid: Already in training queue.");
+
             return;
         }
 
@@ -101,26 +104,26 @@ class SyncStudents extends Command
                 'updated_at' => now(),
             ]);
 
-            if (!$isVisitor) {
+            if (! $isVisitor) {
                 DB::table('student_interactive_labels')->insert([
                     ['student_label_id' => 8, 'student_id' => $student->id, 'created_at' => now(), 'updated_at' => now()],
                     ['student_label_id' => 7, 'student_id' => $student->id, 'created_at' => now(), 'updated_at' => now()],
                 ]);
             } else {
                 DB::table('student_interactive_labels')->insert([
-                    'student_label_id' => 9, 'student_id' => $student->id, 'created_at' => now(), 'updated_at' => now()
+                    'student_label_id' => 9, 'student_id' => $student->id, 'created_at' => now(), 'updated_at' => now(),
                 ]);
 
                 $user = User::find($cid);
                 $divLabel = ($user && $user->division_code === 'CAN') ? 17 : 16;
                 DB::table('student_interactive_labels')->insert([
-                    'student_label_id' => $divLabel, 'student_id' => $student->id, 'created_at' => now(), 'updated_at' => now()
+                    'student_label_id' => $divLabel, 'student_id' => $student->id, 'created_at' => now(), 'updated_at' => now(),
                 ]);
             }
 
             CreateNote::newNote($student->id, 'Created', 'Student created automatically by System');
 
-            $this->info("[$type] CID $cid: Added to queue at position " . ($maxPos + 1));
+            $this->info("[$type] CID $cid: Added to queue at position ".($maxPos + 1));
         });
     }
 }
