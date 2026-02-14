@@ -125,6 +125,8 @@ class ChecklistController extends Controller
 
         $this->assignNewLabel($student, $nextLabelName, $isNonVatcanVisitor ? 'T3' : 'T1', true);
 
+        CreateNote::newNote($student->id, 'Promoted Visitor', '<u>' . Auth::user()->fullName('FLC') . '</u> promoted visitor to ' . $nextLabelName);
+
         return back()->with('success', "Visitor promoted to {$nextLabelName} and checklists assigned!");
     }
 
@@ -182,6 +184,8 @@ class ChecklistController extends Controller
         }
 
         $this->assignNewLabel($student, $nextLabelName, 'T1');
+
+        CreateNote::newNote($student->id, 'Promoted Student', '<u>' . Auth::user()->fullName('FLC') . '</u> promoted student to ' . $nextLabelName);
 
         return back()->with('success', "Student promoted to {$nextLabelName} and checklists assigned!");
     }
