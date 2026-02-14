@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\AtcTraining;
 
+use App\Helpers\CreateNote;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Checklist;
 use App\Models\AtcTraining\Instructor;
@@ -139,6 +140,8 @@ class TrainingController extends Controller
         $student->checklistItems()->delete();
 
         $student->update(['status' => 9]);
+
+        CreateNote::newNote($student->id, 'Completed Training', Auth::user()->fullName('FLC').' marked training as completed');
 
         return redirect()->route('training.students.completed')->with('success', 'Completed training for '.$student->user->fullName('FLC').'!');
     }
@@ -383,11 +386,17 @@ class TrainingController extends Controller
         if ($request->filled('remove_instructor') && $request->remove_instructor == 1) {
             $student->update(['instructor_id' => null]);
 
+            CreateNote::newNote($student->id, 'Removed Instructor', '<u>'.Auth::user()->fullName('FLC').'</u> removed instructor from student');
+
             return back()->withSuccess("Unassigned {$student->user->fullName('FLC')} from Instructor!");
         }
 
         if ($request->filled('instructor')) {
             $student->update(['instructor_id' => $request->instructor]);
+
+            $instructorText = Auth::user()->id === $student->instructor->user->user_id ? 'assigned themselves to student' : 'assigned instructor '.$student->instructor->user->fullName('FLC').' to student';
+
+            CreateNote::newNote($student->id, 'Assigned Instructor', '<u>'.Auth::user()->fullName('FLC').'</u> '.$instructorText);
 
             return back()->withSuccess("Paired {$student->user->fullName('FLC')} with Instructor {$student->instructor->user->fullName('FLC')}!");
         }

@@ -281,11 +281,10 @@ def fetch_roster():
         exit()
     resp = req.json()
 
-    users_sorted = sorted(resp["data"]["controllers"], key=lambda u: u.get("facility_join") or datetime.max)
+    users_sorted = sorted(resp["data"]["controllers"], key=lambda u: datetime.max)
 
     for i in users_sorted:
         fullname = i["first_name"] + " " + i["last_name"]
-        facility_join = i.get("facility_join")
         rating_short = conv_rating(i["rating"])
         print("\nCID =", i["cid"])
         print("Users Full Name:", fullname)
@@ -297,7 +296,6 @@ def fetch_roster():
                 i["rating"],
                 i["email"],
                 fullname,
-                facility_join,
                 rating_short,
             )
         )
@@ -330,13 +328,6 @@ def fetch_visit_roster():
 
     for i in visitors_sorted:
         fullname = i["first_name"] + " " + i["last_name"]
-        facility_join = None
-        for vf in i.get("visiting_facilities", []):
-            if vf["fir"]["name_long"] == "Vancouver FIR":
-                dt = datetime.strptime(vf["created_at"].rstrip("Z"), "%Y-%m-%dT%H:%M:%S.%f")
-                facility_join = dt.strftime("%Y-%m-%d %H:%M:%S")
-                break
-
         rating_short = conv_rating(i["rating"])
         print("\nCID =", i["cid"])
         print("Users Full Name:", fullname)
@@ -348,7 +339,6 @@ def fetch_visit_roster():
                 i["rating"],
                 i["email"],
                 fullname,
-                facility_join,
                 rating_short,
             )
         )
@@ -405,7 +395,7 @@ def trim_roster():
                 "UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
             print("Invalid CID Removed from DB... BUH BYE")
 
-async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_join, rating_short):
+async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_short):
     """
     Stores new users in the roster or updates existing ones
     """
@@ -464,42 +454,6 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
             print(f"Assigning staff role '{staff_role}' to {cid}")
             cur.execute("UPDATE roster SET staff=? WHERE cid=?", (staff_role, cid))
 
-        cur.execute("""
-            SELECT delgnd, delgnd_t2, twr, twr_t2, dep, app, app_t2, ctr, fss
-            FROM roster WHERE cid=?
-        """, (cid,))
-        certs = cur.fetchone()
-
-        if certs and all(c == 0 for c in certs):
-            cur.execute("SELECT COUNT(*) FROM students WHERE user_id=?", (cid,))
-            is_student = cur.fetchone()[0]
-
-            if is_student == 0:
-                print(f"Adding user {cid} to students table!")
-
-                cur.execute("SELECT COALESCE(MAX(position), 0) FROM students FOR UPDATE")
-                max_position = cur.fetchone()[0]
-                new_position = max_position + 1
-
-                cur.execute("""
-                    INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, created_at, updated_at)
-                    VALUES (?, NULL, ?, ?, NULL, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
-                """, (cid, new_position, 0, facility_join))
-                student_id = cur.lastrowid
-
-                cur.execute("""
-                    INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
-                    VALUES
-                        (8, ?, UTC_TIMESTAMP, UTC_TIMESTAMP),
-                        (7, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
-                """, (student_id, student_id))
-
-                cur.execute("""
-                    INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
-                    VALUES (?, 1, 'Created', CONCAT('Student created automatically by System at ', NOW()), NOW(), NOW())
-                """, (student_id,))
-                print(f"Created user {cid} !")
-
         connectSQL.commit()
 
     except Exception as e:
@@ -511,7 +465,7 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, facility_jo
         print(f"Completed User {cid}!")
 
 
-async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facility_join, rating_short):
+async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, rating_short):
     """
     Stores new visiting users or updates existing ones as visitors
     """
@@ -561,50 +515,6 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, facil
                 INSERT INTO roster (cid, user_id, full_name, status, active, visit)
                 VALUES (?, ?, ?, 'visit', '1', '1')
             """, (cid, cid, fullname))
-
-        cur.execute("""
-            SELECT delgnd, delgnd_t2, twr, twr_t2, dep, app, app_t2, ctr, fss
-            FROM roster WHERE cid=?
-        """, (cid,))
-        certs = cur.fetchone()
-
-        if certs and all(c == 0 for c in certs):
-            cur.execute("SELECT COUNT(*) FROM students WHERE user_id=?", (cid,))
-            is_student = cur.fetchone()[0]
-
-            if is_student == 0:
-                print(f"Adding user {cid} to visitor students table!")
-
-                cur.execute("SELECT COALESCE(MAX(position), 0) FROM students FOR UPDATE")
-                max_position = cur.fetchone()[0]
-                new_position = max_position + 1
-
-                cur.execute("""
-                    INSERT INTO students (user_id, times, position, status, instructor_id, renewal_token, renewed_at, created_at, updated_at)
-                    VALUES (?, NULL, ?, ?, NULL, NULL, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
-                """, (cid, new_position, 3, facility_join))
-                student_id = cur.lastrowid
-
-                cur.execute("""
-                    INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
-                    VALUES
-                        (9, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
-                """, (student_id,))
-
-                cur.execute("SELECT division_code FROM users WHERE id=?", (cid,))
-                division_row = cur.fetchone()
-                division_code = division_row[0] if division_row else None
-                vat_label = 17 if division_code == 'CAN' else 16
-                cur.execute("""
-                    INSERT INTO student_interactive_labels (student_label_id, student_id, created_at, updated_at)
-                    VALUES (?, ?, UTC_TIMESTAMP, UTC_TIMESTAMP)
-                """, (vat_label, student_id))
-
-                cur.execute("""
-                    INSERT INTO student_notes (student_id, author_id, title, content, created_at, updated_at)
-                    VALUES (?, 1, 'Created', CONCAT('Student created automatically by System at ', NOW()), NOW(), NOW())
-                """, (student_id,))
-                print(f"Created visiting student {cid}!")
 
         connectSQL.commit()
 
