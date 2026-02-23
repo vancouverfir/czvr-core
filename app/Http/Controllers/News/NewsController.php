@@ -11,28 +11,30 @@ use App\Models\Users\StaffMember;
 use App\Models\Users\User;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class NewsController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $articles = News::where('certification', false)->get()->sortByDesc('id');
 
         return view('dashboard.news.index', compact('articles'));
     }
 
-    public function createArticle()
+    public function createArticle(): View
     {
         $staff = StaffMember::where('user_id', '!=', 1)->get();
 
         return view('dashboard.news.articles.create', compact('staff'));
     }
 
-    public function postArticle(Request $request)
+    public function postArticle(Request $request): RedirectResponse
     {
         //Define validator messages
         $messages = [
@@ -127,7 +129,7 @@ class NewsController extends Controller
         return redirect()->route('news.articles.view', $article->slug);
     }
 
-    public function viewArticle($slug)
+    public function viewArticle($slug): View
     {
         $staff = StaffMember::where('user_id', '!=', 1)->get();
         $article = News::where('slug', $slug)->firstOrFail();
@@ -135,7 +137,7 @@ class NewsController extends Controller
         return view('dashboard.news.articles.view', compact('article', 'staff'));
     }
 
-    public function viewArticlePublic($slug)
+    public function viewArticlePublic($slug): View
     {
         $article = News::where('slug', $slug)->firstOrFail();
         if (! $article->visible) {
@@ -147,7 +149,7 @@ class NewsController extends Controller
         return view('publicarticle', compact('article'));
     }
 
-    public function editArticle(Request $request, $id)
+    public function editArticle(Request $request, $id): RedirectResponse
     {
         //Define validator messages
         $messages = [
@@ -204,7 +206,7 @@ class NewsController extends Controller
         return redirect()->Back()->withSuccess('Successfully Edited Article!');
     }
 
-    public function deleteArticle($id)
+    public function deleteArticle($id): RedirectResponse
     {
         $article = News::whereId($id)->firstOrFail();
         AuditLogEntry::insert(Auth::user(), 'Deleted News Article '.$article->id, User::find(1), 0);
@@ -213,21 +215,21 @@ class NewsController extends Controller
         return redirect('/admin/news')->withSuccess('Article Deleted!');
     }
 
-    public function viewAllPublic()
+    public function viewAllPublic(): View
     {
         $news = News::where('visible', true)->get()->sortByDesc('id');
 
         return view('publicnews', compact('news'));
     }
 
-    public function minutesIndex()
+    public function minutesIndex(): View
     {
         $minutes = MeetingMinutes::all();
 
         return view('dashboard.news.meetingminutes', compact('minutes'));
     }
 
-    public function minutesDelete($id)
+    public function minutesDelete($id): RedirectResponse
     {
         $minutes = MeetingMinutes::whereId($id)->firstOrFail();
         AuditLogEntry::insert(Auth::user(), 'Deleted meeting minutes '.$minutes->title, User::find(1), 0);
@@ -236,7 +238,7 @@ class NewsController extends Controller
         return redirect()->back()->with('info', 'Deleted item');
     }
 
-    public function minutesUpload(Request $request)
+    public function minutesUpload(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',

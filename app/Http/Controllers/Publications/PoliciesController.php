@@ -10,13 +10,15 @@ use App\Models\Publications\PolicySection;
 use App\Models\Settings\AuditLogEntry;
 use App\Models\Users\User;
 use Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 use Mail;
 
 class PoliciesController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         if (Auth::check() == false || Auth::user()->permissions < 2) {
             $policySections = PolicySection::all();
@@ -31,7 +33,7 @@ class PoliciesController extends Controller
         }
     }
 
-    public function addPolicy(Request $request)
+    public function addPolicy(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'name' => 'required',
@@ -151,7 +153,7 @@ class PoliciesController extends Controller
         return redirect()->route('policies')->with('success', 'Policy '.$policy->name.' added!');
     }
 
-    public function editPolicy(Request $request, $id)
+    public function editPolicy(Request $request, $id): RedirectResponse
     {
         $this->validate($request, [
             'name' => 'required',
@@ -204,7 +206,7 @@ class PoliciesController extends Controller
         return redirect()->route('policies')->with('success', 'Policy <text class="font-weight-bold">'.$request->get('name').'</text> edited!');
     }
 
-    public function deletePolicy($id)
+    public function deletePolicy($id): RedirectResponse
     {
         $policy = Policy::where('id', $id)->firstOrFail();
 
@@ -228,7 +230,7 @@ class PoliciesController extends Controller
         return redirect()->route('policies')->with('success', 'Policy deleted.');
     }
 
-    public function addPolicySection(Request $request)
+    public function addPolicySection(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'name' => 'required',
@@ -245,7 +247,7 @@ class PoliciesController extends Controller
             ->with('success', 'New policy section: '.$request->get('name').' created!');
     }
 
-    public function deletePolicySection($id)
+    public function deletePolicySection($id): RedirectResponse
     {
         $section = PolicySection::where('id', $id)->firstOrFail();
         $policies = Policy::all();

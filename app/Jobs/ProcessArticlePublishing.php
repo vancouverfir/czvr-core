@@ -33,7 +33,7 @@ class ProcessArticlePublishing implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         //Publish on Discord webhook
         $hook = json_encode([

@@ -3,6 +3,7 @@
 namespace App\Models\AtcTraining;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\HtmlString;
 
 class StudentLabel extends Model
@@ -13,7 +14,7 @@ class StudentLabel extends Model
         'name', 'fa_icon', 'color',
     ];
 
-    public function students()
+    public function students(): HasMany
     {
         return $this->hasMany(StudentInteractiveLabels::class, 'student_label_id');
     }

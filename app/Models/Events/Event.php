@@ -7,6 +7,8 @@ use App\Models\Users\User;
 use App\Traits\HasMarkdownFields;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
 class Event extends Model
@@ -28,7 +30,7 @@ class Event extends Model
         return ['description'];
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -40,12 +42,12 @@ class Event extends Model
         return EventConfirm::where('event_id', $this->id)->where('roster_id', $check->id)->first();
     }
 
-    public function updates()
+    public function updates(): HasMany
     {
         return $this->hasMany(EventUpdate::class);
     }
 
-    public function controllerApplications()
+    public function controllerApplications(): HasMany
     {
         return $this->hasMany(ControllerApplication::class);
     }
@@ -101,7 +103,7 @@ class Event extends Model
         return false;
     }
 
-    public function eventconfirm()
+    public function eventconfirm(): HasMany
     {
         return $this->hasMany(EventConfirm::class);
     }

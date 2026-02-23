@@ -8,6 +8,7 @@ use App\Models\Users\User;
 use App\Models\Users\UserPreferences;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -15,7 +16,7 @@ use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
-    public function AuthLogin()
+    public function AuthLogin(): RedirectResponse
     {
         Session::forget(['connect_state', 'connect_token']);
 
@@ -34,14 +35,14 @@ class LoginController extends Controller
         return redirect(config('connect.url').'/oauth/authorize?'.$query);
     }
 
-    public function logout()
+    public function logout(): RedirectResponse
     {
         Auth::logout();
 
         return redirect('/')->with('success', 'Logged out!');
     }
 
-    public function validateAuthLogin(Request $request)
+    public function validateAuthLogin(Request $request): RedirectResponse
     {
         //Written by Harrison Scott
         $http = new Client;

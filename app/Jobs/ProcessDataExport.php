@@ -32,7 +32,7 @@ class ProcessDataExport implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $user = User::whereId($this->user->id)->with(['notes', 'applications', 'instructorProfile', 'studentProfile', 'staffProfile', 'rosterProfile', 'eventApplications', 'eventConfirms', 'discordBans', 'tickets', 'ticketReplies'])->firstOrFail();
         Log::info('Processing GDPR Export All for '.$this->user->id);

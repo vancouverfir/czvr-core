@@ -27,7 +27,7 @@ class SendSessionReminder extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
         $now = Carbon::now();
         $start = $now->copy()->addHours(3)->startOfMinute();
@@ -42,5 +42,7 @@ class SendSessionReminder extends Command
             $studentUser = $session->student->user;
             Mail::to($studentUser->email)->queue(new SessionReminder($studentUser, $session));
         }
+
+        return 0;
     }
 }

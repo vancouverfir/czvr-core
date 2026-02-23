@@ -7,13 +7,15 @@ use App\Mail\InstructingSession as InstructingSessionMail;
 use App\Models\AtcTraining\InstructingSession;
 use App\Models\AtcTraining\Instructor;
 use App\Models\AtcTraining\Student;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 
 class InstructingSessionsController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $upcomingSessions = InstructingSession::where('end_time', '>=', now())->get();
 
@@ -22,19 +24,19 @@ class InstructingSessionsController extends Controller
         return view('training.instructingsessions.index', compact('upcomingSessions'));
     }
 
-    public function show($id)
+    public function show($id): View
     {
         $session = InstructingSession::findOrFail($id);
 
         return view('training.instructingsessions.view', compact('session'));
     }
 
-    public function createForm()
+    public function createForm(): View
     {
         return view('training.instructingsessions.new', $this->getStudentsAndInstructors());
     }
 
-    public function create(Request $request)
+    public function create(Request $request): RedirectResponse
     {
         $data = $this->validateData($request);
 
@@ -47,12 +49,12 @@ class InstructingSessionsController extends Controller
         return redirect()->route('training.instructingsessions.index')->with('success', 'Session created and notification sent!');
     }
 
-    public function edit(InstructingSession $session)
+    public function edit(InstructingSession $session): View
     {
         return view('training.instructingsessions.edit', array_merge(['session' => $session], $this->getStudentsAndInstructors()));
     }
 
-    public function cancel(InstructingSession $session)
+    public function cancel(InstructingSession $session): RedirectResponse
     {
         $session->delete();
         $this->sendSessionMail($session, 'cancelled');
@@ -60,7 +62,7 @@ class InstructingSessionsController extends Controller
         return redirect()->route('training.instructingsessions.index')->with('success', 'Session cancelled and notification sent!');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request);
         $data['instructor_id'] = Instructor::where('user_id', Auth::id())->value('id') ?? Auth::id();
@@ -71,7 +73,7 @@ class InstructingSessionsController extends Controller
         return redirect()->route('training.instructingsessions.index')->with('success', 'Session created and notification sent!');
     }
 
-    public function update(Request $request, InstructingSession $session)
+    public function update(Request $request, InstructingSession $session): RedirectResponse
     {
         $data = $this->validateData($request);
 

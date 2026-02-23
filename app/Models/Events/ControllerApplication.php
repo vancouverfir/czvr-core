@@ -4,6 +4,7 @@ namespace App\Models\Events;
 
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 class ControllerApplication extends Model
@@ -19,12 +20,12 @@ class ControllerApplication extends Model
         'end_availability_timestamp' => 'datetime',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function event()
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
     }

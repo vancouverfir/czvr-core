@@ -22,7 +22,7 @@
                             <span class="label content-font-color">Export all data</span>
                           </a>
                           <div class="step-content box-colour">
-                            <p>To export all data, please email webmaster@czvr.ca or click the button below</p>
+                            <p>To export all data, please visit <a href="https://czvr.ca/staff" style="display:inline; padding:0; margin:0;">czvr.ca/staff</a> or click the button below</p>
                             <form action="{{route('me.data.export.all')}}" method="POST">
                                 @csrf
                                 <div class="md-form">
@@ -55,7 +55,7 @@
                             </a>
                             <div class="step-content box-colour">
                               <p>Please email our websupport team or open a ticket on your dashboard to request specific pieces of data.</p>
-                                <button onclick="location.href='mailto:webmaster@czvr.ca'" class="btn btn-primary">Email our Support</button>
+                                <button onclick="location.href='https://czvr.ca/staff'" class="btn btn-primary">Email our Support</button>
                             </div>
                           </li>
                       </ul>
@@ -67,7 +67,7 @@
                 <div class="card-header">Delete Data</div>
                 <div class="card-body">
                     <p>Please email our websupport team to request deletion of your data.</p>
-                    <button onclick="location.href='mailto:webmaster@czvr.ca'" class="btn btn-primary">Email our Support</button>
+                    <button onclick="location.href='https://czvr.ca/staff'" class="btn btn-primary">Email our Support</button>
                 </div>
             </div>
             <div class="card mt-3">

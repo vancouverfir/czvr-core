@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Settings\AuditLogEntry;
 use App\Models\Users\User;
 use Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AuditLogController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $entries2 = AuditLogEntry::all()->sortBy('created_at', 'DESC');
         $entries = AuditLogEntry::sortByDesc('created_at')->get();
@@ -18,7 +20,7 @@ class AuditLogController extends Controller
         return view('dashboard.auditlog', compact('entries'));
     }
 
-    public function insert(Request $request)
+    public function insert(Request $request): RedirectResponse
     {
         $validateddata = $request->validate([
             'message' => 'required',

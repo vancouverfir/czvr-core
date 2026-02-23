@@ -47,8 +47,8 @@
         <!-- MDB core JavaScript -->
         <script type="text/javascript" src="{{ asset('js/mdb.min.js') }}"></script>
         <!--CZQO specific CSS-->
-        @if (Auth::check())
-        @switch (Auth::user()->preferences)
+        @if (auth()->check())
+        @switch (auth()->user()->preferences)
             @case("default")
             <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
             @break
@@ -108,7 +108,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item {{ Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
-                            @if(Auth::check() && Auth::user()->permissions >= 4)
+                            @if(auth()->check() && auth()->user()->permissions >= 4)
                             <li class="nav-item dropdown {{ Request::is('news') || Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">News</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -119,7 +119,7 @@
                             @endif
                         </li>
                         <li class="nav-item {{ Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
-                            @if(Auth::check() && Auth::user()->permissions >= 4)
+                            @if(auth()->check() && auth()->user()->permissions >= 4)
                             <li class="nav-item dropdown {{ Request::is('events') || Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -134,10 +134,10 @@
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
                             <a class="dropdown-item" href="{{route('booking')}}">ATC Booking</a>
                             <a class="dropdown-item" href="{{route('roster.public')}}">Roster</a>
-                            @if(Auth::check() && Auth::user()->permissions >= 3)
+                            @if(auth()->check() && auth()->user()->permissions >= 3)
                                 <a class="dropdown-item {{ Request::is('roster') ? 'active white-text' : '' }}" href="{{route('roster.index')}}">Manage Roster</a>
                             @endif
-                            @if(!Auth::check() || Auth::user()->permissions == 0)
+                            @if(!auth()->check() || auth()->user()->permissions == 0)
                                 <a class="dropdown-item {{ Request::is('join') ? 'active white-text' : '' }}" href="{{url ('/join')}}">How to Become a Vancouver Controller</a>
                             @endif
                             </div>
@@ -172,7 +172,7 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav ml-auto nav-flex-icons">
-                        @unless (Auth::check())
+                        @unless (auth()->check())
                         <li class="nav-item d-flex align-items-center">
                             <a href="{{route('auth.connect.login')}}" class="nav-link waves-effect waves-light">
                                 <i class="fas fa-sign-in-alt"></i>&nbsp;Login
@@ -182,12 +182,12 @@
                         @auth
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{Auth::user()->avatar()}}" style="height: 27px; width: 27px; margin-right: 7px; margin-bottom: 3px; border-radius: 50%;">&nbsp;<span class="font-weight-bold">{{Auth::user()->fullName("F")}}</span>
+                                <img src="{{auth()->user()->avatar()}}" style="height: 27px; width: 27px; margin-right: 7px; margin-bottom: 3px; border-radius: 50%;">&nbsp;<span class="font-weight-bold">{{auth()->user()->fullName("F")}}</span>
                             </a>
 
                             <div class="dropdown-menu dropdown-default py-0" aria-labelledby="navbarDropdownMenuLink-333">
                                     <a class="dropdown-item" href="{{route('dashboard.index')}}"> <i class="fas fas fa-tachometer-alt mr-2"></i> Dashboard </a>
-                                @if (auth()->check() && (auth()->user()->instructorProfile))
+                                @if (auth()->check() && ((auth()->user()->instructorProfile) || auth()->user()->permissions == 5))
                                     <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Instructors </a>
                                 @elseif (auth()->check() && auth()->user()->permissions == 2)
                                     <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Mentors </a>
@@ -287,7 +287,7 @@
         </div>
     </footer>
     <!-- Footer -->
-    @if (Auth::check() && Auth::user()->init == 0 && Request::is('privacy') == false)
+    @if (auth()->check() && auth()->user()->init == 0 && Request::is('privacy') == false)
     <!--Privacy welcome modal-->
     <div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
          aria-hidden="true">

@@ -60,7 +60,7 @@
                 <br/>
                 <div class="row">
                     <button type="submit" class="btn btn-success">Reply</button>
-                    @if(Auth::user()->permissions >= 4)
+                    @if(auth()->user()->permissions >= 4)
                         <a role="button" data-toggle="modal" data-target="#closeTicket" class="btn btn-outline-danger">Close Ticket</a>
                     @endif
                 </div>
@@ -70,7 +70,7 @@
     </div>
 @stop
 
-@if(Auth::user()->permissions >= 4)
+@if(auth()->user()->permissions >= 4)
 {{-- Start Close Ticket Modal --}}
 <div class="modal fade" id="closeTicket" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

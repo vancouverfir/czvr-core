@@ -25,7 +25,7 @@ class SessionReminder extends Mailable
             : $recipient;
     }
 
-    public function build()
+    public function build(): self
     {
         return $this->to($this->recipient->email)
                     ->subject('Upcoming Instructing Session')

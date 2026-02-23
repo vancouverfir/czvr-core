@@ -5,6 +5,8 @@ namespace App\Models\AtcTraining;
 use App\Models\Events\EventConfirm;
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RosterMember extends Model
 
@@ -17,7 +19,7 @@ class RosterMember extends Model
 
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -52,7 +54,7 @@ class RosterMember extends Model
         return false;
     }
 
-    public function eventconfirm()
+    public function eventconfirm(): HasMany
     {
         return $this->hasMany(EventConfirm::class);
     }

@@ -55,7 +55,7 @@
             <a href="#" data-toggle="modal" data-target="#newStudent" class="text-primary" style="font-size: 18px; text-decoration: none; float: right;"><i class="fa fa-plus mr-1"></i>Create New</a>
         </h1>
         <div class="mt-1">
-            @if (Auth::user()->permissions >= 3)
+            @if (auth()->user()->permissions >= 3)
                 <div class="text-muted small">Tip: Hover over the # column to reorder!</div>
                 <style>.drag-sortable {cursor: move;}</style>
             @endif
@@ -102,7 +102,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    @if (Auth::user()->permissions >= 3)
+                                    @if (auth()->user()->permissions >= 3)
                                         {{ $student->user->email }}
                                     @else
                                         <i>Hidden for Privacy</i>
@@ -151,7 +151,7 @@
                                 </a>
                             </td>
                             <td>
-                                @if (Auth::user()->permissions >= 3)
+                                @if (auth()->user()->permissions >= 3)
                                     {{ $visitor->user->email }}
                                 @else
                                     <i>Hidden for Privacy</i>
@@ -232,7 +232,7 @@
             }
         });
 
-    @if (Auth::user()->permissions >= 3)
+    @if (auth()->user()->permissions >= 3)
 
         $(function () {
             $('#waitlistTable tbody').sortable({

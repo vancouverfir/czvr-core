@@ -31,7 +31,7 @@ class RenewNotification extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
         $days = 31;
 
@@ -122,5 +122,7 @@ class RenewNotification extends Command
                 $s->save();
             }
         }
+
+        return Command::SUCCESS;
     }
 }

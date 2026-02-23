@@ -71,7 +71,7 @@ class InstructingSession extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): self
     {
         $subject = match ($this->action) {
             'created' => 'New Instructing Session Scheduled',

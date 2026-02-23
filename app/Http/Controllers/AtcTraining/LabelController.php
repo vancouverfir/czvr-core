@@ -5,11 +5,12 @@ namespace App\Http\Controllers\AtcTraining;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentLabel;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class LabelController extends Controller
 {
-    public function assignLabel(Request $request, $student_id)
+    public function assignLabel(Request $request, $student_id): RedirectResponse
     {
         $student = Student::with('labels.label')->findOrFail($student_id);
         $label = StudentLabel::findOrFail($request->get('student_label_id'));
@@ -37,7 +38,7 @@ class LabelController extends Controller
         return back()->with('success', 'Label added!');
     }
 
-    public function updateStatus(Student $student)
+    public function updateStatus(Student $student): void
     {
         $newStatus = $student->labels->pluck('label.new_status')->reject(function ($value) {
             return is_null($value);
@@ -60,7 +61,7 @@ class LabelController extends Controller
         }
     }
 
-    public function dropLabel($student_id, $student_label_id)
+    public function dropLabel($student_id, $student_label_id): RedirectResponse
     {
         $student = Student::with('labels.label')->findOrFail($student_id);
         $link = $student->labels->firstWhere('student_label_id', $student_label_id);

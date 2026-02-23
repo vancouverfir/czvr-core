@@ -15,17 +15,19 @@ use App\Models\Users\User;
 use App\Notifications\events\EventSignup;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class EventController extends Controller
 {
     /*
     View all events
     */
-    public function index()
+    public function index(): View
     {
         // $events = Event::cursor()->filter(function ($event) {
         //     return ! $event->event_in_past();
@@ -40,12 +42,12 @@ class EventController extends Controller
         return view('events.index', compact('events', 'pastEvents'));
     }
 
-    public function coverage()
+    public function coverage(): View
     {
         return view('events.coverage');
     }
 
-    public function viewEvent($slug)
+    public function viewEvent($slug): View
     {
         $event = Event::where('slug', $slug)->firstOrFail();
         $timeNow = Carbon::now();
@@ -59,7 +61,7 @@ class EventController extends Controller
         return view('events.view', compact('event', 'updates', 'timeNow'));
     }
 
-    public function viewControllers()
+    public function viewControllers(): View
     {
         $events = Event::where('start_timestamp', '>', Carbon::now())->orderBy('start_timestamp')->get();
         $positions = EventPosition::all();
@@ -72,7 +74,7 @@ class EventController extends Controller
         return view('events.controllers', compact('events', 'positions'));
     }
 
-    public function controllerApplicationAjaxSubmit(Request $request)
+    public function controllerApplicationAjaxSubmit(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'availability_start' => 'required',
@@ -103,7 +105,7 @@ class EventController extends Controller
         return redirect()->back()->with('success', 'Thanks for applying! If you need to make any adjustments to your application, please <a href='.config('app.url').'/staff>contact the Events Coordinator.');
     }
 
-    public function viewApplications($id)
+    public function viewApplications($id): View
     {
         $event = Event::where('id', $id)->firstOrFail();
         $applications = $event->controllerApplications;
@@ -111,7 +113,7 @@ class EventController extends Controller
         return view('admin.events.applications', compact('applications', 'event'));
     }
 
-    public function confirmController(Request $request, $id)
+    public function confirmController(Request $request, $id): RedirectResponse
     {
         $this->validate($request, [
             'start_timestamp' => 'required',
@@ -133,7 +135,7 @@ class EventController extends Controller
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Controller Confirmed for Event!');
     }
 
-    public function addController(Request $request, $id)
+    public function addController(Request $request, $id): RedirectResponse
     {
         $this->validate($request, [
             'start_timestamp' => 'required',
@@ -153,7 +155,7 @@ class EventController extends Controller
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Controller Confirmed for Event!');
     }
 
-    public function deleteController(Request $request, $cid)
+    public function deleteController(Request $request, $cid): RedirectResponse
     {
         $controller = EventConfirm::where([
             ['user_id', $cid],
@@ -164,14 +166,14 @@ class EventController extends Controller
         return redirect()->back()->with('success', 'Controller has been removed from the event!');
     }
 
-    public function adminIndex()
+    public function adminIndex(): View
     {
         $events = Event::all()->sortByDesc('created_at');
 
         return view('admin.events.index', compact('events'));
     }
 
-    public function adminViewEvent($slug)
+    public function adminViewEvent($slug): View
     {
         $event = Event::where('slug', $slug)->firstOrFail();
         $positions = EventPosition::all();
@@ -184,12 +186,12 @@ class EventController extends Controller
         return view('admin.events.view', compact('event', 'applications', 'updates', 'eventroster', 'rosterMembers', 'users', 'positions'));
     }
 
-    public function adminCreateEvent()
+    public function adminCreateEvent(): View
     {
         return view('admin.events.create');
     }
 
-    public function adminCreateEventPost(Request $request)
+    public function adminCreateEventPost(Request $request): RedirectResponse
     {
         //Define validator messages
         $messages = [
@@ -246,7 +248,7 @@ class EventController extends Controller
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Event created!');
     }
 
-    public function adminDeleteEvent($slug)
+    public function adminDeleteEvent($slug): RedirectResponse
     {
         $event = Event::where('slug', $slug)->firstOrFail();
         $updates = EventUpdate::where('event_id', $event->id);
@@ -260,7 +262,7 @@ class EventController extends Controller
         return redirect()->route('events.admin.index')->with('info', 'Event deleted.');
     }
 
-    public function adminEditEventPost(Request $request, $event_slug)
+    public function adminEditEventPost(Request $request, $event_slug): RedirectResponse
     {
         //Define validator messages
         $messages = [
@@ -332,7 +334,7 @@ class EventController extends Controller
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Event edited!');
     }
 
-    public function adminCreateUpdatePost(Request $request, $event_slug)
+    public function adminCreateUpdatePost(Request $request, $event_slug): RedirectResponse
     {
         //Define validator messages
         $messages = [
@@ -369,7 +371,7 @@ class EventController extends Controller
         return redirect()->route('events.admin.view', $event_slug)->with('success', 'Update created!');
     }
 
-    public function adminDeleteControllerApp($event_slug, $cid)
+    public function adminDeleteControllerApp($event_slug, $cid): RedirectResponse
     {
         //Find the controller app
         $app = ControllerApplication::where('user_id', $cid)->where('event_id', Event::where('slug', $event_slug)->firstOrFail()->id)->FirstOrFail();
@@ -381,7 +383,7 @@ class EventController extends Controller
         return redirect()->route('event.viewapplications', Event::where('slug', $event_slug)->firstOrFail()->id)->with('info', 'Controller application '.User::where('id', $app->user_id)->first()->fullName('FLC').' has been deleted!');
     }
 
-    public function adminDeleteUpdate($event_slug, $update_id)
+    public function adminDeleteUpdate($event_slug, $update_id): RedirectResponse
     {
         //Find the update
         $update = EventUpdate::whereId($update_id)->where('event_id', Event::where('slug', $event_slug)->firstOrFail()->id)->FirstOrFail();

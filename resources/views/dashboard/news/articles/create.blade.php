@@ -33,7 +33,7 @@
                             <label for="">Author</label>
                             <div class="d-flex flex-row justify-content-between">
                                 <select class="custom-select" name="author">
-                                    <option value="{{Auth::id()}}" selected>You</option>
+                                    <option value="{{auth()->id()}}" selected>You</option>
                                     @foreach ($staff as $s)
                                         <option value="{{$s->user->id}}">{{$s->user->fullName('FLC')}} ({{$s->position}})</option>
                                     @endforeach

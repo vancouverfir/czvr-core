@@ -3,6 +3,7 @@
 namespace App\Models\Users;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserNotification extends Model
 {
@@ -11,7 +12,7 @@ class UserNotification extends Model
         'user_id', 'content', 'link', 'dateTime',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

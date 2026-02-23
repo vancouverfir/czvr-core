@@ -4,6 +4,7 @@ namespace App\Models\Settings;
 
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AuditLogEntry extends Model
 {
@@ -22,12 +23,12 @@ class AuditLogEntry extends Model
         $log->save();
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function affectedUser()
+    public function affectedUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'affected_id');
     }

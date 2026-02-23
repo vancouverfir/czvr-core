@@ -11,14 +11,16 @@ use App\Models\Users\User;
 use App\Notifications\NewTicket;
 use App\Notifications\TicketReply as NotificationsTicketReply;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class TicketsController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $openTickets = Ticket::where('user_id', Auth::user()->id)->where('status', 0)->get()->sortByDesc('id');
         $closedTickets = Ticket::where('user_id', Auth::user()->id)->where('status', 1)->get()->sortByDesc('id');
@@ -29,7 +31,7 @@ class TicketsController extends Controller
         return view('dashboard.tickets.index', compact('openTickets', 'closedTickets', 'onHoldTickets', 'staff_members', 'groups'));
     }
 
-    public function staffIndex()
+    public function staffIndex(): View
     {
         $openTickets = Ticket::where('status', 0)->get()->sortByDesc('id');
         $closedTickets = Ticket::where('status', 1)->get()->sortByDesc('id');
@@ -39,7 +41,7 @@ class TicketsController extends Controller
         return view('dashboard.tickets.staff', compact('openTickets', 'closedTickets', 'onHoldTickets'));
     }
 
-    public function viewTicket($id)
+    public function viewTicket($id): View
     {
         if (Auth::user()->permissions < 2) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
@@ -52,7 +54,7 @@ class TicketsController extends Controller
         return view('dashboard.tickets.viewticket', compact('ticket', 'replies'));
     }
 
-    public function startNewTicket(Request $request)
+    public function startNewTicket(Request $request): RedirectResponse
     {
         $messages = [
             'title.required' => 'A ticket title is required.',
@@ -90,7 +92,7 @@ class TicketsController extends Controller
         return redirect()->route('tickets.index')->with('success', 'Ticket '.$ticket->ticket_id.' created! A staff member will respond soon.');
     }
 
-    public function openTicket($id)
+    public function openTicket($id): RedirectResponse
     {
         if (Auth::user()->permissions < 2) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
@@ -116,7 +118,7 @@ class TicketsController extends Controller
         }
     }
 
-    public function onholdTicket($id)
+    public function onholdTicket($id): RedirectResponse
     {
         if (Auth::user()->permissions < 2) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
@@ -142,7 +144,7 @@ class TicketsController extends Controller
         }
     }
 
-    public function closeTicket(Request $request, $id)
+    public function closeTicket(Request $request, $id): RedirectResponse
     {
         if (Auth::user()->permissions < 2) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
@@ -174,7 +176,7 @@ class TicketsController extends Controller
         }
     }
 
-    public function addReplyToTicket(Request $request, $ticket_id)
+    public function addReplyToTicket(Request $request, $ticket_id): RedirectResponse
     {
         if (Auth::user()->permissions < 2) {
             $ticket = Ticket::where('ticket_id', $ticket_id)->where('user_id', Auth::user()->id)->firstOrFail();

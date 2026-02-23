@@ -13,7 +13,7 @@
 
 @include('includes.trainingMenu')
 
-@if(Auth::check() && Auth::user()->permissions >= 3)
+@if(auth()->check() && auth()->user()->permissions >= 3)
 <div class="container" style="margin-top: 30px;">
     <h1 class="blue-text font-weight-bold mt-2">ATC Resources</h1>
     <div class="list-group list-group-flush">

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Publications;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class UploadController extends Controller
 {
@@ -12,12 +14,12 @@ class UploadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function upload()
+    public function upload(): View
     {
         return view('dashboard.upload');
     }
 
-    public function uploadPost()
+    public function uploadPost(): RedirectResponse
     {
         request()->validate([
             'file' => 'required|max:2048',
@@ -32,7 +34,7 @@ class UploadController extends Controller
             ->with('success', 'File uploaded to: <a href='.config('app.url').'/storage/files/uploads/'.$fileName.'>'.config('app.url').'/storage/files/uploads/'.$fileName.'</a>');
     }
 
-    public function manageUploads()
+    public function manageUploads(): View
     {
         $files = Storage::files('public/files/uploads');
 
@@ -43,7 +45,7 @@ class UploadController extends Controller
         return view('dashboard.uploadmanage', ['files' => $files]);
     }
 
-    public function deletePost($filename)
+    public function deletePost($filename): RedirectResponse
     {
         $filePath = 'public/files/uploads/'.$filename;
 

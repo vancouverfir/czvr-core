@@ -21,7 +21,7 @@
             <hr>
         @endif
         @if(!$article->visible)
-        @if(!Auth::user()->permissions >= 4)
+        @if(!auth()->user()->permissions >= 4)
             <?php abort(403, "Hidden");?>
         @endif
         <div class="alert bg-czqo-blue-light">

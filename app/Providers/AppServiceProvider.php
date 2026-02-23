@@ -10,13 +10,14 @@ class AppServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        //
         Schema::defaultStringLength(191);
+
+        \Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+            $event->extendSocialite('discord', \SocialiteProviders\Discord\Provider::class);
+        });
 
         if ($this->app->environment('production')) {
             if (config('app.url')) {
@@ -28,10 +29,9 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
+        //
     }
 }

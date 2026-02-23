@@ -7,6 +7,8 @@ use App\Models\AtcTraining;
 use App\Models\Events;
 use App\Models\News;
 use App\Models\Tickets;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -21,7 +23,7 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $fillable = [
         'id', 'fname', 'lname', 'email', 'rating_id', 'rating_short', 'rating_long', 'rating_GRP',
@@ -33,7 +35,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $hidden = [
         'password', 'remember_token',
@@ -41,55 +43,53 @@ class User extends Authenticatable
 
     /**
      * Return articles that the user has written.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function news()
+    public function news(): HasMany
     {
         return $this->hasMany(News\News::class);
     }
 
-    public function eventApplications()
+    public function eventApplications(): HasMany
     {
         return $this->hasMany(Events\ControllerApplication::class);
     }
 
-    public function eventConfirms()
+    public function eventConfirms(): HasMany
     {
         return $this->hasMany(Events\EventConfirm::class);
     }
 
-    public function instructorProfile()
+    public function instructorProfile(): HasOne
     {
         return $this->hasOne(AtcTraining\Instructor::class);
     }
 
-    public function studentProfile()
+    public function studentProfile(): HasOne
     {
         return $this->hasOne(AtcTraining\Student::class);
     }
 
-    public function tickets()
+    public function tickets(): HasMany
     {
         return $this->hasMany(Tickets\Ticket::class);
     }
 
-    public function ticketReplies()
+    public function ticketReplies(): HasMany
     {
         return $this->hasMany(Tickets\TicketReply::class);
     }
 
-    public function staffProfile()
+    public function staffProfile(): HasOne
     {
         return $this->hasOne(StaffMember::class);
     }
 
-    public function rosterProfile()
+    public function rosterProfile(): HasOne
     {
         return $this->hasOne(AtcTraining\RosterMember::class);
     }
 
-    public function notes()
+    public function notes(): HasMany
     {
         return $this->hasMany(UserNote::class);
     }
@@ -220,7 +220,7 @@ class User extends Authenticatable
         }
     }
 
-    public function discordBans()
+    public function discordBans(): HasMany
     {
         return $this->hasMany(DiscordBan::class);
     }
@@ -248,7 +248,7 @@ class User extends Authenticatable
         }
     }
 
-    public function preferences()
+    public function preferences(): HasOne
     {
         return $this->hasOne(UserPreferences::class);
     }

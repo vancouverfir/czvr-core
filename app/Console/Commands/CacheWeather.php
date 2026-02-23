@@ -24,7 +24,7 @@ class CacheWeather extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
         try {
             $ch = curl_init();
@@ -53,5 +53,7 @@ class CacheWeather extends Command
         } catch (\Exception $e) {
             \Log::error('Failed to cache weather: '.$e->getMessage());
         }
+
+        return 0;
     }
 }

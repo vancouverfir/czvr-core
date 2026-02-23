@@ -4,6 +4,7 @@ namespace App\Models\Users;
 
 use App\Traits\HasMarkdownFields;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserNote extends Model
 {
@@ -26,7 +27,7 @@ class UserNote extends Model
         return ['content'];
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

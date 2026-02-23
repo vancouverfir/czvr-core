@@ -7,11 +7,13 @@ use App\Models\AtcTraining\Instructor;
 use App\Models\Users\StaffGroup;
 use App\Models\Users\StaffMember;
 use App\Models\Users\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class StaffListController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $groups = StaffGroup::with(['members.user'])->get();
 
@@ -26,7 +28,7 @@ class StaffListController extends Controller
         return view('staff', compact('staff', 'instructors', 'groups'));
     }
 
-    public function editIndex()
+    public function editIndex(): View
     {
         $staff = StaffMember::all();
         $users = User::all();
@@ -35,7 +37,7 @@ class StaffListController extends Controller
         return view('dashboard.staff.index', compact('staff', 'users', 'groups'));
     }
 
-    public function addStaffMember(Request $request)
+    public function addStaffMember(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'position' => 'required',
@@ -56,7 +58,7 @@ class StaffListController extends Controller
         return redirect()->back()->with('success', 'Staff member '.$addstaff->shortform.' created!');
     }
 
-    public function editStaffMember(Request $request, $id)
+    public function editStaffMember(Request $request, $id): RedirectResponse
     {
         //Grab staff object
         $staff = StaffMember::whereId($id)->firstOrFail();
@@ -83,7 +85,7 @@ class StaffListController extends Controller
         return redirect()->back()->with('success', 'Staff member '.$staff->position.' saved!');
     }
 
-    public function deleteStaffMember(Request $request, $id)
+    public function deleteStaffMember(Request $request, $id): RedirectResponse
     {
         //Grab staff object
         $staff = StaffMember::whereId($id)->firstOrFail();

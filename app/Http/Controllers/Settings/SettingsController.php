@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Settings\AuditLogEntry;
 use App\Models\Settings\CoreSettings;
 use App\Models\Settings\HomepageImages;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 use Spatie\Permission\Models\Role;
 
 class SettingsController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('admin.settings.index');
     }
@@ -20,7 +22,7 @@ class SettingsController extends Controller
     /*
     Site info
     */
-    public function siteInformation()
+    public function siteInformation(): View
     {
         //Get the settings
         $coreSettings = CoreSettings::find(1);
@@ -32,7 +34,7 @@ class SettingsController extends Controller
     /*
     Save site info
     */
-    public function saveSiteInformation(Request $request)
+    public function saveSiteInformation(Request $request): View
     {
         //Get the settings
         $coreSettings = CoreSettings::find(1);
@@ -51,7 +53,7 @@ class SettingsController extends Controller
     /*
     Emails
     */
-    public function emails()
+    public function emails(): View
     {
         //Get settings
         $coreSettings = CoreSettings::find(1);
@@ -63,7 +65,7 @@ class SettingsController extends Controller
     /*
     Save emails
     */
-    public function saveEmails(Request $request)
+    public function saveEmails(Request $request): View
     {
         //Get the settings
         $coreSettings = CoreSettings::find(1);
@@ -84,7 +86,7 @@ class SettingsController extends Controller
     /*
     Audit log
     */
-    public function auditLog()
+    public function auditLog(): View
     {
         $entriesall = AuditLogEntry::all();
         $entries = $entriesall->sortByDesc('created_at');
@@ -92,14 +94,14 @@ class SettingsController extends Controller
         return view('admin.settings.auditlog', compact('entries'));
     }
 
-    public function banner()
+    public function banner(): View
     {
         $banner = CoreSettings::find(1);
 
         return view('admin.settings.banner', compact('banner'));
     }
 
-    public function bannerEdit(Request $request)
+    public function bannerEdit(Request $request): RedirectResponse
     {
         //Get the settings
         $coreSettings = CoreSettings::find(1);
@@ -132,14 +134,14 @@ class SettingsController extends Controller
         return back()->withSuccess('The banner has been updated!');
     }
 
-    public function imagesIndex()
+    public function imagesIndex(): View
     {
         $images = HomepageImages::all();
 
         return view('admin.settings.homepageimages', compact('images'));
     }
 
-    public function uploadImage(Request $request)
+    public function uploadImage(Request $request): RedirectResponse
     {
         $request->validate([
             'file' => 'required|image|mimes:jpeg,jpg|max:1048',
@@ -163,7 +165,7 @@ class SettingsController extends Controller
         return back()->with('success', 'File uploaded to: <a href='.config('app.url').'/storage/files/homepageimages/'.$fileName.'>'.config('app.url').'/storage/files/homepageimages/'.$fileName.'</a>');
     }
 
-    public function editImage(Request $request, $id)
+    public function editImage(Request $request, $id): RedirectResponse
     {
         $this->validate($request, [
             'nameCredit' => 'required',
@@ -178,14 +180,14 @@ class SettingsController extends Controller
         return back()->withSuccess('Image edited successfully!');
     }
 
-    public function testImage($id)
+    public function testImage($id): View
     {
         $image = HomepageImages::where('id', $id)->first();
 
         return view('admin.settings.testimage', compact('image'));
     }
 
-    public function deleteImage($id)
+    public function deleteImage($id): RedirectResponse
     {
         $totalImages = HomepageImages::count();
 
@@ -208,14 +210,14 @@ class SettingsController extends Controller
         return back()->with('error', 'Image not found in the database!');
     }
 
-    public function viewRoles()
+    public function viewRoles(): View
     {
         $roles = Role::all();
 
         return view('admin.settings.roles', compact('roles'));
     }
 
-    public function addRole(Request $request)
+    public function addRole(Request $request): RedirectResponse
     {
         $check = Role::where('name', $request->input('name'))->first();
         if ($check != null) {
@@ -226,7 +228,7 @@ class SettingsController extends Controller
         return back()->withSuccess('Added the role!');
     }
 
-    public function deleteRole($id)
+    public function deleteRole($id): RedirectResponse
     {
         $role = Role::findByName($id);
         $message = $role->name;

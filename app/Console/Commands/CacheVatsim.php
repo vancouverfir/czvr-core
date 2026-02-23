@@ -27,7 +27,7 @@ class CacheVatsim extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
         try {
             $client = new Client();
@@ -55,5 +55,7 @@ class CacheVatsim extends Command
         } catch (\Exception $e) {
             \Log::error('Failed to cache VATSIM controllers: '.$e->getMessage());
         }
+
+        return 0;
     }
 }

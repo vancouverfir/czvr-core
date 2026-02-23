@@ -11,10 +11,11 @@ use App\Models\Tickets\Ticket;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $user = Auth::user();
 
@@ -60,7 +61,7 @@ class DashboardController extends Controller
         return view('dashboard.index', ['user' => $user, 'yourinstructor' => $student, 'openTickets' => $openTickets, 'staffTickets' => $staffTickets, 'certification' => $certification, 'active' => $active, 'profile' => $profile, 'status' => $status, 'activeStatus' => $activeStatus, 'requiredHours' => $requiredHours, 'unconfirmedapp' => $unconfirmedApp, 'confirmedapp' => $confirmedApp, 'confirmedevent' => $confirmedEvents]);
     }
 
-    public function postTweet()
+    public function postTweet(): mixed
     {
         return 'nothing';
     }

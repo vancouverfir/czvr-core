@@ -28,7 +28,7 @@
                                         @if($instructor->is_enroute)
                                             <button class="btn btn-sm btn-enroute ml-0">En-Route</button>
                                         @endif
-                                        @if (Auth::check() && Auth::user()->permissions >= 4)
+                                        @if (auth()->check() && auth()->user()->permissions >= 4)
                                             <a href="{{route('instructors.delete', [$instructor->id]) }}">
                                                 <button class="ml-0 btn btn-sm btn-danger">Delete</button>
                                             </a>
@@ -62,7 +62,7 @@
                                         @if($instructor->is_enroute)
                                             <button class="btn btn-sm btn-enroute ml-0">En-Route</button>
                                         @endif
-                                        @if (Auth::check() && Auth::user()->permissions >= 4)
+                                        @if (auth()->check() && auth()->user()->permissions >= 4)
                                             <a href="{{route('instructors.delete', [$instructor->id]) }}">
                                                 <button class="ml-0 btn btn-sm btn-danger">Delete</button>
                                             </a>
@@ -76,7 +76,7 @@
             </div>
             <br>
 
-            @if (Auth::check() && Auth::user()->permissions >= 4)
+            @if (auth()->check() && auth()->user()->permissions >= 4)
                 <button class="ml-0 btn btn-primary" data-target="#addTeacher" data-toggle="modal">Add Teacher</button>
         @endif
         <!--Create teacher modal-->

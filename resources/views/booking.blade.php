@@ -50,7 +50,7 @@
         </div>
 
         <div class="col">
-            @if (Auth::check() && Auth::user()->certified())
+            @if (auth()->check() && auth()->user()->certified())
             <div class="card mb-3">
                 <div class="card-header">Bookings</div>
                 <ul class="list-group list-group-flush">
@@ -59,7 +59,7 @@
                         <form id="bookingFormAccordion" method="POST" action="{{ route('booking') }}">
                             @csrf
                             <input type="hidden" name="_method" id="formMethodAccordion" value="POST">
-                            <input type="hidden" name="cid" value="{{ Auth::user()->id }}">
+                            <input type="hidden" name="cid" value="{{ auth()->user()->id }}">
 
                             <div class="form-group">
                                 <label for="callsignAccordion">Callsign</label>
@@ -94,7 +94,7 @@
                     <a class="list-group-item view-bookings-toggle" data-toggle="collapse" href="#userBookings" role="button" aria-expanded="false" aria-controls="userBookings">View your Bookings</a>
                     <div class="collapse mt-2" id="userBookings">
                         <div class="list-group list-group-flush">
-                            @forelse($bookings->where('cid', Auth::id()) as $b)
+                            @forelse($bookings->where('cid', auth()->id()) as $b)
                                 <div class="list-group-item bg-dark text-light d-flex flex-column gap-2">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>

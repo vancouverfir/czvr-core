@@ -31,7 +31,7 @@ class HasMarkdownFieldsTest extends TestCase
             ->andReturn($mockRendered2);
     }
 
-    public function test_skips_field_if_markdown_fields_are_not_defined()
+    public function test_skips_field_if_markdown_fields_are_not_defined(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Field 'note' is not defined as a markdown field");
@@ -40,7 +40,7 @@ class HasMarkdownFieldsTest extends TestCase
         $model->toHtml('note');
     }
 
-    public function test_converts_markdown_field_to_html()
+    public function test_converts_markdown_field_to_html(): void
     {
         $model = new TestModelWithMarkdown([
             'description' => '**test**',
@@ -53,7 +53,7 @@ class HasMarkdownFieldsTest extends TestCase
         $this->assertEquals('<strong>test</strong>', $html->toHtml());
     }
 
-    public function test_converts_different_markdown_fields()
+    public function test_converts_different_markdown_fields(): void
     {
         $model = new TestModelWithMarkdown([
             'description' => '**test**',
@@ -67,7 +67,7 @@ class HasMarkdownFieldsTest extends TestCase
         $this->assertEquals('<h1>Hello</h1>', $contentHtml->toHtml());
     }
 
-    public function test_returns_empty_html_for_non_markdown_field()
+    public function test_returns_empty_html_for_non_markdown_field(): void
     {
         $model = new TestModelWithMarkdown();
 
@@ -77,7 +77,7 @@ class HasMarkdownFieldsTest extends TestCase
         $model->toHtml('non_markdown');
     }
 
-    public function test_handles_null_markdown_content()
+    public function test_handles_null_markdown_content(): void
     {
         $model = new TestModelWithMarkdown(['description' => null]);
 
@@ -87,7 +87,7 @@ class HasMarkdownFieldsTest extends TestCase
         $this->assertEquals('', $html->toHtml());
     }
 
-    public function test_handles_empty_string_markdown_content()
+    public function test_handles_empty_string_markdown_content(): void
     {
         $model = new TestModelWithMarkdown(['description' => '']);
 

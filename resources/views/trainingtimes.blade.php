@@ -12,7 +12,7 @@
             <h3 class="btn btn-{{$training_time->colour}}" style="color:white" data-toggle="modal" data-target="#waitTime"><b>Estimated Wait Time:</b> {{$training_time->wait_length}}</h3>
             <div class="row" style="padding-left:8px">
                 <h3 class="btn btn-primary" style="color:white" data-toggle="modal" data-target="#waitList"><b>Students On Waitlist:</b> {{count($waitlist)}}</h3>
-                @if(Auth::check() && Auth::user()->permissions >= 5)
+                @if(auth()->check() && auth()->user()->permissions >= 5)
                 <h3 class="btn btn-primary" data-toggle="modal" data-target="#waitEdit">Wait Time Editor</h3>
                 @endif
             </div>
@@ -62,7 +62,7 @@
     </div>
 <!-- End Wait Time modal -->
 
-@if(Auth::check() && Auth::user()->permissions >= 5)
+@if(auth()->check() && auth()->user()->permissions >= 5)
 
 <!-- Start Time Editor modal -->
     <div class="modal fade" id="waitEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
