@@ -131,7 +131,7 @@
                             <div style="color: #999; font-size: 0.85rem;" class="mt-1">Notes left by non Vancouver FIR members not shown!</div>
                         </div>
                         <div class="card-body">
-                            @if (empty($vatcanNotes)) <span class="alert">No training notes available!</span>
+                            @if (empty($vatcanNotes)) <span class="alert">No training notes available! Or you refreshed too many times...</span>
                             @else
                             @foreach (array_slice($vatcanNotes, 0, 3) as $note)
                             <div class="border rounded p-3 mb-3">
@@ -199,7 +199,7 @@
                         </div>
                     </div>
                     @empty
-                    <div class="text-center py-5"><i class="fas fa-history fa-3x mb-3" style="color: #666;"></i><p style="color: #999;">No activity yet!</p></div>
+                    <div class="text-center py-5"><i class="fas fa-robot fa-3x mb-3" style="color: #666;"></i><p style="color: #999;">No system logs yet!</p></div>
                     @endforelse
                 </div>
             </div>
