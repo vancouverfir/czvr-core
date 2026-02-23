@@ -23,13 +23,13 @@ use Illuminate\View\View;
 
 class TrainingController extends Controller
 {
-    public function index(VatcanController $vatcan): View
+    public function index(VatcanController $vatcan): View|RedirectResponse
     {
-        $user = Auth::user();
-
         if (! Auth::check()) {
             return redirect()->guest(route('auth.connect.login'));
         }
+
+        $user = Auth::user();
 
         $student = Student::where('user_id', $user->id)->first();
         $instructor = Instructor::where('user_id', $user->id)->first();
