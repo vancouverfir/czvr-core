@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Console\Commands;
 
+use App\Models\AtcTraining\Student;
+use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
-use GuzzleHttp\Client;
-use App\Models\AtcTraining\Student;
 
 class FetchVatcanNotes extends Command
 {
@@ -22,7 +23,7 @@ class FetchVatcanNotes extends Command
             $cacheKey = "vatcan_notes_{$userId}";
             $etagKey = "vatcan_notes_etag_{$userId}";
 
-            $headers = ['Authorization' => 'Token ' . $apiKey];
+            $headers = ['Authorization' => 'Token '.$apiKey];
 
             if ($etag = Cache::get($etagKey)) {
                 $headers['If-None-Match'] = $etag;
@@ -45,14 +46,13 @@ class FetchVatcanNotes extends Command
 
                 $data = json_decode($response->getBody()->getContents(), true);
                 $notes = $data['notes'] ?? [];
-                usort($notes, fn($a, $b) => strtotime($b['created_at']) - strtotime($a['created_at']));
+                usort($notes, fn ($a, $b) => strtotime($b['created_at']) - strtotime($a['created_at']));
 
                 Cache::put($cacheKey, $notes, now()->addDays(7));
                 $this->info("Updated notes for user {$userId}");
-
             } catch (\Exception $e) {
-                $this->error("Failed for user {$userId}: " . $e->getMessage());
-                \Log::error('Vatcan notes fetch failed: ' . $e->getMessage());
+                $this->error("Failed for user {$userId}: ".$e->getMessage());
+                \Log::error('Vatcan notes fetch failed: '.$e->getMessage());
             }
 
             sleep(13);
