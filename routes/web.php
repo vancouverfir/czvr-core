@@ -13,8 +13,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Events\EventController;
 use App\Http\Controllers\Feedback\FeedbackController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\News\NewsController;
 use App\Http\Controllers\Network\NetworkController;
+use App\Http\Controllers\News\NewsController;
 use App\Http\Controllers\Publications\AtcResourcesController;
 use App\Http\Controllers\Publications\PoliciesController;
 use App\Http\Controllers\Publications\UploadController;
@@ -53,7 +53,6 @@ Route::group(['domain' => 'booking.czvr.ca'], function () {
         Route::delete('/{id}', [BookingController::class, 'delete'])->name('booking.delete');
     });
 });
-
 
 // Training Subdomain
 Route::group(['domain' => 'training.czvr.ca'], function () {
@@ -118,7 +117,6 @@ Route::group(['domain' => 'training.czvr.ca'], function () {
         Route::post('/students/{student}/edittimes', [TrainingController::class, 'editTimes'])->name('training.students.editTimes');
     });
 });
-
 
 //ALL Public Views
 Route::get('/', [HomeController::class, 'view'])->name('index');
