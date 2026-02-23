@@ -2,127 +2,133 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\CreateNote;
 use App\Models\AtcTraining\Student;
-use App\Models\AtcTraining\StudentInteractiveLabels;
-use App\Models\AtcTraining\StudentLabel;
-use App\Models\AtcTraining\StudentNote;
-use App\Notifications\RenewalExpiredNotification;
-use App\Notifications\RenewalNotification;
+use App\Models\Users\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
-class RenewNotification extends Command
+class SyncStudents extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'vancouver:renewalnotifications';
+    protected $signature = 'vancouver:sync-students';
+    protected $description = 'Syncs student from roster without certifications';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Send Renewal notifications to all students and visitors on the waitlsit';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle(): int
+    public function handle()
     {
-        $days = 31;
+        $this->info('Starting Student Sync '.now().'');
+        Log::info('Student Sync Started.');
 
-        $studentsToUpdate = Student::whereIn('status', [0, 3])
-            ->whereNull('renewed_at')
-            ->get();
+        $apiKey = env('VATCAN_API_KEY');
+        $apiUrl = 'https://vatcan.ca/api/v2/facility/roster?api_key=';
 
-        foreach ($studentsToUpdate as $student) {
-            $now = Carbon::now();
-            $student->renewed_at = $now;
-            $student->save();
+        if (! $apiKey) {
+            $this->error('VATCAN_API_KEY Missing!');
 
-            StudentNote::create([
-                'student_id' => $student->id,
-                'author_id' => 1,
-                'title' => 'Reinstated Automatically',
-                'content' => 'Student was reinstated automatically after they were unmarked for removal!',
-                'created_at' => $now,
-                'updated_at' => $now,
+            return;
+        }
+
+        try {
+            $response = Http::timeout(35)->get($apiUrl.$apiKey);
+
+            if ($response->failed()) {
+                $this->error('API Request Failed. Status: '.$response->status());
+
+                return;
+            }
+
+            $data = $response->json()['data'];
+            $this->info('Processing '.count($data['controllers']).' home and '.count($data['visitors']).' visiting controllers.');
+
+            foreach ($data['controllers'] as $controller) {
+                $this->syncStudentStatus($controller['cid'], $controller['facility_join'], false);
+            }
+
+            foreach ($data['visitors'] as $visitor) {
+                $facilityJoin = null;
+                if (isset($visitor['visiting_facilities'])) {
+                    foreach ($visitor['visiting_facilities'] as $vf) {
+                        if ($vf['fir']['name_long'] === 'Vancouver FIR') {
+                            $facilityJoin = $vf['created_at'];
+                            break;
+                        }
+                    }
+                }
+                $this->syncStudentStatus($visitor['cid'], $facilityJoin, true);
+            }
+
+            $this->info('Sync Students Done');
+        } catch (\Exception $e) {
+            $this->error('Exception: '.$e->getMessage());
+            Log::critical('Student Sync Exception: '.$e->getMessage());
+        }
+    }
+
+    public function syncStudentStatus($cid, $facilityJoin, $isVisitor = false)
+    {
+        $type = $isVisitor ? 'Visitor' : 'Home';
+
+        $roster = DB::table('roster')->where('cid', $cid)->first();
+        if (! $roster) {
+            $this->warn("[$type] CID $cid: No local roster record. Skipping.");
+
+            return;
+        }
+
+        $hasCerts = ($roster->delgnd || $roster->delgnd_t2 || $roster->twr || $roster->twr_t2 || $roster->dep || $roster->app || $roster->app_t2 || $roster->ctr || $roster->fss);
+
+        if ($hasCerts) {
+            $this->line("[$type] CID $cid: Certified controller. Skipping.");
+
+            return;
+        }
+
+        if (Student::where('user_id', $cid)->exists()) {
+            $this->line("[$type] CID $cid: Already in training queue.");
+
+            return;
+        }
+
+        DB::transaction(function () use ($cid, $facilityJoin, $isVisitor, $type) {
+            if ($isVisitor) {
+                $maxPos = Student::where('status', 3)->max('position') ?? 0;
+            } else {
+                $maxPos = Student::where('status', 0)->max('position') ?? 0;
+            }
+
+            $createdAt = $facilityJoin ? Carbon::parse($facilityJoin) : now();
+
+            $student = Student::create([
+                'user_id' => $cid,
+                'position' => $maxPos + 1,
+                'status' => $isVisitor ? 3 : 0,
+                'renewed_at' => now(),
+                'created_at' => $createdAt,
+                'updated_at' => now(),
             ]);
-        }
 
-        $students = Student::whereIn('status', [0, 3])
-            ->where(function ($query) use ($days) {
-                $query->where('renewed_at', '<=', Carbon::now()->subDays($days));
-            })
-            ->whereNull('renewal_notified_at')
-            ->get();
+            if (! $isVisitor) {
+                DB::table('student_interactive_labels')->insert([
+                    ['student_label_id' => 8, 'student_id' => $student->id, 'created_at' => now(), 'updated_at' => now()],
+                    ['student_label_id' => 7, 'student_id' => $student->id, 'created_at' => now(), 'updated_at' => now()],
+                ]);
+            } else {
+                DB::table('student_interactive_labels')->insert([
+                    'student_label_id' => 9, 'student_id' => $student->id, 'created_at' => now(), 'updated_at' => now(),
+                ]);
 
-        foreach ($students as $student) {
-            $token = Str::random(31);
-            $student->renewal_token = $token;
-            $student->renewal_notified_at = Carbon::now();
-            $student->save();
-            $student->user->notify(new RenewalNotification($student));
-        }
-
-        $expirationDays = 14;
-        $expiredStudents = Student::whereIn('status', [0, 3])
-            ->whereNotNull('renewal_notified_at')
-            ->where('renewal_notified_at', '<=', Carbon::now()->subDays($expirationDays))
-            ->get();
-
-        foreach ($expiredStudents as $student) {
-            $labels = StudentLabel::where('new_status', 4)->get();
-
-            foreach ($labels as $label) {
-                StudentInteractiveLabels::create([
-                    'student_label_id' => $label->id,
-                    'student_id' => $student->id,
+                $user = User::find($cid);
+                $divLabel = ($user && $user->division_code === 'CAN') ? 17 : 16;
+                DB::table('student_interactive_labels')->insert([
+                    'student_label_id' => $divLabel, 'student_id' => $student->id, 'created_at' => now(), 'updated_at' => now(),
                 ]);
             }
 
-            StudentInteractiveLabels::create([
-                'student_label_id' => 10,
-                'student_id' => $student->id,
-            ]);
+            CreateNote::newNote($student->id, 'Created', 'Student created automatically by System');
 
-            StudentInteractiveLabels::where('student_id', $student->id)
-                ->whereIn('student_label_id', [8, 9])
-                ->delete();
-
-            StudentNote::create([
-                'student_id' => $student->id,
-                'author_id' => 1,
-                'title' => 'Renewal Timed Out',
-                'content' => 'Student did not respond in time and has been marked for removal!',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-
-            $student->status = 4;
-            $student->renewal_notified_at = null;
-            $student->renewed_at = null;
-            $student->position = null;
-            $student->save();
-            $student->user->notify(new RenewalExpiredNotification($student));
-        }
-
-        foreach ([0, 3] as $queueStatus) {
-            $pos = 1;
-            $queueStudents = Student::where('status', $queueStatus)
-                ->orderBy('position')
-                ->get();
-
-            foreach ($queueStudents as $s) {
-                $s->position = $pos++;
-                $s->save();
-            }
-        }
-
-        return Command::SUCCESS;
+            $this->info("[$type] CID $cid: Added to queue at position ".($maxPos + 1));
+        });
     }
 }
