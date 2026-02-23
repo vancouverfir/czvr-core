@@ -15,7 +15,7 @@
         "fakerphp/faker": "^1.23",
         "graham-campbell/markdown": "^16.0",
         "guzzlehttp/guzzle": "^7.5",
-        "inertiajs/inertia-laravel": "^1.0",
+        "inertiajs/inertia-laravel": "^2.0",
         "intervention/image": "^2.7",
         "laravel-notification-channels/discord": "^1.7",
         "laravel/framework": "^12.0",
