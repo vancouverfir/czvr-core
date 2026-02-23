@@ -190,6 +190,7 @@ class ActivityLog extends Command
                 }
             }
         }
+
         return Command::SUCCESS;
     }
 }

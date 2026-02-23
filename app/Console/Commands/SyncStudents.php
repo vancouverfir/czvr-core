@@ -122,6 +122,7 @@ class RenewNotification extends Command
                 $s->save();
             }
         }
+
         return Command::SUCCESS;
     }
 }
