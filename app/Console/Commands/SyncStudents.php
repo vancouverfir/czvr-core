@@ -31,7 +31,7 @@ class SyncStudents extends Command
         }
 
         try {
-            $response = Http::timeout(35)->get($apiUrl.$apiKey);
+            $response = Http::timeout(35)->withHeaders(['Authorization' => 'Token ' . $apiKey])->get('https://vatcan.ca/api/v2/facility/roster');
 
             if ($response->failed()) {
                 $this->error('API Request Failed. Status: '.$response->status());
