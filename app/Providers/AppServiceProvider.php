@@ -10,6 +10,7 @@ use App\Console\Commands\CurrencyCheck;
 use App\Console\Commands\RenewNotification;
 use App\Console\Commands\SendSessionReminder;
 use App\Console\Commands\SyncStudents;
+use App\Console\Commands\FetchVatcanNotes;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
@@ -43,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
             $schedule->command(CacheWeather::class)->everyFifteenMinutes();
             $schedule->command(RenewNotification::class)->hourly();
             $schedule->command(SyncStudents::class)->hourly();
+            $schedule->command('vancouver:fetch-vatcan-notes')->hourlyAt(35);
             $schedule->command('backup:clean')->daily()->at('00:31');
             $schedule->command('backup:run')->daily()->at('01:01');
             // $schedule->command(EventReminders::class)->everyMinute();
