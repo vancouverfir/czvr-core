@@ -11,12 +11,13 @@ use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentChecklistItem;
 use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ChecklistController extends Controller
 {
-    public function completeItem(Request $request, $id)
+    public function completeItem(Request $request, $id): RedirectResponse
     {
         $item = StudentChecklistItem::findOrFail($id);
         $item->update(['completed' => true]);
@@ -24,7 +25,7 @@ class ChecklistController extends Controller
         return back()->with('success', 'Checklist item marked as Complete!');
     }
 
-    public function completeMultiple(Request $request, $studentId)
+    public function completeMultiple(Request $request, $studentId): RedirectResponse
     {
         $request->validate([
             'checklist_items' => 'required|array',
@@ -79,7 +80,7 @@ class ChecklistController extends Controller
         }
     }
 
-    public function assignT2Checklist(Request $request, Student $student)
+    public function assignT2Checklist(Request $request, Student $student): RedirectResponse
     {
         $isVisitor = $student->user->visitor;
 
@@ -104,7 +105,7 @@ class ChecklistController extends Controller
         return back()->with('success', "T2 checklists assigned for {$currentLabel}!");
     }
 
-    public function promoteVisitor(Request $request, Student $student)
+    public function promoteVisitor(Request $request, Student $student): RedirectResponse
     {
         $isNonVatcanVisitor = $student->user->division_code !== 'CAN';
 
@@ -165,7 +166,7 @@ class ChecklistController extends Controller
         (new LabelController())->updateStatus($student->refresh());
     }
 
-    public function promoteStudent(Request $request, Student $student)
+    public function promoteStudent(Request $request, Student $student): RedirectResponse
     {
         $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
         $trainingOrder = $this->getTrainingOrder(false);

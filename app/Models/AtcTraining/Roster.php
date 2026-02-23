@@ -4,6 +4,7 @@ namespace App\Models\AtcTraining;
 
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Roster extends Model
 {
@@ -13,7 +14,7 @@ class Roster extends Model
         'cid', 'user_id', 'full_name', 'status', 'active', 'currency', 'rating_hours', 'fss', 'delgnd', 'delgnd_t2', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr', 'remarks', 'visit', 'staff',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

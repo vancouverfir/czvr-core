@@ -16,13 +16,13 @@
             @foreach ($minutes as $m)
             <tr class="mb-0">
                 <td>{{$m->title}}</td>
-                @if(Auth::check() && Auth::user()->permissions >= 4)
+                @if(auth()->check() && auth()->user()->permissions >= 4)
                 <td>Added by {{\App\Models\Users\User::find($m->user_id)->fullName('FLC')}}</td>
                 @endif
                 <td>
                 <a target="_blank" href="{{$m->link}}"><i class="fa fa-eye"></i>&nbsp;View</a>
                 </td>
-                @if(Auth::check() && Auth::user()->permissions == 5)
+                @if(auth()->check() && auth()->user()->permissions == 5)
                 <td>
                 <a href="{{route('meetingminutes.delete', $m->id)}}" style="color: red;"><i class="fa fa-times"></i>&nbsp;Delete</a>
                 </td>
@@ -33,7 +33,7 @@
         @else
         No Meeting Minutes Available.
         @endif
-        @if (Auth::check() && Auth::user()->permissions == 5)
+        @if (auth()->check() && auth()->user()->permissions == 5)
         
         <a href="#" data-toggle="modal" class="btn btn-primary" data-target="#upload">Upload Minutes</a><br></br>
         <div class="modal fade" id="upload" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

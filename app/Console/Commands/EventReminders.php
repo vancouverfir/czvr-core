@@ -25,21 +25,9 @@ class EventReminders extends Command
     protected $description = 'Check and send event reminders to controllers';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $events = Event::where('start_timestamp', '<', Carbon::now()->addDay())
             ->where('start_timestamp', '>', Carbon::now())
@@ -50,7 +38,7 @@ class EventReminders extends Command
 
             foreach ($confirms as $c) {
                 if ($c->email_sent != 0 && $c->user()->gdpr_subscribed_emails != 1) {
-                    return;
+                    continue;
                 }
 
                 $positions = EventConfirm::where(['user_id' => $c->user_id, 'event_id' => $e->id])->update(['email_sent' => 1])->get();
@@ -58,5 +46,7 @@ class EventReminders extends Command
                 $c->user()->notify(new EventReminder($e, $positions));
             }
         }
+
+        return 0;
     }
 }

@@ -15,7 +15,7 @@
 
 @section('content')
     <!-- Instructors -->
-    @if (Auth::check() && Auth::user()->permissions >= 2)
+    @if (auth()->check() && auth()->user()->permissions >= 2)
     @include('includes.trainingMenu')
     <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
         <h2 class="font-weight-bold blue-text">Instructor Portal</h2>

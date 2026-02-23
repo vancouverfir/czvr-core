@@ -4,6 +4,7 @@ namespace App\Models\AtcTraining;
 
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StudentNote extends Model
 {
@@ -11,12 +12,12 @@ class StudentNote extends Model
         'student_id', 'author_id', 'title', 'content', 'created_at',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function studentnote()
+    public function studentnote(): BelongsTo
     {
         return $this->belongsTo(Instructor::class);
     }
@@ -26,7 +27,7 @@ class StudentNote extends Model
         return Instructor::whereId($this->author_id)->firstOrFail();
     }
 
-    public function student()
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }

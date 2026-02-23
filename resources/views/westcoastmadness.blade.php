@@ -109,7 +109,7 @@
             </div>
         </div>
     </div>
-    @if(Auth::check() && Auth::user()->permissions >= 4)
+    @if(auth()->check() && auth()->user()->permissions >= 4)
         <!-- BasileOMeter -->
             <div style="display: flex; justify-content: center;">
                 <div style="text-align: center; padding: 20px;">

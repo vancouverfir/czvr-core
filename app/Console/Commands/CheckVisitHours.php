@@ -28,21 +28,9 @@ class CheckVisitHours extends Command
     protected $description = 'Checks if controllers have put 50% of their time on Vancouver positions each quarter';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $members = [];
 
@@ -106,5 +94,7 @@ class CheckVisitHours extends Command
             $settings->emaildepfirchief,
             $settings->emailcinstructor,
         ])->notify(new Email($members));
+
+        return 0;
     }
 }

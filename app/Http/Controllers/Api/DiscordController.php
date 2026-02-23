@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Users\User;
+use Illuminate\Http\JsonResponse;
 
 class DiscordController extends Controller
 {
-    public function getDiscordMembers()
+    public function getDiscordMembers(): JsonResponse
     {
         $discord_users = User::where('discord_user_id', '!=', null)->get();
         $response = [];

@@ -4,31 +4,33 @@ namespace App\Http\Controllers\Network;
 
 use App\Http\Controllers\Controller;
 use App\Models\Network\MonitoredPosition;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class NetworkController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('dashboard.network.index');
     }
 
-    public function monitoredPositionsIndex()
+    public function monitoredPositionsIndex(): View
     {
         $positions = MonitoredPosition::all()->sortByDesc('identifier');
 
         return view('dashboard.network.monitoredpositions.index', compact('positions'));
     }
 
-    public function viewMonitoredPosition($position)
+    public function viewMonitoredPosition($position): View
     {
         $position = MonitoredPosition::where(strtolower('identifier'), strtolower($position))->firstOrFail();
 
         return view('dashboard.network.monitoredpositions.view', compact('position'));
     }
 
-    public function createMonitoredPosition(Request $request)
+    public function createMonitoredPosition(Request $request): RedirectResponse
     {
         $messages = [
             'identifier.required' => 'Please type an identifier prefix/callsign.',

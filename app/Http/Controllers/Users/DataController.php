@@ -5,17 +5,19 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessDataExport;
 use Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class DataController extends Controller
 {
-    public function emailPref()
+    public function emailPref(): View
     {
         return view('dashboard.index');
     }
 
-    public function subscribeEmails()
+    public function subscribeEmails(): RedirectResponse
     {
         $user = Auth::user();
         if ($user->gdpr_subscribed_emails == 1) {
@@ -27,7 +29,7 @@ class DataController extends Controller
         return redirect()->route('dashboard.index')->with('success', 'You have subscribed to emails!');
     }
 
-    public function unsubscribeEmails()
+    public function unsubscribeEmails(): RedirectResponse
     {
         $user = Auth::user();
         if ($user->gdpr_subscribed_emails == 0) {
@@ -39,12 +41,12 @@ class DataController extends Controller
         return redirect()->route('dashboard.index')->with('success', 'You have unsubscribed from emails.');
     }
 
-    public function index()
+    public function index(): View
     {
         return view('dashboard.me.data.index');
     }
 
-    public function exportAllData(Request $request)
+    public function exportAllData(Request $request): RedirectResponse
     {
         $messages = [
             'email.required' => 'We need your VATSIM email address.',

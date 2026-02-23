@@ -13,14 +13,16 @@ use App\Models\Users\User;
 use App\Notifications\Feedback\NewControllerFeedback;
 use App\Notifications\Feedback\NewEventFeedback;
 use App\Notifications\Feedback\NewWebsiteFeedback;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class FeedbackController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $controller_feedback = ControllerFeedback::all()->sortByDesc('created_at');
         $event_feedback = EventFeedback::all()->sortByDesc('created_at');
@@ -30,14 +32,14 @@ class FeedbackController extends Controller
         return view('feedback.index', compact('controller_feedback', 'event_feedback', 'website_feedback', 'controller_feedback_attention'));
     }
 
-    public function yourFeedback()
+    public function yourFeedback(): View
     {
         $feedback = ControllerFeedback::where('approval', 2)->orderByDesc('updated_at')->get();
 
         return view('feedback.yourfeedback', compact('feedback'));
     }
 
-    public function viewControllerFeedback($id)
+    public function viewControllerFeedback($id): View
     {
         $submitter = User::where('id', ControllerFeedback::where('id', $id)->firstOrFail()->user_id)->firstOrFail();
         $controller = User::where('id', ControllerFeedback::where('id', $id)->firstOrFail()->controller_cid)->firstOrFail();
@@ -46,7 +48,7 @@ class FeedbackController extends Controller
         return view('feedback.controllerview', compact('id', 'submitter', 'controller', 'feedback'));
     }
 
-    public function approveControllerFeedback($id)
+    public function approveControllerFeedback($id): RedirectResponse
     {
         $feedback = ControllerFeedback::where('id', $id)->firstOrFail();
 
@@ -60,7 +62,7 @@ class FeedbackController extends Controller
         return redirect()->back()->withSuccess('Feedback ID#'.$id.' has been approved!');
     }
 
-    public function denyControllerFeedback($id)
+    public function denyControllerFeedback($id): RedirectResponse
     {
         $feedback = ControllerFeedback::where('id', $id)->firstOrFail();
 
@@ -74,7 +76,7 @@ class FeedbackController extends Controller
         return redirect()->back()->withSuccess('Controller Feedback ID#'.$id.' has been denied!');
     }
 
-    public function editControllerFeedback(Request $request, $id)
+    public function editControllerFeedback(Request $request, $id): RedirectResponse
     {
         $feedback = ControllerFeedback::where('id', $id)->firstOrFail();
         $feedback->content = $request->get('content');
@@ -91,7 +93,7 @@ class FeedbackController extends Controller
         return redirect()->back()->withSuccess('Controller Feedback ID#'.$feedback->id.' has been edited!');
     }
 
-    public function deleteControllerFeedback($id)
+    public function deleteControllerFeedback($id): RedirectResponse
     {
         $feedback = ControllerFeedback::where('id', $id)->firstOrFail();
         $feedback->delete();
@@ -99,7 +101,7 @@ class FeedbackController extends Controller
         return redirect()->to(route('staff.feedback.index'))->withSuccess('Controller Feedback ID#'.$id.' has been deleted!');
     }
 
-    public function viewEventFeedback($id)
+    public function viewEventFeedback($id): View
     {
         $submitter = User::where('id', EventFeedback::where('id', $id)->firstOrFail()->user_id)->firstOrFail();
         $feedback = EventFeedback::where('id', $id)->firstOrFail();
@@ -107,7 +109,7 @@ class FeedbackController extends Controller
         return view('feedback.eventview', compact('id', 'submitter', 'feedback'));
     }
 
-    public function deleteEventFeedback($id)
+    public function deleteEventFeedback($id): RedirectResponse
     {
         $feedback = EventFeedback::where('id', $id)->firstOrFail();
         $feedback->delete();
@@ -115,7 +117,7 @@ class FeedbackController extends Controller
         return redirect()->to(route('staff.feedback.index'))->withSuccess('Event Feedback ID#'.$id.' has been deleted!');
     }
 
-    public function viewWebsiteFeedback($id)
+    public function viewWebsiteFeedback($id): View
     {
         $submitter = User::where('id', WebsiteFeedback::where('id', $id)->firstOrFail()->user_id)->firstOrFail();
         $feedback = WebsiteFeedback::where('id', $id)->firstOrFail();
@@ -123,7 +125,7 @@ class FeedbackController extends Controller
         return view('feedback.websiteview', compact('id', 'submitter', 'feedback'));
     }
 
-    public function deleteWebsiteFeedback($id)
+    public function deleteWebsiteFeedback($id): RedirectResponse
     {
         $feedback = WebsiteFeedback::where('id', $id)->firstOrFail();
         $feedback->delete();
@@ -131,14 +133,14 @@ class FeedbackController extends Controller
         return redirect()->to(route('staff.feedback.index'))->withSuccess('Website Feedback ID#'.$id.' has been deleted!');
     }
 
-    public function create()
+    public function create(): View
     {
         $controllers = RosterMember::all()->sortBy('cid');
 
         return view('feedback.create', compact('controllers'));
     }
 
-    public function createPost(Request $request)
+    public function createPost(Request $request): View
     {
         //dd($request->all());
         //Define validator messages

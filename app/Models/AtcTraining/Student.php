@@ -5,6 +5,8 @@ namespace App\Models\AtcTraining;
 use App\Models\Users\User;
 use App\Notifications\CreateStudent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Student extends Model
@@ -13,27 +15,27 @@ class Student extends Model
         'user_id', 'times', 'position', 'status', 'instructor_id', 'renewal_token', 'renewed_at', 'renewal_notified_at',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function instructor()
+    public function instructor(): BelongsTo
     {
         return $this->belongsTo(Instructor::class);
     }
 
-    public function solorequest()
+    public function solorequest(): HasMany
     {
         return $this->hasMany(SoloRequest::class);
     }
 
-    public function instructingSessions()
+    public function instructingSessions(): HasMany
     {
         return $this->hasMany(InstructingSession::class);
     }
 
-    public function trainingNotes()
+    public function trainingNotes(): HasMany
     {
         return $this->hasMany(StudentNote::class)->orderBy('created_at', 'desc');
     }
@@ -43,7 +45,7 @@ class Student extends Model
         'renewal_notified_at' => 'datetime',
     ];
 
-    public function labels()
+    public function labels(): HasMany
     {
         return $this->hasMany(StudentInteractiveLabels::class);
     }
@@ -74,7 +76,7 @@ class Student extends Model
         return false;
     }
 
-    public function checklistItems()
+    public function checklistItems(): HasMany
     {
         return $this->hasMany(StudentChecklistItem::class);
     }

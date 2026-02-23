@@ -4,11 +4,12 @@ namespace App\Http\Controllers\AtcTraining;
 
 use App\Http\Controllers\Controller;
 use App\Models\Teacher;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class TeachersController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $teacher = new Teacher;
         $teacher->user_cid = $request->input('newteacher');
@@ -21,7 +22,7 @@ class TeachersController extends Controller
         return redirect()->route('instructors');
     }
 
-    public function delete($id)
+    public function delete($id): RedirectResponse
     {
         $teacher = Teacher::whereId($id)->firstOrFail();
         $teacher->delete();

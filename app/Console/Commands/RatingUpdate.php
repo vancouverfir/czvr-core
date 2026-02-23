@@ -25,21 +25,9 @@ class RatingUpdate extends Command
     protected $description = 'Runs VATSIM rating update';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $ratings = [];
 
@@ -85,5 +73,7 @@ class RatingUpdate extends Command
                 Log::info('User: '.$u->fname.' '.$u->lname.' rating is unchanged. Skipping.');
             }
         }
+
+        return 0;
     }
 }

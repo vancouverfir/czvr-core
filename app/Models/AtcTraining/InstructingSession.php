@@ -4,6 +4,7 @@ namespace App\Models\AtcTraining;
 
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InstructingSession extends Model
 {
@@ -16,7 +17,7 @@ class InstructingSession extends Model
         'end_time' => 'datetime',
     ];
 
-    public function instructor()
+    public function instructor(): BelongsTo
     {
         return $this->belongsTo(Instructor::class);
     }
@@ -30,7 +31,7 @@ class InstructingSession extends Model
         return User::find($this->instructor_id);
     }
 
-    public function student()
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }

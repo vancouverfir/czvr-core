@@ -8,11 +8,11 @@
     }
 </style>
 
-@if (Auth::user()->instructorProfile !== null || Auth::user()->permissions >= 2)
+@if (auth()->user()->instructorProfile !== null || auth()->user()->permissions >= 2)
 <nav class="navbar navbar-light bg-dark">
     <div class="container">
     <a href="{{route('training.index')}}">
-        <img src=https://czvr.ca/storage/files/branding/czvr-logomark.png style="height:50px" > <h3 class="text-white ml-5 mb-0">Welcome {{ Auth::user()->display_fname }}!</h3>
+        <img src=https://czvr.ca/storage/files/branding/czvr-logomark.png style="height:50px" > <h3 class="text-white ml-5 mb-0">Welcome {{ auth()->user()->display_fname }}!</h3>
     </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
@@ -43,7 +43,7 @@
 <nav class="navbar navbar-light bg-dark">
     <div class="container">
         <a href="/training">
-            <img src=https://czvr.ca/storage/files/branding/czvr-logomark.png style="height:50px" > <h3 class="text-white ml-5 mb-0">Welcome {{ Auth::user()->display_fname }}!</h3>
+            <img src=https://czvr.ca/storage/files/branding/czvr-logomark.png style="height:50px" > <h3 class="text-white ml-5 mb-0">Welcome {{ auth()->user()->display_fname }}!</h3>
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">

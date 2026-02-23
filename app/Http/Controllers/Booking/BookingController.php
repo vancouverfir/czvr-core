@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Booking;
 
 use App\Http\Controllers\Controller;
 use App\Models\Events\Event;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\View\View;
 
 class BookingController extends Controller
 {
@@ -17,7 +21,7 @@ class BookingController extends Controller
         $this->apiKey = env('BOOKING_API_KEY');
     }
 
-    public function indexPublic(Request $request)
+    public function indexPublic(Request $request): View
     {
         $query = ['key_only' => true];
 
@@ -49,7 +53,7 @@ class BookingController extends Controller
         return view('booking', ['bookings' => $bookings, 'callsigns' => $callsigns, 'events' => $events]);
     }
 
-    public function create(Request $request)
+    public function create(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'callsign' => 'required|string',
@@ -88,7 +92,7 @@ class BookingController extends Controller
         return redirect()->route('booking')->with('success', 'Booking created successfully!');
     }
 
-    public function edit($id, Request $request)
+    public function edit($id, Request $request): Response|JsonResponse|View
     {
         $response = Http::withToken($this->apiKey)->get("{$this->bookingUrl}/{$id}");
         $booking = $response->successful() ? $response->json() : null;
@@ -100,7 +104,7 @@ class BookingController extends Controller
         return view('booking.edit', compact('booking'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $data = $request->validate([
             'callsign' => 'required|string',
@@ -139,7 +143,7 @@ class BookingController extends Controller
         return redirect()->route('booking')->with('success', 'Booking updated successfully!');
     }
 
-    public function delete($id)
+    public function delete($id): RedirectResponse
     {
         $response = Http::withToken($this->apiKey)->delete("{$this->bookingUrl}/{$id}");
 

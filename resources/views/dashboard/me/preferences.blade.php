@@ -7,7 +7,7 @@
     <hr>
     <p>Customise your Vancouver web experience.</p>
     <h3 class="font-weight-bold blue-text">Current email subscription status</h3>
-    @if (Auth::user()->gdpr_subscribed_emails == 0)
+    @if (auth()->user()->gdpr_subscribed_emails == 0)
         <h3>
             <span class="badge badge-danger">Not subscribed</span>
         </h3>

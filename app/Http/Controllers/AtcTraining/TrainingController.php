@@ -15,12 +15,15 @@ use App\Models\AtcTraining\TrainingWaittime;
 use App\Models\Publications\AtcResource;
 use App\Models\Users\User;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class TrainingController extends Controller
 {
-    public function index(VatcanController $vatcan)
+    public function index(VatcanController $vatcan): View
     {
         $user = Auth::user();
 
@@ -76,19 +79,19 @@ class TrainingController extends Controller
         return view('training.indexinstructor', compact('yourStudents', 'student', 'Visitors', 'waitlistPosition', 'studentChecklistGroups', 'training_time', 'vatcanNotes'));
     }
 
-    public function joinvancouver()
+    public function joinvancouver(): View
     {
         return view('joinvancouver');
     }
 
-    public function viewResources()
+    public function viewResources(): View
     {
         $atcResources = AtcResource::all()->sortBy('title');
 
         return view('training.resources', compact('atcResources'));
     }
 
-    public function allNotes($id, VatcanController $vatcan)
+    public function allNotes($id, VatcanController $vatcan): View
     {
         $student = Student::findOrFail($id);
 
@@ -104,14 +107,14 @@ class TrainingController extends Controller
         return view('training.students.viewstudentnotes', compact('student', 'vatcanNotes'));
     }
 
-    public function newNoteView($id)
+    public function newNoteView($id): View
     {
         $student = Student::findOrFail($id);
 
         return view('training.students.newnote', compact('student'));
     }
 
-    public function addNote(Request $request, $id)
+    public function addNote(Request $request, $id): RedirectResponse
     {
         $student = Student::findOrFail($id);
         $instructor = Instructor::where('user_id', Auth::id())->first();
@@ -131,7 +134,7 @@ class TrainingController extends Controller
         return redirect()->route('training.students.view', ['id' => $student->id])->withSuccess('Staff Comment added for '.$student->user->fullName('FLC').'!');
     }
 
-    public function completeTraining(Request $request, Student $student)
+    public function completeTraining(Request $request, Student $student): RedirectResponse
     {
         $student->instructor_id = null;
 
@@ -146,7 +149,7 @@ class TrainingController extends Controller
         return redirect()->route('training.students.completed')->with('success', 'Completed training for '.$student->user->fullName('FLC').'!');
     }
 
-    public function trainingTime()
+    public function trainingTime(): View
     {
         $training_time = TrainingWaittime::find(1);
         $waitlist = Student::where('status', 0)->get();
@@ -155,7 +158,7 @@ class TrainingController extends Controller
         return view('trainingtimes', compact('training_time', 'waitlist', 'visitorWaitlist'));
     }
 
-    public function editTrainingTime(Request $request)
+    public function editTrainingTime(Request $request): RedirectResponse
     {
         $request->validate(['waitTime' => 'required']);
 
@@ -168,7 +171,7 @@ class TrainingController extends Controller
         return back()->withSuccess('Waittime updated successfully!');
     }
 
-    public function instructorsIndex()
+    public function instructorsIndex(): View
     {
         $instructors = Instructor::all();
         $potentialinstructor = RosterMember::where('status', 'instructor')->get();
@@ -176,7 +179,7 @@ class TrainingController extends Controller
         return view('training.instructors.index', compact('instructors', 'potentialinstructor'));
     }
 
-    public function addInstructor(Request $request)
+    public function addInstructor(Request $request): RedirectResponse
     {
         Instructor::create([
             'user_id' => $request->input('cid'),
@@ -187,7 +190,7 @@ class TrainingController extends Controller
         return redirect()->back()->withSuccess('Added '.$request->input('cid').' as an Instructor!');
     }
 
-    public function newStudent(Request $request)
+    public function newStudent(Request $request): RedirectResponse
     {
         $userId = $request->student_id;
 
@@ -233,7 +236,7 @@ class TrainingController extends Controller
         return redirect()->route('training.students.view', ['id' => $student->id])->withSuccess('Added New Visitor/Student - '.$student->user->fullName('FLC').'!');
     }
 
-    public function AllStudents()
+    public function AllStudents(): View
     {
         $students = Student::with(['user', 'labels.label', 'instructor'])->get();
 
@@ -246,7 +249,7 @@ class TrainingController extends Controller
         return view('training.students.allstudents', compact('students', 'potentialstudent', 'instructors', 'lists'));
     }
 
-    public function completedStudents()
+    public function completedStudents(): View
     {
         $students = Student::where('status', 9)->get();
         $potentialstudent = User::all();
@@ -255,7 +258,7 @@ class TrainingController extends Controller
         return view('training.students.completed', compact('students', 'potentialstudent', 'instructors'));
     }
 
-    public function newStudents()
+    public function newStudents(): View
     {
         $students = Student::where('status', '0')->get();
 
@@ -268,7 +271,7 @@ class TrainingController extends Controller
         return view('training.students.waitlist', compact('waitlistStudents', 'visitorWaitlist', 'potentialstudent', 'instructors'));
     }
 
-    public function viewStudent($id, VatcanController $vatcan)
+    public function viewStudent($id, VatcanController $vatcan): View
     {
         $student = Student::with([
             'checklistItems.checklistItem.checklist',
@@ -310,7 +313,7 @@ class TrainingController extends Controller
         return view('training.students.viewstudent', compact('student', 'instructors', 'times', 'labels', 'checklists', 'studentChecklistGroups', 'isVisitor', 'trainingOrder', 'currentLabel', 'nextLabel', 'vatcanNotes'));
     }
 
-    public function sort(Request $request)
+    public function sort(Request $request): JsonResponse
     {
         foreach ($request->order as $item) {
             Student::where('id', $item['id'])->update(['position' => $item['position']]);
@@ -319,7 +322,7 @@ class TrainingController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function sortVisitor(Request $request)
+    public function sortVisitor(Request $request): JsonResponse
     {
         foreach ($request->order as $item) {
             Student::where('id', $item['id'])->update(['position' => $item['position']]);
@@ -328,7 +331,7 @@ class TrainingController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function editTimes(Request $request, Student $student)
+    public function editTimes(Request $request, Student $student): RedirectResponse
     {
         $validated = $request->validate([
             'times' => 'nullable|string|max:1000',
@@ -342,7 +345,7 @@ class TrainingController extends Controller
         return redirect()->back()->with('success', 'Times updated successfully!');
     }
 
-    public function renewTraining($token)
+    public function renewTraining($token): RedirectResponse
     {
         $student = Student::where('renewal_token', $token)->first();
 
@@ -379,7 +382,7 @@ class TrainingController extends Controller
         return redirect()->route('training.index')->withSuccess('Your training has been renewed!');
     }
 
-    public function assignInstructorToStudent(Request $request, $id)
+    public function assignInstructorToStudent(Request $request, $id): RedirectResponse
     {
         $student = Student::findOrFail($id);
 
@@ -402,14 +405,14 @@ class TrainingController extends Controller
         }
     }
 
-    public function showDeleteForm($id)
+    public function showDeleteForm($id): View
     {
         $student = Student::findOrFail($id);
 
         return view('training.students.removestudents', compact('student'));
     }
 
-    public function removeStudent($id)
+    public function removeStudent($id): RedirectResponse
     {
         $student = Student::findOrFail($id);
 

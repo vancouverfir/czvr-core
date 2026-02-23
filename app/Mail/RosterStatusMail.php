@@ -31,7 +31,7 @@ class RosterStatusMail extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): self
     {
         return $this->view('emails.rosterstatus')
             ->subject('Your Roster Status Has Been Changed');

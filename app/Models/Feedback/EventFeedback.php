@@ -4,6 +4,7 @@ namespace App\Models\Feedback;
 
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventFeedback extends Model
 {
@@ -13,7 +14,7 @@ class EventFeedback extends Model
         'user_id', 'subject', 'content',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

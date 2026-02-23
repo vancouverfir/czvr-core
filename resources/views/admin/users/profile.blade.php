@@ -26,7 +26,7 @@
                     <h5>Identity</h5>
                     <ul class="list-unstyled">
                         <li>CID: {{$user->id}}</li>
-                        @if (Auth::user()->permissions == 5)
+                        @if (auth()->user()->permissions == 5)
                         <li>CERT First Name: {{$user->fname}}</li>
                         <li>CERT Last Name: {{$user->lname}}</li>
                         @endif
@@ -155,7 +155,7 @@
                         @if (!$user->rosterProfile->currency == 0)
                         @if ($user->rosterProfile->currency < 3.0)
                           <h3><span class="badge rounded shadow-none purple">
-                              {{Auth::user()->rosterProfile->currency}} hours recorded
+                              {{auth()->user()->rosterProfile->currency}} hours recorded
                           </span></h3>
                         @elseif ($user->rosterProfile->currency >= 3.0)
                           <h3><span class="badge rounded shadow-none green">
@@ -194,9 +194,9 @@
                       <ul class="list-unstyled" style="width:500px; height: 80px">
 
                     <li><h5>Current Permissions Level: {{$user->permissions()}} </h5></li>
-                    @if ($user->id == Auth::user()->id)
+                    @if ($user->id == auth()->user()->id)
                             <a role="button" data-toggle="modal" data-target="#confirmChange" class="btn btn-sm btn-success">Update Yourself</a>
-                    @elseif (Auth::user()->permissions == 5 || $user->permissions < 4 && Auth::user()->permissions > 3 || $user->permissions < 2 && Auth::user()->permissions > 2)
+                    @elseif (auth()->user()->permissions == 5 || $user->permissions < 4 && auth()->user()->permissions > 3 || $user->permissions < 2 && auth()->user()->permissions > 2)
                     <h5 display="inline-block">Change Permissions Level:</h5>
                     <form method="post" action="{{route('edit.userpermissions', [$user->id])}}" style="position:absolute">
                         <select name="permissions" id="permissions" class="form-control" style="position:relative; width:100px; left:210px; bottom:40px">
@@ -205,7 +205,7 @@
                           <option name="mentor" value="2" id="2"{{$user->permissions == "2" ? "selected=selected" : ""}}>Mentor</option>
                           <option name="instructor" value="3" id="3"{{$user->permissions == "3" ? "selected=selected" : ""}}>Instructor</option>
 
-                            @if (Auth::user()->permissions == 5)
+                            @if (auth()->user()->permissions == 5)
                           <option name="staff" value="4" id="4"{{$user->permissions == "4" ? "selected=selected" : ""}}>Staff Member</option>
                           <option name="admin" value="5" id="5"{{$user->permissions == "5" ? "selected=selected" : ""}}>Administrator</option>
                           @endif
@@ -216,7 +216,7 @@
                           <option name="training" value="training" id="training"{{$certification == "training" ? "selected=selected" : ""}}>Training</option>
                           <option name="home" value="home" id="home"{{$certification == "home" ? "selected=selected" : ""}}>Home</option>
                           <option name="visit" value="visit" id="visit"{{$certification == "visit" ? "selected=selected" : ""}}>Visitor</option>
-                          @if (Auth::user()->permissions >= 4)
+                          @if (auth()->user()->permissions >= 4)
                           <option name="instructor" value="instructor" id="instructor"{{$certification == "instructor" ? "selected=selected" : ""}}>Instructor</option>
                           @endif
                         @csrf
@@ -410,7 +410,7 @@
                         <option name="mentor" value="2" id="2"{{$user->permissions == "2" ? "selected=selected" : ""}}>Mentor</option>
                         <option name="instructor" value="3" id="3"{{$user->permissions == "3" ? "selected=selected" : ""}}>Instructor</option>
                         <option name="staff" value="4" id="4"{{$user->permissions == "4" ? "selected=selected" : ""}}>Staff Member</option>
-                        @if (Auth::user()->permissions == 5)
+                        @if (auth()->user()->permissions == 5)
                         <option name="admin" value="5" id="5"{{$user->permissions == "5" ? "selected=selected" : ""}}>Administrator</option>
                         @endif
                         </select>
@@ -420,7 +420,7 @@
                         <option name="training" value="training" id="training"{{$certification == "training" ? "selected=selected" : ""}}>Training</option>
                         <option name="home" value="home" id="home"{{$certification == "home" ? "selected=selected" : ""}}>Home</option>
                         <option name="visit" value="visit" id="visit"{{$certification == "visit" ? "selected=selected" : ""}}>Visitor</option>
-                        @if (Auth::user()->permissions >= 4)
+                        @if (auth()->user()->permissions >= 4)
                         <option name="instructor" value="instructor" id="instructor"{{$certification == "instructor" ? "selected=selected" : ""}}>Instructor</option>
                         @endif
                         </select>

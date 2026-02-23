@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Models\Users\UserNotification;
 use Auth;
+use Illuminate\Http\RedirectResponse;
 
 class NotificationRedirectController extends Controller
 {
-    public function notificationRedirect($id)
+    public function notificationRedirect($id): RedirectResponse
     {
         $notification = UserNotification::whereId($id)->firstOrFail();
         if ($notification->user_id != Auth::id()) {
@@ -21,7 +22,7 @@ class NotificationRedirectController extends Controller
     }
 
     //TODO FIX THIS BULLSHIT REEEEEEEEEEEEEEEEEEEEEE
-    public function clearAll()
+    public function clearAll(): RedirectResponse
     {
         $notifications = Auth::user()->notifications;
 

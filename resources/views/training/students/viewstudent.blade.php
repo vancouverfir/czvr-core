@@ -115,7 +115,7 @@
                             <h7 class="list-group-item" style="background: transparent; color: #2cb82c;">Training Completed On {{ $student->updated_at?->format('F j, Y') }}</h7>
                             @endif
                             <h7 class="list-group-item" style="background: transparent">Created {{$student->created_at?->format('F jS Y')}}</h7>
-                            @if (Auth::user()->permissions >= 4) <h7 class="list-group-item" style="background: transparent; color: #ff0000; cursor: pointer"><a href="{{ route('training.students.delete', $student->id) }}" style="color: inherit">Delete Student</a></h7> @endif
+                            @if (auth()->user()->permissions >= 4) <h7 class="list-group-item" style="background: transparent; color: #ff0000; cursor: pointer"><a href="{{ route('training.students.delete', $student->id) }}" style="color: inherit">Delete Student</a></h7> @endif
                         </div>
                     </div>
 

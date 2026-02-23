@@ -70,13 +70,13 @@
             <div class="col-md-9">
                 {{$event->toHtml('description')}}
                 @if($event->start_timestamp > $timeNow)
-                @if (Auth::check() && $event->controller_applications_open && Auth::user()->rosterProfile)
+                @if (auth()->check() && $event->controller_applications_open && auth()->user()->rosterProfile)
                 <hr>
                 <h3>Apply to Control</h3>
-                @if (Auth::check() && $event->userHasApplied())
+                @if (auth()->check() && $event->userHasApplied())
                     <h5 class="font-weight-bold">You have already applied for this event. Check your <a href="{{route('dashboard.index')}}">dashboard</a> for more info regarding your application!</h5>
                 @endif
-                @if(Auth::check() && !$event->userHasApplied())
+                @if(auth()->check() && !$event->userHasApplied())
                 <br>
                 <div class="card p-3">
                     <form id="app-form" method="POST" action="{{route('events.controllerapplication.ajax')}}">

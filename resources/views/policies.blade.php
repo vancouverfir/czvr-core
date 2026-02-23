@@ -13,7 +13,7 @@
     <div class="container" style="margin-top: 20px;">
         <h1 class="font-weight-bold blue-text">Policies</h1>
 
-        @if (Auth::check() && Auth::user()->permissions >= 4)
+        @if (auth()->check() && auth()->user()->permissions >= 4)
             <hr>
             <div class="card w-75">
                 <div class="card-body">
@@ -44,7 +44,7 @@
                         </div>
                         <div id="policy{{$policy->id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                             <div class="card-body">
-                                @if (Auth::check() && Auth::user()->permissions >= 4)
+                                @if (auth()->check() && auth()->user()->permissions >= 4)
                                     <div class="row" style="padding: 10px;">
                                         <a href="#" data-toggle="modal" data-target="#editPolicyModal{{$policy->id}}" class="btn btn-primary">Edit Policy</a>
                                         <a href="{{url('/policies/'.$policy->id.'/delete')}}" class="btn btn-danger">Delete Policy</a>
@@ -66,7 +66,7 @@
             <br>
         @endforeach
         @auth
-            @if(Auth::user()->permissions >= 4)
+            @if(auth()->user()->permissions >= 4)
                 <hr>
                 <h5 class="font-weight-bold text-danger" >Policies without a section, staff only view</h5>
                 @if(count($nullPolicies) >= 1)
@@ -190,7 +190,7 @@
             </div>
         </div>
     </div>
-    @if(Auth::check() && Auth::user()->permissions >= 4)
+    @if(auth()->check() && auth()->user()->permissions >= 4)
         @foreach($allPolicies as $p)
             <div class="modal fade" id="editPolicyModal{{$p->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">

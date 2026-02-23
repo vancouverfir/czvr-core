@@ -31,7 +31,7 @@ class NewTicketReplyMail extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): self
     {
         return $this->view('emails.ticketreply')
             ->subject('#'.$this->ticket->ticket_id.' | New Reply from '.User::find($this->ticketReply->user_id)->fname.' '.User::find($this->ticketReply->user_id)->lname);

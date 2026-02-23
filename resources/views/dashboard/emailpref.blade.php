@@ -12,7 +12,7 @@
         <h1 class="blue-text font-weight-bold mt-2">Email Preferences</h1>
         <hr>
         <h5>Current subscription status:</h5>
-        @if (Auth::user()->gdpr_subscribed_emails == 0)
+        @if (auth()->user()->gdpr_subscribed_emails == 0)
             <h3>
                 <span class="badge badge-danger">Not subscribed</span>
             </h3>

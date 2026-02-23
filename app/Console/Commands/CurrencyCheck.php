@@ -27,21 +27,9 @@ class CurrencyCheck extends Command
     protected $description = 'Check if every roster member has completed their hours for this quarter';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $badMembersVisit0 = [];
         $badMembersVisit1 = [];

@@ -16,10 +16,12 @@ use App\Notifications\WelcomeNewUser;
 use Auth;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Laravel\Socialite\Facades\Socialite;
 use mofodojodino\ProfanityFilter\Check;
 use NotificationChannels\Discord\Discord;
@@ -29,7 +31,7 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function privacyAccept()
+    public function privacyAccept(): RedirectResponse
     {
         $user = Auth::user();
         if ($user->init == 1) {
@@ -42,7 +44,7 @@ class UserController extends Controller
         return redirect('/dashboard')->with('success', 'Welcome to Vancouver, '.$user->fname.'! We are glad to have you on board!');
     }
 
-    public function privacyDeny()
+    public function privacyDeny(): RedirectResponse
     {
         $user = Auth::user();
         $preferences = UserPreferences::where('user_id', $user->id);
@@ -58,14 +60,14 @@ class UserController extends Controller
         return redirect()->route('index')->with('info', 'Your account has been removed as you have not accepted the privacy policy!');
     }
 
-    public function viewAllUsers()
+    public function viewAllUsers(): View
     {
         $users = User::all()->sortBy('id');
 
         return view('admin.users.index', compact('users'));
     }
 
-    public function viewProfile($id)
+    public function viewProfile($id): View
     {
         $user = User::where('id', $id)->firstOrFail();
         $rosterMember = RosterMember::where('user_id', $id)->first();
@@ -123,7 +125,7 @@ class UserController extends Controller
         return view('profile', compact('id', 'user', 'quarterlyHours', 'rosterMember', 'time', 'connections'));
     }
 
-    public function viewConnections($id)
+    public function viewConnections($id): View
     {
         function clockalize($in)
         {
@@ -151,7 +153,7 @@ class UserController extends Controller
         return view('connections', compact('connections', 'user', 'id'));
     }
 
-    public function adminViewUserProfile($id)
+    public function adminViewUserProfile($id): View
     {
         $user = User::where('id', $id)->firstOrFail();
         $certification = null;
@@ -172,7 +174,7 @@ class UserController extends Controller
         return view('admin.users.profile', compact('user', 'xml', 'certification', 'active', 'auditLog', 'userNotes'));
     }
 
-    public function addRole(Request $request)
+    public function addRole(Request $request): RedirectResponse
     {
         $u = User::whereId($request->input('id'))->first();
         $r = $request->input('role');
@@ -192,7 +194,7 @@ class UserController extends Controller
         return back()->withSuccess('Added the '.$role->name.' role!');
     }
 
-    public function deleteRole($id, $user)
+    public function deleteRole($id, $user): RedirectResponse
     {
         $role = Role::where('name', $id)->first();
         $m = $role->name;
@@ -215,7 +217,7 @@ class UserController extends Controller
         return back()->withSuccess('Deleted the '.$m.' role!');
     }
 
-    public function editPermissions(Request $request, $id)
+    public function editPermissions(Request $request, $id): RedirectResponse
     {
         $user = User::where('id', $id)->firstorFail();
         $roster = RosterMember::where('cid', $id)->first();
@@ -229,7 +231,7 @@ class UserController extends Controller
         return redirect()->back()->withSuccess('User Permissions Changed!');
     }
 
-    public function deleteUser($id)
+    public function deleteUser($id): RedirectResponse
     {
         $user = User::where('id', $id)->firstOrFail();
         if ($user->id == Auth::user()->id) {
@@ -256,7 +258,7 @@ class UserController extends Controller
         return redirect()->route('users.viewall')->with('info', 'User deleted.');
     }
 
-    public function editUser($id)
+    public function editUser($id): never
     {
         $user = User::where('id', $id)->firstOrFail();
 
@@ -264,7 +266,7 @@ class UserController extends Controller
         abort(404, 'Not implemented');
     }
 
-    public function changeUsersAvatar(Request $request)
+    public function changeUsersAvatar(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'file' => 'required',
@@ -287,7 +289,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Avatar changed!');
     }
 
-    public function resetUsersAvatar(Request $request)
+    public function resetUsersAvatar(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'user_id' => 'required',
@@ -306,7 +308,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Avatar reset!');
     }
 
-    public function resetUsersBio(Request $request)
+    public function resetUsersBio(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'user_id' => 'required',
@@ -324,7 +326,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Biography reset!');
     }
 
-    public function storeEditUser(Request $request, $id)
+    public function storeEditUser(Request $request, $id): never
     {
         $user = User::find($id);
         $prevPermissions = $user->permissions;
@@ -352,7 +354,7 @@ class UserController extends Controller
         abort(404, 'Not implemented');
     }
 
-    public function emailCreate($id)
+    public function emailCreate($id): View
     {
         $user = User::where('id', $id)->firstOrFail();
 
@@ -360,11 +362,11 @@ class UserController extends Controller
         abort(404, 'Not implemented');
     }
 
-    public function emailStore(Request $request)
+    public function emailStore(Request $request): void
     {
     }
 
-    public function createUserNote(Request $request, $id)
+    public function createUserNote(Request $request, $id): RedirectResponse
     {
         $this->validate($request, [
             'content' => 'required',
@@ -390,7 +392,7 @@ class UserController extends Controller
         return redirect()->route('users.viewprofile', $user->id)->with('success', 'User note saved!');
     }
 
-    public function deleteUserNote($user_id, $note_id)
+    public function deleteUserNote($user_id, $note_id): RedirectResponse
     {
         $user = User::where('id', $user_id)->firstOrFail();
         $note = UserNote::where('id', $note_id)->where('user_id', $user->id)->firstOrFail();
@@ -412,7 +414,7 @@ class UserController extends Controller
         return redirect()->route('users.viewprofile', $user->id)->with('success', 'User note deleted.');
     }
 
-    public function changeAvatar(Request $request)
+    public function changeAvatar(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -432,7 +434,7 @@ class UserController extends Controller
         return redirect()->route('dashboard.index')->with('success', 'Avatar changed!');
     }
 
-    public function changeAvatarDiscord()
+    public function changeAvatarDiscord(): RedirectResponse
     {
         $user = Auth::user();
         $user->avatar_mode = 2;
@@ -441,7 +443,7 @@ class UserController extends Controller
         return redirect()->route('dashboard.index')->with('success', 'Avatar changed!');
     }
 
-    public function resetAvatar()
+    public function resetAvatar(): RedirectResponse
     {
         $user = Auth::user();
         if ($user->isAvatarDefault()) {
@@ -454,7 +456,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Avatar reset!');
     }
 
-    public function searchUsers(Request $request)
+    public function searchUsers(Request $request): mixed
     {
         if ($request->ajax != false) {
             abort(400, 'AJAX requests only');
@@ -470,12 +472,12 @@ class UserController extends Controller
         }
     }
 
-    public function editBioIndex()
+    public function editBioIndex(): View
     {
         return view('dashboard.me.editbio');
     }
 
-    public function editBio(Request $request)
+    public function editBio(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'bio' => 'sometimes|max:5000',
@@ -501,7 +503,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Biography saved!');
     }
 
-    public function changeDisplayName(Request $request)
+    public function changeDisplayName(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'display_fname' => 'required',
@@ -535,19 +537,19 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Display name saved!');
     }
 
-    public function viewUserProfilePublic($id)
+    public function viewUserProfilePublic($id): View
     {
         $user = User::whereId($id)->firstOrFail();
 
         return view('dashboard.me.publicuserprofile', compact('user'));
     }
 
-    public function linkDiscord()
+    public function linkDiscord(): mixed
     {
         return Socialite::with('discord')->setScopes(['identify', 'guilds.join'])->redirect();
     }
 
-    public function linkDiscordRedirect()
+    public function linkDiscordRedirect(): RedirectResponse
     {
         try {
             $config = new Config(
@@ -599,7 +601,7 @@ class UserController extends Controller
         }
     }
 
-    public function unlinkDiscord()
+    public function unlinkDiscord(): RedirectResponse
     {
         $discord = new DiscordClient(config('services.discord.token'));
         $user = Auth::user();
@@ -621,7 +623,7 @@ class UserController extends Controller
         return redirect()->route('dashboard.index')->with('info', 'Account successfully unlinked!');
     }
 
-    public function preferences()
+    public function preferences(): View
     {
         $preferences = Auth::user()->preferences;
 

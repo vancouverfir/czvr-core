@@ -6,6 +6,7 @@ use App\Models\AtcTraining\RosterMember;
 use App\Models\Users\User;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventConfirm extends Model
 {
@@ -18,7 +19,7 @@ class EventConfirm extends Model
         'end_timestamp' => 'datetime',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -32,12 +33,12 @@ class EventConfirm extends Model
         return false;
     }
 
-    public function rostermember()
+    public function rostermember(): BelongsTo
     {
         return $this->belongsTo(RosterMember::class);
     }
 
-    public function event()
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
     }

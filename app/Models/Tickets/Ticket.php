@@ -7,6 +7,8 @@ use App\Models\Users\User;
 use App\Traits\HasMarkdownFields;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Ticket extends Model
 {
@@ -27,17 +29,17 @@ class Ticket extends Model
         return ['message'];
     }
 
-    public function replies()
+    public function replies(): HasMany
     {
         return $this->hasMany(TicketReply::class, 'ticket_id', 'ticket_id');
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function staff_member()
+    public function staff_member(): BelongsTo
     {
         return $this->belongsTo(StaffMember::class);
     }

@@ -2,7 +2,10 @@
 
 namespace App\Models\Network;
 
+use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 // Log of all sessions
 class SessionLog extends Model
@@ -12,12 +15,12 @@ class SessionLog extends Model
         'id', 'roster_member_id', 'cid', 'session_start', 'session_end', 'callsign', 'duration', 'emails_sent',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function userLogs()
+    public function userLogs(): HasMany
     {
         return $this->hasMany(User::class, 'cid');
     }

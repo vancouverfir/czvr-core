@@ -23,12 +23,12 @@
 </style>
 
 <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
-    @if (Auth::user()->permissions >= 1)
+    @if (auth()->user()->permissions >= 1)
         <div class="resource-card border-0">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1 class="font-weight-bold mb-0"> <i class="fas fa-folder-open me-2 blue-text"> </i> ATC Resources </h1>
-                    @if(Auth::user()->permissions >= 3)
+                    @if(auth()->user()->permissions >= 3)
                         <a href="{{ route('atcresources.index') }}" class="btn btn-sm btn-outline-white"> Manage Resources </a>
                     @endif
                 </div>
@@ -39,7 +39,7 @@
 
                 <div class="row">
                     @forelse($atcResources as $resource)
-                        @if($resource->atc_only && Auth::user()->permissions < 1)
+                        @if($resource->atc_only && auth()->user()->permissions < 1)
                             @continue
                         @endif
                         <div class="col-md-4 mb-4">

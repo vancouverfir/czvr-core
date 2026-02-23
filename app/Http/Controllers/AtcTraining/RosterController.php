@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Network\SessionLog;
 use App\Models\Users\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class RosterController extends Controller
 {
-    public function showPublic()
+    public function showPublic(): View
     {
         $roster = RosterMember::with('user')->where('visit', '0')->get()->sortBy('cid');
         $visitroster = RosterMember::with('user')->where('visit', '1')->get()->sortBy('cid');
@@ -18,7 +20,7 @@ class RosterController extends Controller
         return view('roster', compact('roster', 'visitroster'));
     }
 
-    public function index()
+    public function index(): View
     {
         $roster = RosterMember::with('user')->where('visit', '0')->get()->sortBy('cid');
         $visitroster2 = RosterMember::with('user')->where('visit', '1')->get()->sortBy('cid');
@@ -27,12 +29,12 @@ class RosterController extends Controller
         return view('dashboard.roster.index', compact('roster', 'visitroster2', 'users'));
     }
 
-    public function user()
+    public function user(): mixed
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function deleteController($id)
+    public function deleteController($id): RedirectResponse
     {
         $user = User::findorFail($roster->user_id);
         $roster = RosterMember::findorFail($id);
@@ -51,7 +53,7 @@ class RosterController extends Controller
         return redirect('/dashboard/roster')->withSuccess('Successfully deleted from roster!');
     }
 
-    public function addController(Request $request)
+    public function addController(Request $request): RedirectResponse
     {
         $users = User::findOrFail($request->input('newcontroller'));
         $rosterMember = RosterMember::where('cid', $users->id)->first();
@@ -72,7 +74,7 @@ class RosterController extends Controller
         return redirect('/dashboard/roster')->withSuccess('Successfully added '.$users->fullName('FL').' CID: '.$users->id.' to roster!');
     }
 
-    public function addVisitController(Request $request)
+    public function addVisitController(Request $request): RedirectResponse
     {
         $users = User::findOrFail($request->input('newcontroller'));
         $rosterMember = RosterMember::where('cid', $users->id)->first();
@@ -92,7 +94,7 @@ class RosterController extends Controller
         return redirect('/dashboard/roster')->withSuccess('Successfully added '.$users->fullName('FL').' CID: '.$users->id.' to roster!');
     }
 
-    public function editControllerForm($cid)
+    public function editControllerForm($cid): View
     {
         $roster = RosterMember::where('cid', $cid)->first();
 
@@ -103,7 +105,7 @@ class RosterController extends Controller
         return view('dashboard.roster.edituser', compact('roster'))->with('cid', $cid);
     }
 
-    public function editController(Request $request, $cid)
+    public function editController(Request $request, $cid): RedirectResponse
     {
         $roster = RosterMember::where('cid', $cid)->first();
         if ($roster != null) {

@@ -4,18 +4,20 @@ namespace App\Http\Controllers\Publications;
 
 use App\Http\Controllers\Controller;
 use App\Models\Publications\AtcResource;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AtcResourcesController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $resources = AtcResource::all();
 
         return view('atcresources', compact('resources'));
     }
 
-    public function uploadResource(Request $request)
+    public function uploadResource(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',
@@ -36,7 +38,7 @@ class AtcResourcesController extends Controller
         return redirect()->route('training.resources')->with('success', 'Resource uploaded!');
     }
 
-    public function deleteResource($id)
+    public function deleteResource($id): RedirectResponse
     {
         $resource = AtcResource::whereId($id)->firstOrFail();
 

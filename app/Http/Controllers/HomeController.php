@@ -10,10 +10,11 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    public function view()
+    public function view(): View
     {
         // VATSIM Controllers (from cache)
         $finalPositions = Cache::get('vatsim.controllers', []);
