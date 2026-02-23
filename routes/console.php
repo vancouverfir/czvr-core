@@ -8,7 +8,7 @@ use App\Console\Commands\CurrencyCheck;
 use App\Console\Commands\RenewNotification;
 use App\Console\Commands\SendSessionReminder;
 use App\Console\Commands\SyncStudents;
-use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\Artisan;
 
 /*
