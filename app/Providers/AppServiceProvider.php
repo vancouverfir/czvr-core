@@ -15,6 +15,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+        \Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+            $event->extendSocialite('discord', \SocialiteProviders\Discord\Provider::class);
+        });
+
         if ($this->app->environment('production')) {
             if (config('app.url')) {
                 URL::forceRootUrl(config('app.url'));
