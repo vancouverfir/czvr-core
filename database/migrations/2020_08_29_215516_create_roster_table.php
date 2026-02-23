@@ -23,8 +23,8 @@ class CreateRosterTable extends Migration
             $table->string('status');
             $table->tinyInteger('active')->default(1);
             $table->timestamps();
-            $table->double('currency', 8, 2)->nullable();
-            $table->double('rating_hours', 8, 2)->nullable();
+            $table->double('currency')->nullable();
+            $table->double('rating_hours')->nullable();
             $table->integer('fss')->default(0);
             $table->integer('delgnd')->default(0);
             $table->integer('delgnd_t2')->default(0);

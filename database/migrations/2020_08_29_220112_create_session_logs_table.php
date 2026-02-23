@@ -23,7 +23,7 @@ class CreateSessionLogsTable extends Migration
             $table->integer('monitored_position_id')->unsigned();
             $table->foreign('monitored_position_id')->references('id')->on('monitored_positions');
             $table->text('callsign')->nullable();
-            $table->double('duration', 8, 2)->nullable();
+            $table->double('duration')->nullable();
             $table->integer('emails_sent');
             $table->timestamps();
         });
