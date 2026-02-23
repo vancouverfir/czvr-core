@@ -80,7 +80,8 @@ def fetch_event():
 
     print("Fetching Events!")
     try:
-        req = requests.get(APIEvent + simKey, timeout=35)
+        headers = {"Authorization": f"Token {simKey}"}
+        req = requests.get(APIEvent, headers=headers, timeout=35)
     except requests.exceptions.RequestException as request_exception:
         print("Event Fetch Failed! ", request_exception)
         send_webhook(f"Python script failed to fetch Events {request_exception}")
@@ -274,7 +275,8 @@ def fetch_roster():
 
     print("Fetching Users!")
     try:
-        req = requests.get(APIUsers + simKey, timeout=35)
+        headers = {"Authorization": f"Token {simKey}"}
+        req = requests.get(APIUsers, headers=headers, timeout=35)
     except requests.exceptions.RequestException as request_exception:
         print("User Fetch Failed!", request_exception)
         send_webhook(f"Python script failed to fetch Users {request_exception}")
@@ -310,7 +312,8 @@ def fetch_visit_roster():
 
     print("Fetching Visitors!")
     try:
-        req = requests.get(APIUsers + simKey, timeout=35)
+        headers = {"Authorization": f"Token {simKey}"}
+        req = requests.get(APIUsers, headers=headers, timeout=35)
     except requests.exceptions.RequestException as request_exception:
         print("Visitor Fetch Failed!", request_exception)
         send_webhook(f"Python script failed to fetch Visitors {request_exception}")
