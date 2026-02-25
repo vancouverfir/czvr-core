@@ -1,13 +1,17 @@
 <?php
+
 namespace App\Console\Commands;
+
 use App\Models\AtcTraining\Student;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+
 class FetchVatcanNotes extends Command
 {
     protected $signature = 'vancouver:fetch-vatcan-notes';
     protected $description = 'Fetch and cache training notes from Vatcan v2 API';
+
     public function handle()
     {
         $apiKey = env('VATCAN_API_KEY');
@@ -47,7 +51,7 @@ class FetchVatcanNotes extends Command
                 }
             }
             if ($index < $total - 1) {
-                $this->info("Rate limit pause...");
+                $this->info('Rate limit pause...');
                 sleep(60);
             }
         }
