@@ -1,7 +1,6 @@
 <?php
 
 use App\Console\Commands\ActivityLog;
-use App\Console\Commands\CacheBooking;
 use App\Console\Commands\CacheVatsim;
 use App\Console\Commands\CacheWeather;
 use App\Console\Commands\CheckVisitHours;
@@ -27,7 +26,6 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::command(ActivityLog::class)->everyMinute()->evenInMaintenanceMode()->sentryMonitor();
 Schedule::command(SendSessionReminder::class)->everyMinute();
 Schedule::command(CacheVatsim::class)->everyFiveMinutes();
-Schedule::command(CacheBooking::class)->everyFiveMinutes();
 Schedule::command(CacheWeather::class)->everyFifteenMinutes();
 Schedule::command(FetchVatcanNotes::class)->everyFifteenMinutes();
 Schedule::command(RenewNotification::class)->hourly();

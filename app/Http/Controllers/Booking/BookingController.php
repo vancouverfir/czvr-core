@@ -24,18 +24,16 @@ class BookingController extends Controller
 
     protected function getCachedBookings(): \Illuminate\Support\Collection
     {
-        return Cache::remember('bookings.data', 300, function () {
+        return Cache::remember('bookings.data', 900, function () {
             $response = Http::withToken($this->apiKey)->get($this->bookingUrl, ['key_only' => true]);
-
             return $response->successful() ? collect($response->json()) : collect();
         });
     }
 
     protected function refreshBookingsCache(): void
     {
-        $response = Http::withToken($this->apiKey)->get($this->bookingUrl, ['key_only' => true]);
-        $bookings = $response->successful() ? collect($response->json()) : collect();
-        Cache::put('bookings.data', $bookings, 300);
+        Cache::forget('bookings.data');
+        $this->getCachedBookings();
     }
 
     public function indexPublic(Request $request): View
@@ -120,9 +118,9 @@ class BookingController extends Controller
         $end = strtotime($data['end']);
         $durationMinutes = ($end - $start) / 60;
 
-        if ($durationMinutes < 45 || $durationMinutes > 180) {
+        if ($durationMinutes < 45 || $durationMinutes > 300) {
             return back()->withErrors([
-                'duration' => 'Booking must be at least 45 minutes and no more than 3 hours!',
+                'duration' => 'Booking must be at least 45 minutes and no more than 5 hours!',
             ])->withInput();
         }
 
