@@ -1,7 +1,11 @@
 <?php
 
-function decimal_to_hm(float|int $decimal): string
+function decimal_to_hm(float|int|null $decimal): string
 {
+    if ($decimal === null) {
+        return '0:00';
+    }
+
     $seconds = ($decimal * 3600);
     $hours = floor($decimal);
     $seconds -= $hours * 3600;

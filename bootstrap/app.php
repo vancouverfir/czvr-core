@@ -13,7 +13,9 @@ return Illuminate\Foundation\Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function ($middleware) {
         $middleware->trustProxies(at: '*');
         $middleware->authenticateSessions();
-
+        $middleware->web(append: [
+            \App\Http\Middleware\ForceMainDomain::class,
+        ]);
         $middleware->group('api', [
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,

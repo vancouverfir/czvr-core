@@ -8,6 +8,7 @@ use App\Console\Commands\CurrencyCheck;
 use App\Console\Commands\RenewNotification;
 use App\Console\Commands\SendSessionReminder;
 use App\Console\Commands\SyncStudents;
+use App\Console\Commands\FetchVatcanNotes;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
@@ -26,6 +27,7 @@ Schedule::command(ActivityLog::class)->everyMinute()->evenInMaintenanceMode()->s
 Schedule::command(SendSessionReminder::class)->everyMinute();
 Schedule::command(CacheVatsim::class)->everyFiveMinutes();
 Schedule::command(CacheWeather::class)->everyFifteenMinutes();
+Schedule::command(FetchVatcanNotes::class)->everyFifteenMinutes();
 Schedule::command(RenewNotification::class)->hourly();
 Schedule::command(SyncStudents::class)->hourly();
 Schedule::command('vancouver:fetch-vatcan-notes')->hourlyAt(35);
