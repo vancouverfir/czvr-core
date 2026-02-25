@@ -12,6 +12,3 @@ Port: 3306
 ID: User
 Password: Password
 DBName: MyDB
-
-[VatsimAPI]
-APIVatsimKey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
