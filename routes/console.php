@@ -5,10 +5,10 @@ use App\Console\Commands\CacheVatsim;
 use App\Console\Commands\CacheWeather;
 use App\Console\Commands\CheckVisitHours;
 use App\Console\Commands\CurrencyCheck;
+use App\Console\Commands\FetchVatcanNotes;
 use App\Console\Commands\RenewNotification;
 use App\Console\Commands\SendSessionReminder;
 use App\Console\Commands\SyncStudents;
-use App\Console\Commands\FetchVatcanNotes;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 

@@ -10,6 +10,7 @@ class ForceMainDomain
     public function handle($request, Closure $next)
     {
         URL::forceRootUrl(config('app.url'));
+
         return $next($request);
     }
 }
