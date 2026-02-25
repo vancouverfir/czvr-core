@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
@@ -21,12 +22,24 @@ class BookingController extends Controller
         $this->apiKey = env('BOOKING_API_KEY');
     }
 
+    protected function getCachedBookings(): \Illuminate\Support\Collection
+    {
+        return Cache::remember('bookings.data', 300, function () {
+            $response = Http::withToken($this->apiKey)->get($this->bookingUrl, ['key_only' => true]);
+            return $response->successful() ? collect($response->json()) : collect();
+        });
+    }
+
+    protected function refreshBookingsCache(): void
+    {
+        $response = Http::withToken($this->apiKey)->get($this->bookingUrl, ['key_only' => true]);
+        $bookings = $response->successful() ? collect($response->json()) : collect();
+        Cache::put('bookings.data', $bookings, 300);
+    }
+
     public function indexPublic(Request $request): View
     {
-        $query = ['key_only' => true];
-
         $events = Event::all();
-
         $airports = config('bookingairports.airports');
 
         $callsigns = [];
@@ -36,19 +49,7 @@ class BookingController extends Controller
             }
         }
 
-        $response = Http::withToken($this->apiKey)->get($this->bookingUrl, $query);
-        $bookings = $response->successful() ? collect($response->json()) : collect();
-
-        $now = now()->utc();
-
-        $bookings->each(function ($b) use ($now) {
-            if (\Carbon\Carbon::parse($b['end'], 'UTC')->lt($now)) {
-                Http::withToken($this->apiKey)->delete("{$this->bookingUrl}/{$b['id']}");
-            }
-        });
-
-        $bookings = Http::withToken($this->apiKey)->get($this->bookingUrl, $query);
-        $bookings = $bookings->successful() ? collect($bookings->json()) : collect();
+        $bookings = $this->getCachedBookings();
 
         return view('booking', ['bookings' => $bookings, 'callsigns' => $callsigns, 'events' => $events]);
     }
@@ -88,6 +89,8 @@ class BookingController extends Controller
         if ($response->failed()) {
             return back()->withErrors(['api_error' => $response->body()])->with('error', 'Failed to create booking! Please try again!');
         }
+
+        $this->refreshBookingsCache();
 
         return redirect()->route('booking')->with('success', 'Booking created successfully!');
     }
@@ -140,6 +143,8 @@ class BookingController extends Controller
             return back()->withErrors(['api_error' => $response->body()])->with('error', 'Failed to update booking! Please try again!');
         }
 
+        $this->refreshBookingsCache();
+
         return redirect()->route('booking')->with('success', 'Booking updated successfully!');
     }
 
@@ -150,6 +155,8 @@ class BookingController extends Controller
         if ($response->failed()) {
             return back()->withErrors(['api_error' => $response->body()])->with('error', 'Failed to delete booking! Please try again!');
         }
+
+        $this->refreshBookingsCache();
 
         return redirect()->route('booking')->with('success', 'Booking deleted successfully!');
     }

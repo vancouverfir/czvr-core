@@ -132,7 +132,7 @@
                         <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources')}}">
                             <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
                             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="https://booking.czvr.ca">ATC Booking</a>
+                            <a class="dropdown-item" href="{{route('booking')}}">ATC Booking</a>
                             <a class="dropdown-item" href="{{route('roster.public')}}">Roster</a>
                             @if(auth()->check() && auth()->user()->permissions >= 3)
                                 <a class="dropdown-item {{ Request::is('roster') ? 'active white-text' : '' }}" href="{{route('roster.index')}}">Manage Roster</a>

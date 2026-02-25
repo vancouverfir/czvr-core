@@ -61,7 +61,7 @@ class PoliciesController extends Controller
 
         $file = $request->file('file');
 
-        $fileName = time().'_'.$file->getClientOriginalExtension();
+        $fileName = time().'.'.$file->getClientOriginalExtension();
 
         Storage::putFileAs(
             'public/files/policies',
@@ -179,7 +179,7 @@ class PoliciesController extends Controller
             }
 
             $file = $request->file('file');
-            $fileName = time().'_'.$file->getClientOriginalExtension();
+            $fileName = time().'.'.$file->getClientOriginalExtension();
             Storage::putFileAs('public/files/policies', $file, $fileName);
             $policy->link = '/storage/files/policies/'.$fileName;
         }
