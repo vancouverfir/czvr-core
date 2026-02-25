@@ -1,11 +1,11 @@
 <?php
 
 use App\Console\Commands\ActivityLog;
+use App\Console\Commands\CacheBooking;
 use App\Console\Commands\CacheVatsim;
 use App\Console\Commands\CacheWeather;
 use App\Console\Commands\CheckVisitHours;
 use App\Console\Commands\CurrencyCheck;
-use App\Console\Commands\CacheBooking;
 use App\Console\Commands\FetchVatcanNotes;
 use App\Console\Commands\RenewNotification;
 use App\Console\Commands\SendSessionReminder;
