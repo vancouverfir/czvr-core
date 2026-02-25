@@ -26,6 +26,7 @@ class BookingController extends Controller
     {
         return Cache::remember('bookings.data', 900, function () {
             $response = Http::withToken($this->apiKey)->get($this->bookingUrl, ['key_only' => true]);
+
             return $response->successful() ? collect($response->json()) : collect();
         });
     }
