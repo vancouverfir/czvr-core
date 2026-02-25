@@ -20,7 +20,8 @@ class CacheBooking extends Command
             $response = Http::withToken($apiKey)->get($bookingUrl, ['key_only' => true]);
 
             if ($response->failed()) {
-                $this->error('Failed to fetch bookings: ' . $response->body());
+                $this->error('Failed to fetch bookings: '.$response->body());
+
                 return 1;
             }
 
@@ -28,7 +29,7 @@ class CacheBooking extends Command
             $now = now()->utc();
 
             $expired = $bookings->filter(
-                fn($b) => \Carbon\Carbon::parse($b['end'], 'UTC')->lt($now)
+                fn ($b) => \Carbon\Carbon::parse($b['end'], 'UTC')->lt($now)
             );
 
             foreach ($expired as $b) {
@@ -44,8 +45,9 @@ class CacheBooking extends Command
 
             $this->info("Bookings cached successfully ({$bookings->count()} bookings).");
         } catch (\Exception $e) {
-            \Log::error('Failed to cache bookings: ' . $e->getMessage());
-            $this->error('Exception: ' . $e->getMessage());
+            \Log::error('Failed to cache bookings: '.$e->getMessage());
+            $this->error('Exception: '.$e->getMessage());
+
             return 1;
         }
 
