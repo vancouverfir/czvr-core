@@ -16,7 +16,7 @@ class AddEmailsSentToEventConfirms extends Migration
         Schema::table('event_confirms', function (Blueprint $table) {
             $table->tinyInteger('email_sent')
                 ->default(0)
-                ->after('position');
+                ->after('airport');
         });
     }
 
