@@ -17,8 +17,8 @@ class EventConfirm extends Model
     protected function casts(): array
     {
         return [
-        'start_timestamp' => 'datetime',
-        'end_timestamp' => 'datetime',
+            'start_timestamp' => 'datetime',
+            'end_timestamp' => 'datetime',
         ];
     }
 
