@@ -39,7 +39,7 @@ class StaffListController extends Controller
 
     public function addStaffMember(Request $request): RedirectResponse
     {
-        $request->validate( [
+        $request->validate([
             'position' => 'required',
             'shortform' => 'required',
             'group' => 'required',
