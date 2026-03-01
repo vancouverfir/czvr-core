@@ -60,9 +60,13 @@ class SyncStudents extends Command
             }
 
             $this->info('Sync Students Done');
+
+            return self::SUCCESS;
         } catch (\Exception $e) {
             $this->error('Exception: '.$e->getMessage());
             Log::critical('Student Sync Exception: '.$e->getMessage());
+
+            return self::FAILURE;
         }
     }
 
