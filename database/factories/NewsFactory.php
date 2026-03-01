@@ -1,14 +1,23 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories\News;
 
-$factory->define(App\News::class, function (Faker $faker) {
-    return [
-        'title' => $faker->sentence,
-        'content' => $faker->paragraph,
-        'date' => $faker->date('Y-m-d'),
-        'type' => 'Email',
-        'user_id' => 1300012,
-        'archived' => 0,
-    ];
-});
+use App\Models\News\News;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class NewsFactory extends Factory
+{
+    protected $model = News::class;
+
+    public function definition(): array
+    {
+        return [
+            'title' => fake()->sentence(),
+            'content' => fake()->paragraph(),
+            'date' => fake()->date('Y-m-d'),
+            'type' => 'Email',
+            'user_id' => 1,
+            'archived' => 0,
+        ];
+    }
+}

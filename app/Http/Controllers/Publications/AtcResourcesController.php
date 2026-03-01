@@ -19,7 +19,7 @@ class AtcResourcesController extends Controller
 
     public function uploadResource(Request $request): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'title' => 'required',
             'font_awesome' => 'required|string',
             'description' => 'required',

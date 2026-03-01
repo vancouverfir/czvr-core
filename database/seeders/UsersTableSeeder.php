@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -9,7 +11,7 @@ class UsersTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         DB::table('student_label')->insert([
             'id' => 1,

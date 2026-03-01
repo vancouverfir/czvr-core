@@ -76,7 +76,7 @@ class EventController extends Controller
 
     public function controllerApplicationAjaxSubmit(Request $request): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'availability_start' => 'required',
             'availability_end' => 'required',
         ]);
@@ -115,7 +115,7 @@ class EventController extends Controller
 
     public function confirmController(Request $request, $id): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'start_timestamp' => 'required',
             'end_timestamp' => 'required',
             'airport' => 'required',
@@ -137,7 +137,7 @@ class EventController extends Controller
 
     public function addController(Request $request, $id): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'start_timestamp' => 'required',
             'end_timestamp' => 'required',
             'airport' => 'required',

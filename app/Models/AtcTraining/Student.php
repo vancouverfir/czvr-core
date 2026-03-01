@@ -40,10 +40,13 @@ class Student extends Model
         return $this->hasMany(StudentNote::class)->orderBy('created_at', 'desc');
     }
 
-    protected $casts = [
+    protected function casts(): array
+    {
+        return [
         'renewed_at' => 'datetime',
         'renewal_notified_at' => 'datetime',
-    ];
+        ];
+    }
 
     public function labels(): HasMany
     {

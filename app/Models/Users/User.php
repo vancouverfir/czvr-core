@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use LasseRafn\InitialAvatarGenerator\InitialAvatar;
+use Throwable;
 
 class User extends Authenticatable
 {
@@ -239,7 +240,6 @@ class User extends Authenticatable
                 Storage::put('public/files/avatars/'.$this->id.'/initials.png', (string) $image->encode('png'));
 
                 return Storage::url('public/files/avatars/'.$this->id.'/initials.png');
-                imagedestroy($image);
             });
         } elseif ($this->avatar_mode == 1) {
             return $this->avatar;

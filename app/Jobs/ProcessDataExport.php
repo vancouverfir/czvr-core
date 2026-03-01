@@ -15,17 +15,13 @@ class ProcessDataExport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $user;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($user)
-    {
-        $this->user = $user;
-    }
+    public function __construct(protected User $user) {}
 
     /**
      * Execute the job.

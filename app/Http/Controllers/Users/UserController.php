@@ -268,7 +268,7 @@ class UserController extends Controller
 
     public function changeUsersAvatar(Request $request): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'file' => 'required',
             'user_id' => 'required',
         ]);
@@ -291,7 +291,7 @@ class UserController extends Controller
 
     public function resetUsersAvatar(Request $request): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'user_id' => 'required',
         ]);
         $editUser = Auth::user();
@@ -310,7 +310,7 @@ class UserController extends Controller
 
     public function resetUsersBio(Request $request): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'user_id' => 'required',
         ]);
 
@@ -368,7 +368,7 @@ class UserController extends Controller
 
     public function createUserNote(Request $request, $id): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'content' => 'required',
         ]);
 
@@ -416,7 +416,7 @@ class UserController extends Controller
 
     public function changeAvatar(Request $request): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         $user = Auth::user();
@@ -479,7 +479,7 @@ class UserController extends Controller
 
     public function editBio(Request $request): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'bio' => 'sometimes|max:5000',
         ]);
 
@@ -505,7 +505,7 @@ class UserController extends Controller
 
     public function changeDisplayName(Request $request): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'display_fname' => 'required',
             'format' => 'required',
         ]);

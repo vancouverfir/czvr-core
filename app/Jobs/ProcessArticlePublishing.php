@@ -11,22 +11,17 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use RestCord\DiscordClient;
 
 class ProcessArticlePublishing implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    protected $article;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($article)
-    {
-        $this->article = $article;
-    }
+    public function __construct(protected object $article) {}
 
     /**
      * Execute the job.

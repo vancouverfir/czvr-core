@@ -26,7 +26,7 @@ class NewWebsiteFeedback extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable): array
+    public function via(object $notifiable): array
     {
         return ['mail'];
     }
@@ -37,7 +37,7 @@ class NewWebsiteFeedback extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable): MailMessage
+    public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
                     ->greeting('Hello,')
@@ -54,7 +54,7 @@ class NewWebsiteFeedback extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable): array
+    public function toArray(object $notifiable): array
     {
         return [
             //

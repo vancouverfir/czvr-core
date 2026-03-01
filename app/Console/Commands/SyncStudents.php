@@ -16,7 +16,7 @@ class SyncStudents extends Command
     protected $signature = 'vancouver:sync-students';
     protected $description = 'Syncs student from roster without certifications';
 
-    public function handle()
+    public function handle(): int
     {
         $this->info('Starting Student Sync '.now().'');
         Log::info('Student Sync Started.');
@@ -27,7 +27,7 @@ class SyncStudents extends Command
         if (! $apiKey) {
             $this->error('VATCAN_API_KEY Missing!');
 
-            return;
+            return self::FAILURE;
         }
 
         try {
@@ -36,7 +36,7 @@ class SyncStudents extends Command
             if ($response->failed()) {
                 $this->error('API Request Failed. Status: '.$response->status());
 
-                return;
+                return self::FAILURE;
             }
 
             $data = $response->json()['data'];

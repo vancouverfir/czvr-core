@@ -167,7 +167,7 @@ class SettingsController extends Controller
 
     public function editImage(Request $request, $id): RedirectResponse
     {
-        $this->validate($request, [
+        $request->validate( [
             'nameCredit' => 'required',
         ]);
 
