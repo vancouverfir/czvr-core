@@ -12,10 +12,13 @@ class InstructingSession extends Model
         'instructor_id', 'student_id', 'title', 'start_time', 'end_time', 'instructor_comment',
     ];
 
-    protected $casts = [
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'start_time' => 'datetime',
+            'end_time' => 'datetime',
+        ];
+    }
 
     public function instructor(): BelongsTo
     {

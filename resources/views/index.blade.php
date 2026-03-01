@@ -57,7 +57,7 @@
                         </div>
                         <div class="card-body">
                             @if(count($topControllersArray) == 0)
-                                <h5 class="text-colour text-center">No Data Yet</h5>
+                                <h5 class="text-colour text-center">No Data Yet!</h5>
                             @endif
                             @foreach($topControllersArray as $t)
                                 @if($t['time'] != 0)
@@ -109,7 +109,7 @@
                         </div>
                         <div class="card-body">
                             @if(count($news) == 0)
-                                <h5 class="text-colour text-center">No Current News</h5>
+                                <h5 class="text-colour text-center">No Current News!</h5>
                             @endif
                             @foreach($news as $n)
                                 <div class="d-flex align-items-center mb-2">

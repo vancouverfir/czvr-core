@@ -15,10 +15,13 @@ class ControllerApplication extends Model
         'id', 'event_id', 'user_id', 'start_availability_timestamp', 'end_availability_timestamp', 'airport', 'comments', 'submission_timestamp',
     ];
 
-    protected $casts = [
-        'start_availability_timestamp' => 'datetime',
-        'end_availability_timestamp' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'start_availability_timestamp' => 'datetime',
+            'end_availability_timestamp' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {

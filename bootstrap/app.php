@@ -1,8 +1,13 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 use Sentry\Laravel\Integration;
 
-return Illuminate\Foundation\Application::configure(basePath: dirname(__DIR__))
+return Application::configure(basePath: dirname(__DIR__))
     ->withProviders()
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -10,7 +15,7 @@ return Illuminate\Foundation\Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
     )
-    ->withMiddleware(function ($middleware) {
+    ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
         $middleware->authenticateSessions();
         $middleware->web(append: [
@@ -37,7 +42,13 @@ return Illuminate\Foundation\Application::configure(basePath: dirname(__DIR__))
             'mentor' => \App\Http\Middleware\CheckMentor::class,
         ]);
     })
-    ->withExceptions(function ($exceptions) {
+    ->withExceptions(function (Exceptions $exceptions) {
         Integration::handles($exceptions);
+
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            if (! $request->expectsJson()) {
+                return redirect()->guest(route('auth.connect.login'));
+            }
+        });
     })
     ->create();

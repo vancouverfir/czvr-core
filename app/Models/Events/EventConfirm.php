@@ -14,10 +14,13 @@ class EventConfirm extends Model
         'id', 'event_id', 'user_id', 'start_timestamp', 'end_timestamp', 'airport',
     ];
 
-    protected $casts = [
-        'start_timestamp' => 'datetime',
-        'end_timestamp' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'start_timestamp' => 'datetime',
+            'end_timestamp' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {

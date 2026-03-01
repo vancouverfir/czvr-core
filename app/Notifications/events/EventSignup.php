@@ -28,7 +28,7 @@ class EventSignup extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via(object $notifiable)
     {
         return ['mail'];
     }
@@ -39,7 +39,7 @@ class EventSignup extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail(object $notifiable)
     {
         return (new MailMessage)->view('emails.event.application', ['app' => $this->application, 'event' => Event::where('id', $this->event_id)->first()])
             ->subject('Thanks for signing up for '.Event::where('id', $this->event_id)->first()->name);
@@ -51,7 +51,7 @@ class EventSignup extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray(object $notifiable)
     {
         return [
             //

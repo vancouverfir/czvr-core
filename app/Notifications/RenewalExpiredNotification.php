@@ -25,7 +25,7 @@ class RenewalExpiredNotification extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      */
-    public function via($notifiable): array
+    public function via(object $notifiable): array
     {
         return ['mail'];
     }
@@ -33,7 +33,7 @@ class RenewalExpiredNotification extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail($notifiable): MailMessage
+    public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('Your Renewal Period Has Expired')
@@ -43,7 +43,7 @@ class RenewalExpiredNotification extends Notification implements ShouldQueue
     /**
      * Get the array representation of the notification.
      */
-    public function toArray($notifiable): array
+    public function toArray(object $notifiable): array
     {
         return [
             //
