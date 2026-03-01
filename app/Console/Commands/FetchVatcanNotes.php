@@ -55,5 +55,6 @@ class FetchVatcanNotes extends Command
                 sleep(60);
             }
         }
+        return 0;
     }
 }
