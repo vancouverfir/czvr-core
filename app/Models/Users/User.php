@@ -14,7 +14,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-use LasseRafn\InitialAvatarGenerator\InitialAvatar;
 use Throwable;
 
 class User extends Authenticatable
@@ -232,7 +231,7 @@ class User extends Authenticatable
             return Cache::remember('users.'.$this->id.'.initialsavatar', 172800, function () {
                 $name = $this->fullName('FL');
                 $initials = collect(explode(' ', $name))
-                    ->map(fn($word) => strtoupper(substr($word, 0, 1)))
+                    ->map(fn ($word) => strtoupper(substr($word, 0, 1)))
                     ->take(2)
                     ->implode('');
 

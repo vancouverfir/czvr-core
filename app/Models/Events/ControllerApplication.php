@@ -18,8 +18,8 @@ class ControllerApplication extends Model
     protected function casts(): array
     {
         return [
-        'start_availability_timestamp' => 'datetime',
-        'end_availability_timestamp' => 'datetime',
+            'start_availability_timestamp' => 'datetime',
+            'end_availability_timestamp' => 'datetime',
         ];
     }
 

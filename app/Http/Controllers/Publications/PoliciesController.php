@@ -35,7 +35,7 @@ class PoliciesController extends Controller
 
     public function addPolicy(Request $request): RedirectResponse
     {
-        $request->validate( [
+        $request->validate([
             'name' => 'required',
             'section' => 'required',
             'details' => 'required',
@@ -155,7 +155,7 @@ class PoliciesController extends Controller
 
     public function editPolicy(Request $request, $id): RedirectResponse
     {
-        $request->validate( [
+        $request->validate([
             'name' => 'required',
             'section' => 'required',
             'details' => 'required',
@@ -232,7 +232,7 @@ class PoliciesController extends Controller
 
     public function addPolicySection(Request $request): RedirectResponse
     {
-        $request->validate( [
+        $request->validate([
             'name' => 'required',
         ]);
 

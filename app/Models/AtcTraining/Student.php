@@ -43,8 +43,8 @@ class Student extends Model
     protected function casts(): array
     {
         return [
-        'renewed_at' => 'datetime',
-        'renewal_notified_at' => 'datetime',
+            'renewed_at' => 'datetime',
+            'renewal_notified_at' => 'datetime',
         ];
     }
 
