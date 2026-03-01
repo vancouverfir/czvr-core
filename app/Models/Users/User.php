@@ -230,16 +230,25 @@ class User extends Authenticatable
     {
         if ($this->avatar_mode == 0) {
             return Cache::remember('users.'.$this->id.'.initialsavatar', 172800, function () {
-                $avatar = new InitialAvatar();
-                $image = $avatar
-                    ->name($this->fullName('FL'))
-                    ->size(125)
-                    ->background('#3A6F26')
-                    ->color('#6CC24A')
-                    ->generate();
-                Storage::put('public/files/avatars/'.$this->id.'/initials.png', (string) $image->encode('png'));
+                $name = $this->fullName('FL');
+                $initials = collect(explode(' ', $name))
+                    ->map(fn($word) => strtoupper(substr($word, 0, 1)))
+                    ->take(2)
+                    ->implode('');
 
-                return Storage::url('public/files/avatars/'.$this->id.'/initials.png');
+                $image = \Intervention\Image\ImageManager::gd()->create(125, 125);
+                $image->fill('#3A6F26');
+                $image->text($initials, 62, 62, function ($font) {
+                    $font->color('#6CC24A');
+                    $font->size(48);
+                    $font->align('center');
+                    $font->valign('middle');
+                });
+
+                $path = 'public/files/avatars/'.$this->id.'/initials.png';
+                Storage::put($path, $image->toPng());
+
+                return Storage::url($path);
             });
         } elseif ($this->avatar_mode == 1) {
             return $this->avatar;

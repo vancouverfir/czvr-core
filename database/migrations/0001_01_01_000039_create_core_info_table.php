@@ -14,9 +14,9 @@ return new class extends Migration
             $table->text('release');
             $table->text('sys_build');
             $table->text('copyright_year');
-            $table->text('banner');
-            $table->text('bannerMode');
-            $table->text('bannerLink');
+            $table->text('banner')->nullable();
+            $table->text('bannerMode')->nullable();
+            $table->text('bannerLink')->nullable();
             $table->text('emailfirchief');
             $table->text('emaildepfirchief');
             $table->text('emailcinstructor');

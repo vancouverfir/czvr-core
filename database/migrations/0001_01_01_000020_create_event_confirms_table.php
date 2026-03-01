@@ -17,7 +17,6 @@ return new class extends Migration
             $table->dateTime('start_timestamp');
             $table->dateTime('end_timestamp');
             $table->mediumText('airport')->nullable();
-            $table->tinyInteger('email_sent')->default(0);
             $table->timestamps();
         });
     }
