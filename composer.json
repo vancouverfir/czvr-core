@@ -11,16 +11,14 @@
         "php": "^8.4",
         "ext-json": "*",
         "aws/aws-sdk-php": "^3.280",
-        "doctrine/dbal": "^3.6",
-        "fakerphp/faker": "^1.23",
         "graham-campbell/markdown": "^16.0",
         "guzzlehttp/guzzle": "^7.5",
         "inertiajs/inertia-laravel": "^2.0",
-        "intervention/image": "^2.7",
+        "intervention/image": "^3.0",
         "laravel-notification-channels/discord": "^1.7",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.8",
-        "lasserafn/php-initial-avatar-generator": "^4.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "mofodojodino/profanity-filter": "^1.3",
         "sentry/sentry-laravel": "^4.15",
         "socialiteproviders/discord": "^4.1",
@@ -35,7 +33,8 @@
         "spatie/ignition": "^2.0",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
-        "phpunit/phpunit": "^11.0"
+        "phpunit/phpunit": "^11.0",
+        "fakerphp/faker": "^1.23"
     },
     "autoload": {
         "classmap": [

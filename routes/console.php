@@ -30,7 +30,6 @@ Schedule::command(CacheWeather::class)->everyFifteenMinutes();
 Schedule::command(FetchVatcanNotes::class)->everyFifteenMinutes();
 Schedule::command(RenewNotification::class)->hourly();
 Schedule::command(SyncStudents::class)->hourly();
-Schedule::command('vancouver:fetch-vatcan-notes')->hourlyAt(35);
 Schedule::command('backup:clean')->daily()->at('00:31');
 Schedule::command('backup:run')->daily()->at('01:01');
 // Schedule::command(EventReminders::class)->everyMinute();

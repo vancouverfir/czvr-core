@@ -12,7 +12,7 @@ class FetchVatcanNotes extends Command
     protected $signature = 'vancouver:fetch-vatcan-notes';
     protected $description = 'Fetch and cache training notes from Vatcan v2 API';
 
-    public function handle()
+    public function handle(): int
     {
         $apiKey = env('VATCAN_API_KEY');
         $client = new Client();
@@ -55,5 +55,7 @@ class FetchVatcanNotes extends Command
                 sleep(60);
             }
         }
+
+        return 0;
     }
 }

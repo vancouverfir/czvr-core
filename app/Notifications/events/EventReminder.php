@@ -27,7 +27,7 @@ class EventReminder extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via(object $notifiable)
     {
         return ['mail'];
     }
@@ -38,7 +38,7 @@ class EventReminder extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail(object $notifiable)
     {
         return (new MailMessage)->view('emails.event.reminder', ['event' => $this->event, 'positions' => $this->positions->sortBy('start_timestamp')])
             ->subject('24 Hour Reminder for '.$this->event->name);
@@ -50,7 +50,7 @@ class EventReminder extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray(object $notifiable)
     {
         return [
             //
