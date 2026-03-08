@@ -25,9 +25,15 @@ class BookingController extends Controller
     protected function getCachedBookings(): \Illuminate\Support\Collection
     {
         return Cache::remember('bookings.data', 900, function () {
-            $response = Http::withToken($this->apiKey)->get($this->bookingUrl, ['key_only' => true]);
+            try {
+                $response = Http::withToken($this->apiKey)
+                    ->timeout(10)
+                    ->get($this->bookingUrl, ['key_only' => true]);
 
-            return $response->successful() ? collect($response->json()) : collect();
+                return $response->successful() ? collect($response->json()) : collect();
+            } catch (\Illuminate\Http\Client\ConnectionException $e) {
+                return collect();
+            }
         });
     }
 

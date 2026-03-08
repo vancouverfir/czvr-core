@@ -235,14 +235,23 @@ class User extends Authenticatable
                     ->take(2)
                     ->implode('');
 
-                $image = \Intervention\Image\ImageManager::gd()->create(125, 125);
-                $image->fill('#3A6F26');
-                $image->text($initials, 62, 62, function ($font) {
-                    $font->color('#6CC24A');
-                    $font->size(48);
-                    $font->align('center');
-                    $font->valign('middle');
-                });
+                    $width = 125;
+                    $height = 125;
+                    $image = \Intervention\Image\ImageManager::gd()->create($width, $height);
+
+                    $centerX = $image->width() / 2;
+                    $centerY = $image->height() / 2;
+
+                    $image->fill('#3A6F26');
+
+                    $image->text($initials, $centerX, $centerY, function ($font) {
+                        $font->file(public_path('webfonts/static/Roboto_SemiCondensed-Regular.ttf'));
+                        $font->size(65);
+                        $font->color('#6CC24A');
+
+                        $font->align('center');
+                        $font->valign('middle');
+                    });
 
                 $path = 'public/files/avatars/'.$this->id.'/initials.png';
                 Storage::put($path, $image->toPng());
