@@ -21,7 +21,9 @@ class ProcessArticlePublishing implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected object $article) {}
+    public function __construct(protected object $article)
+    {
+    }
 
     /**
      * Execute the job.
