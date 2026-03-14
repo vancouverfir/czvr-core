@@ -7,16 +7,16 @@
     },
     "devDependencies": {
         "@babel/preset-react": "^7.28.5",
-        "@vitejs/plugin-react": "^5.1.4",
-        "@vitejs/plugin-vue": "^6.0.4",
-        "axios": "^1.13",
+        "@vitejs/plugin-react": "^5.2.0",
+        "@vitejs/plugin-vue": "^6.0.5",
+        "axios": "^1.13.6",
         "babel-preset-react": "^6.24.1",
-        "bootstrap": "^5.3.7",
-        "cross-env": "^10.1",
-        "jquery": "^4.0",
+        "bootstrap": "^5.3.8",
+        "cross-env": "^10.1.0",
+        "jquery": "^4.0.0",
         "laravel-vite-plugin": "^2.1.0",
         "lodash": "^4.17.23",
-        "popper.js": "^1.12",
+        "popper.js": "^1.16.1",
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
         "semantic-ui-css": "^2.5.0",
@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "dotenv": "^17.3.1",
-        "npm": "^11.11.0"
+        "npm": "^11.11.1"
     },
     "type": "module"
 }
