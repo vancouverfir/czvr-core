@@ -375,7 +375,7 @@ def conv_rating(rating):
     }
 
     try:
-        return rating_map[rating]
+        return rating_map.get(rating)
     except KeyError:
         raise ValueError(f"Not a valid rating {rating}")
 

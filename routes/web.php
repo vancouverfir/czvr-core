@@ -148,7 +148,7 @@ Route::get('sitemap.xml', function () {
     return \Illuminate\Support\Facades\Redirect::to('sitemap.xml');
 });
 
-Route::prefix('instructors')->middleware('auth')->group(function () {
+Route::prefix('instructors')->group(function () {
     Route::view('/', 'instructors')->name('instructors');
     Route::post('/', [TeachersController::class, 'store'])->name('instructors.store')->middleware('staff');
     Route::get('{id}', [TeachersController::class, 'delete'])->name('instructors.delete')->middleware('staff');
