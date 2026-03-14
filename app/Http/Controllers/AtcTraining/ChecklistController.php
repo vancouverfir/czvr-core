@@ -163,7 +163,7 @@ class ChecklistController extends Controller
             $this->assignChecklistItemsToStudent($student, Checklist::findOrFail($checklistId)->items);
         }
 
-        (new LabelController())->updateStatus($student->refresh());
+        (new LabelController)->updateStatus($student->refresh());
     }
 
     public function promoteStudent(Request $request, Student $student): RedirectResponse

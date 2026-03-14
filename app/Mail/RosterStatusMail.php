@@ -18,6 +18,7 @@ class RosterStatusMail extends Mailable
      * @return void
      */
     public $controller;
+
     public $user;
 
     public function __construct(RosterMember $controller, User $user)

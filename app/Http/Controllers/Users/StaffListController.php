@@ -60,10 +60,10 @@ class StaffListController extends Controller
 
     public function editStaffMember(Request $request, $id): RedirectResponse
     {
-        //Grab staff object
+        // Grab staff object
         $staff = StaffMember::whereId($id)->firstOrFail();
 
-        //Check user given is a user
+        // Check user given is a user
 
         $user = User::whereId($request->input('cid'))->first();
 
@@ -71,29 +71,29 @@ class StaffListController extends Controller
             return redirect()->back()->withInput()->with('error', 'CID for staff member '.$staff->shortform.' invalid!');
         }
 
-        //Ok we have a user.. assign them!
+        // Ok we have a user.. assign them!
         $staff->user_id = $user->id;
 
-        //Update description and email
+        // Update description and email
         $staff->description = $request->get('description');
         $staff->email = $request->get('email');
 
-        //Save it
+        // Save it
         $staff->save();
 
-        //Return!
+        // Return!
         return redirect()->back()->with('success', 'Staff member '.$staff->position.' saved!');
     }
 
     public function deleteStaffMember(Request $request, $id): RedirectResponse
     {
-        //Grab staff object
+        // Grab staff object
         $staff = StaffMember::whereId($id)->firstOrFail();
 
-        //Delete it
+        // Delete it
         $staff->delete();
 
-        //Return!
+        // Return!
         return redirect()->back()->with('success', 'Staff member '.$staff->position.' deleted!');
     }
 }

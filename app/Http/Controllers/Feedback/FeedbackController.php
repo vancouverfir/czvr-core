@@ -82,7 +82,7 @@ class FeedbackController extends Controller
         $feedback->content = $request->get('content');
         $feedback->save();
 
-        $log = new AuditLogEntry();
+        $log = new AuditLogEntry;
         $log->user_id = Auth::user()->id;
         $log->affected_id = $feedback->controller_cid;
         $log->action = 'Edited Controller Feedback ID#'.$id;
@@ -142,13 +142,13 @@ class FeedbackController extends Controller
 
     public function createPost(Request $request): View
     {
-        //dd($request->all());
-        //Define validator messages
+        // dd($request->all());
+        // Define validator messages
         $messages = [
             'feedbackType.required' => 'You need to select a type of feedback.',
         ];
 
-        //Validate
+        // Validate
         $validator = Validator::make($request->all(), [
             'feedbackType' => 'required',
             'content' => 'required',
@@ -157,9 +157,9 @@ class FeedbackController extends Controller
         if ($request->get('feedbackType') == '0') {
             $validator->errors()->add('type', 'You need to select a feedback type.');
         }
-        //If it's controller feedback then...
+        // If it's controller feedback then...
         elseif ($request->get('feedbackType') == 'controller') {
-            //If they dont have the controller CID
+            // If they dont have the controller CID
             if ($request->get('controllerCid') == '0') {
                 $validator->after(function ($validator) {
                     $validator->errors()->add('controllerCid', 'You need to provide the Controller\'s Name/CID.');
@@ -170,21 +170,21 @@ class FeedbackController extends Controller
                     $validator->errors()->add('position', 'You need to specify the Controller\'s position.');
                 });
             }
-        } else { /*Otherwise*/
-            //No subject
+        } else { /* Otherwise */
+            // No subject
             if ($request->get('subject') == null) {
                 $validator->after(function ($validator) {
                     $validator->errors()->add('subject', 'You need to fill in the subject field.');
                 });
             }
         }
-        //dd($validator->errors());
-        //Redirect if fails
+        // dd($validator->errors());
+        // Redirect if fails
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator, 'createFeedbackErrors');
         }
 
-        //Otherwise...
+        // Otherwise...
         switch ($request->get('feedbackType')) {
             case 'website':
                 $feedback = new WebsiteFeedback([

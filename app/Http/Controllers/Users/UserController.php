@@ -75,7 +75,7 @@ class UserController extends Controller
             $logs = SessionLog::where('cid', $id)->get();
             $quarterlyHours = decimal_to_hm(RosterMember::where('cid', $id)->firstOrFail()->currency);
 
-            //Start our array
+            // Start our array
             $time = [
                 'del' => 0,
                 'gnd' => 0,
@@ -85,7 +85,7 @@ class UserController extends Controller
                 'ctr' => 0,
             ];
 
-            //Get our times per position for this month
+            // Get our times per position for this month
             foreach ($logs as $l) {
                 if (Str::endsWith($l->callsign, 'DEL')) {
                     $time['del'] += $l->duration;
@@ -102,7 +102,7 @@ class UserController extends Controller
                 }
             }
 
-            //Make the time's readable
+            // Make the time's readable
             $time['del'] = decimal_to_hm($time['del']);
             $time['gnd'] = decimal_to_hm($time['gnd']);
             $time['twr'] = decimal_to_hm($time['twr']);
@@ -166,10 +166,10 @@ class UserController extends Controller
 
         $xml = [];
         $userNotes = UserNote::where('user_id', $user->id)->orderBy('timestamp', 'desc')->get();
-        //$xml['return'] = file_get_contents('https://cert.vatsim.net/cert/vatsimnet/idstatus.php?cid=' . $user->id);
+        // $xml['return'] = file_get_contents('https://cert.vatsim.net/cert/vatsimnet/idstatus.php?cid=' . $user->id);
         $auditLog = AuditLogEntry::where('affected_id', $id)->get();
-        //$allroles = Role::all();
-        //$roles = $user->getRoleNames();
+        // $allroles = Role::all();
+        // $roles = $user->getRoleNames();
 
         return view('admin.users.profile', compact('user', 'xml', 'certification', 'active', 'auditLog', 'userNotes'));
     }
@@ -183,7 +183,7 @@ class UserController extends Controller
             return back()->withError('This user is already assigned the '.$role->name.' role!');
         }
         $u->assignRole($role->name);
-        $audit = new AuditLogEntry();
+        $audit = new AuditLogEntry;
         $audit->user_id = Auth::user()->id;
         $audit->action = 'Added the '.$role->name.' Role.';
         $audit->affected_id = $u->id;
@@ -206,7 +206,7 @@ class UserController extends Controller
             return back()->withError('You do not have the permissions to delete this role!');
         }
         $u->removeRole($id);
-        $audit = new AuditLogEntry();
+        $audit = new AuditLogEntry;
         $audit->user_id = Auth::user()->id;
         $audit->action = 'Removed the '.$m.' Role.';
         $audit->affected_id = $u->id;
@@ -262,7 +262,7 @@ class UserController extends Controller
     {
         $user = User::where('id', $id)->firstOrFail();
 
-        //return view('admin.users.edituser', compact('user'));
+        // return view('admin.users.edituser', compact('user'));
         abort(404, 'Not implemented');
     }
 
@@ -322,7 +322,7 @@ class UserController extends Controller
 
         AuditLogEntry::insert($editUser, 'Reset user bio', $user, 0);
 
-        //Redirect
+        // Redirect
         return redirect()->back()->with('success', 'Biography reset!');
     }
 
@@ -350,7 +350,7 @@ class UserController extends Controller
             $notification->save();
         }
 
-        //return redirect()->route('users.viewprofile', $user->id)->with('success', 'User edited!');
+        // return redirect()->route('users.viewprofile', $user->id)->with('success', 'User edited!');
         abort(404, 'Not implemented');
     }
 
@@ -358,13 +358,11 @@ class UserController extends Controller
     {
         $user = User::where('id', $id)->firstOrFail();
 
-        //return view('dashboard.users.email', compact('user'));
+        // return view('dashboard.users.email', compact('user'));
         abort(404, 'Not implemented');
     }
 
-    public function emailStore(Request $request): void
-    {
-    }
+    public function emailStore(Request $request): void {}
 
     public function createUserNote(Request $request, $id): RedirectResponse
     {
@@ -483,23 +481,23 @@ class UserController extends Controller
             'bio' => 'sometimes|max:5000',
         ]);
 
-        //Get user
+        // Get user
         $user = Auth::user();
 
-        //Get input
+        // Get input
         $input = $request->get('bio');
 
-        //Run through profanity filter
-        $check = new Check();
+        // Run through profanity filter
+        $check = new Check;
         if ($check->hasProfanity($input)) {
             return redirect()->back()->withInput()->with('error-modal', 'Profanity was detected in your input, please remove it.');
         }
 
-        //No swear words.. give them the new bio
+        // No swear words.. give them the new bio
         $user->bio = $input;
         $user->save();
 
-        //Redirect
+        // Redirect
         return redirect()->back()->with('success', 'Biography saved!');
     }
 
@@ -510,16 +508,16 @@ class UserController extends Controller
             'format' => 'required',
         ]);
 
-        //Get user
+        // Get user
         $user = Auth::user();
 
-        //Run through profanity filter
-        $check = new Check();
+        // Run through profanity filter
+        $check = new Check;
         if ($check->hasProfanity($request->get('display_fname'))) {
             return redirect()->back()->withInput()->with('error', 'Profanity was detected in your display name. Please use a more appropriate name, if you believe this is in error, please contact our <a href="/dashboard/tickets?create=yes">Webmaster.</a>');
         }
 
-        //No swear words... give them the new name!
+        // No swear words... give them the new name!
         $user->display_fname = $request->get('display_fname');
         if ($request->get('format') == 'showall') {
             $user->display_last_name = true;
@@ -533,7 +531,7 @@ class UserController extends Controller
         }
         $user->save();
 
-        //Redirect
+        // Redirect
         return redirect()->back()->with('success', 'Display name saved!');
     }
 
@@ -587,7 +585,7 @@ class UserController extends Controller
             );
 
             try {
-                $user->notify(new DiscordWelcome());
+                $user->notify(new DiscordWelcome);
             } catch (CouldNotSendNotification $e) {
             }
 

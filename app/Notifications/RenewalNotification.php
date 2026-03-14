@@ -26,7 +26,6 @@ class RenewalNotification extends Notification
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
      */
     public function via(object $notifiable): array
     {
@@ -37,22 +36,20 @@ class RenewalNotification extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail(object $notifiable): MailMessage
     {
         $renewalLink = route('training.renew', $this->student->renewal_token);
 
         return (new MailMessage)
-                    ->subject('Renew Your Request for Training!')
-                    ->view('emails.renewalnotification', ['student' => $this->student, 'renewalLink' => $renewalLink]);
+            ->subject('Renew Your Request for Training!')
+            ->view('emails.renewalnotification', ['student' => $this->student, 'renewalLink' => $renewalLink]);
     }
 
     /**
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return array
      */
     public function toArray(object $notifiable): array
     {

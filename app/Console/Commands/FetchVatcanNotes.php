@@ -10,12 +10,13 @@ use Illuminate\Support\Facades\Cache;
 class FetchVatcanNotes extends Command
 {
     protected $signature = 'vancouver:fetch-vatcan-notes';
+
     protected $description = 'Fetch and cache training notes from Vatcan v2 API';
 
     public function handle(): int
     {
         $apiKey = env('VATCAN_API_KEY');
-        $client = new Client();
+        $client = new Client;
         $students = Student::all();
         $chunks = $students->chunk(50);
         $total = $chunks->count();
@@ -35,6 +36,7 @@ class FetchVatcanNotes extends Command
                     ]);
                     if ($response->getStatusCode() === 304) {
                         $this->info("No changes for user {$userId}");
+
                         continue;
                     }
                     if ($newEtag = $response->getHeaderLine('ETag')) {

@@ -49,7 +49,7 @@ class RatingUpdate extends Command
             $ratingID = $getRating->rating;
 
             if ($u->rating_id != $ratingID) {
-                //Log it for when it breaks
+                // Log it for when it breaks
                 Log::info('User: '.$u->fname.' '.$u->lname.' updated from '.$u->rating_short.' to '.$ratings[$ratingID]['short'].'.');
 
                 $u->rating_id = $ratingID;
@@ -69,7 +69,7 @@ class RatingUpdate extends Command
 
                 Log::info('--> Completed!');
             } else {
-                //Log it for when it breaks
+                // Log it for when it breaks
                 Log::info('User: '.$u->fname.' '.$u->lname.' rating is unchanged. Skipping.');
             }
         }

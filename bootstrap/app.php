@@ -1,15 +1,31 @@
 <?php
 
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\Authenticated;
+use App\Http\Middleware\BookingIsCertified;
+use App\Http\Middleware\CheckAtc;
+use App\Http\Middleware\CheckCertified;
+use App\Http\Middleware\CheckExecutive;
+use App\Http\Middleware\CheckIfPrivacy;
+use App\Http\Middleware\CheckInstructor;
+use App\Http\Middleware\CheckMentor;
+use App\Http\Middleware\CheckNotCertified;
+use App\Http\Middleware\CheckStaff;
+use App\Http\Middleware\CheckStudent;
+use App\Http\Middleware\ForceMainDomain;
+use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Providers\AppServiceProvider;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Sentry\Laravel\Integration;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
-        App\Providers\AppServiceProvider::class,
+        AppServiceProvider::class,
     ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -21,27 +37,27 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->authenticateSessions();
         $middleware->web(append: [
-            \App\Http\Middleware\ForceMainDomain::class,
+            ForceMainDomain::class,
         ]);
         $middleware->group('api', [
             'throttle:api',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            SubstituteBindings::class,
         ]);
 
         $middleware->alias([
-            'auth' => \App\Http\Middleware\Authenticate::class,
-            'auth_check' => \App\Http\Middleware\Authenticated::class,
-            'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-            'booking_certified' => \App\Http\Middleware\BookingIsCertified::class,
-            'executive' => \App\Http\Middleware\CheckExecutive::class,
-            'staff' => \App\Http\Middleware\CheckStaff::class,
-            'instructor' => \App\Http\Middleware\CheckInstructor::class,
-            'student' => \App\Http\Middleware\CheckStudent::class,
-            'certified' => \App\Http\Middleware\CheckCertified::class,
-            'notcertified' => \App\Http\Middleware\CheckNotCertified::class,
-            'privacy' => \App\Http\Middleware\CheckIfPrivacy::class,
-            'atc' => \App\Http\Middleware\CheckAtc::class,
-            'mentor' => \App\Http\Middleware\CheckMentor::class,
+            'auth' => Authenticate::class,
+            'auth_check' => Authenticated::class,
+            'guest' => RedirectIfAuthenticated::class,
+            'booking_certified' => BookingIsCertified::class,
+            'executive' => CheckExecutive::class,
+            'staff' => CheckStaff::class,
+            'instructor' => CheckInstructor::class,
+            'student' => CheckStudent::class,
+            'certified' => CheckCertified::class,
+            'notcertified' => CheckNotCertified::class,
+            'privacy' => CheckIfPrivacy::class,
+            'atc' => CheckAtc::class,
+            'mentor' => CheckMentor::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -36,8 +36,8 @@ class TrainingController extends Controller
 
         $labels = $student
             ? StudentLabel::cursor()->filter(fn ($label) => ! StudentInteractiveLabels::where('student_id', $student->id)
-                    ->where('student_label_id', $label->id)
-                    ->exists()
+                ->where('student_label_id', $label->id)
+                ->exists()
             )
             : collect();
 
@@ -287,12 +287,12 @@ class TrainingController extends Controller
         });
 
         $interactiveLabelIds = StudentInteractiveLabels::where('student_id', $student->id)
-                                    ->pluck('student_label_id')
-                                    ->toArray();
+            ->pluck('student_label_id')
+            ->toArray();
 
         $labels = StudentLabel::whereNotIn('id', $interactiveLabelIds)->get();
 
-        $ChecklistController = new \App\Http\Controllers\AtcTraining\ChecklistController();
+        $ChecklistController = new ChecklistController;
 
         $isVisitor = in_array($student->status, [3, 5]);
 

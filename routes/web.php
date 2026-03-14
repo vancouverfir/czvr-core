@@ -23,6 +23,8 @@ use App\Http\Controllers\Tickets\TicketsController;
 use App\Http\Controllers\Users\DataController;
 use App\Http\Controllers\Users\StaffListController;
 use App\Http\Controllers\Users\UserController;
+use App\Models\Users\User;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -118,7 +120,7 @@ Route::group(['domain' => 'training.czvr.ca'], function () {
     });
 });
 
-//ALL Public Views
+// ALL Public Views
 Route::get('/', [HomeController::class, 'view'])->name('index');
 Route::view('/airports', 'airports')->name('airports');
 Route::view('/preferredrouting', 'preferredrouting')->name('preferredrouting');
@@ -145,7 +147,7 @@ Route::view('/vfr', 'vfr')->name('vfr');
 Route::view('/livemap', 'livemap')->name('livemap');
 Route::view('/editmap', 'editmap')->name('editmap');
 Route::get('sitemap.xml', function () {
-    return \Illuminate\Support\Facades\Redirect::to('sitemap.xml');
+    return Redirect::to('sitemap.xml');
 });
 
 Route::prefix('instructors')->group(function () {
@@ -154,32 +156,32 @@ Route::prefix('instructors')->group(function () {
     Route::get('{id}', [TeachersController::class, 'delete'])->name('instructors.delete')->middleware('staff');
 });
 
-//Redirects
+// Redirects
 
 Route::get('/github', function () {
     return redirect()->to('https://github.com/vancouverfir/czvr-core');
 });
 
-//Authentication
+// Authentication
 
 Route::get('/connect/login', [LoginController::class, 'AuthLogin'])->middleware('guest')->name('auth.connect.login');
 Route::get('/connect/validate', [LoginController::class, 'validateAuthLogin'])->middleware('guest');
 Route::get('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('auth.logout');
 
-//Feedback
+// Feedback
 
 Route::middleware(['auth_check'])->group(function () {
     Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
     Route::post('/feedback', [FeedbackController::class, 'createPost'])->name('feedback.create.post');
 });
 
-//Base level authentication
+// Base level authentication
 Route::group(['middleware' => 'auth'], function () {
-    //Privacy accept
+    // Privacy accept
     Route::get('/privacyaccept', [UserController::class, 'privacyAccept']);
     Route::get('/privacydeny', [UserController::class, 'privacyDeny']);
 
-    //User Tickets
+    // User Tickets
     Route::get('/dashboard/tickets', [TicketsController::class, 'index'])->name('tickets.index');
     Route::get('/dashboard/tickets/{id}', [TicketsController::class, 'viewTicket'])->name('tickets.viewticket');
     Route::post('/dashboard/tickets', [TicketsController::class, 'startNewTicket'])->name('tickets.startticket');
@@ -187,12 +189,12 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['middleware' => 'staff'], function () {
         Route::prefix('admin')->group(function () {
-            //Uploads
+            // Uploads
             Route::get('/upload', [UploadController::class, 'upload'])->middleware('staff')->name('dashboard.upload');
             Route::post('/upload', [UploadController::class, 'uploadPost'])->middleware('staff')->name('dashboard.upload.post');
             Route::get('/upload/manage', [UploadController::class, 'manageuploads'])->middleware('staff')->name('dashboard.uploadmanage');
             Route::post('/upload/delete/{filename}', [UploadController::class, 'deletepost'])->middleware('staff')->name('dashboard.uploaddelete');
-            //View Feedback
+            // View Feedback
             Route::get('/feedback', [FeedbackController::class, 'index'])->name('staff.feedback.index');
             Route::get('/feedback/controller/{id}', [FeedbackController::class, 'viewControllerFeedback'])->name('staff.feedback.controller');
             Route::post('/feedback/controller/{id}', [FeedbackController::class, 'editControllerFeedback'])->name('staff.feedback.controller.edit');
@@ -205,17 +207,17 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/feedback/website/{id}/delete', [FeedbackController::class, 'deleteWebsiteFeedback']);
         });
 
-        //Closing, re-opening, and placing tickets on hold
+        // Closing, re-opening, and placing tickets on hold
         Route::prefix('dashboard/tickets')->group(function () {
             Route::post('/{id}/close', [TicketsController::class, 'closeTicket'])->name('tickets.closeticket');
             Route::get('/{id}/hold', [TicketsController::class, 'onholdTicket'])->name('tickets.onholdticket');
             Route::get('/{id}/open', [TicketsController::class, 'openTicket'])->name('tickets.openticket');
         });
 
-        //View Tickets (staff)
+        // View Tickets (staff)
         Route::get('/dashboard/staff/tickets', [TicketsController::class, 'staffIndex'])->name('tickets.staff');
 
-        //Staff News
+        // Staff News
         Route::prefix('admin/news')->group(function () {
             Route::get('/', [NewsController::class, 'index'])->name('news.index');
             Route::get('/article/create', [NewsController::class, 'createArticle'])->name('news.articles.create');
@@ -225,18 +227,18 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('/article/edit/{id}', [NewsController::class, 'editArticle'])->name('news.articles.edit');
         });
 
-        //Assigning Instructor
+        // Assigning Instructor
         Route::prefix('instructor')->group(function () {
             Route::post('/add', [TrainingController::class, 'assignStudent'])->name('instructor.student.add');
             Route::get('/delete/{id}', [TrainingController::class, 'deleteStudent'])->name('instructor.student.delete');
         });
     });
 
-    //User Event Applications
+    // User Event Applications
     Route::post('/dashboard/events/controllerapplications/ajax', [EventController::class, 'controllerApplicationAjaxSubmit'])->name('events.controllerapplication.ajax');
     Route::get('/dashboard/events/view', [EventController::class, 'viewControllers']);
 
-    //Staff Events
+    // Staff Events
     Route::group(['prefix' => 'admin/events', 'middleware' => 'staff'], function () {
         Route::get('/', [EventController::class, 'adminIndex'])->name('events.admin.index');
         Route::get('/create', [EventController::class, 'adminCreateEvent'])->middleware('staff')->name('events.admin.create');
@@ -253,7 +255,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/applications/manualconfirm/delete/{id}', [EventController::class, 'deleteController'])->middleware('staff')->name('event.deletecontroller');
     });
 
-    //Dashboard
+    // Dashboard
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
         Route::post('/users/changeavatar', [UserController::class, 'changeAvatar'])->name('users.changeavatar');
@@ -261,7 +263,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/users/resetavatar', [UserController::class, 'resetAvatar'])->name('users.resetavatar');
         Route::post('/users/changedisplayname', [UserController::class, 'changeDisplayName'])->name('users.changedisplayname');
         Route::get('/users/defaultavatar/{id}', function ($id) {
-            $user = \App\Models\Users\User::whereId($id)->firstOrFail();
+            $user = User::whereId($id)->firstOrFail();
             if ($user->isAvatarDefault()) {
                 return true;
             }
@@ -269,7 +271,7 @@ Route::group(['middleware' => 'auth'], function () {
             return false;
         });
 
-        //Roster
+        // Roster
         Route::group(['middleware' => 'instructor'], function () {
             Route::get('/roster', [RosterController::class, 'index'])->name('roster.index');
             Route::post('/roster/controller/add/', [RosterController::class, 'addController'])->name('roster.addcontroller');
@@ -280,7 +282,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/roster/{id}/delete/', [RosterController::class, 'deleteController'])->name('roster.deletecontroller');
         });
 
-        //Email prefs
+        // Email prefs
         Route::get('/emailpref', [DataController::class, 'emailPref'])->name('dashboard.emailpref');
         Route::get('/emailpref/subscribe', [DataController::class, 'subscribeEmails']);
         Route::get('/emailpref/unsubscribe', [DataController::class, 'unsubscribeEmails']);
@@ -295,12 +297,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/discord/server/join/redirect', [UserController::class, 'joinDiscordServer']);
         Route::get('/preferences', [UserController::class, 'preferences'])->name('me.preferences');
         Route::post('/preferences', [UserController::class, 'preferencesPost'])->name('me.preferences.post');
-        //GDPR
+        // GDPR
         Route::get('/data', [DataController::class, 'index'])->name('me.data');
         Route::post('/data/export/all', [DataController::class, 'exportAllData'])->name('me.data.export.all');
     });
 
-    //Users View/Edit
+    // Users View/Edit
     Route::group(['middleware' => 'staff'], function () {
         Route::prefix('admin/users')->Group(function () {
             Route::get('/', [UserController::class, 'viewAllUsers'])->name('users.viewall');
@@ -321,10 +323,10 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['middleware' => 'staff'], function () {
-        //Upload and Delete ATC Resources
+        // Upload and Delete ATC Resources
         Route::post('/atcresources', [AtcResourcesController::class, 'uploadResource'])->name('atcresources.upload');
         Route::get('/atcresources/delete/{id}', [AtcResourcesController::class, 'deleteResource'])->name('atcresources.delete');
-        //Policy creation and settings
+        // Policy creation and settings
         Route::post('/policies', [PoliciesController::class, 'addPolicy'])->name('policies.create');
         Route::post('/policies/{id}/edit', [PoliciesController::class, 'editPolicy']);
         Route::get('/policies/{id}/delete', [PoliciesController::class, 'deletePolicy']);
@@ -332,18 +334,18 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/policies/section/{id}/delete', [PoliciesController::class, 'deletePolicySection']);
     });
 
-    //ADMIN ONLY
-    //Minutes
+    // ADMIN ONLY
+    // Minutes
     Route::group(['middleware' => 'executive'], function () {
         Route::get('/meetingminutes/{id}', [NewsController::class, 'minutesDelete'])->name('meetingminutes.delete');
         Route::post('/meetingminutes', [NewsController::class, 'minutesUpload'])->name('meetingminutes.upload');
-        //Network
+        // Network
         Route::get('/admin/network', [NetworkController::class, 'index'])->name('network.index');
         Route::get('/admin/network/monitoredpositions', [NetworkController::class, 'monitoredPositionsIndex'])->name('network.monitoredpositions.index');
         Route::get('/admin/network/monitoredpositions/{position}', [NetworkController::class, 'viewMonitoredPosition'])->name('network.monitoredpositions.view');
         Route::post('/admin/network/monitoredpositions/create', [NetworkController::class, 'createMonitoredPosition'])->name('network.monitoredpositions.create');
 
-        //Settings
+        // Settings
         Route::prefix('admin/settings')->group(function () {
             Route::get('/', [SettingsController::class, 'index'])->name('settings.index');
             Route::get('/roles', [SettingsController::class, 'viewRoles'])->name('roles.view');

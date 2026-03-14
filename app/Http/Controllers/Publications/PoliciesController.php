@@ -141,14 +141,14 @@ class PoliciesController extends Controller
             ]);
             $news->save();
         }
-        //$entry = new AuditLogEntry([
+        // $entry = new AuditLogEntry([
         //    'user_id' => Auth::user()->id,
         //    'affected_id' => 1,
         //    'action' => 'CREATE POLICY '.'('.$policy->id.')',
         //    'time' => date('Y-m-d H:i:s'),
         //    'private' => 0,
-        //]);
-        //$entry->save();
+        // ]);
+        // $entry->save();
 
         return redirect()->route('policies')->with('success', 'Policy '.$policy->name.' added!');
     }
@@ -192,14 +192,14 @@ class PoliciesController extends Controller
         $policy->author = Auth::user()->id;
         $policy->releaseDate = $request->get('date') ?: date('Y-m-d');
 
-        //$entry = new AuditLogEntry([
+        // $entry = new AuditLogEntry([
         //    'user_id' => Auth::user()->id,
         //    'affected_id' => 1,
         //    'action' => 'EDIT POLICY '.'('.$id.')',
         //    'time' => date('Y-m-d H:i:s'),
         //    'private' => 0,
-        //]);
-        //$entry->save();
+        // ]);
+        // $entry->save();
 
         $policy->save();
 
@@ -217,14 +217,14 @@ class PoliciesController extends Controller
                 Storage::delete($filePath);
             }
         }
-        //$entry = new AuditLogEntry([
+        // $entry = new AuditLogEntry([
         //   'user_id' => Auth::user()->id,
         //   'affected_id' => 1,
         //   'action' => 'DELETE POLICY '.$policy->name.'('.$policy->id.')',
         //   'time' => date('Y-m-d H:i:s'),
         //   'private' => 0,
-        //]);
-        //$entry->save();
+        // ]);
+        // $entry->save();
         $policy->delete();
 
         return redirect()->route('policies')->with('success', 'Policy deleted.');
@@ -260,12 +260,12 @@ class PoliciesController extends Controller
         }
 
         // $entry = new AuditLogEntry([
-       //     'user_id' => Auth::user()->id,
-       //     'affected_id' => 1,
-       //     'action' => 'DELETE POLICY SECTION '.$section->section_name.'('.$section->id.')',
-       //     'time' => date('Y-m-d H:i:s'),
-       //     'private' => 0,
-        //]);
+        //     'user_id' => Auth::user()->id,
+        //     'affected_id' => 1,
+        //     'action' => 'DELETE POLICY SECTION '.$section->section_name.'('.$section->id.')',
+        //     'time' => date('Y-m-d H:i:s'),
+        //     'private' => 0,
+        // ]);
         // $entry->save();
         $section->delete();
 

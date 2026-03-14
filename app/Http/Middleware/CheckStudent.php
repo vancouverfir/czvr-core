@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\AtcTraining\Student;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class CheckStudent
 
         $studentId = $request->route('id') ?? $request->input('student_id');
 
-        $student = \App\Models\AtcTraining\Student::find($studentId);
+        $student = Student::find($studentId);
         if ($student && $student->user_id === $user->id) {
             return $next($request);
         }

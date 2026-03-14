@@ -14,6 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
 use Throwable;
 
 class User extends Authenticatable
@@ -237,7 +238,7 @@ class User extends Authenticatable
 
                 $width = 125;
                 $height = 125;
-                $image = \Intervention\Image\ImageManager::gd()->create($width, $height);
+                $image = ImageManager::gd()->create($width, $height);
 
                 $centerX = $image->width() / 2;
                 $centerY = $image->height() / 2;

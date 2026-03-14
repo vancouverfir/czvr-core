@@ -26,7 +26,6 @@ class TicketReply extends Notification
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
      */
     public function via(object $notifiable): array
     {
@@ -37,7 +36,6 @@ class TicketReply extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail(object $notifiable): MailMessage
     {
@@ -50,7 +48,6 @@ class TicketReply extends Notification
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return array
      */
     public function toArray(object $notifiable): array
     {

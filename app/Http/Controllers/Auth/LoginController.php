@@ -44,7 +44,7 @@ class LoginController extends Controller
 
     public function validateAuthLogin(Request $request): RedirectResponse
     {
-        //Written by Harrison Scott
+        // Written by Harrison Scott
         $http = new Client;
 
         try {
@@ -123,7 +123,7 @@ class LoginController extends Controller
 
         Auth::login($user, true);
         if (! UserPreferences::where('user_id', $user->id)->first()) {
-            $prefs = new UserPreferences();
+            $prefs = new UserPreferences;
             $prefs->user_id = $user->id;
             $prefs->ui_mode = 'light';
             $prefs->save();
