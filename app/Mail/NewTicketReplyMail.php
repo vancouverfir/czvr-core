@@ -12,7 +12,9 @@ use Illuminate\Queue\SerializesModels;
 class NewTicketReplyMail extends Mailable
 {
     use Queueable, SerializesModels;
+
     public $ticketReply;
+
     public $ticket;
 
     /**

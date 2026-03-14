@@ -45,9 +45,9 @@ class HomeController extends Controller
         if ($news->isEmpty()) {
             try {
                 $news = News::where('visible', true)
-                            ->orderBy('published', 'desc')
-                            ->take(3)
-                            ->get();
+                    ->orderBy('published', 'desc')
+                    ->take(3)
+                    ->get();
                 Cache::put('home.news', $news, 300);
             } catch (Exception $e) {
                 \Log::error('Failed to fetch news: '.$e->getMessage());
@@ -58,9 +58,9 @@ class HomeController extends Controller
         if ($nextEvents->isEmpty()) {
             try {
                 $nextEvents = Event::where('end_timestamp', '>', now())
-                                   ->orderBy('end_timestamp')
-                                   ->take(3)
-                                   ->get();
+                    ->orderBy('end_timestamp')
+                    ->take(3)
+                    ->get();
                 Cache::put('home.events', $nextEvents, 300);
             } catch (Exception $e) {
                 \Log::error('Failed to fetch events: '.$e->getMessage());
@@ -75,11 +75,11 @@ class HomeController extends Controller
                 $colourArray = ['#6CC24A', '#B2D33C', '#E3B031', '#F15025', '#8C8C8C'];
 
                 $topControllers = SessionLog::selectRaw('cid, sum(duration) as duration')
-                                            ->whereBetween('session_start', [$monthStart, $monthEnd])
-                                            ->groupBy('cid')
-                                            ->orderByDesc('duration')
-                                            ->take(5)
-                                            ->get();
+                    ->whereBetween('session_start', [$monthStart, $monthEnd])
+                    ->groupBy('cid')
+                    ->orderByDesc('duration')
+                    ->take(5)
+                    ->get();
 
                 foreach ($topControllers as $index => $top) {
                     $topControllersArray[] = [

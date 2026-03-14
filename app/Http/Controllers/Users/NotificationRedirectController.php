@@ -21,7 +21,7 @@ class NotificationRedirectController extends Controller
         return redirect($notificationLink);
     }
 
-    //TODO FIX THIS BULLSHIT REEEEEEEEEEEEEEEEEEEEEE
+    // TODO FIX THIS BULLSHIT REEEEEEEEEEEEEEEEEEEEEE
     public function clearAll(): RedirectResponse
     {
         $notifications = Auth::user()->notifications;

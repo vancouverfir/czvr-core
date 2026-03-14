@@ -21,18 +21,14 @@ class ProcessArticlePublishing implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected object $article)
-    {
-    }
+    public function __construct(protected object $article) {}
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(): void
     {
-        //Publish on Discord webhook
+        // Publish on Discord webhook
         $hook = json_encode([
             /*
              * The general "message" shown above your embeds

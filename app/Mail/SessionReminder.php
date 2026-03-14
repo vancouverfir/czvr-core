@@ -12,6 +12,7 @@ class SessionReminder extends Mailable
     use Queueable, SerializesModels;
 
     public $recipient;
+
     public $session;
 
     public function __construct($recipient, InstructingSession $session)
@@ -28,11 +29,11 @@ class SessionReminder extends Mailable
     public function build(): self
     {
         return $this->to($this->recipient->email)
-                    ->subject('Upcoming Instructing Session')
-                    ->view('emails.instructingsession.reminder')
-                    ->with([
-                        'session' => $this->session,
-                        'recipient' => $this->recipient,
-                    ]);
+            ->subject('Upcoming Instructing Session')
+            ->view('emails.instructingsession.reminder')
+            ->with([
+                'session' => $this->session,
+                'recipient' => $this->recipient,
+            ]);
     }
 }

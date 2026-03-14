@@ -24,7 +24,6 @@ class NewWebsiteFeedback extends Notification
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
      */
     public function via(object $notifiable): array
     {
@@ -35,24 +34,22 @@ class NewWebsiteFeedback extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->greeting('Hello,')
-                    ->line('A user has submitted feedback on the Website!')
-                    ->line('User: '.$this->feedback->user->fullName('FLC'))
-                    ->line('Email: '.$this->feedback->user->email)
-                    ->line('Subject: '.$this->feedback->subject)
-                    ->line('Content: '.$this->feedback->content);
+            ->greeting('Hello,')
+            ->line('A user has submitted feedback on the Website!')
+            ->line('User: '.$this->feedback->user->fullName('FLC'))
+            ->line('Email: '.$this->feedback->user->email)
+            ->line('Subject: '.$this->feedback->subject)
+            ->line('Content: '.$this->feedback->content);
     }
 
     /**
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return array
      */
     public function toArray(object $notifiable): array
     {

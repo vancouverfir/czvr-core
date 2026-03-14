@@ -12,7 +12,9 @@ class InstructingSession extends Mailable
     use Queueable, SerializesModels;
 
     public $actionRecipient;
+
     public $session;
+
     public $action;
 
     protected function generateIcs()
@@ -55,9 +57,6 @@ class InstructingSession extends Mailable
 
     /**
      * Create a new message instance.
-     *
-     * @param  SessionModel  $session
-     * @param  string  $action
      */
     public function __construct(SessionModel $session, string $action = 'created', string $actionRecipient = 'instructor')
     {
@@ -81,11 +80,11 @@ class InstructingSession extends Mailable
         };
 
         $email = $this->subject($subject)
-                      ->view("emails.instructingsession.{$this->action}")
-                      ->with([
-                          'session' => $this->session,
-                          'recipient' => $this->actionRecipient,
-                      ]);
+            ->view("emails.instructingsession.{$this->action}")
+            ->with([
+                'session' => $this->session,
+                'recipient' => $this->actionRecipient,
+            ]);
 
         if (in_array($this->action, ['created', 'updated', 'cancelled'])) {
             $email->attachData(

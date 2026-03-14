@@ -69,7 +69,7 @@ class HasMarkdownFieldsTest extends TestCase
 
     public function test_returns_empty_html_for_non_markdown_field(): void
     {
-        $model = new TestModelWithMarkdown();
+        $model = new TestModelWithMarkdown;
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Field 'non_markdown' is not defined as a markdown field");

@@ -36,7 +36,7 @@ class NewsController extends Controller
 
     public function postArticle(Request $request): RedirectResponse
     {
-        //Define validator messages
+        // Define validator messages
         $messages = [
             'title.required' => 'A title is required.',
             'title.max' => 'A title may not be more than 100 characters long.',
@@ -45,7 +45,7 @@ class NewsController extends Controller
             'emailOption.required' => 'Please select an email option.',
         ];
 
-        //Validate
+        // Validate
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:100',
             'image' => 'mimes:jpeg,jpg,png,gif',
@@ -53,37 +53,37 @@ class NewsController extends Controller
             'emailOption' => 'required',
         ], $messages);
 
-        //Redirect if fails
+        // Redirect if fails
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator, 'createArticleErrors');
         }
 
-        $article = new News();
+        $article = new News;
 
-        //Assign title
+        // Assign title
         $article->title = $request->get('title');
 
-        //Date for publishing
+        // Date for publishing
         $article->published = date('Y-m-d H:i:s');
 
-        //Create slug
+        // Create slug
         $article->slug = Str::slug($request->get('title').'-'.Carbon::now()->toDateString());
 
-        //Upload image if it exists
+        // Upload image if it exists
         if ($request->file('image')) {
             $basePath = 'public/files/'.Carbon::now()->toDateString().'/'.rand(1000, 2000);
             $path = $request->file('image')->store($basePath);
             $article->image = Storage::url($path);
         }
 
-        //Create a summary if required
+        // Create a summary if required
         if (! $request->get('summary')) {
             $article->summary = strtok($request->get('content'), '\n');
         } else {
             $article->summary = $request->get('summary');
         }
 
-        //Assign author
+        // Assign author
         $article->user_id = $request->get('author');
         if ($request->get('showAuthor') == 'on') {
             $article->show_author = true;
@@ -91,17 +91,17 @@ class NewsController extends Controller
             $article->show_author = false;
         }
 
-        //Content
+        // Content
         $article->content = $request->get('content');
 
-        //Options
-        //Publicly visible
+        // Options
+        // Publicly visible
         if ($request->get('articleVisible') == 'on') {
             $article->visible = true;
         } else {
             $article->visible = false;
         }
-        //Email level
+        // Email level
         switch ($request->get('emailOption')) {
             case 'no':
                 $article->email_level = 0;
@@ -117,7 +117,7 @@ class NewsController extends Controller
                 break;
         }
 
-        //Create and publish if needed
+        // Create and publish if needed
         $article->save();
         if ($article->visible) {
             ProcessArticlePublishing::dispatch($article);
@@ -151,7 +151,7 @@ class NewsController extends Controller
 
     public function editArticle(Request $request, $id): RedirectResponse
     {
-        //Define validator messages
+        // Define validator messages
         $messages = [
             'title.required' => 'A title is required.',
             'title.max' => 'A title may not be more than 100 characters long.',
@@ -159,14 +159,14 @@ class NewsController extends Controller
             'content.required' => 'Content is required.',
         ];
 
-        //Validate
+        // Validate
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:100',
             'image' => 'mimes:jpeg,jpg,png,gif',
             'content' => 'required',
         ], $messages);
 
-        //Redirect if fails
+        // Redirect if fails
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator, 'createArticleErrors');
         }
@@ -175,32 +175,32 @@ class NewsController extends Controller
         if ($article != null) {
             $article->title = $request->get('title');
         }
-        //Upload image if it exists
+        // Upload image if it exists
         if ($request->file('image')) {
             $basePath = 'public/files/'.Carbon::now()->toDateString().'/'.rand(1000, 2000);
             $path = $request->file('image')->store($basePath);
             $article->image = Storage::url($path);
         }
 
-        //Create a summary if required
+        // Create a summary if required
         if (! $request->get('summary')) {
             $article->summary = strtok($request->get('content'), '\n');
         } else {
             $article->summary = $request->get('summary');
         }
 
-        //Content
+        // Content
         $article->content = $request->get('content');
 
-        //Options
-        //Publicly visible
+        // Options
+        // Publicly visible
         if ($request->get('articleVisible')) {
             $article->visible = true;
         } else {
             $article->visible = false;
         }
 
-        //Create and publish if needed
+        // Create and publish if needed
         $article->save();
 
         return redirect()->Back()->withSuccess('Successfully Edited Article!');

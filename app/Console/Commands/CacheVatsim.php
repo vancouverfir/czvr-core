@@ -30,7 +30,7 @@ class CacheVatsim extends Command
     public function handle(): int
     {
         try {
-            $client = new Client();
+            $client = new Client;
             $response = $client->request('GET', VatsimHelper::getDatafeedUrl());
             $controllers = json_decode($response->getBody()->getContents());
 

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RosterMember extends Model
 
-    //Vancouver CONTROLLERS
+    // Vancouver CONTROLLERS
 {
     protected $table = 'roster';
 

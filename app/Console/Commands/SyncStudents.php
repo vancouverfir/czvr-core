@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 class SyncStudents extends Command
 {
     protected $signature = 'vancouver:sync-students';
+
     protected $description = 'Syncs student from roster without certifications';
 
     public function handle(): int

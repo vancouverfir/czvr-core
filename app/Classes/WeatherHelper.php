@@ -11,13 +11,12 @@ class WeatherHelper
     /**
      * Gets ATIS Letter for Vancouver Airports Page.
      *
-     * @param  $icao
      * @return string|null
      */
     public static function getAtisLetter($icao)
     {
         $atis = Cache::remember('vancouver.atis', 300, function () {
-            $client = new Client();
+            $client = new Client;
             $response = $client->request('GET', 'https://data.vatsim.net/v3/vatsim-data.json');
 
             return json_decode($response->getBody()->getContents())->atis ?? [];
@@ -35,13 +34,12 @@ class WeatherHelper
     /**
      * Gets ATIS Letter for Vancouver Airports Page.
      *
-     * @param  $icao
      * @return string
      */
     public static function getAtis($icao)
     {
         $atis = Cache::remember('vancouver.atis', 300, function () {
-            $client = new Client();
+            $client = new Client;
             $response = $client->request('GET', 'https://data.vatsim.net/v3/vatsim-data.json');
 
             return json_decode($response->getBody()->getContents())->atis ?? [];
@@ -54,7 +52,7 @@ class WeatherHelper
         }
 
         return Cache::remember('metar.data.'.$icao, 900, function () use ($icao) {
-            $c = new Client();
+            $c = new Client;
             try {
                 $res = $c->request('GET', 'https://api.checkwx.com/metar/'.$icao, [
                     'headers' => [

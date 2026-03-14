@@ -27,7 +27,7 @@ class AtcResourcesController extends Controller
             'atc_only' => 'required|boolean',
         ]);
 
-        $resource = new AtcResource();
+        $resource = new AtcResource;
         $resource->title = $request->get('title');
         $resource->font_awesome = $request->get('font_awesome');
         $resource->description = $request->get('description');

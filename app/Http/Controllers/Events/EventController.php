@@ -82,8 +82,8 @@ class EventController extends Controller
         ]);
 
         if (ControllerApplication::where('user_id', Auth::id())
-                ->where('event_id', $request->get('event_id'))
-                ->exists()) {
+            ->where('event_id', $request->get('event_id'))
+            ->exists()) {
             return redirect()->back()->with('error', 'You’ve already applied for this event!');
         }
 
@@ -193,14 +193,14 @@ class EventController extends Controller
 
     public function adminCreateEventPost(Request $request): RedirectResponse
     {
-        //Define validator messages
+        // Define validator messages
         $messages = [
             'name.required' => 'A name is required.',
             'name.max' => 'A name may not be more than 100 characters long.',
             'image.mimes' => 'An image file must be in the jpg png or gif formats.',
             'description.required' => 'A description is required.',
         ];
-        //Validate
+        // Validate
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100',
             'image' => 'mimes:jpeg,jpg,png,gif',
@@ -209,42 +209,42 @@ class EventController extends Controller
             'end' => 'required',
 
         ], $messages);
-        //Redirect if fails
+        // Redirect if fails
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator, 'createEventErrors');
         }
-        //Create event object
-        $event = new Event();
-        //Assign name
+        // Create event object
+        $event = new Event;
+        // Assign name
         $event->name = $request->get('name');
-        //Assign start/end date/time
+        // Assign start/end date/time
         $event->start_timestamp = $request->get('start');
         $event->end_timestamp = $request->get('end');
-        //Assign description
+        // Assign description
         $event->description = $request->get('description');
-        //Assign user
+        // Assign user
         $event->user_id = Auth::id();
-        //Upload image if it exists
+        // Upload image if it exists
         if ($request->file('image')) {
             $basePath = 'public/files/'.Carbon::now()->toDateString().'/'.rand(1000, 2000);
             $path = $request->file('image')->store($basePath);
             $event->image_url = Storage::url($path);
         }
-        //Create slug
+        // Create slug
         $event->slug = Str::slug($request->get('name').'-'.Carbon::now()->toDateString());
-        //Assign departure icao and arrival icao if they exist
+        // Assign departure icao and arrival icao if they exist
         if ($request->get('departure_icao') && $request->get('arrival_icao')) {
             $event->departure_icao = $request->get('departure_icao');
             $event->arrival_icao = $request->get('arrival_icao');
         }
-        //If controller apps are open then lets make them open
+        // If controller apps are open then lets make them open
         if ($request->has('openControllerApps')) {
             $event->controller_applications_open = true;
         }
-        //Save it
+        // Save it
         $event->save();
 
-        //Redirect
+        // Redirect
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Event created!');
     }
 
@@ -264,7 +264,7 @@ class EventController extends Controller
 
     public function adminEditEventPost(Request $request, $event_slug): RedirectResponse
     {
-        //Define validator messages
+        // Define validator messages
         $messages = [
             'name.required' => 'A name is required.',
             'name.max' => 'A name may not be more than 100 characters long.',
@@ -272,7 +272,7 @@ class EventController extends Controller
             'description.required' => 'A description is required.',
         ];
 
-        //Validate
+        // Validate
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100',
             'image' => 'mimes:jpeg,jpg,png,gif',
@@ -281,80 +281,80 @@ class EventController extends Controller
             'end' => 'required',
         ], $messages);
 
-        //Redirect if fails
+        // Redirect if fails
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator, 'editEventErrors');
         }
 
-        //Get event object
+        // Get event object
         $event = Event::where('slug', $event_slug)->firstOrFail();
 
-        //Assign name
+        // Assign name
         $event->name = $request->get('name');
 
-        //Assign start/end date/time
+        // Assign start/end date/time
         $event->start_timestamp = $request->get('start');
         $event->end_timestamp = $request->get('end');
 
-        //Assign description
+        // Assign description
         $event->description = $request->get('description');
 
-        //Upload image if it exists
+        // Upload image if it exists
         if ($request->file('image')) {
             $basePath = 'public/files/'.Carbon::now()->toDateString().'/'.rand(1000, 2000);
             $path = $request->file('image')->store($basePath);
             $event->image_url = Storage::url($path);
         }
 
-        //If there is a uploaded image selected lets put it on there
+        // If there is a uploaded image selected lets put it on there
         if ($request->get('uploadedImage')) {
             $event->image_url = UploadedImage::whereId($request->get('uploadedImage'))->first()->path;
         }
 
-        //Assign departure icao and arrival icao if they exist
+        // Assign departure icao and arrival icao if they exist
         if ($request->get('departure_icao') && $request->get('arrival_icao')) {
             $event->departure_icao = $request->get('departure_icao');
             $event->arrival_icao = $request->get('arrival_icao');
         }
 
-        //If controller apps are open then lets make them open
+        // If controller apps are open then lets make them open
         if ($request->has('openControllerApps')) {
             $event->controller_applications_open = 1;
         } else {
             $event->controller_applications_open = 0;
         }
 
-        //Save it
+        // Save it
         $event->save();
 
-        //Audit it
-        /*AuditLogEntry::insert(Auth::user(), 'Edited event '.$event->name, User::find(1), 0);*/
+        // Audit it
+        /* AuditLogEntry::insert(Auth::user(), 'Edited event '.$event->name, User::find(1), 0); */
 
-        //Redirect
+        // Redirect
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Event edited!');
     }
 
     public function adminCreateUpdatePost(Request $request, $event_slug): RedirectResponse
     {
-        //Define validator messages
+        // Define validator messages
         $messages = [
             'updateTitle.required' => 'A title is required.',
             'updateTitle.max' => 'A title may not be more than 100 characters long.',
             'updateContent.required' => 'Content is required.',
         ];
 
-        //Validate
+        // Validate
         $validator = Validator::make($request->all(), [
             'updateTitle' => 'required|max:100',
             'updateContent' => 'required',
         ], $messages);
 
-        //Redirect if fails
+        // Redirect if fails
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator, 'createUpdateErrors');
         }
 
-        //Create update object
+        // Create update object
         $update = new EventUpdate([
             'event_id' => Event::where('slug', $event_slug)->firstOrFail()->id,
             'user_id' => Auth::id(),
@@ -364,34 +364,34 @@ class EventController extends Controller
             'slug' => Str::slug($request->get('updateTitle').'-'.Carbon::now()->toDateString()),
         ]);
 
-        //Save it
+        // Save it
         $update->save();
 
-        //Redirect
+        // Redirect
         return redirect()->route('events.admin.view', $event_slug)->with('success', 'Update created!');
     }
 
     public function adminDeleteControllerApp($event_slug, $cid): RedirectResponse
     {
-        //Find the controller app
+        // Find the controller app
         $app = ControllerApplication::where('user_id', $cid)->where('event_id', Event::where('slug', $event_slug)->firstOrFail()->id)->FirstOrFail();
 
-        //Delete it? Delete it!
+        // Delete it? Delete it!
         $app->delete();
 
-        //Redirect
+        // Redirect
         return redirect()->route('event.viewapplications', Event::where('slug', $event_slug)->firstOrFail()->id)->with('info', 'Controller application '.User::where('id', $app->user_id)->first()->fullName('FLC').' has been deleted!');
     }
 
     public function adminDeleteUpdate($event_slug, $update_id): RedirectResponse
     {
-        //Find the update
+        // Find the update
         $update = EventUpdate::whereId($update_id)->where('event_id', Event::where('slug', $event_slug)->firstOrFail()->id)->FirstOrFail();
 
-        //Delete it? Delete it!
+        // Delete it? Delete it!
         $update->delete();
 
-        //Redirect
+        // Redirect
         return redirect()->route('events.admin.view', $event_slug)->with('info', 'Update \''.$update->title.'\' has been deleted!');
     }
 }

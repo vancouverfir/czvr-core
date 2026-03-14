@@ -58,7 +58,7 @@ class CheckVisitHours extends Command
             $minutes = 0;
 
             try {
-                $client = new Client();
+                $client = new Client;
                 $response = $client->request('GET', getUrl($r->cid, $quarterAgo));
                 $contents = json_decode($response->getBody()->getContents());
 
@@ -67,6 +67,7 @@ class CheckVisitHours extends Command
                 }
             } catch (RequestException $e) {
                 \Log::error("Error with VATSIM API for controller {$r->cid}: ".$e->getMessage());
+
                 continue;
             }
 

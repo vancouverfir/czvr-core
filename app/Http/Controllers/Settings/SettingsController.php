@@ -24,10 +24,10 @@ class SettingsController extends Controller
     */
     public function siteInformation(): View
     {
-        //Get the settings
+        // Get the settings
         $coreSettings = CoreSettings::find(1);
 
-        //Return the view
+        // Return the view
         return view('admin.settings.siteinformation', compact('coreSettings'));
     }
 
@@ -36,17 +36,17 @@ class SettingsController extends Controller
     */
     public function saveSiteInformation(Request $request): View
     {
-        //Get the settings
+        // Get the settings
         $coreSettings = CoreSettings::find(1);
 
-        //Save changes
+        // Save changes
         $coreSettings->sys_name = $request->get('sys_name');
         $coreSettings->release = $request->get('release');
         $coreSettings->sys_build = $request->get('sys_build');
         $coreSettings->copyright_year = $request->get('copyright_year');
         $coreSettings->save();
 
-        //Return the view
+        // Return the view
         return view('admin.settings.siteinformation', compact('coreSettings'))->with('success', 'Settings saved');
     }
 
@@ -55,10 +55,10 @@ class SettingsController extends Controller
     */
     public function emails(): View
     {
-        //Get settings
+        // Get settings
         $coreSettings = CoreSettings::find(1);
 
-        //Return the view
+        // Return the view
         return view('admin.settings.emails', compact('coreSettings'));
     }
 
@@ -67,10 +67,10 @@ class SettingsController extends Controller
     */
     public function saveEmails(Request $request): View
     {
-        //Get the settings
+        // Get the settings
         $coreSettings = CoreSettings::find(1);
 
-        //Save changes
+        // Save changes
         $coreSettings->emailfirchief = $request->get('emailfirchief');
         $coreSettings->emaildepfirchief = $request->get('emaildepfirchief');
         $coreSettings->emailcinstructor = $request->get('emailcinstructor');
@@ -79,7 +79,7 @@ class SettingsController extends Controller
         $coreSettings->emailwebmaster = $request->get('emailwebmaster');
         $coreSettings->save();
 
-        //Return the view
+        // Return the view
         return view('admin.settings.emails', compact('coreSettings'))->with('success', 'Emails saved');
     }
 
@@ -103,7 +103,7 @@ class SettingsController extends Controller
 
     public function bannerEdit(Request $request): RedirectResponse
     {
-        //Get the settings
+        // Get the settings
         $coreSettings = CoreSettings::find(1);
 
         if ($request->get('bannerMessage') == null) {
@@ -156,7 +156,7 @@ class SettingsController extends Controller
             'public/files/homepageimages', request()->file, $fileName
         );
 
-        $image = new HomepageImages();
+        $image = new HomepageImages;
         $image->url = '/storage/files/homepageimages/'.$fileName;
         $image->credit = $request->nameCredit;
         $image->CSS = 'background-size: cover; background-repeat: no-repeat; background-position: center;';

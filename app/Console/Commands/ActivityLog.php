@@ -51,7 +51,7 @@ class ActivityLog extends Command
         $controllers = $response->object()->controllers;
 
         foreach ($controllers as $controller) {
-            //Set our flag
+            // Set our flag
             $identFound = false;
 
             foreach ($positions as $position) {
@@ -61,7 +61,7 @@ class ActivityLog extends Command
                 }
             }
 
-            //Check unauthorized login
+            // Check unauthorized login
             $rosterMember = RosterMember::where('cid', $controller->cid)->first();
             if ($identFound && ! $rosterMember) {
                 // Create a unique cache key for this controller + callsign
@@ -90,29 +90,29 @@ class ActivityLog extends Command
             }
 
             if (! $identFound) {
-                //Check to see if we need to make a new position, also check to make sure it isn't an ATIS, or an observer
+                // Check to see if we need to make a new position, also check to make sure it isn't an ATIS, or an observer
                 if (Str::contains($controller->callsign, ['CZVR', 'CYVR', 'CYYJ', 'CYXS', 'CYLW', 'CYXX', 'CZBB', 'CYCD', 'CYAZ', 'CYQQ', 'CYZT', 'CYXC', 'CYCG', 'CYHC', 'CYNJ', 'CYPK', 'CYKA', 'CYZP', 'CYYD', 'CYXT', 'CYWL', 'CYDC', 'CYBL', 'CYWH', 'CYQZ']) &&
                     ! Str::endsWith($controller->callsign, ['ATIS', 'OBS']) &&
                     $controller->facility != 0) {
                     // Add position to table if so
-                    $monPos = new MonitoredPosition();
+                    $monPos = new MonitoredPosition;
                     $monPos->identifier = $controller->callsign;
                     $monPos->save();
 
-                    //They CLEARLY are on one of our positions, push them to the array please!
+                    // They CLEARLY are on one of our positions, push them to the array please!
                     array_push($onlineControllers, $controller);
                 }
             }
         }
 
-        //Grab our open sessions
+        // Grab our open sessions
         $sessionLogs = SessionLog::where('session_end', null)->get();
 
         foreach ($onlineControllers as $oc) {
-            //Set our flag like a fish, FISH ON!
+            // Set our flag like a fish, FISH ON!
             $logFound = false;
 
-            //Let's see if they have an open session
+            // Let's see if they have an open session
             foreach ($sessionLogs as $log) {
                 if ($log->cid == $oc->cid) {
                     $logFound = true;
@@ -120,11 +120,11 @@ class ActivityLog extends Command
             }
 
             if (! $logFound) {
-                //We have no log yet, let's create one!
+                // We have no log yet, let's create one!
                 $roster = RosterMember::where('cid', $oc->cid)->first();
 
-                //Creation time!
-                $log = new SessionLog();
+                // Creation time!
+                $log = new SessionLog;
                 $log->callsign = $oc->callsign;
                 if ($roster) {
                     $log->roster_member_id = $roster->id;
@@ -140,7 +140,7 @@ class ActivityLog extends Command
         }
 
         foreach ($sessionLogs as $log) {
-            //We really like setting flags here at the Vancouver FIR™
+            // We really like setting flags here at the Vancouver FIR™
             $stillOnline = false;
 
             foreach ($onlineControllers as $oc) {

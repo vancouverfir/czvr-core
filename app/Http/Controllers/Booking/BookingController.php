@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Booking;
 
 use App\Http\Controllers\Controller;
 use App\Models\Events\Event;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
@@ -15,6 +17,7 @@ use Illuminate\View\View;
 class BookingController extends Controller
 {
     protected $bookingUrl = 'https://atc-bookings.vatsim.net/api/booking';
+
     protected $apiKey;
 
     public function __construct()
@@ -22,7 +25,7 @@ class BookingController extends Controller
         $this->apiKey = env('BOOKING_API_KEY');
     }
 
-    protected function getCachedBookings(): \Illuminate\Support\Collection
+    protected function getCachedBookings(): Collection
     {
         return Cache::remember('bookings.data', 900, function () {
             try {
@@ -31,7 +34,7 @@ class BookingController extends Controller
                     ->get($this->bookingUrl, ['key_only' => true]);
 
                 return $response->successful() ? collect($response->json()) : collect();
-            } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            } catch (ConnectionException $e) {
                 return collect();
             }
         });

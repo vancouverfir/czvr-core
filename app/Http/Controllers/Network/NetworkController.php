@@ -44,7 +44,7 @@ class NetworkController extends Controller
             return redirect()->back()->withInput()->withErrors($validator, 'createMonitoredPosition');
         }
 
-        $position = new MonitoredPosition();
+        $position = new MonitoredPosition;
         $position->identifier = $request->get('identifier');
         $position->save();
 

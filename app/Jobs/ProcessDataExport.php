@@ -20,14 +20,10 @@ class ProcessDataExport implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected User $user)
-    {
-    }
+    public function __construct(protected User $user) {}
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(): void
     {
