@@ -1,7 +1,7 @@
 @extends('layouts.email')
 @section('to-line', 'Hi '.$user->fullName('FL'))
 @section('message-content')
-Listed below is the data that you requested from Vancouver FIR If you have any questions, please reply to this email.
+Listed below is the data that you requested from Vancouver FIR If you have any questions, don't hesistate to let us know!
 <hr>
 <p style="padding: 10px; border: 1px solid #000;">
 {{$json}}
