@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('student_notes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('student_id')->unsigned();
-            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->integer('author_id')->unsigned();
             $table->foreign('author_id')->references('id')->on('instructors');
             $table->text('title');

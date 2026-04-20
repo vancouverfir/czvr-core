@@ -25,11 +25,6 @@ class Student extends Model
         return $this->belongsTo(Instructor::class);
     }
 
-    public function solorequest(): HasMany
-    {
-        return $this->hasMany(SoloRequest::class);
-    }
-
     public function instructingSessions(): HasMany
     {
         return $this->hasMany(InstructingSession::class);
