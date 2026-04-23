@@ -140,7 +140,7 @@ class FeedbackController extends Controller
         return view('feedback.create', compact('controllers'));
     }
 
-    public function createPost(Request $request): View
+    public function createPost(Request $request): View|RedirectResponse
     {
         // dd($request->all());
         // Define validator messages
