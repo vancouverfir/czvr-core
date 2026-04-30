@@ -21,7 +21,7 @@
         </div>
 @empty
     <div class="text-center py-5">
-        <h3>Nothing yet! Be the first to share your feedback with us! ✈️</h3>
+        <h3>Nothing yet! Be the first to share your feedback with us!</h3>
     </div>
 @endforelse
 

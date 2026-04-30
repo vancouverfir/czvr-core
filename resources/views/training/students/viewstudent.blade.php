@@ -112,9 +112,9 @@
                             <h7 class="list-group-item" style="background: transparent;"><form method="POST" action="{{ route('training.students.assignT2', $student->id) }}" style="display: inline;">@csrf <button style="all: unset; color: inherit; cursor: pointer;">Add Tier 2 Checklists</button></form></h7>
                             @if (auth()->user()->permissions >= 3) <h7 class="list-group-item" style="background: transparent"><a href="{{ url('/dashboard/roster/edit/' . $student->user->id) }}" style="color: inherit;">Edit Certifications</a></h7> @endif
                             @elseif ($student->status === 9)
-                            <h7 class="list-group-item" style="background: transparent; color: #2cb82c;">Training Completed On {{ $student->updated_at?->format('F j, Y') }}</h7>
+                            <h7 class="list-group-item" style="background: transparent; color: #2cb82c;">Training Completed {{ $student->updated_at?->format('F j, Y') }}</h7>
                             @endif
-                            <h7 class="list-group-item" style="background: transparent">Created {{$student->created_at?->format('F jS Y')}}</h7>
+                            <h7 class="list-group-item" style="background: transparent">Joined {{$student->created_at?->format('F jS Y')}}</h7>
                             @if (auth()->user()->permissions >= 4) <h7 class="list-group-item" style="background: transparent; color: #ff0000; cursor: pointer"><a href="{{ route('training.students.delete', $student->id) }}" style="color: inherit">Delete Student</a></h7> @endif
                         </div>
                     </div>
@@ -131,7 +131,7 @@
                             <div style="color: #999; font-size: 0.85rem;" class="mt-1">Notes left by non Vancouver FIR members not shown!</div>
                         </div>
                         <div class="card-body">
-                            @if (empty($vatcanNotes)) <span class="alert">No training notes available! Or you refreshed too many times...</span>
+                            @if (empty($vatcanNotes)) <span class="alert">No training notes yet! Check back later!...</span>
                             @else
                             @foreach (array_slice($vatcanNotes, 0, 3) as $note)
                             <div class="border rounded p-3 mb-3">
@@ -191,7 +191,7 @@
                     @forelse ($systemNotes as $notes)
                     <div class="activity-message">
                         <div class="activity-icon">
-                            <i class="fas {{ str_contains($notes->title, 'Assigned') ? 'fa-user-plus' : (str_contains($notes->title, 'Removed') ? 'fa-user-minus' : (str_contains($notes->title, 'Completed') ? 'fa-graduation-cap' : (str_contains($notes->title, 'Promoted') ? 'fa-arrow-up' : (str_contains($notes->title, 'Created') ? 'fa-plus-circle' : 'fa-circle')))) }} text-white"></i>
+                            <i class="fas {{ str_contains($notes->title, 'Assigned') ? 'fa-user-plus' : (str_contains($notes->title, 'Removed') ? 'fa-user-minus' : (str_contains($notes->title, 'Completed') ? 'fa-graduation-cap' : (str_contains($notes->title, 'Promoted') ? 'fa-arrow-up' : (str_contains($notes->title, 'Created') ? 'fa-plus-circle' : 'fa-exclamation')))) }} text-white"></i>
                         </div>
                         <div class="activity-bubble">
                             <div class="d-flex justify-content-between mb-1"><strong class="text-success">{{ $notes->title }}</strong><small>{{ $notes->created_at->diffForHumans() }}</small></div>
