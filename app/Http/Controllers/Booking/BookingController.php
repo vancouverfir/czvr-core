@@ -27,7 +27,7 @@ class BookingController extends Controller
 
     protected function getCachedBookings(): Collection
     {
-        return Cache::remember('bookings.data', 900, function () {
+        return Cache::remember('bookings.data', 300, function () {
             try {
                 $response = Http::withToken($this->apiKey)
                     ->timeout(10)
