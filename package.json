@@ -26,5 +26,8 @@
         "dotenv": "^17.3.1",
         "npm": "^11.13.0"
     },
-    "type": "module"
+    "type": "module",
+    "allowScripts": {
+        "core-js@2.6.12": true
+    }
 }

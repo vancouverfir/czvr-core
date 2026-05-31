@@ -6,6 +6,7 @@ use App\Models\Users\User;
 use App\Traits\HasMarkdownFields;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class News extends Model
 {
