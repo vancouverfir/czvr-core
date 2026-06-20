@@ -45,6 +45,10 @@ class LoginController extends Controller
     public function validateAuthLogin(Request $request): RedirectResponse
     {
         // Written by Harrison Scott
+        if (! $request->filled('code')) {
+            return redirect()->route('index')->with('info', 'Login cancelled!');
+        }
+
         $http = new Client;
 
         try {
