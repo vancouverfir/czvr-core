@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Booking;
 
 use App\Http\Controllers\Controller;
 use App\Models\Events\Event;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -46,6 +47,54 @@ class BookingController extends Controller
         $this->getCachedBookings();
     }
 
+    protected function bookingOverlapsWestCoastWeekend(CarbonImmutable $start, CarbonImmutable $end): bool
+    {
+        return Event::query()
+            ->where(function ($query) {
+                $query->whereRaw('LOWER(name) LIKE ?', ['%west coast weekend%'])
+                    ->orWhereRaw('LOWER(slug) LIKE ?', ['%west-coast-weekend%']);
+            })
+            ->where('start_timestamp', '<', $end->format('Y-m-d H:i:s'))
+            ->where('end_timestamp', '>', $start->format('Y-m-d H:i:s'))
+            ->exists();
+    }
+
+    protected function validateBookingRules(CarbonImmutable $start, CarbonImmutable $end): ?array
+    {
+        if ($end->lessThanOrEqualTo($start)) {
+            return [
+                'end' => 'Booking end time must be after the start time!',
+            ];
+        }
+
+        $durationMinutes = $start->diffInMinutes($end);
+
+        if ($durationMinutes < 45) {
+            return [
+                'duration' => 'Your booking cannot be less than 45 minutes!',
+            ];
+        }
+
+        if ($start->lessThan(CarbonImmutable::now('UTC')->addHours(4))) {
+            return [
+                'start' => 'Bookings must be created at least 4 hours in advance!',
+            ];
+        }
+
+        $isWestCoastWeekend = $this->bookingOverlapsWestCoastWeekend($start, $end);
+        $maxDurationMinutes = $isWestCoastWeekend ? 120 : 240;
+
+        if ($durationMinutes > $maxDurationMinutes) {
+            return [
+                'duration' => $isWestCoastWeekend
+                    ? 'Reserved bookings during West Coast Weekends cannot be longer than 2 hours!'
+                    : 'Reserved bookings cannot be longer than 4 hours!',
+            ];
+        }
+
+        return null;
+    }
+
     public function indexPublic(Request $request): View
     {
         $events = Event::all();
@@ -67,18 +116,17 @@ class BookingController extends Controller
     {
         $data = $request->validate([
             'callsign' => 'required|string',
-            'start' => 'required',
-            'end' => 'required',
+            'start' => 'required|date',
+            'end' => 'required|date',
         ]);
 
-        $start = strtotime($data['start']);
-        $end = strtotime($data['end']);
-        $durationMinutes = ($end - $start) / 60;
+        $start = CarbonImmutable::parse($data['start'], 'UTC');
+        $end = CarbonImmutable::parse($data['end'], 'UTC');
 
-        if ($durationMinutes < 45 || $durationMinutes > 300) {
-            return back()->withErrors([
-                'duration' => 'Booking must be at least 45 minutes and no more than 5 hours!',
-            ])->withInput();
+        $bookingRuleErrors = $this->validateBookingRules($start, $end);
+
+        if ($bookingRuleErrors) {
+            return back()->withErrors($bookingRuleErrors)->withInput();
         }
 
         $user = auth()->user();
@@ -87,8 +135,8 @@ class BookingController extends Controller
             'callsign' => $data['callsign'],
             'cid' => $user->id,
             'type' => 'booking',
-            'start' => date('Y-m-d H:i:s', strtotime($data['start'])),
-            'end' => date('Y-m-d H:i:s', strtotime($data['end'])),
+            'start' => $start->format('Y-m-d H:i:s'),
+            'end' => $end->format('Y-m-d H:i:s'),
             'division' => $user->division_code ?? null,
             'subdivision' => $user->subdivision_code ?? null,
         ];
@@ -120,18 +168,17 @@ class BookingController extends Controller
     {
         $data = $request->validate([
             'callsign' => 'required|string',
-            'start' => 'required',
-            'end' => 'required',
+            'start' => 'required|date',
+            'end' => 'required|date',
         ]);
 
-        $start = strtotime($data['start']);
-        $end = strtotime($data['end']);
-        $durationMinutes = ($end - $start) / 60;
+        $start = CarbonImmutable::parse($data['start'], 'UTC');
+        $end = CarbonImmutable::parse($data['end'], 'UTC');
 
-        if ($durationMinutes < 45 || $durationMinutes > 300) {
-            return back()->withErrors([
-                'duration' => 'Booking must be at least 45 minutes and no more than 5 hours!',
-            ])->withInput();
+        $bookingRuleErrors = $this->validateBookingRules($start, $end);
+
+        if ($bookingRuleErrors) {
+            return back()->withErrors($bookingRuleErrors)->withInput();
         }
 
         $user = auth()->user();
@@ -140,8 +187,8 @@ class BookingController extends Controller
             'callsign' => $data['callsign'],
             'cid' => $user->id,
             'type' => 'booking',
-            'start' => date('Y-m-d H:i:s', strtotime($data['start'])),
-            'end' => date('Y-m-d H:i:s', strtotime($data['end'])),
+            'start' => $start->format('Y-m-d H:i:s'),
+            'end' => $end->format('Y-m-d H:i:s'),
             'division' => $user->division_code ?? null,
             'subdivision' => $user->subdivision_code ?? null,
         ];
