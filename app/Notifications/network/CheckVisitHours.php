@@ -10,56 +10,58 @@ class CheckVisitHours extends Notification
 {
     use Queueable;
 
-    private $members;
+    private array $members;
+
+    private array $unknown;
 
     /**
      * Create a new notification instance.
-     *
-     * @return void
      */
-    public function __construct($members)
+    public function __construct(array $members, array $unknown = [])
     {
         $this->members = $members;
-
-        if (! $this->members) {
-            exit;
-        }
+        $this->unknown = $unknown;
     }
 
     /**
      * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
      */
-    public function via(object $notifiable)
+    public function via(object $notifiable): array
     {
         return ['mail'];
     }
 
     /**
      * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return MailMessage
      */
-    public function toMail(object $notifiable)
+    public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)->view(
-            'emails.network.visiting', ['members' => $this->members]
-        )->subject('Controller Visiting Violations!');
+        return (new MailMessage)
+            ->view('emails.network.visiting', [
+                'members' => $this->members,
+                'unknown' => $this->unknown,
+            ])
+            ->subject($this->subject());
     }
 
     /**
      * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
      */
-    public function toArray(object $notifiable)
+    public function toArray(object $notifiable): array
     {
-        return [
-            //
-        ];
+        return [];
+    }
+
+    private function subject(): string
+    {
+        if (count($this->members) > 0) {
+            return 'Controller Visiting Violations!';
+        }
+
+        if (count($this->unknown) > 0) {
+            return 'Controller Visiting Check - VATSIM API Issues';
+        }
+
+        return 'Controller Visiting Check - No Violations';
     }
 }

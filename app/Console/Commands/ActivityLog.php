@@ -11,6 +11,7 @@ use App\Models\Network\SessionLog;
 use App\Models\Settings\CoreSettings;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -47,8 +48,46 @@ class ActivityLog extends Command
         // Getters
         $positions = MonitoredPosition::all();
 
-        $response = HttpHelper::getClient()->get(VatsimHelper::getDatafeedUrl());
-        $controllers = $response->object()->controllers;
+        try {
+            $response = HttpHelper::getClient()
+                ->timeout(90)
+                ->connectTimeout(10)
+                ->retry(3, 5000, throw: false)
+                ->acceptJson()
+                ->get(VatsimHelper::getDatafeedUrl());
+        } catch (ConnectionException $e) {
+            Log::warning('VATSIM datafeed connection failed or timed out. Skipping activity run.', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return Command::SUCCESS;
+        } catch (\Throwable $e) {
+            Log::error('Unexpected error while fetching VATSIM datafeed.', [
+                'message' => $e->getMessage(),
+                'exception' => $e,
+            ]);
+
+            return Command::FAILURE;
+        }
+
+        if (! $response->successful()) {
+            Log::warning('VATSIM datafeed returned an unsuccessful response. Skipping activity run.', [
+                'status' => $response->status(),
+                'body' => substr($response->body(), 0, 500),
+            ]);
+
+            return Command::SUCCESS;
+        }
+
+        $payload = $response->object();
+
+        if (! is_object($payload) || ! isset($payload->controllers) || ! is_array($payload->controllers)) {
+            Log::warning('VATSIM datafeed response did not contain a valid controllers array. Skipping activity run.');
+
+            return Command::SUCCESS;
+        }
+
+        $controllers = $payload->controllers;
 
         foreach ($controllers as $controller) {
             // Set our flag
@@ -71,11 +110,11 @@ class ActivityLog extends Command
                 if (! Cache::has($cacheKey)) {
                     $core = CoreSettings::find(1);
 
-                    $emails = [
+                    $emails = array_filter([
                         $core->emailfirchief,
                         $core->emaildepfirchief,
                         $core->emailcinstructor,
-                    ];
+                    ]);
 
                     foreach ($emails as $email) {
                         Mail::to($email)->send(new UnauthorisedConnection([
