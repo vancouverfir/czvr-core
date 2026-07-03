@@ -91,7 +91,7 @@ class CheckVisitHours extends Command
                 ? 0
                 : round($r->currency / $hours, 3);
 
-            if ($quotient > 0 &&  $quotient < 0.5) {
+            if ($quotient > 0 && $quotient < 0.5) {
                 $members[] = [
                     'percentage' => $quotient,
                     'name' => $r->full_name.' '.$r->cid,
