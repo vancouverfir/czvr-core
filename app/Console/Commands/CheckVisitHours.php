@@ -29,17 +29,17 @@ class CheckVisitHours extends Command
     protected $description = 'Checks if controllers have put 50% of their time on Vancouver positions each quarter';
 
     /**
-     * Use 7 seconds to stay under the VATSIM API limit
+     * Use 7 seconds to stay under the VATSIM API limit.
      */
     private const REQUEST_DELAY_SECONDS = 7;
 
     /**
-     * Number of attempts per controller before putting them in the unknown list
+     * Number of attempts per controller before putting them in the unknown list.
      */
     private const MAX_ATTEMPTS = 5;
 
     /**
-     * Maximum time to sleep between retries
+     * Maximum time to sleep between retries.
      */
     private const MAX_BACKOFF_SECONDS = 300;
 
@@ -92,7 +92,7 @@ class CheckVisitHours extends Command
                 : round($r->currency / $hours, 3);
 
             // Vancouver Hours / VATSIM Total is less than 50%
-            if ($quotient > 0 &&  $quotient < 0.5) {
+            if ($quotient > 0 && $quotient < 0.5) {
                 $members[] = [
                     'percentage' => $quotient,
                     'name' => $r->full_name.' '.$r->cid,
