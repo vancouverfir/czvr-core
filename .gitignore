@@ -46,3 +46,16 @@ UserEventFetcher/pyapiconf-stage.ini
 public/robots.txt
 config/backup.php
 resources/lang/vendor/
+
+# Visual Studio local/cache files
+.vs/
+**/.vs/
+
+# Python/cache artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Build/cache artifacts
+.cache/
+coverage/
