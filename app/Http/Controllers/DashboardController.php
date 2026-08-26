@@ -45,7 +45,10 @@ class DashboardController extends Controller
 
         $requiredHours = ($profile && in_array($profile->status, ['instructor', 'home']) && $profile->staff === 'exec') ? 5 : 3;
 
-        $confirmedEvents = Event::all()->filter(fn ($e) => Carbon::now()->lt($e->end_timestamp))->sortBy('start_timestamp');
+        $confirmedEvents = Event::where('start_timestamp', '>=', Carbon::now())
+            ->where('start_timestamp', '<=', Carbon::now()->addMonths(2))
+            ->orderBy('start_timestamp', 'asc')
+            ->get();
 
         $confirmedApp = EventConfirm::where('user_id', $user->id)->get()->sortBy('start_timestamp');
 
