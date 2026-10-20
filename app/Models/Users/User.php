@@ -43,6 +43,16 @@ class User extends Authenticatable
     ];
 
     /**
+     * Users authenticate only via VATSIM Connect SSO there is no local password
+     * Laravel 12.69+ checks the password hash in remember-me cookies and throws on null
+     */
+    public function getAuthPassword(): string
+    {
+        return '';
+    }
+
+
+    /**
      * Return articles that the user has written.
      */
     public function news(): HasMany

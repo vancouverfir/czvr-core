@@ -62,7 +62,7 @@ class LoginController extends Controller
                 ],
             ]);
         } catch (ClientException $e) {
-            return redirect()->route('index')->with('error-modal', $e->getResponse()->getBody());
+            return redirect()->route('index')->with('error-modal', (string) $e->getResponse()->getBody());
         }
 
         $tokenData = json_decode((string) $response->getBody(), true);
@@ -76,7 +76,7 @@ class LoginController extends Controller
                 ],
             ]);
         } catch (ClientException $e) {
-            return redirect()->back()->with('error-modal', $e->getResponse()->getBody());
+            return redirect()->back()->with('error-modal', (string) $e->getResponse()->getBody());
         }
 
         $response = json_decode($response->getBody());
