@@ -8,14 +8,14 @@
         <i class="fas fa-arrow-left"></i> Dashboard
     </a>
 
-    <h1 class="blue-text font-weight-bold mt-2">Event Rosters</h1>
+    <h1 class="blue-text fw-bold mt-2">Event Rosters</h1>
     <hr>
 
     <div class="row">
         @foreach($events as $e)
             <div class="col-lg-6">
                 <div class="card mt-2">
-                    <div class="h5 card-header font-weight-bold">
+                    <div class="h5 card-header fw-bold">
                         {{ $e->name }} - Starting at {{ $e->start_timestamp_pretty() }}
                     </div>
                     <div class="card-body">
@@ -24,7 +24,7 @@
                         @else
                             @foreach($e->controllers as $c)
                                 <div style="margin-left: 15px; margin-bottom: 5px;">
-                                    <span class="font-weight-bold">{{ $c->user->fullName('FLC') }}</span>
+                                    <span class="fw-bold">{{ $c->user->fullName('FLC') }}</span>
                                     is on <span style="color:#007bff;">{{ $c->airport ?? ' ' }}</span>
                                     from {{ ($c->start_timestamp)->format('H:i') }}z
                                     to {{ ($c->end_timestamp)->format('H:i') }}z

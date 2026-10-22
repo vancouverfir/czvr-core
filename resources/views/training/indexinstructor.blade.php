@@ -6,380 +6,327 @@
 
 @stop
 
-<style>
-    #training-notes-container {
-    max-height: 545px;
-    overflow-y: auto;
-    }
-</style>
+@push('styles')
+<link href="{{ asset('css/pages/training-availability.css') }}" rel="stylesheet">
+<link href="{{ asset('css/pages/training-student-dashboard.css') }}" rel="stylesheet">
+<link href="{{ asset('css/pages/training-instructor-dashboard.css') }}" rel="stylesheet">
+@endpush
 
 @section('content')
     <!-- Instructors -->
-    @if (auth()->check() && auth()->user()->permissions >= 2)
+    @if (! $preview && auth()->check() && (auth()->user()->activeInstructorProfile !== null || auth()->user()->can('training.manage')))
     @include('includes.trainingMenu')
-    <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
-        <h2 class="font-weight-bold blue-text">Instructor Portal</h2>
-        <hr>
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <text class="font-weight-bold">Your Students</text>
-                    </div>
-                    <div class="card-body">
-                        @if ($yourStudents !== null && count($yourStudents) > 0)
-                        <div class="list-group">
-                            @foreach ($yourStudents as $student)
-                            <a href="{{route('training.students.view', $student->id)}}" class="list-group-item d-flex justify-content-between align-items-center"> <img src="{{$student->user->avatar()}}" style="height: 30px; width: 30px; margin-right: 15px; border-radius: 50%;">
-                                {{$student->user->fullName('FLC')}}
-                                @php
-                                    $nextSession = $student->instructingSessions()
-                                        ->where('start_time', '>=', now())
-                                        ->orderBy('start_time', 'asc')
-                                        ->first();
-                                @endphp
+    <main class="container py-4 training-portal">
+        <header class="training-portal-header">
+            <div>
+                <h1 class="blue-text">Training Centre</h1>
+                <p>Your students and upcoming sessions are together in one place!</p>
+            </div>
+            <a href="{{ route('training.instructingsessions.index', ['action' => 'new']) }}" class="btn btn-primary btn-sm flex-shrink-0">
+                New session
+            </a>
+        </header>
 
-                                <i>
-                                    @if ($nextSession)
-                                        @if ($nextSession->start_time->isToday())
-                                            Session planned {{ $nextSession->start_time->format('H:i') }} UTC
-                                        @else
-                                            Session planned {{ $nextSession->start_time->format('d M Y') }}
-                                        @endif
-                                    @endif
-                                </i>
-                                @if ($student->status == 4)
-                                    <span class="btn-sm btn-danger">
-                                        <h6 class="p-0 m-0">On Hold</h6>
-                                    </span>
+        <div class="training-portal-grid">
+            <section class="training-panel" aria-labelledby="assigned-students-heading">
+                <div class="training-panel-header">
+                    <h2 id="assigned-students-heading">Your Students</h2>
+                    <span class="training-panel-count">{{ $yourStudents->count() }} assigned</span>
+                </div>
+
+                @forelse ($yourStudents as $assignedStudent)
+                    @php $nextSession = $assignedStudent->instructingSessions->first(); @endphp
+                    <a href="{{ route('training.students.view', $assignedStudent->id) }}" class="training-student-row">
+                        <img src="{{ $assignedStudent->user->avatar() }}" class="training-student-avatar" alt="">
+                        <span class="training-row-copy">
+                            <span class="training-row-title">{{ $assignedStudent->user->fullName('FLC') }}</span>
+                            <span class="training-row-meta">
+                                @if ($nextSession)
+                                    {{ $nextSession->start_time->isToday()
+                                        ? 'Next session today at '.$nextSession->start_time->format('H:i').' UTC'
+                                        : 'Next session '.$nextSession->start_time->format('d M Y, H:i').' UTC' }}
                                 @else
-                                    <span class="btn-sm btn-success">
-                                        <h6 class="p-0 m-0">Open</h6>
-                                    </span>
+                                    No upcoming session
                                 @endif
-                            </a>
+                            </span>
+                        </span>
+                        <span class="training-status {{ $assignedStudent->status == \App\Models\AtcTraining\Student::STATUS_MARKED_FOR_REMOVAL ? 'training-status-hold' : ($assignedStudent->isConsolidating() ? 'training-status-consolidating' : 'training-status-open') }}">
+                            {{ $assignedStudent->status == \App\Models\AtcTraining\Student::STATUS_MARKED_FOR_REMOVAL ? 'On hold' : ($assignedStudent->isConsolidating() ? number_format($assignedStudent->consolidationRemainingHours(), 1).'h remaining' : 'Ready') }}
+                        </span>
+                    </a>
+                @empty
+                    <div class="training-empty">No students are currently allocated to you.</div>
+                @endforelse
+            </section>
+
+            <section class="training-panel" aria-labelledby="upcoming-sessions-heading">
+                <div class="training-panel-header">
+                    <h2 id="upcoming-sessions-heading">Upcoming Sessions</h2>
+                    <a href="{{ route('training.instructingsessions.index') }}" class="training-panel-count">View calendar</a>
+                </div>
+
+                @forelse ($upcomingSessions as $session)
+                    <a href="{{ route('training.instructingsessions.index', ['session' => $session->id]) }}" class="training-session-row">
+                        <span class="training-session-date">
+                            <span>{{ $session->start_time->format('M') }}</span>
+                            <strong>{{ $session->start_time->format('d') }}</strong>
+                        </span>
+                        <span class="training-row-copy">
+                            <span class="training-row-title">{{ $session->student->user->fullName('FLC') }}</span>
+                            <span class="training-row-meta">{{ $session->start_time->format('H:i') }}–{{ $session->end_time->format('H:i') }} UTC · {{ $session->title }}</span>
+                        </span>
+                        <i class="fas fa-chevron-right text-muted" aria-hidden="true"></i>
+                    </a>
+                @empty
+                    <div class="training-empty">No upcoming sessions scheduled.</div>
+                @endforelse
+            </section>
+        </div>
+    </main>
+    @elseif ($student)
+
+    <!-- Student -->
+    @include('includes.trainingMenu')
+    @php
+        $hasAvailabilityErrors = $errors->has('availability')
+            || $errors->has('availability.*')
+            || $errors->has('availability_comment');
+        $studentStatus = match ($student->status) {
+            0 => $waitlistPosition ? 'Waitlist position '.$waitlistPosition : 'Waiting for placement',
+            3 => 'Visiting-controller waitlist',
+            4 => 'Training on hold',
+            9 => 'Training completed',
+            default => 'Training in progress',
+        };
+    @endphp
+
+    <main class="container training-page training-student-dashboard">
+        @if ($preview)
+            <div class="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <span><i class="far fa-eye me-1" aria-hidden="true"></i>You are previewing what <strong>{{ $student->user->fullName('FLC') }}</strong> sees! Nothing on this page can be changed.</span>
+                <a href="{{ route('training.students.view', $student->id) }}" class="btn btn-sm btn-light">Back to student</a>
+            </div>
+        @endif
+        <header class="training-page-header">
+            <div>
+                <h1 class="blue-text">My Training</h1>
+                <p>Your progress, availability, and latest training notes.</p>
+            </div>
+        </header>
+
+        <section class="student-dashboard-identity" aria-label="Training overview">
+            <img src="{{ $student->user->avatar() }}" class="student-dashboard-avatar" alt="">
+            <div class="student-dashboard-person">
+                <h2>{{ $student->user->fullName('FLC') }}</h2>
+                <p>{{ $student->user->rating_short }} · {{ $student->user->homeFacilityName() }}</p>
+                @if ($student->labels->isNotEmpty())
+                    <div class="student-dashboard-labels">
+                        @foreach ($student->labels as $label)
+                            <span class="student-dashboard-label" style="background-color: {{ $label->label->color }};">
+                                @if ($label->label->fa_icon)<i class="{{ $label->label->fa_icon }} fa-fw me-1" aria-hidden="true"></i>@endif{{ $label->label->name }}
+                            </span>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+            <div class="student-dashboard-facts">
+                <div class="student-dashboard-fact">
+                    <span class="student-dashboard-fact-label">Instructor</span>
+                    <span class="student-dashboard-fact-value">
+                        @if ($student->instructor)
+                            <img src="{{ $student->instructor->user->avatar() }}" alt="">
+                            {{ $student->instructor->user->fullName('FL') }}
+                        @else
+                            <i class="far fa-user" aria-hidden="true"></i>Not assigned
+                        @endif
+                    </span>
+                </div>
+                <div class="student-dashboard-fact">
+                    <span class="student-dashboard-fact-label">Status</span>
+                    <span class="student-dashboard-fact-value"><i class="far fa-compass" aria-hidden="true"></i>{{ $studentStatus }}</span>
+                </div>
+                @if ($student->status === \App\Models\AtcTraining\Student::STATUS_WAITLIST)
+                    <div class="student-dashboard-fact">
+                        <span class="student-dashboard-fact-label">Current wait for new students</span>
+                        <span class="student-dashboard-fact-value">{{ $training_time?->wait_length ?? 'Not currently available' }}</span>
+                    </div>
+                @endif
+            </div>
+        </section>
+
+        @if ($student->renewalWindowExpired())
+            <div class="student-dashboard-notice student-dashboard-notice-danger">
+                <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+                <span>Your renewal window has expired and the waitlist status is being updated.</span>
+            </div>
+        @elseif ($student->hasPendingRenewal())
+            <div class="student-dashboard-notice student-dashboard-notice-warning">
+                <i class="fas fa-envelope-open-text" aria-hidden="true"></i>
+                <div>
+                    <strong>Monthly renewal required.</strong>
+                    Confirm your availability to keep your current waitlist position.
+                    @unless ($preview)
+                        <a href="{{ route('training.renew', $student->renewal_token) }}" class="ms-1">Review renewal</a>
+                    @endunless
+                </div>
+            </div>
+        @endif
+
+        @if ($student->consolidationIsPending())
+            <div class="student-dashboard-notice">
+                <i class="far fa-hourglass-half" aria-hidden="true"></i>
+                <span><strong>{{ number_format($student->consolidationHours(), 1) }} / {{ number_format(\App\Services\TrainingProgressionService::CONSOLIDATION_HOURS, 0) }} hours</strong> logged at {{ $student->consolidation_rating }}. Training unlocks automatically when consolidation is complete.</span>
+            </div>
+        @endif
+
+        <div class="student-dashboard-grid {{ $studentChecklistGroups?->isEmpty() ? 'student-dashboard-grid-single' : '' }}">
+            @if ($studentChecklistGroups?->isNotEmpty())
+                <section class="student-dashboard-panel" aria-labelledby="studentChecklistHeading">
+                    <div class="student-dashboard-panel-header">
+                        <div>
+                            <h2 id="studentChecklistHeading">Your Checklists</h2>
+                            <p>Training items and current completion status</p>
+                        </div>
+                        @if ($studentChecklistGroups->flatten(1)->contains(fn ($item) => $item->completed))
+                            <button id="toggle-completed" class="btn btn-sm btn-outline-primary">Hide completed</button>
+                        @endif
+                    </div>
+                    <div class="student-dashboard-panel-body">
+                        @foreach ($studentChecklistGroups as $checklistName => $items)
+                            <div class="student-checklist-group">
+                                <h3>{{ $checklistName }}</h3>
+                                @foreach ($items as $item)
+                                    <div class="student-checklist-item {{ $item->completed ? 'completed-row' : '' }}">
+                                        <i class="{{ $item->completed ? 'fas fa-check-circle' : 'far fa-circle' }}" aria-hidden="true"></i>
+                                        <span>{{ $item->checklistItem->item }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+
+            <section class="student-dashboard-panel" aria-labelledby="studentAvailabilityHeading">
+                <div class="student-dashboard-panel-header">
+                    <div>
+                        <h2 id="studentAvailabilityHeading">Availability</h2>
+                    </div>
+                    @if (filled($student->availability) && ! $preview)
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#availabilityModal">
+                            <i class="fas fa-pen me-1" aria-hidden="true"></i>Edit
+                        </button>
+                    @endif
+                </div>
+                <div class="student-dashboard-panel-body">
+                    @if (filled($student->availability))
+                        <div class="student-availability-schedule">
+                            @foreach ($student->availabilityPeriods() as $period)
+                                <div class="student-availability-day">
+                                    <span class="student-availability-day-name">{{ $period['days'] }}</span>
+                                    <div class="student-availability-periods">
+                                        <span class="student-availability-period">
+                                            <time datetime="{{ $period['start'] }}">{{ $period['start'] }}</time>
+                                            <span aria-hidden="true">–</span>
+                                            <time datetime="{{ $period['end'] }}">{{ $period['end'] }}</time>
+                                            <small>UTC</small>
+                                        </span>
+                                    </div>
+                                </div>
                             @endforeach
                         </div>
-                        @else
-                            No students are allocated to you!
+                        @if ($student->times)
+                            <div class="student-availability-note">
+                                <i class="far fa-comment" aria-hidden="true"></i>
+                                <div>
+                                    <span>Note for your instructor</span>
+                                    <p>{{ $student->times }}</p>
+                                </div>
+                            </div>
                         @endif
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <text class="font-weight-bold">Upcoming Instructing Sessions</text>
-                    </div>
-
-                    <div class="card-body">
-                        @php
-                            $upcomingSessions = collect();
-
-                            if ($yourStudents && $yourStudents->isNotEmpty()) {
-                                foreach ($yourStudents as $student) {
-                                    $upcomingSessions = $upcomingSessions->merge(
-                                        $student->instructingSessions()
-                                            ->where('start_time', '>=', now())
-                                            ->orderBy('start_time', 'asc')
-                                            ->get()
-                                    );
-                                }
-
-                                $upcomingSessions = $upcomingSessions->sortBy('start_time')->take(5);
-                            }
-                        @endphp
-
-
-                        @if ($upcomingSessions->count() > 0)
-                            <ul class="list-group">
-                                @foreach ($upcomingSessions as $session)
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <a href="{{ route('training.instructingsessions.viewsession', $session->id) }}" class="text-white">
-                                                <strong>{{ $session->student->user->fullName('FLC') }}</strong>
-                                                <br>
-                                                <small>
-                                                    {{ $session->start_time->isToday() 
-                                                        ? 'Today at ' . $session->start_time->format('H:i') . ' UTC'
-                                                        : $session->start_time->format('d M Y H:i') }}
-                                                </small>
-                                            </a>
-                                        </div>
-                                        <span class="badge bg-info">Instructing Session</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <span>No upcoming sessions scheduled!</span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    @elseif (auth()->user()->studentProfile)
-
-    <!-- User -->
-    @include('includes.trainingMenu')
-    <div class="container" style="margin-top: 20px; margin-bottom: 30px;">
-        <div class="row">
-            <div class="col">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="d-flex flex-row w-100 align-items-center h-100">
-                            <img src="{{$student->user->avatar()}}" style="height: 50px; width: 50px; margin-right: 15px; border-radius: 50%;">
-                            <div class="d-flex flex-column w-100">
-                                <h5 class="list-group-item">
-                                    {{$student->user->fullName('FLC')}} - {{$student->user->rating_short}} {{$student->user->division_code}} {{$student->user->region_code}} {{$student->user->subdivision_code}}
-                                    <div class="d-flex flex-wrap mt-2 justify-content-left align-items-left">
-                                        @foreach($student->labels as $label)
-                                            <span class="mr-2 mb-1" style="background-color: {{$label->label->color}};">
-                                                {{$label->label->labelHtml()}}
-                                            </span>
-                                        @endforeach
-                                    </div>
-                                </h5>
-                            </div>
-                        </div>
-                        <h5 class="mt-3 font-weight-bold">Instructor</h5>
-                        @if ($student->instructor)
-                            <div class="d-flex flex-column w-50 align-items-left">
-                                <h5 class="list-group-item" style="background-color: transparent; border: none;">
-                                    <img src="{{$student->instructor->user->avatar()}}" style="height: 27px; width: 27px; margin-right: 5px; border-radius: 70%;"> {{$student->instructor->user->fullName('FLC')}}
-                                </h5>
-                            </div>
-                        @else
-                            <span>No Instructor Assigned!</span>
-                        @endif
-
-                        <h5 class="mt-3 font-weight-bold">Availability</h5>
-                        <span>{{$student->times ?? 'Not yet submitted!'}}</span>
-                    </div>
-                </div>
-
-        <!-- Checklist -->
-            <div class="card mb-3" style="max-height: 700px; overflow-y: auto;">
-                <div class="card-body">
-                    @if ($studentChecklistGroups->count() > 0)
-                        <div class="d-flex justify-content-between align-items-center mb-3 sticky-top p-2" style="background-color: #2e2f2f;">
-                            <h3 class="font-weight-bold blue-text mb-0">Your Checklists</h3>
-                            <div class="d-flex align-items-center gap-2">
-                                <button id="toggle-completed" class="btn btn-sm btn-outline-info">
-                                    Hide Completed
-                                </button>
-                            </div>
-                        </div>
-                        @foreach ($studentChecklistGroups as $checklistName => $items)
-                        <div class="mb-3 border p-3 rounded">
-                            <div class="d-flex justify-content-center mb-3" style="min-height: 40px;">
-                                <h3 class="font-weight-bold mb-0">{{ $checklistName }}</h3>
-                            </div>
-                            <form method="POST" action="{{ route('training.students.checklist.completeMultiple', $student->id) }}" id="checklist-form-{{ Str::slug($checklistName) }}">
-                                @csrf
-                                <table class="table table-sm table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Item</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($items as $item)
-                                        <tr class="{{ $item->completed ? 'completed-row' : '' }}" style="{{ $item->completed ? 'text-decoration: line-through; color: grey' : '' }}">
-                                            <td>{{ $item->checklistItem->item }}</td>
-                                            <td class="text-center">
-                                                @if ($item->completed)
-                                                    Completed
-                                                @else
-                                                    Not Completed
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </form>
-                        </div>
-                        @endforeach
+                    @elseif ($preview)
+                        <div class="student-availability-empty text-muted">No availability submitted yet!</div>
                     @else
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 class="font-weight-bold blue-text mb-0">Your Checklist</h3>
+                        <div class="student-availability-empty">
+                            <button type="button" class="btn btn-primary student-availability-submit" data-bs-toggle="modal" data-bs-target="#availabilityModal">
+                                Submit availability
+                            </button>
                         </div>
-                        <span style="align-items:center;">No checklists assigned!</span>
                     @endif
                 </div>
-            </div>
+            </section>
         </div>
 
-    <!-- Info -->
-    <div class="col">
-        <div class="card mb-3">
-            <div class="card-body">
-                <h3 class="font-weight-bold blue-text text-primary mb-3">Info</h3>
-
-                @if ($student->status == 3)
-                    <p>There are currently <strong>{{ $Visitors }}</strong> visitors total!</p>
-                    <span>Visitor training at Vancouver runs on a first come first served basis! Keep an eye out for pings on <a href="https://discord.com/channels/589477926961938443/981664706953625640" class="blue-text">#visitor-training</a>!</span>
-                    <button class="btn btn-sm btn-outline-info mt-2 mb-3" id="editTimes">Edit Availability</button>
-                    <hr class="bg-light">
-                    <small class="d-block mb-3"> You last renewed your training request {{ $student->renewed_at?->format('F j, Y H:i') ?? 'not renewed yet' }} </small>
-
-                @elseif ($student->status == 0)
-                    @if ($waitlistPosition)
-                        <p>You are currently <strong>{{ $waitlistPosition }}</strong> on the waitlist!</p>
-                    @else
-                        <p>You are currently not on the waitlist!</p>
-                    @endif
-
-                    <button class="btn btn-sm btn-outline-info mt-2 mb-3" id="editTimes">Edit Availability</button>
-
-                    <small class="d-block mb-3"> You last renewed your training request {{ $student->renewed_at?->format('F j, Y H:i') ?? 'not renewed yet' }} </small>
-
-                    <hr>
-
-                    <p><strong>Estimated Wait Time:</strong> {{ $training_time->wait_length }}</p>
-
-                @elseif ($student->status == 4)
-                    <button class="btn btn-sm btn-outline-info mt-2 mb-3" id="editTimes">Edit Availability</button>
-
-                @else
-                    <h3>Your Training has Started!</h3>
-
-                    <button class="btn btn-sm btn-outline-info mt-2 mb-3" id="editTimes">Edit Availability</button>
-                @endif
-
-                <div id="timesFormContainer" class="mt-3" style="display:none;">
+        @unless ($preview)
+        <div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalTitle" aria-hidden="true" @if($hasAvailabilityErrors) data-open-on-load="true" @endif>
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
                     <form method="POST" action="{{ route('training.students.editTimes', $student->id) }}">
                         @csrf
-                        <div class="form-group">
-                            <label for="timesInput">Session Times</label>
-                            <textarea name="times" id="timesInput" rows="3" class="form-control" placeholder="Enter your availability here! Times in Z!"></textarea>
+                        <div class="modal-header">
+                            <div>
+                                <h2 class="modal-title h5" id="availabilityModalTitle">Training availability</h2>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
-                            <button type="button" class="btn btn-sm btn-secondary" id="cancelTimesBtn">Cancel</button>
+                        <div class="modal-body">
+                            @include('training.students.partials.availability-fields', ['availabilityEditorId' => 'portalAvailability'])
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-sm btn-primary">Save availability</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+        @endunless
 
-        <!-- Vatcan Notes -->
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="font-weight-bold blue-text mb-0">Latest Vatcan Notes</h3>
+        @if (! empty($vatcanNotes))
+            <section class="student-dashboard-panel" aria-labelledby="studentNotesHeading">
+                <div class="student-dashboard-panel-header">
                     <div>
-                        @if ($student)
-                            <a href="{{ route('training.students.allnotes', $student->id) }}"
-                            class="text-primary btn btn-sm btn-outline-info ms-2">
-                                View All
-                            </a>
-                        @endif
+                        <h2 id="studentNotesHeading">Latest VATCAN Notes</h2>
+                        <p>Latest three notes from Vancouver FIR</p>
                     </div>
+                    <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#allVatcanNotes">View all</button>
                 </div>
-                <div class="text-muted small mt-1">
-                    Notes left by non Vancouver FIR members not shown!
-                </div>
-            </div>
-
-            <div class="card-body" id="training-notes-container">
-                @php
-                    $sessionTypes = ['Sweatbox', 'OJT (Monitoring)', 'OTS', 'Generic'];
-                    $sessionBadgeColors = ['bg-secondary', 'bg-warning', 'bg-success', 'bg-info'];
-                    $afacility = [
-                        'Academy', 'Edmonton FIR', 'Gander Oceanic', 'Moncton/Gander FIR',
-                        'Montreal FIR', 'Toronto FIR', 'Vancouver FIR', 'Winnipeg FIR'
-                    ];
-                @endphp
-
-                @if (empty($vatcanNotes))
-                    <span class="alert">You have no training notes available!</span>
-                @else
+                <div class="student-dashboard-panel-body">
                     @foreach (array_slice($vatcanNotes, 0, 3) as $note)
-                        <div class="border rounded p-3 mb-3">
-                            <div class="d-flex align-items-start">
-                                <div class="me-3">
-                                    <i class="far fa-sticky-note mr-1"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">
-                                        {{ $note['instructor_name'] ?? 'Unknown' }} -
-                                        {{ $afacility[$note['facility_id'] ?? -1] ?? 'Unknown' }}
-                                        {{ \Carbon\Carbon::parse($note['friendly_time'] ?? $note['created_at'] ?? now())->format('F j, Y') }}
-                                    </h6>
-                                    <div class="mt-1">
-                                        @if (!empty($note['position_trained']))
-                                            <span class="badge bg-info">{{ $note['position_trained'] }}</span>
-                                        @endif
-                                        @php $stype = $note['session_type'] ?? 3; @endphp
-                                        <span class="badge {{ $sessionBadgeColors[$stype] ?? 'bg-info' }}">
-                                            {{ $sessionTypes[$stype] ?? 'Generic' }}
-                                        </span>
-                                    </div>
-                                    @if (!empty($note['training_note']))
-                                        <p class="mt-3 mb-0" style="white-space: pre-wrap;">{{ $note['training_note'] }}</p>
-                                    @endif
-
-                                    @if (!empty($note['marking_sheet']))
-                                        <hr class="my-3">
-                                        <a href="{{ $note['marking_sheet'] }}" target="_blank"
-                                        class="btn btn-outline-info btn-sm">
-                                            <i class="far fa-list-alt me-1"></i> View Marking Sheet
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+                        @include('training.students.partials.vatcan-note', ['note' => $note])
                     @endforeach
-                @endif
-            </div>
-        </div>
-    </div>
-</div>
+                </div>
+            </section>
+            @include('training.students.partials.vatcan-notes-modal')
+        @endif
+    </main>
 
+    <script src="{{ asset('js/training-availability.js') }}"></script>
     <script>
-    $(document).ready(function() {
-        $('.label-card').click(function() {
-            $('.label-card').removeClass('selected').css('border', '1px solid transparent');
-            $(this).addClass('selected');
-            const labelId = $(this).data('id');
-            $('#selectedLabel').val(labelId);
-            $(this).css('border', '1px solid #ffffff');
-        });
-    });
+        document.addEventListener('DOMContentLoaded', () => {
+            const availabilityModal = document.querySelector('#availabilityModal[data-open-on-load="true"]');
+            if (availabilityModal && typeof bootstrap !== 'undefined') {
+                bootstrap.Modal.getOrCreateInstance(availabilityModal).show();
+            }
 
-    document.getElementById('editTimes').addEventListener('click', function() {
-        document.getElementById('timesFormContainer').style.display = 'block';
-        this.style.display = 'none';
-    });
+            const completedButton = document.getElementById('toggle-completed');
+            let completedHidden = false;
 
-    document.getElementById('cancelTimesBtn').addEventListener('click', function() {
-        document.getElementById('timesFormContainer').style.display = 'none';
-        document.getElementById('editTimes').style.display = 'inline-block';
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const button = document.getElementById('toggle-completed');
-        let hidden = false;
-
-        if (button) {
-            button.addEventListener('click', function () {
-                const rows = document.querySelectorAll('.completed-row');
-                rows.forEach(row => row.style.display = hidden ? '' : 'none');
-                hidden = !hidden;
-                button.textContent = hidden ? 'Show Completed' : 'Hide Completed';
+            completedButton?.addEventListener('click', () => {
+                document.querySelectorAll('.completed-row').forEach((row) => {
+                    row.hidden = !completedHidden;
+                });
+                completedHidden = !completedHidden;
+                completedButton.textContent = completedHidden ? 'Show completed' : 'Hide completed';
             });
-        }
-    });
+        });
     </script>
 
     @else
         <div class="d-flex justify-content-center align-items-center min-vh-100" style="margin-top: 50px; margin-bottom: 50px;">
             <div class="text-center" style="max-width: 700px; width: 100%;">
-                <h1 class="font-weight-bold blue-text mb-3">
+                <h1 class="fw-bold blue-text mb-3">
                     <i class="fas fa-info-circle"></i> Uh Oh! 👀
                 </h1>
 

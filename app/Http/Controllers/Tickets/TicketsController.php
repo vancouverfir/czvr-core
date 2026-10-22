@@ -10,6 +10,7 @@ use App\Models\Users\StaffMember;
 use App\Models\Users\User;
 use App\Notifications\NewTicket;
 use App\Notifications\TicketReply as NotificationsTicketReply;
+use App\Support\Authorization\PermissionCatalog;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class TicketsController extends Controller
 
     public function viewTicket($id): View
     {
-        if (Auth::user()->permissions < 2) {
+        if (! $this->canViewStaffTickets()) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
         } else {
             $ticket = Ticket::where('ticket_id', $id)->firstOrFail();
@@ -65,24 +66,32 @@ class TicketsController extends Controller
         ];
 
         $validator = Validator::make($request->all(), [
-            'title' => 'required|max:50',
-            'message' => 'required|min:25',
-            'staff_member' => 'required',
+            'title' => ['required', 'string', 'max:50'],
+            'message' => ['required', 'string', 'min:25', 'max:20000'],
+            'staff_member' => ['required', 'string', 'max:255'],
         ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator->errors()->all());
         }
 
+        $recipient = StaffMember::where('shortform', $request->get('staff_member'))
+            ->whereIn('group_id', StaffGroup::where('can_receive_tickets', true)->pluck('id'))
+            ->firstOrFail();
+
+        do {
+            $ticketId = Str::upper(Str::random(6));
+        } while (Ticket::where('ticket_id', $ticketId)->exists());
+
         $ticket = new Ticket([
-            'user_id' => Auth::user()->id,
-            'ticket_id' => Str::random(6),
-            'staff_member_id' => StaffMember::where('shortform', $request->get('staff_member'))->first()->id,
+            'user_id' => Auth::id(),
+            'ticket_id' => $ticketId,
+            'staff_member_id' => $recipient->id,
             'title' => $request->get('title'),
             'message' => $request->get('message'),
             'status' => 0,
-            'staff_member_cid' => StaffMember::where('shortform', $request->get('staff_member'))->first()->user_id,
-            'submission_time' => date('Y-m-d H:i:s'),
+            'staff_member_cid' => $recipient->user_id,
+            'submission_time' => now(),
         ]);
 
         $ticket->save();
@@ -94,7 +103,7 @@ class TicketsController extends Controller
 
     public function openTicket($id): RedirectResponse
     {
-        if (Auth::user()->permissions < 2) {
+        if (! $this->canViewStaffTickets()) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
         } else {
             $ticket = Ticket::where('ticket_id', $id)->firstOrFail();
@@ -120,7 +129,7 @@ class TicketsController extends Controller
 
     public function onholdTicket($id): RedirectResponse
     {
-        if (Auth::user()->permissions < 2) {
+        if (! $this->canViewStaffTickets()) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
         } else {
             $ticket = Ticket::where('ticket_id', $id)->firstOrFail();
@@ -146,7 +155,7 @@ class TicketsController extends Controller
 
     public function closeTicket(Request $request, $id): RedirectResponse
     {
-        if (Auth::user()->permissions < 2) {
+        if (! $this->canViewStaffTickets()) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
         } else {
             $ticket = Ticket::where('ticket_id', $id)->firstOrFail();
@@ -178,14 +187,14 @@ class TicketsController extends Controller
 
     public function addReplyToTicket(Request $request, $ticket_id): RedirectResponse
     {
-        if (Auth::user()->permissions < 2) {
+        if (! $this->canViewStaffTickets()) {
             $ticket = Ticket::where('ticket_id', $ticket_id)->where('user_id', Auth::user()->id)->firstOrFail();
         } else {
             $ticket = Ticket::where('ticket_id', $ticket_id)->firstOrFail();
         }
 
-        $validatedData = $request->validate([
-            'message' => 'required',
+        $request->validate([
+            'message' => ['required', 'string', 'max:20000'],
         ]);
 
         $ticketReply = new TicketReply([
@@ -199,12 +208,17 @@ class TicketsController extends Controller
         $ticket->updated_at = date('Y-m-d H:i:s');
         $ticket->save();
 
-        if ($ticketReply->user == $ticket->user) {
+        if ((int) $ticketReply->user_id === (int) $ticket->user_id) {
             $ticket->staff_member->user->notify(new NotificationsTicketReply($ticket->staff_member->user, $ticket, $ticketReply));
         } else {
             $ticket->user->notify(new NotificationsTicketReply($ticket->user, $ticket, $ticketReply));
         }
 
         return redirect()->route('tickets.viewticket', $ticket->ticket_id)->with('success', 'Reply sent.');
+    }
+
+    private function canViewStaffTickets(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionCatalog::TICKETS_MANAGE);
     }
 }

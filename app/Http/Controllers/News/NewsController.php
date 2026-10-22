@@ -9,6 +9,7 @@ use App\Models\Publications\MeetingMinutes;
 use App\Models\Settings\AuditLogEntry;
 use App\Models\Users\StaffMember;
 use App\Models\Users\User;
+use App\Support\Authorization\PermissionCatalog;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -48,9 +49,9 @@ class NewsController extends Controller
         // Validate
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:100',
-            'image' => 'mimes:jpeg,jpg,png,gif',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
             'content' => 'required',
-            'emailOption' => 'required',
+            'emailOption' => 'required|in:no,subscribers',
         ], $messages);
 
         // Redirect if fails
@@ -70,10 +71,14 @@ class NewsController extends Controller
         $article->slug = Str::slug($request->get('title').'-'.Carbon::now()->toDateString());
 
         // Upload image if it exists
-        if ($request->file('image')) {
-            $basePath = 'public/files/'.Carbon::now()->toDateString().'/'.rand(1000, 2000);
-            $path = $request->file('image')->store($basePath);
-            $article->image = Storage::url($path);
+        if ($request->hasFile('image')) {
+            $path = Storage::disk('public')->putFile('files/news', $request->file('image'));
+
+            if (! $path) {
+                return back()->withInput()->with('error', 'The article image could not be stored!');
+            }
+
+            $article->image = Storage::disk('public')->url($path);
         }
 
         // Create a summary if required
@@ -102,20 +107,7 @@ class NewsController extends Controller
             $article->visible = false;
         }
         // Email level
-        switch ($request->get('emailOption')) {
-            case 'no':
-                $article->email_level = 0;
-                break;
-            case 'controllers':
-                $article->email_level = 1;
-                break;
-            case 'all':
-                $article->email_level = 2;
-                break;
-            case 'allimportant':
-                $article->email_level = 3;
-                break;
-        }
+        $article->email_level = $request->get('emailOption') === 'subscribers' ? News::EMAIL_SUBSCRIBERS : News::EMAIL_NONE;
 
         // Create and publish if needed
         $article->save();
@@ -140,10 +132,8 @@ class NewsController extends Controller
     public function viewArticlePublic($slug): View
     {
         $article = News::where('slug', $slug)->firstOrFail();
-        if (! $article->visible) {
-            if (Auth::check() && ! Auth::user()->permissions > 3) {
-                abort(403, 'This article is hidden.');
-            }
+        if (! $article->visible && (! Auth::check() || ! Auth::user()->hasPermissionTo(PermissionCatalog::NEWS_MANAGE))) {
+            abort(404);
         }
 
         return view('publicarticle', compact('article'));
@@ -162,7 +152,7 @@ class NewsController extends Controller
         // Validate
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:100',
-            'image' => 'mimes:jpeg,jpg,png,gif',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
             'content' => 'required',
         ], $messages);
 
@@ -171,15 +161,17 @@ class NewsController extends Controller
             return redirect()->back()->withInput()->withErrors($validator, 'createArticleErrors');
         }
 
-        $article = News::where('id', $id)->first();
-        if ($article != null) {
-            $article->title = $request->get('title');
-        }
+        $article = News::findOrFail($id);
+        $article->title = $request->get('title');
         // Upload image if it exists
-        if ($request->file('image')) {
-            $basePath = 'public/files/'.Carbon::now()->toDateString().'/'.rand(1000, 2000);
-            $path = $request->file('image')->store($basePath);
-            $article->image = Storage::url($path);
+        if ($request->hasFile('image')) {
+            $path = Storage::disk('public')->putFile('files/news', $request->file('image'));
+
+            if (! $path) {
+                return back()->withInput()->with('error', 'The article image could not be stored!');
+            }
+
+            $article->image = Storage::disk('public')->url($path);
         }
 
         // Create a summary if required
@@ -232,6 +224,15 @@ class NewsController extends Controller
     public function minutesDelete($id): RedirectResponse
     {
         $minutes = MeetingMinutes::whereId($id)->firstOrFail();
+        $urlPath = parse_url($minutes->link, PHP_URL_PATH);
+
+        if (is_string($urlPath) && Str::startsWith($urlPath, '/storage/')) {
+            $filePath = ltrim(Str::after($urlPath, '/storage/'), '/');
+
+            if (Str::startsWith($filePath, 'files/minutes/') && ! Str::contains($filePath, ['\\', '..'])) {
+                Storage::disk('public')->delete($filePath);
+            }
+        }
         AuditLogEntry::insert(Auth::user(), 'Deleted meeting minutes '.$minutes->title, User::find(1), 0);
         $minutes->delete();
 
@@ -240,23 +241,24 @@ class NewsController extends Controller
 
     public function minutesUpload(Request $request): RedirectResponse
     {
-        $this->validate($request, [
-            'title' => 'required',
-            'file' => 'required',
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'file' => 'required|file|mimes:pdf|max:10240',
         ]);
 
         $file = $request->file('file');
 
-        $fileName = $file->getClientOriginalName();
+        $fileName = Str::uuid().'.'.$file->extension();
+        $stored = Storage::disk('public')->putFileAs('files/minutes', $file, $fileName);
 
-        Storage::disk('local')->putFileAs(
-            'public/files/minutes', $file, $fileName
-        );
+        if (! $stored) {
+            return back()->withInput()->with('error', 'The meeting minutes file could not be stored!');
+        }
 
         $minutes = new MeetingMinutes([
             'user_id' => Auth::id(),
-            'title' => $request->get('title'),
-            'link' => Storage::url('public/files/minutes/'.$fileName),
+            'title' => $data['title'],
+            'link' => Storage::disk('public')->url($stored),
         ]);
 
         $minutes->save();

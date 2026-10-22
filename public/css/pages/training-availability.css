@@ -1,0 +1,197 @@
+.training-renewal-card {
+    max-width: 680px;
+}
+
+.availability-editor {
+    display: grid;
+    gap: .9rem;
+}
+
+.availability-editor-heading {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.availability-editor-heading h3 {
+    font-size: .9rem;
+    font-weight: 600;
+    margin: 0 0 .2rem;
+}
+
+.availability-editor-heading p {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    margin: 0;
+}
+
+.availability-rows {
+    display: grid;
+    gap: .55rem;
+}
+
+.availability-row {
+    align-items: end;
+    background: var(--czvr-surface-muted);
+    border: 1px solid var(--czvr-border);
+    border-radius: .55rem;
+    display: grid;
+    gap: .65rem;
+    grid-template-columns: minmax(280px, 2fr) minmax(105px, .7fr) minmax(105px, .7fr) 1.8rem;
+    padding: .65rem;
+}
+
+.availability-row:only-child {
+    grid-template-columns: minmax(280px, 2fr) minmax(105px, .7fr) minmax(105px, .7fr);
+}
+
+.availability-days {
+    border: 0;
+    margin: 0;
+    min-width: 0;
+    padding: 0;
+}
+
+.availability-day-presets {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .2rem;
+    margin-bottom: .4rem;
+}
+
+.availability-day-presets span {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    margin-right: .1rem;
+}
+
+.availability-day-presets button {
+    background: transparent;
+    border: 0;
+    border-radius: .25rem;
+    color: var(--czvr-green-dark);
+    cursor: pointer;
+    font-size: var(--czvr-font-size-base);
+    padding: .1rem .22rem;
+}
+
+.availability-day-presets button:hover,
+.availability-day-presets button:focus-visible {
+    background: var(--czvr-green-soft);
+    outline: none;
+}
+
+.availability-day-options {
+    display: grid;
+    gap: .25rem;
+    grid-template-columns: repeat(7, minmax(2.15rem, 1fr));
+}
+
+.availability-day-options label {
+    align-items: center;
+    background: var(--czvr-surface);
+    border: 1px solid var(--czvr-border);
+    border-radius: .35rem;
+    color: var(--czvr-text-muted);
+    cursor: pointer;
+    display: flex;
+    font-size: var(--czvr-font-size-base);
+    height: 2rem;
+    justify-content: center;
+    margin: 0;
+}
+
+.availability-day-options .btn-check:checked + label {
+    background: var(--czvr-green-soft);
+    border-color: var(--czvr-green);
+    color: var(--czvr-green-dark);
+    font-weight: 600;
+}
+
+.availability-day-options .btn-check:focus-visible + label {
+    box-shadow: 0 0 0 .15rem rgba(54, 122, 37, .18);
+}
+
+.availability-row .form-label,
+.availability-comment .form-label {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    margin-bottom: .25rem;
+}
+
+.availability-row .form-control {
+    background: var(--czvr-surface) !important;
+    border: 1px solid var(--czvr-border) !important;
+    border-radius: .38rem;
+    font-size: var(--czvr-font-size-base);
+    height: 2.2rem;
+    min-height: 2.2rem;
+    padding: .3rem .45rem;
+}
+
+.availability-remove {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: .35rem;
+    color: var(--czvr-text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    height: 2.2rem;
+    justify-content: center;
+    padding: 0;
+    width: 1.8rem;
+}
+
+.availability-remove:hover,
+.availability-remove:focus-visible {
+    background: #fff1f0;
+    color: #b42318;
+}
+
+.availability-row:only-child .availability-remove {
+    display: none;
+}
+
+.availability-comment textarea {
+    border: 1px solid var(--czvr-border) !important;
+    border-radius: .4rem;
+    font-size: var(--czvr-font-size-base);
+    min-height: 3.8rem;
+    padding: .45rem .55rem;
+    resize: vertical;
+}
+
+.availability-summary {
+    display: grid;
+    gap: .2rem;
+}
+
+.availability-summary-slot {
+    white-space: nowrap;
+}
+
+.availability-summary-comment {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    margin-top: .25rem;
+    white-space: pre-wrap;
+}
+
+@media (max-width: 575.98px) {
+    .availability-row,
+    .availability-row:only-child {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .availability-days {
+        grid-column: 1 / -1;
+    }
+
+    .availability-remove {
+        grid-column: 1 / -1;
+        justify-self: end;
+    }
+}

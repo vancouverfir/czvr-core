@@ -34,7 +34,6 @@ class DatabaseSeeder extends Seeder
             'fname' => 'System',
             'lname' => 'User',
             'email' => 'info@info.com',
-            'permissions' => 1,
             'display_fname' => 'System',
         ]);
 
@@ -43,7 +42,6 @@ class DatabaseSeeder extends Seeder
             'fname' => 'Roster',
             'lname' => 'Placeholder',
             'email' => 'info@info.ca',
-            'permissions' => 1,
             'display_fname' => 'Roster',
         ]);
 
@@ -56,6 +54,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('staff_member')->insert([
+            'id' => 1,
             'group' => 'exec',
             'position' => 'FIR Chief',
             'user_id' => 1,
@@ -66,11 +65,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('event_positions')->insert([
-            ['position' => 'Centre'],
+            'id' => 1,
+            'position' => 'Centre',
         ]);
 
         DB::table('homepage_images')->insert([
-            'url' => 'https://czvr.ca/storage/files/branding/czvr-logomark.png',
+            'id' => 1,
+            'url' => '/CZVR_Colour_Long.png',
             'credit' => 'Vancouver FIR',
         ]);
 
@@ -87,6 +88,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'example@email.com',
         ]);
 
-        $this->call([UsersTableSeeder::class]);
+        $this->call([
+            UsersTableSeeder::class,
+            AuthorizationSeeder::class,
+        ]);
     }
 }

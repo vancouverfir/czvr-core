@@ -7,31 +7,33 @@
 @stop
 
 @section('content')
+@include('partials.vendor.easymde')
         <div class="container" style="margin-top: 20px;">
         <a href="{{route('dashboard.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Dashboard</a>
-        <h1 class="blue-text font-weight-bold mt-2">Support Tickets</h1>
+        <h1 class="blue-text fw-bold mt-2">Support Tickets</h1>
         <hr>
         <div class="mb-2">
             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                <button data-toggle="modal" data-target="#startTicketModal" type="button" class="btn btn-primary btn-sm">Start A Ticket</button>
+                <button data-bs-toggle="modal" data-bs-target="#startTicketModal" type="button" class="btn btn-primary btn-sm">Start A Ticket</button>
             </div>
         </div>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Open Tickets</a>
+                <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Open Tickets</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Closed Tickets</a>
+                <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Closed Tickets</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">On Hold Tickets</a>
+                <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">On Hold Tickets</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active pt-2" id="home" role="tabpanel" aria-labelledby="home-tab">
                 @if (count($openTickets) < 1)
-                <br>No open tickets.<br></br>
+                <br>No open tickets!<br></br>
                     @else
+                    <div class="list-group">
                     @foreach ($openTickets as $ticket)
                         <a href="{{url('/dashboard/tickets/' . $ticket->ticket_id)}}" class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
@@ -43,14 +45,15 @@
                             </p>
                             <small>Submitted at {{ $ticket->submission_time }} Zulu</small>
                         </a>
-                        <br>
                     @endforeach
+                    </div>
                 @endif
             </div>
             <div class="tab-pane fade pt-2" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 @if (count($closedTickets) < 1)
-                <br>No closed tickets.<br></br>
+                <br>No closed tickets!<br></br>
                 @else
+                    <div class="list-group">
                     @foreach ($closedTickets as $ticket)
                         <a href="{{url('/dashboard/tickets/' . $ticket->ticket_id)}}" class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
@@ -62,14 +65,15 @@
                             </p>
                             <small>Submitted at {{ $ticket->submission_time }} Zulu</small>
                         </a>
-                        <br>
                     @endforeach
+                    </div>
                 @endif
             </div>
             <div class="tab-pane fade pt-2" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                 @if (count($onHoldTickets) < 1)
-                <br>No on hold tickets.<br></br>
+                <br>No on hold tickets!<br></br>
                 @else
+                    <div class="list-group">
                     @foreach ($onHoldTickets as $ticket)
                         <a href="{{url('/dashboard/tickets/' . $ticket->ticket_id)}}" class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
@@ -81,8 +85,8 @@
                             </p>
                             <small>Submitted at {{ $ticket->submission_time }} Zulu</small>
                         </a>
-                        <br>
                     @endforeach
+                    </div>
                 @endif
             </div>
         </div>
@@ -94,7 +98,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Start a new ticket</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -103,7 +107,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="recipient-name" class="col-form-label">Staff Member</label>
-                            <select name="staff_member" id="staff_member_select" class="form-control">
+                            <select name="staff_member" id="staff_member_select" class="form-control" data-searchable>
                                 <option value="" selected hidden>Please select one...</option>
                                 @foreach ($staff_members as $s)
                                 <option value="{{$s->shortform}}">{{$s->position}} - {{$s->user->fullName('FLC')}}</option>
@@ -119,12 +123,12 @@
                             <textarea name="message" id="createTicketMessage" class="form-control"></textarea>
                             <small>Minimum 25 characters</small>
                             <script>
-                                var simplemde = new SimpleMDE({ element: document.getElementById("createTicketMessage") });
+                                var easymde = new EasyMDE({ spellChecker: false, element: document.getElementById("createTicketMessage") });
                             </script>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
@@ -135,7 +139,7 @@
         //Handle create=yes in url
         var url = new URL(this.location.href);
         if (url.searchParams.get('create') == 'yes') {
-            $("#startTicketModal").modal();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('startTicketModal')).show();
         }
     </script>
 @stop

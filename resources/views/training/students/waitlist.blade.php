@@ -6,221 +6,223 @@
 
 @stop
 
-<style>
-    .select2-container--default .select2-selection--single {
-        background-color: #333 !important;
-        color: #fff !important;
-        border: 1px solid #777 !important;
-    }
-    .select2-dropdown {
-    background-color: #333 !important;
-    color: #fff !important;
-    }
-    .select2-search__field {
-        background-color: #333 !important;
-        color: #fff !important;
-    }
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: #fff !important;
-    }
-    .select2-container--default .select2-selection__clear {
-        color: red !important;
-        font-size: 16px;
-    }
-    .dot {
-        height: 12px;
-        width: 12px;
-        border-radius: 50%;
-        display: inline-block;
-    }
-    .purple-dot {
-        background-color: purple;
-    }
-    .blue-dot {
-        background-color: blue;
-    }
-</style>
+@push('styles')
+    <link href="{{ asset('css/pages/training-waitlist.css') }}" rel="stylesheet">
+@endpush
 
 @section('content')
+@include('partials.vendor.select2')
     @include('includes.trainingMenu')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css"; rel="stylesheet" />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js";></script>
-
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-
-    <div class="container" style="margin-top: 30px;">
-        <h1 class="blue-text">
-            Waitlists
-            <a href="#" data-toggle="modal" data-target="#newStudent" class="text-primary" style="font-size: 18px; text-decoration: none; float: right;"><i class="fa fa-plus mr-1"></i>Create New</a>
-        </h1>
-        <div class="mt-1">
-            @if (auth()->user()->permissions >= 3)
-                <div class="text-muted small">Tip: Hover over the # column to reorder!</div>
-                <style>.drag-sortable {cursor: move;}</style>
-            @endif
-        </div>
-        <hr class="bg-light">
-        <div style="display: flex; align-items: center; gap: 10px;"> <div style="display: flex; align-items: center; gap: 5px;"> <span class="dot blue-dot"></span> <span>Times submitted</span> </div> <div style="display: flex; align-items: center; gap: 5px;"> <span class="dot purple-dot"></span> <span>Times not submitted</span> </div> </div>
-        <div class="row border p-3 rounded" style="margin-top: 30px; margin-bottom: 30px;">
-            <!-- Student Waitlist -->
-            <div class="col-md-6">
-                <h1 class="font-weight-bold text-light">
-                    Student Waitlist
-                </h1>
-                <hr>
-                <table id="waitlistTable" class="table">
-                    <thead class="thead">
-                        <tr class="text-center">
-                            <th>#</th>
-                            <th>CID</th>
-                            <th></th>
-                            <th>Student Name</th>
-                            <th>Email</th>
-                        </tr>
-                    </thead>
-                    <tbody id="waitlistTableBody">
-                        @if ($waitlistStudents->isEmpty())
-                        <tr>
-                            <td colspan="7" class="text-center font-weight-bold">There are no Students in the waitlist!</td>
-                        </tr>
-                        @else
-                            @foreach ($waitlistStudents as $index => $student)
-                            <tr class="text-center" data-id="{{ $student->id }}">
-                                <th scope="row" class="drag-sortable">{{ $loop->iteration }}</th>
-                                <td>{{ $student->user->id }}</td>
-                                <td>
-                                    @if(is_null($student->times))
-                                        <span class="dot purple-dot"></span>
-                                    @else
-                                        <span class="dot blue-dot"></span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <a href="{{ route('training.students.view', $student->id) }}" class="font-weight-bold text-primary blue-text">
-                                        {{ $student->user->fullName('FL') }}
-                                    </a>
-                                </td>
-                                <td>
-                                    @if (auth()->user()->permissions >= 3)
-                                        {{ $student->user->email }}
-                                    @else
-                                        <i>Hidden for Privacy</i>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
-                        @endif
-                    </tbody>
-                </table>
+    <main class="container training-page">
+        <header class="training-page-header">
+            <div>
+                <h1 class="blue-text">Waitlist</h1>
+                <p>Manage home and visiting controllers waiting for training!</p>
             </div>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#newStudent" class="btn btn-sm btn-primary">
+                <i class="fa fa-plus me-1"></i>Add student
+            </button>
+        </header>
+        @php
+            $queues = [
+                [
+                    'body' => 'waitlistTableBody',
+                    'label' => 'Students',
+                    'empty' => 'There are no students in the waitlist!',
+                    'items' => $waitlistStudents,
+                ],
+                [
+                    'body' => 'visitorWaitlistTableBody',
+                    'label' => 'Visitors',
+                    'empty' => 'There are no visitors in the waitlist!',
+                    'items' => $visitorWaitlist,
+                ],
+            ];
+        @endphp
 
-            <!-- Visitor Waitlist -->
-            <div class="col-md-6">
-                <h1 class="font-weight-bold text-light">Visitor Waitlist</h1>
-                <hr>
-                <table id="visitorWaitlistTable" class="table">
-                    <thead class="thead">
-                        <tr class="text-center">
-                            <th>#</th>
-                            <th>CID</th>
-                            <th></th>
-                            <th>Visitor Name</th>
-                            <th>Email</th>
-                        </tr>
-                    </thead>
-                    @if ($visitorWaitlist->isEmpty())
-                    <tr>
-                        <td colspan="7" class="text-center font-weight-bold">There are no Visitors in the waitlist!</td>
-                    </tr>
-                    @else
-                        @foreach ($visitorWaitlist as $visitor)
-                        <tr class="text-center" data-id="{{ $visitor->id }}">
-                            <th scope="row" class="drag-sortable">{{ $loop->iteration }}</th>
-                            <td>{{ $visitor->user->id }}</td>
-                            <td>
-                                @if(is_null($visitor->times))
-                                    <span class="dot purple-dot"></span>
-                                @else
-                                    <span class="dot blue-dot"></span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('training.students.view', $visitor->id) }}" class="font-weight-bold text-primary blue-text">
-                                    {{ $visitor->user->fullName('FL') }}
-                                </a>
-                            </td>
-                            <td>
-                                @if (auth()->user()->permissions >= 3)
-                                    {{ $visitor->user->email }}
-                                @else
-                                    <i>Hidden for Privacy</i>
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                    @endif
-                </table>
-            </div>
+        <div class="waitlist-legend" aria-label="Availability status">
+            <span><span class="dot blue-dot" aria-hidden="true"></span>Availability submitted</span>
+            <span><span class="dot purple-dot" aria-hidden="true"></span>Availability not submitted</span>
         </div>
-    </div>
 
-    <div class="modal fade" id="newStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="waitlist-queue-grid">
+            @foreach ($queues as $queue)
+                <section class="waitlist-queue">
+                    <div class="waitlist-queue-header">
+                        <div>
+                            <div class="waitlist-queue-title">
+                                <h2>{{ $queue['label'] }}</h2>
+                                <span>{{ $queue['items']->count() }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive waitlist-table-scroll">
+                        <table class="table waitlist-table align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Controller</th>
+                                    <th scope="col" class="waitlist-availability-heading" title="Availability">
+                                        <span class="visually-hidden">Availability</span>
+                                    </th>
+                                    <th scope="col">Contact</th>
+                                </tr>
+                            </thead>
+                            <tbody id="{{ $queue['body'] }}" class="waitlist-sortable-body">
+                                    @forelse ($queue['items'] as $student)
+                                        @php
+                                            $contactEvent = $student->latestWaitlistContactEvent;
+                                            $isContacted = $contactEvent?->title === 'Waitlist Contacted';
+                                            $hasAvailability = filled($student->availability);
+                                        @endphp
+                                        <tr data-id="{{ $student->id }}">
+                                            <th scope="row" class="waitlist-position {{ auth()->user()->can('training.instruct') ? 'drag-sortable' : '' }}">
+                                                @can('training.instruct')
+                                                    <i class="fas fa-grip-vertical" aria-hidden="true"></i>
+                                                @endcan
+                                                <span class="waitlist-position-number">{{ $loop->iteration }}</span>
+                                            </th>
+                                            <td>
+                                                <span class="waitlist-person-heading">
+                                                    @if (! $student->user->rosterProfile)
+                                                        <span class="badge text-bg-danger waitlist-vatcan-warning" title="User is not certified / not on roster">NOT ON VATCAN</span>
+                                                    @endif
+                                                    <a href="{{ route('training.students.view', $student->id) }}" class="waitlist-person-link">{{ $student->user->fullName('FL') }}</a>
+                                                </span>
+                                                <span class="waitlist-cid">CID {{ $student->user->id }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="waitlist-availability" title="{{ $hasAvailability ? 'Availability submitted' : 'Availability not submitted' }}">
+                                                    <span class="dot {{ $hasAvailability ? 'blue-dot' : 'purple-dot' }}" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">{{ $hasAvailability ? 'Availability submitted' : 'Availability not submitted' }}</span>
+                                                </span>
+                                            </td>
+                                            <td class="waitlist-contact-cell">
+                                                @if (auth()->user()->can('training.instruct'))
+                                                    <div class="dropdown">
+                                                        <button type="button" class="btn btn-link p-0 border-0 shadow-none dropdown-toggle waitlist-email-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            {{ $student->user->email }}
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end text-start">
+                                                            <li><a class="dropdown-item" href="mailto:{{ $student->user->email }}"><i class="far fa-envelope me-2"></i>Send email</a></li>
+                                                            @php($discordUsername = $student->user->discord_user_id ? $student->user->getDiscordUser()?->username : null)
+                                                            @if ($discordUsername)
+                                                                <li><span class="dropdown-item-text user-select-all"><i class="fab fa-discord social-outline-icon me-2"></i>{{ $discordUsername }}</span></li>
+                                                            @else
+                                                                <li><span class="dropdown-item disabled text-muted"><i class="fab fa-discord social-outline-icon me-2"></i>{{ $student->user->discord_user_id ? 'Discord username unavailable' : 'Discord not linked' }}</span></li>
+                                                            @endif
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            @if ($isContacted)
+                                                                <li class="px-3 py-1">
+                                                                    <span class="waitlist-contact-state">
+                                                                        Contacted by {{ $contactEvent->author?->fullName('FL') ?? 'Unknown' }}
+                                                                        <time datetime="{{ $contactEvent->created_at->toIso8601String() }}">
+                                                                            {{ $contactEvent->created_at->isCurrentYear() ? $contactEvent->created_at->format('M j · H:i') : $contactEvent->created_at->format('M j, Y · H:i') }} UTC
+                                                                        </time>
+                                                                    </span>
+                                                                </li>
+                                                                <li>
+                                                                    <form method="POST" action="{{ route('training.students.waitlist.contact', $student) }}">
+                                                                        @csrf
+                                                                        @method('PATCH')
+                                                                        <input type="hidden" name="contacted" value="0">
+                                                                        <button type="submit" class="dropdown-item waitlist-contact-reset"><i class="fas fa-undo me-2"></i>Clear contact status</button>
+                                                                    </form>
+                                                                </li>
+                                                            @else
+                                                                <li>
+                                                                    <form method="POST" action="{{ route('training.students.waitlist.contact', $student) }}">
+                                                                        @csrf
+                                                                        @method('PATCH')
+                                                                        <input type="hidden" name="contacted" value="1">
+                                                                        <button type="submit" class="dropdown-item"><i class="fas fa-check me-2"></i>Mark as contacted</button>
+                                                                    </form>
+                                                                </li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                @else
+                                                    <span class="text-muted fst-italic">Hidden for privacy</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr><td colspan="4" class="waitlist-empty">{{ $queue['empty'] }}</td></tr>
+                                    @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            @endforeach
+        </div>
+    </main>
+
+    <div class="modal fade" id="newStudent" tabindex="-1" role="dialog" aria-labelledby="newStudentTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Student</h5>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="{{ route('instructor.student.add.new') }}" class="form-group">
-                        @csrf
-                        <small class="text-center">Visitors and Students are automatically imported from VATCAN, manual creation is only necessary in exceptional cases</small>
-                        <label class="form-control font-weight-bold">Search for a Student</label>
-                        <select name="student_id" id="student_id" class="js-example-basic-single form-control" required style="width:100%;">
-                                <option value="">No Student</option>
+                <form method="POST" action="{{ route('instructor.student.add.new') }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newStudentTitle">Add New Student</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p class="small text-muted">Visitors and students are imported from VATCAN. Manual creation is only needed in exceptional cases.</p>
+                        <label class="form-label" for="student_id">Student</label>
+                        <select name="student_id" id="student_id" class="js-example-basic-single form-select" required style="width:100%;">
+                            <option value="">No Student</option>
                             @foreach ($potentialstudent as $u)
                                 <option value="{{ $u->id }}">{{ $u->id }} - {{ $u->fullName('FL') }}</option>
                             @endforeach
                         </select>
 
-                        <label class="form-control font-weight-bold">Assign an Instructor?</label>
-                        <select name="instructor" id="instructor" class="js-example-basic-single form-control" style="width:100%;">
-                                <option value="">No Instructor</option>
+                        <label class="form-label mt-3" for="instructor">Instructor</label>
+                        <select name="instructor" id="instructor" class="js-example-basic-single form-select" style="width:100%;">
+                            <option value="">No Instructor</option>
                             @foreach ($instructors as $i)
                                 <option value="{{ $i->id }}">{{ $i->user->id }} - {{ $i->user->fullName('FL') }}</option>
                             @endforeach
                         </select>
 
-                        <label class="form-control font-weight-bold">Is Visitor?</label>
-                        <select name="is_visitor" id="is_visitor" class="form-control" required>
+                        <label class="form-label mt-3" for="is_visitor">Controller type</label>
+                        <select name="is_visitor" id="is_visitor" class="form-select" required>
                             <option value="0" selected>No</option>
                             <option value="1">Yes</option>
                         </select>
                         <div id="visitor_type_group" style="display: none;">
-                            <label class="form-control font-weight-bold">Visitor Type</label>
-                            <select name="visitor_type" id="visitor_type" class="form-control">
+                            <label class="form-label mt-3" for="visitor_type">Visitor type</label>
+                            <select name="visitor_type" id="visitor_type" class="form-select">
                                 <option value="vatcan">VATCAN Visitor</option>
                                 <option value="non_vatcan">Non-VATCAN Visitor</option>
                             </select>
                         </div>
-                </div>
+                    </div>
                     <div class="modal-footer">
-                        <button class="btn btn-success form-control" type="submit">Add Student</button>
-                        <button class="btn btn-light" data-dismiss="modal" style="width:375px">Dismiss</button>
+                        <button class="btn btn-success" type="submit">Add Student</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                     </div>
                 </form>
+            </div>
         </div>
     </div>
+@stop
+
+@push('scripts')
+    <link href="{{ asset('vendor/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('vendor/jquery-ui/jquery-ui.min.js') }}"></script>
     <script>
         $('#student_id').select2({
             width: '100%',
-            placeholder: "Student"
+            placeholder: "Student",
+            dropdownParent: $('#newStudent')
         });
 
         $('#instructor').select2({
             width: '100%',
             placeholder: "No Instructor",
-            allowClear: true
+            allowClear: true,
+            dropdownParent: $('#newStudent')
         });
 
         $('#is_visitor').on('change', function () {
@@ -232,73 +234,46 @@
             }
         });
 
-    @if (auth()->user()->permissions >= 3)
+    @can('training.instruct')
 
         $(function () {
-            $('#waitlistTable tbody').sortable({
-                handle: '.drag-sortable',
-                update: function () {
-                    let order = [];
+            function makeQueueSortable(bodySelector, url, errorMessage) {
+                const body = $(bodySelector);
 
-                    $('#waitlistTable tbody tr').each(function (index) {
-                        $(this).find('th').text(index + 1);
+                body.sortable({
+                    items: '> tr[data-id]',
+                    handle: '.drag-sortable',
+                    update: function () {
+                        let order = [];
 
-                        order.push({
-                            id: $(this).data('id'),
-                            position: index + 1
+                        body.children('tr[data-id]').each(function (index) {
+                            $(this).find('.waitlist-position-number').text(index + 1);
+
+                            order.push({
+                                id: $(this).data('id'),
+                                position: index + 1
+                            });
                         });
-                    });
 
-                    $.ajax({
-                        url: '{{ route("waitlist.sort") }}',
-                        method: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            order: order
-                        },
-                        success: function () {
-                            console.log('Order updated successfully.');
-                        },
-                        error: function (xhr) {
-                            alert('Sort failed.');
-                            console.error(xhr.responseText);
-                        }
-                    });
-                }
-            });
-
-            $('#visitorWaitlistTable tbody').sortable({
-                handle: '.drag-sortable',
-                update: function () {
-                    let order = [];
-
-                    $('#visitorWaitlistTable tbody tr').each(function (index) {
-                        $(this).find('th').text(index + 1);
-
-                        order.push({
-                            id: $(this).data('id'),
-                            position: index + 1
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                order: order
+                            },
+                            error: function (xhr) {
+                                alert(errorMessage);
+                                console.error(xhr.responseText);
+                            }
                         });
-                    });
+                    }
+                });
+            }
 
-                    $.ajax({
-                        url: '{{ route("visitor.sort") }}',
-                        method: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            order: order
-                        },
-                        success: function () {
-                            console.log('Visitor waitlist order updated successfully.');
-                        },
-                        error: function (xhr) {
-                            alert('Visitor sort failed.');
-                            console.error(xhr.responseText);
-                        }
-                    });
-                }
-            });
+            makeQueueSortable('#waitlistTableBody', '{{ route("waitlist.sort") }}', 'Student sort failed.');
+            makeQueueSortable('#visitorWaitlistTableBody', '{{ route("visitor.sort") }}', 'Visitor sort failed.');
         });
-    @endif
+    @endcan
     </script>
-@stop
+@endpush

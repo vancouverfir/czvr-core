@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('title')->nullable();
             $table->longText('content');
-            $table->timestamp('created_timestamp');
+            $table->timestamp('created_timestamp')->useCurrent()->useCurrentOnUpdate();
             $table->string('slug');
             $table->timestamps();
         });

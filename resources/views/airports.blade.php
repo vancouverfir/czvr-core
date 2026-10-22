@@ -1,41 +1,217 @@
 @extends('layouts.master')
 @section('title', 'Airports - Vancouver FIR')
 @section('description', 'Vancouver FIR\'s weather and airports')
-@section('content')
-
+@push('styles')
 <style>
-    .CYWG{
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .airport-page-header h1 {
+        font-size: 1.65rem;
+        font-weight: 500;
     }
-    .ATIS{
-        margin:auto;
+
+    .airport-page-header {
+        max-width: 720px;
+    }
+
+    .airport-page-header p {
+        color: var(--czvr-text-muted);
+    }
+
+    .airport-tabs {
+        border: 1px solid var(--czvr-border);
+        border-radius: 0.7rem;
+        display: flex;
+        gap: 0.25rem;
+        overflow-x: auto;
+        padding: 0.3rem;
+        scrollbar-width: thin;
+    }
+
+    .airport-tabs .nav-link {
+        border: 0;
+        border-radius: 0.45rem;
+        color: var(--czvr-text-muted);
+        font-size: var(--czvr-font-size-base);
+        font-weight: 500;
+        padding: 0.55rem 0.75rem;
+        white-space: nowrap;
+    }
+
+    .airport-tabs .nav-link:hover,
+    .airport-tabs .nav-link:focus {
+        background: var(--czvr-surface-muted);
+        color: var(--czvr-green-dark);
+    }
+
+    .airport-tabs .nav-link.active {
+        background: var(--czvr-green-soft);
+        box-shadow: none;
+        color: var(--czvr-green-dark);
+    }
+
+    .airport-panel {
+        padding-top: 2rem;
+    }
+
+    .airport-heading {
+        align-items: flex-start;
+        display: flex;
+        gap: 0.9rem;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .airport-heading h2 {
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .airport-code {
+        background: var(--czvr-green-soft);
+        border: 1px solid #cfe4ca;
+        border-radius: 0.4rem;
+        color: var(--czvr-green-dark);
+        flex: 0 0 auto;
+        font-size: var(--czvr-font-size-base);
+        letter-spacing: 0.05em;
+        padding: 0.35rem 0.55rem;
+    }
+
+    .airport-weather {
+        background: var(--czvr-surface-muted);
+        border: 1px solid var(--czvr-border);
+        border-radius: 0.7rem;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        margin-bottom: 1.25rem;
+        overflow: hidden;
+    }
+
+    .airport-weather:not(.has-atis) {
+        grid-template-columns: 1fr;
+    }
+
+    .airport-atis-letter {
+        align-items: center;
+        background: var(--czvr-green);
+        color: var(--czvr-white);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 105px;
+        padding: 1rem;
+    }
+
+    .airport-atis-letter span {
+        font-size: var(--czvr-font-size-base);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .airport-atis-letter strong {
+        font-size: 2rem;
+        font-weight: 500;
+        line-height: 1.1;
+    }
+
+    .airport-weather-copy {
+        padding: 1rem 1.1rem;
+    }
+
+    .airport-weather-copy h3,
+    .airport-section-title {
+        color: var(--czvr-text);
+        font-size: var(--czvr-font-size-base);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.55rem;
+        text-transform: uppercase;
+    }
+
+    .airport-weather-copy p {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: var(--czvr-font-size-base) !important;
+        line-height: 1.55;
+        margin: 0;
+    }
+
+    .airport-description {
+        color: var(--czvr-text-muted);
+        font-size: var(--czvr-font-size-base) !important;
+        line-height: 1.7;
+        max-width: 900px;
+    }
+
+    .airport-scenery-card {
+        border: 1px solid var(--czvr-border);
+        border-radius: 0.65rem;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 1rem;
+    }
+
+    .airport-scenery-card h3 {
+        font-size: 0.9rem;
+        font-weight: 500;
+        line-height: 1.45;
+        margin: 0.65rem 0 1rem;
+    }
+
+    .airport-scenery-type {
+        color: var(--czvr-text-muted);
+        font-size: var(--czvr-font-size-base);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .airport-scenery-card a {
+        align-self: flex-start;
+        margin-top: auto;
+        text-decoration: none;
+    }
+
+    @media (max-width: 576px) {
+        .airport-weather {
+            grid-template-columns: 1fr;
+        }
+
+        .airport-atis-letter {
+            align-items: baseline;
+            flex-direction: row;
+            gap: 0.6rem;
+            min-width: 0;
+        }
     }
 </style>
+@endpush
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+@section('content')
 
-<div class="container py-4">
-    <h1 class="font-weight-bold blue-text">Airports</h1>
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+<div class="container py-4 airport-page">
+    <div class="airport-page-header mb-4">
+        <h1 class="blue-text mb-2">Airport guide</h1>
+        <p class="mb-0">Weather, airport information, and recommended scenery for Vancouver FIR's primary airports!</p>
+    </div>
+
+    <ul class="nav airport-tabs" id="myTab" role="tablist" aria-label="Vancouver FIR airports">
         <li class="nav-item">
-            <a class="nav-link active" id="cyvr-tab" data-toggle="tab" href="#cyvr" role="tab" aria-controls="cyvr" aria-selected="true">Vancouver (CYVR)</a>
+            <a class="nav-link active" id="cyvr-tab" data-bs-toggle="tab" href="#cyvr" role="tab" aria-controls="cyvr" aria-selected="true">Vancouver (CYVR)</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="cyyj-tab" data-toggle="tab" href="#cyyj" role="tab" aria-controls="cyyj" aria-selected="false">Victoria (CYYJ)</a>
+            <a class="nav-link" id="cyyj-tab" data-bs-toggle="tab" href="#cyyj" role="tab" aria-controls="cyyj" aria-selected="false">Victoria (CYYJ)</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="cylw-tab" data-toggle="tab" href="#cylw" role="tab" aria-controls="cylw" aria-selected="false">Kelowna (CYLW)</a>
+            <a class="nav-link" id="cylw-tab" data-bs-toggle="tab" href="#cylw" role="tab" aria-controls="cylw" aria-selected="false">Kelowna (CYLW)</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="cyxs-tab" data-toggle="tab" href="#cyxs" role="tab" aria-controls="cyxs" aria-selected="false">Prince George (CYXS)</a>
+            <a class="nav-link" id="cyxs-tab" data-bs-toggle="tab" href="#cyxs" role="tab" aria-controls="cyxs" aria-selected="false">Prince George (CYXS)</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="cyxx-tab" data-toggle="tab" href="#cyxx" role="tab" aria-controls="cyxx" aria-selected="false">Abbotsford (CYXX)</a>
+            <a class="nav-link" id="cyxx-tab" data-bs-toggle="tab" href="#cyxx" role="tab" aria-controls="cyxx" aria-selected="false">Abbotsford (CYXX)</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="cyqq-tab" data-toggle="tab" href="#cyqq" role="tab" aria-controls="cyqq" aria-selected="false">Comox (CYQQ)</a>
+            <a class="nav-link" id="cyqq-tab" data-bs-toggle="tab" href="#cyqq" role="tab" aria-controls="cyqq" aria-selected="false">Comox (CYQQ)</a>
         </li>
     </ul>
 
@@ -99,56 +275,48 @@
 
         @foreach ($icaoCodes as $index => $icao)
             @php
-                // Fetch data ONCE per airport
-                $atisLetter = \App\Classes\WeatherHelper::getAtisLetter($icao);
-                $atisText = \App\Classes\WeatherHelper::getAtis($icao);
-                $hasAtis = $atisLetter != null;
+                $atisLetter = $airportWeather[$icao]['atis_letter'];
+                $atisText = $airportWeather[$icao]['text'];
+                $hasAtis = $atisLetter !== null;
             @endphp
 
-            <div class="tab-pane fade @if($index === 0) show active @endif" id="{{ strtolower($icao) }}" role="tabpanel" aria-labelledby="{{ strtolower($icao) }}-tab"><br>
-                <div class="row">
-                    @if($hasAtis)
-                    <div class="col">
-                        <div class="card" style="width: 25%; float:left; min-height: 100%;">
-                            <div class="card-body corner">
-                                <div class="{{ $icao }}" style="text-align: center;">
-                                    <div class="ATIS">
-                                        <h5>ATIS</h5>
-                                        <h1 style="font-size:45px;"><b>{{ $atisLetter }}</b></h1>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card" style="width: 175%; float: right;">
-                            <div class="card-body corner">
-                                <h3>Current ATIS/METAR</h3>
-                                {{ $atisText }}
-                            </div>
-                        </div>
-                    </div>
-                    @else
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-body corner">
-                                <h3>Current ATIS/METAR</h3>
-                                {{ $atisText }}
-                            </div>
-                        </div>
-                    </div>
-                    @endif
+            <div class="tab-pane fade @if($index === 0) show active @endif airport-panel" id="{{ strtolower($icao) }}" role="tabpanel" aria-labelledby="{{ strtolower($icao) }}-tab">
+                <div class="airport-heading">
+                    <h2>{{ $airports[$icao]['name'] }}</h2>
+                    <span class="airport-code">{{ $icao }}</span>
                 </div>
-                <br>
-                <h4>{{ $airports[$icao]['description'] }}</h4>
-                <hr>
-                <h2 class="font-weight-bold blue-text">Scenery</h2>
-                @foreach ($airports[$icao]['scenery'] as $scenery)
-                    <h4>{{ $scenery['title'] }}</h4>
-                    <h5>{{ $scenery['type'] }}</h5>
-                    <a style="margin-left: -0.1%" target="_blank" href="{{ $scenery['url'] }}" class="btn btn-primary">View More</a>
-                    <br></br>
-                @endforeach
+
+                <section class="airport-weather {{ $hasAtis ? 'has-atis' : '' }}" aria-label="Current weather">
+                    @if($hasAtis)
+                        <div class="airport-atis-letter">
+                            <span>ATIS</span>
+                            <strong>{{ $atisLetter }}</strong>
+                        </div>
+                    @endif
+                    <div class="airport-weather-copy">
+                        <h3>{{ $hasAtis ? 'Current ATIS' : 'Current METAR' }}</h3>
+                        <p>{{ $atisText }}</p>
+                    </div>
+                </section>
+
+                <p class="airport-description mb-4">{{ $airports[$icao]['description'] }}</p>
+
+                <section aria-labelledby="{{ strtolower($icao) }}-scenery">
+                    <h2 class="airport-section-title" id="{{ strtolower($icao) }}-scenery">Recommended scenery</h2>
+                    <div class="row g-3">
+                        @foreach ($airports[$icao]['scenery'] as $scenery)
+                            <div class="col-md-6 col-xl-4">
+                                <article class="airport-scenery-card">
+                                    <span class="airport-scenery-type">{{ $scenery['type'] }}</span>
+                                    <h3>{{ $scenery['title'] }}</h3>
+                                    <a target="_blank" rel="noopener noreferrer" href="{{ $scenery['url'] }}" class="btn btn-sm btn-outline-primary">
+                                        View scenery <i class="fas fa-arrow-up-right-from-square ms-1"></i>
+                                    </a>
+                                </article>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
             </div>
         @endforeach
     </div>

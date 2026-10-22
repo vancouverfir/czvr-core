@@ -9,6 +9,9 @@ class HttpHelper
 {
     public static function getClient(): PendingRequest
     {
-        return Http::withHeaders(['User-Agent' => 'czvr.ca'])->connectTimeout(5);
+        return Http::acceptJson()
+            ->withHeaders(['User-Agent' => 'czvr.ca'])
+            ->connectTimeout(5)
+            ->timeout(15);
     }
 }

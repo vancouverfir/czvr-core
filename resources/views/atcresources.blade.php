@@ -1,128 +1,245 @@
 @extends('layouts.master')
 
 @section('navbarprim')
-
     @parent
-
 @stop
 
-@section('title', 'ATC Resources')
-@section('description', 'ATC Resources for Vancouver Controllers!')
+@section('title', 'Manage ATC Resources')
+@section('description', 'Manage resources for Vancouver controllers.')
+
+@push('styles')
+<style>
+    .resource-manager-row {
+        align-items: center;
+        display: grid;
+        gap: 0.85rem;
+        grid-template-columns: 38px minmax(0, 1fr) auto;
+        padding: 0.85rem 1rem;
+    }
+
+    .resource-manager-row + .resource-manager-row {
+        border-top: 1px solid var(--czvr-border);
+    }
+
+    .resource-manager-icon {
+        align-items: center;
+        background: var(--czvr-green-soft);
+        border-radius: 0.45rem;
+        color: var(--czvr-green-dark);
+        display: flex;
+        height: 38px;
+        justify-content: center;
+        width: 38px;
+    }
+
+    .resource-manager-copy {
+        min-width: 0;
+    }
+
+    .resource-manager-copy strong {
+        display: block;
+        font-size: var(--czvr-font-size-base);
+        font-weight: 600;
+    }
+
+    .resource-manager-copy span {
+        color: var(--czvr-text-muted);
+        display: block;
+        font-size: var(--czvr-font-size-base);
+        margin-top: 0.15rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .resource-manager-actions {
+        align-items: center;
+        display: flex;
+        gap: 0.35rem;
+    }
+
+    .resource-editor-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: minmax(0, 1fr) 180px;
+    }
+
+    .resource-icon-field {
+        align-items: center;
+        display: flex;
+        gap: 0.65rem;
+    }
+
+    .resource-icon-preview {
+        align-items: center;
+        background: var(--czvr-green-soft);
+        border-radius: 0.45rem;
+        color: var(--czvr-green-dark);
+        display: flex;
+        flex: 0 0 38px;
+        height: 38px;
+        justify-content: center;
+    }
+
+    @media (max-width: 575.98px) {
+        .resource-manager-row {
+            grid-template-columns: 38px minmax(0, 1fr);
+        }
+
+        .resource-manager-actions {
+            grid-column: 1 / -1;
+            padding-left: 46px;
+        }
+
+        .resource-editor-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+@endpush
 
 @section('content')
-
 @include('includes.trainingMenu')
 
-@if(auth()->check() && auth()->user()->permissions >= 3)
-<div class="container" style="margin-top: 30px;">
-    <h1 class="blue-text font-weight-bold mt-2">ATC Resources</h1>
-    <div class="list-group list-group-flush">
-        @foreach ($resources as $resource)
-        <div class="list-group-item">
-            <div class="row">
-                <div class="col"><b>{{$resource->title}}</b></div>
-                <div class="col-sm-4">
-                <a href="{{$resource->url}}" class="white-text" target="_blank"><i class="fa fa-eye"></i>&nbsp;View Resource</a>&nbsp;&nbsp;
-                <a href="#" data-toggle="modal" class="white-text" data-target="#detailsModal{{$resource->id}}"><i class="fa fa-window-close"></i>&nbsp Delete Resource</a>
-                </div>
-            </div>
-        </div>
+@php
+    $resourceIcons = [
+        'fa-cloud' => 'Weather',
+        'fa-headset' => 'ATC',
+        'fa-plane-departure' => 'NOTAM',
+        'fa-book' => 'Document',
+        'fa-map' => 'Map',
+        'fa-comments' => 'Chat',
+        'fa-graduation-cap' => 'Training',
+        'fa-exclamation-triangle' => 'Alert',
+        'fa-info-circle' => 'Information',
+        'fa-video' => 'Video',
+        'fa-file-alt' => 'Other',
+    ];
+@endphp
 
-        <div class="modal fade" id="detailsModal{{$resource->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">{{$resource->title}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <small>Description</small><br/>
-                        {{$resource->toHtml('description')}}
-                    </div>
-                    <div class="modal-footer">
-                        <a href="{{route('atcresources.delete', $resource->id)}}" role="button" class="btn btn-danger">Delete Resource</a>
+<main class="container training-page">
+    <header class="training-page-header">
+        <div>
+            <a href="{{ route('training.resources') }}" class="small"><i class="fas fa-arrow-left me-1"></i>ATC Resources</a>
+            <h1 class="blue-text mt-2">Manage Resources</h1>
+            <p>Every resource here is available only through the controller Training Centre.</p>
+        </div>
+        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addResourceModal">
+            <i class="fas fa-plus me-1"></i>Add resource
+        </button>
+    </header>
+
+    @if ($errors->any())
+        <div class="alert alert-danger py-2">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
+    <div class="training-surface">
+        @forelse ($resources as $resource)
+            <article class="resource-manager-row">
+                <span class="resource-manager-icon"><i class="fas {{ $resource->font_awesome }}" aria-hidden="true"></i></span>
+                <div class="resource-manager-copy">
+                    <strong>{{ $resource->resolvedTitle() }}</strong>
+                    <span>{{ $resource->resolvedDescription() }}</span>
+                </div>
+                <div class="resource-manager-actions">
+                    <a href="{{ $resource->resolvedUrl() }}" target="_blank" rel="noopener" class="btn btn-sm btn-light" title="Open resource">
+                        <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                    </a>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editResource{{ $resource->id }}">
+                        Edit
+                    </button>
+                    <form method="POST" action="{{ route('atcresources.delete', $resource->id) }}" class="d-inline" onsubmit="return confirm('Delete {{ addslashes($resource->title) }}?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </div>
+            </article>
+
+            <div class="modal fade" id="editResource{{ $resource->id }}" tabindex="-1" aria-labelledby="editResource{{ $resource->id }}Title" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <form method="POST" action="{{ route('atcresources.update', $resource) }}">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="resource_form" value="edit-{{ $resource->id }}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editResource{{ $resource->id }}Title">Edit Resource</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                @include('includes.atcResourceFields', ['resource' => $resource, 'resourceIcons' => $resourceIcons, 'fieldPrefix' => 'edit-'.$resource->id])
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-sm btn-success">Save changes</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-        </div>
-        @endforeach
+        @empty
+            <div class="p-5 text-center text-muted">No ATC resources have been added yet.</div>
+        @endforelse
     </div>
+</main>
 
-    <br/><br/>
-
-    <form method="POST" action="{{route('atcresources.upload')}}">
-        @csrf
-        <h3 class="blue-text">Add Resource</h3>
-        <div class="form-group">
-            <p>Title</p>
-            <input required class="form-control" type="text" name="title">
+<div class="modal fade" id="addResourceModal" tabindex="-1" aria-labelledby="addResourceModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form method="POST" action="{{ route('atcresources.upload') }}">
+                @csrf
+                <input type="hidden" name="resource_form" value="add">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addResourceModalTitle">Add Resource</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @include('includes.atcResourceFields', ['resource' => null, 'resourceIcons' => $resourceIcons, 'fieldPrefix' => 'add'])
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-success">Add resource</button>
+                </div>
+            </form>
         </div>
-
-        <div class="form-group">
-            <p>Description</p>
-            <textarea id="descriptionField" name="description" cols="30" rows="10" required></textarea>
-            <script>
-                var simplemde = new SimpleMDE({ element: document.getElementById("descriptionField") });
-            </script>
-        </div>
-
-        <div class="form-group">
-            <p>Link to Resource</p>
-            <input type="url" class="form-control" name="url" required>
-        </div>
-
-        <div class="form-group">
-            <div class="d-flex align-items-center">
-                <span id="iconPreview" style="font-size: 1.5rem; color: #f1f1f1; margin-right: 8px;">
-                    <i class="fa fa-cloud"></i>
-                </span>
-                <p class="mb-0">Icon</p>
-            </div>
-            <div class="d-flex align-items-center">
-                <select id="iconSelect" name="font_awesome" class="form-control mr-3" required>
-                    <option value="fa-cloud">Weather</option>
-                    <option value="fa-headset">ATC</option>
-                    <option value="fa-plane-departure">Notam</option>
-                    <option value="fa-book">Document</option>
-                    <option value="fa-map">Map</option>
-                    <option value="fa-comments">Chat</option>
-                    <option value="fa-graduation-cap">Training</option>
-                    <option value="fa-exclamation-triangle">Alert</option>
-                    <option value="fa-info-circle">Info</option>
-                    <option value="fa-video">Video</option>
-                    <option value="fa-file-alt">Other</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="custom-control custom-checkbox">
-                <input type="hidden" name="atc_only" value="0">
-                <input type="checkbox" class="custom-control-input" name="atc_only" id="atc_only" value="1">
-                <label class="custom-control-label" for="atc_only">ATC Only</label>
-            </div>
-        </div>
-
-        <br/>
-        <input value="Submit" type="submit" class="btn btn-block btn-success"><br>
-    </form>
+    </div>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const select = document.getElementById("iconSelect");
-        const preview = document.getElementById("iconPreview").querySelector("i");
-
-        select.addEventListener("change", function () {
-            preview.className = "fa " + this.value;
-        });
-    });
-</script>
-
-@else
-    @php abort(403); @endphp
-@endif
-
 @stop
+
+@push('scripts')
+<script>
+    (() => {
+        document.querySelectorAll('.resource-icon-select').forEach((select) => {
+            const preview = document.getElementById(select.dataset.preview);
+
+            const updatePreview = () => {
+                if (preview) {
+                    preview.className = `fas ${select.value}`;
+                }
+            };
+
+            select.addEventListener('change', updatePreview);
+
+            if (window.jQuery) {
+                window.jQuery(select).on('change.resourceIcon select2:select.resourceIcon', updatePreview);
+            }
+
+            updatePreview();
+        });
+
+        @if ($errors->any())
+            const failedForm = @json(old('resource_form'));
+            const modalId = failedForm === 'add' ? 'addResourceModal' : `editResource${failedForm?.replace('edit-', '')}`;
+            const modal = document.getElementById(modalId);
+
+            if (modal && window.bootstrap?.Modal) {
+                bootstrap.Modal.getOrCreateInstance(modal).show();
+            }
+        @endif
+    })();
+</script>
+@endpush

@@ -9,7 +9,7 @@
         </div>
 
         <div class="card-body text-center">
-            <h1 class="font-weight-bold blue-text">🌟 West Coast Madness - Vancouver FIR 🌟</h1>
+            <h1 class="fw-bold blue-text">🌟 West Coast Madness - Vancouver FIR 🌟</h1>
             <hr class="bg-light" style="margin: 20px 15px;">
             <p class="card-text-light">📚 The Vancouver FIR is proud to present you <b>West Coast Madness!</b></p>
             <p class="card-text-light">This unique event, a first for both ZVR and Vatcan, will feature full ATC coverage around the FIR for 12h straight... You heard that right! <b>From 10am local to 10pm local (18z-06z)</b>, ZVR will fully staff CYVR as well as other variable top-down services at other locations around the FIR!</p>
@@ -19,16 +19,16 @@
             <hr class="bg-light" style="margin: 20px 15px;">
 
             <!-- Pilot Briefing & Event Details -->
-            <div style="background-color: #333; color: #ddd; padding: 25px;  margin-top: 30px;">
-                <h2 class="card-text-light" style="font-weight: bold; font-size: 1.5em; color: #ddd;">📖 Pilot Briefing & Event Details</h2>
-                <p class="card-text-light" style="color: #ddd;">Make sure you're prepared! Check out the official pilot briefing for all the key details, procedures, and routes here<br>
+            <div style="background-color: #f4f7f4; color: #202a23; padding: 25px;  margin-top: 30px;">
+                <h2 class="card-text-light" style="font-weight: bold; font-size: 1.5em; color: #202a23;">📖 Pilot Briefing & Event Details</h2>
+                <p class="card-text-light" style="color: #202a23;">Make sure you're prepared! Check out the official pilot briefing for all the key details, procedures, and routes here<br>
                     <a href="https://czvr.ca/storage/files/uploads/1739018432.pdf" target="_blank" style="font-weight: bold; color: #00B0F0; text-decoration: none; border-bottom: 2px solid #00B0F0; transition: all 0.3s ease;">Official Pilot Briefing</a>
                 </p>
             </div>
 
             <hr class="bg-light" style="margin: 20px 15px;">
 
-            <h2 class="card-text-light text-center" style="font-weight: bold; font-size: 1.5em; margin-top: 30px; color: #ddd;">📅 Event Schedule</h2>
+            <h2 class="card-text-light text-center" style="font-weight: bold; font-size: 1.5em; margin-top: 30px; color: #202a23;">📅 Event Schedule</h2>
 
             <div style="overflow-x: auto;">
                 <table class="event-schedule">
@@ -69,14 +69,14 @@
                 </table>
             </div>
 
-            <div id="countdown" style="font-size: 30px; font-weight: bold; color: white; padding: 20px; background-color: transparent; border-radius: 10px; display: inline-block; margin-top: 20px;"></div>
+            <div id="countdown" style="font-size: 30px; font-weight: bold; color: #202a23; padding: 20px; background-color: transparent; border-radius: 10px; display: inline-block; margin-top: 20px;"></div>
 
             <hr class="bg-light" style="margin: 20px 15px;">
 
             <!-- Giveaways Section -->
-            <div style="background-color: #333; color: #ddd; padding: 20px; margin-top: 30px;">
-                <h2 class="card-text-light" style="font-weight: bold; font-size: 1.5em; color: #ddd;">🎁 Giveaways</h2>
-                <p class="card-text-light" style="color: #ddd;">We’re making things even more exciting with 16 giveaways thanks to our amazing sponsors! Each flight into or out of any airport in the CZVR FIR during the event earns you one entry—the more you fly, the better your chances. Prizes include</p>
+            <div style="background-color: #f4f7f4; color: #202a23; padding: 20px; margin-top: 30px;">
+                <h2 class="card-text-light" style="font-weight: bold; font-size: 1.5em; color: #202a23;">🎁 Giveaways</h2>
+                <p class="card-text-light" style="color: #202a23;">We’re making things even more exciting with 16 giveaways thanks to our amazing sponsors! Each flight into or out of any airport in the CZVR FIR during the event earns you one entry—the more you fly, the better your chances. Prizes include</p>
 
                 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
                 <div class="giveaway-item">
@@ -109,7 +109,7 @@
             </div>
         </div>
     </div>
-    @if(auth()->check() && auth()->user()->permissions >= 4)
+    @if(auth()->check() && auth()->user()->can('events.manage'))
         <!-- BasileOMeter -->
             <div style="display: flex; justify-content: center;">
                 <div style="text-align: center; padding: 20px;">
@@ -146,12 +146,12 @@
             </div>
             @endif
         <!-- Map Section -->
-            <div class="card mt-4" style="background-color: #2a2a2a; border: none;">
+            <div class="card mt-4" style="background-color: #ffffff; border: none;">
             <div class="card-body">
-                <h3 class="text-center" style="color: #ddd;">Vancouver Center Splits</h3>
+                <h3 class="text-center" style="color: #202a23;">Vancouver Center Splits</h3>
                 <small> This map is dynamic and will update accordingly each minute displaying when a controller logs online </small><br>
                 <small> Grey = No Sectors Online </small><br><br>
-                <small id="lastUpdated" style="color: #aaa;">Last Updated: </small>
+                <small id="lastUpdated" style="color: var(--czvr-text-muted);">Last Updated: </small>
                 <div id="map" style="height: 800px;"></div>
             </div>
             <div id="controlPanel" style="display: none;">
@@ -164,28 +164,28 @@
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
-        background-color: #333;
-        color: #ddd;
+        background-color: #f4f7f4;
+        color: #202a23;
         border-collapse: collapse;
     }
 
     .event-schedule th, .event-schedule td {
         padding: 12px;
         text-align: center;
-        border: 1px solid #444;
+        border: 1px solid #dce5dc;
     }
 
     .event-schedule thead {
-        background-color: #444;
-        color: #fff;
+        background-color: #eaf5e7;
+        color: #202a23;
     }
 
     .event-schedule tbody tr:nth-child(even) {
-        background-color: #2a2a2a;
+        background-color: #ffffff;
     }
 
     .event-schedule tbody tr:nth-child(odd) {
-        background-color: #333;
+        background-color: #f4f7f4;
     }
 
     @media (max-width: 768px) {
@@ -248,7 +248,8 @@
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    color: #fff !important;
+    color: #202a23 !important;
+    text-shadow: 0 1px 2px #fff !important;
     font-size: 11px !important;
     text-align: center !important;
     }
@@ -272,12 +273,8 @@
 </style>
 
 <!-- Include Leaflet.js -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<!-- Include noUiSlider -->
-<link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
+<link rel="stylesheet" href="{{ asset('vendor/leaflet/leaflet.css') }}" />
+<script src="{{ asset('vendor/leaflet/leaflet.js') }}"></script>
 
 <script>
     const targetDate = new Date('2025-02-15T18:00:00Z');
@@ -305,7 +302,7 @@
         zoom: 5
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
         attribution: '',
         maxZoom: 19
     }).addTo(map);
@@ -393,10 +390,10 @@
 
     const sectorLayer = L.layerGroup(sectors.map(sector => {
         sector.polygon
-            .bindTooltip(`${sector.id}`, { 
-                permanent: true, 
-                direction: 'center', 
-                className: 'sector-label' 
+            .bindTooltip(`${sector.id}`, {
+                permanent: true,
+                direction: 'center',
+                className: 'sector-label'
             })
             .addTo(map);
         return sector.polygon;
@@ -427,7 +424,7 @@
         "Z": ["Z", "W"],
         "K": ["K", "W"]
     };
-    
+
     const COLOR_MAPPING = {
         "C": "blue",
         "E": "green",

@@ -7,10 +7,10 @@
     <div class="card card-image blue rounded-0">
 
     </div>
-        <div class="text-white text-left py-1 px-4" style="background-color:#2E2F2F">
+        <div class="text-start py-1 px-4" style="background-color: #eaf5e7; color: #202a23;">
             <div class="container">
                 <div class="py-5">
-                    <h1 align="center" class="h1" style="font-size: 3em;">{{$article->title}}</h1>
+                    <h1 align="center" class="blue-text h1" style="font-size: 3em;">{{$article->title}}</h1>
                     <center><i class="far fa-clock"></i>&nbsp;&nbsp;<span @if($article->edited) title="Last edited {{$article->edited_pretty()}}" @endif>Published {{$article->published_pretty()}}</span>&nbsp;&nbsp;•&nbsp;&nbsp;<i class="far fa-user-circle"></i>&nbsp;&nbsp;by {{$article->author_pretty()}}</center>
                 </div>
             </div>
@@ -21,9 +21,9 @@
             <hr>
         @endif
         @if(!$article->visible)
-        @if(!auth()->user()->permissions >= 4)
+        @cannot('news.manage')
             <?php abort(403, "Hidden");?>
-        @endif
+        @endcannot
         <div class="alert bg-czqo-blue-light">
             This article is not visible to the public.
         </div>

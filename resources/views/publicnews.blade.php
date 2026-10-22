@@ -3,25 +3,40 @@
 @section('title', 'News - Vancouver FIR')
 @section('description', 'News from Vancouver FIR')
 
+@push('styles')
+    <link href="{{ asset('css/pages/public-listings.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
-    <div class="container py-4">
-        <h1 class="blue-text font-weight-bold">News</h1>
-        <hr>
-            @foreach($news as $n)
-            <div class="homepage-news blue white-text my-2 h-100" style="width:1120px; outline:1px solid black">
-                <a href="{{route('news.articlepublic', $n->slug)}}">
-                    @if ($n->image)
-                    <div style="background-image:url({{$n->image}}); background-position: center; background-size:cover; height: 300px;" class="homepage-news-img waves-effect"></div>
-                    @else
-                    <div class="blue waves-effect homepage-news-img"></div>
-                    @endif
-                </a>
-                <div class="card-body pb-2">
-                    <a class="card-title font-weight-bold white-text" href="{{route('news.articlepublic', $n->slug)}}"><h4>{{$n->title}}</h4></a>
-                    <small><i class="far fa-clock"></i>&nbsp;&nbsp;<span @if($n->edited) title="Last edited {{$n->edited_pretty()}}" @endif>Published {{$n->published_pretty()}}</span><br/><i class="far fa-user-circle"></i>&nbsp;&nbsp;{{$n->author_pretty()}}</small>
-                </div>
-            </div>
-            <br>
-            @endforeach
-    </div>
+    <main class="container public-listing-page py-4">
+        <div class="public-listing-header">
+            <h1 class="blue-text">News</h1>
+        </div>
+
+        <div class="news-index-list">
+            @forelse($news as $n)
+                <article class="news-index-card">
+                    <a href="{{ route('news.articlepublic', $n->slug) }}" class="news-index-image {{ $n->image ? '' : 'blue' }}" aria-label="Read {{ $n->title }}">
+                        @if ($n->image)
+                            <img src="{{ $n->image }}" alt="" loading="lazy">
+                        @endif
+                    </a>
+                    <div class="news-index-content">
+                        <a class="news-index-title" href="{{ route('news.articlepublic', $n->slug) }}">{{ $n->title }}</a>
+                        @if ($n->content)
+                            <div class="news-index-summary">{{ $n->toHtml('content') }}</div>
+                        @endif
+                        <div class="news-index-meta">
+                            <span @if($n->edited) title="Last edited {{ $n->edited_pretty() }}" @endif>
+                                <i class="far fa-clock" aria-hidden="true"></i> Published {{ $n->published_pretty() }}
+                            </span>
+                            <span><i class="far fa-user-circle" aria-hidden="true"></i> {{ $n->author_pretty() }}</span>
+                        </div>
+                    </div>
+                </article>
+            @empty
+                <div class="public-listing-empty">No news has been published yet!</div>
+            @endforelse
+        </div>
+    </main>
 @stop

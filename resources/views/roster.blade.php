@@ -9,11 +9,19 @@
 @section('title', 'Roster - Vancouver FIR')
 @section('description', "Vancouver FIR's Controller Roster")
 
+@php
+    $rosterTabs = [
+        ['id' => 'home', 'label' => 'Home Controllers', 'table' => 'rosterTable', 'members' => $roster, 'addModal' => 'addController', 'rosterName' => 'home'],
+        ['id' => 'visit', 'label' => 'Visiting Controllers', 'table' => 'visitRosterTable', 'members' => $visitroster, 'addModal' => 'addVisitController', 'rosterName' => 'visiting'],
+    ];
+@endphp
+
 @section('content')
+@include('partials.vendor.datatables')
 <div class="container" style="margin-top: 20px;">
-        <h1 class="blue-text font-weight-bold">Controller Roster</h1>
+        <h1 class="blue-text fw-bold">Controller Roster</h1>
         <hr>
-        <h3 class="font-weight-bold blue-text">Legend</h3>
+        <h3 class="fw-bold blue-text">Legend</h3>
         <hr>
         <div class="roster-legend corner">
             <table id="rosterLegend" class="table table-hover">
@@ -26,43 +34,49 @@
                         <th style="text-align:center" scope="col"><b>Certified</b></th>
                     </tr>
                 </thead>
-                <thead>
+                <tbody>
                     <tr>
                         <th scope="row">Unrestricted Positions</th>
-                            <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
-                            <td class="text-center align-middle"><i class="far fa-user-circle icon-mentor"></td>
-                            <td class="text-center align-middle"><i class="fa fa-minus-circle icon-solo"></td>
-                            <td class="text-center align-middle"><i class="far fa-check-circle icon-certified"></td>
+                        <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></i></td>
+                        <td class="text-center align-middle"><i class="far fa-user-circle icon-mentor"></i></td>
+                        <td class="text-center align-middle"><i class="fa fa-minus-circle icon-solo"></i></td>
+                        <td class="text-center align-middle"><i class="far fa-check-circle icon-certified"></i></td>
                     </tr>
                     <tr>
                         <th scope="row">Tier 2 Positions: CYVR and FSS</th>
-                            <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></td>
-                            <td class="text-center align-middle"><i class="fa fa-user-circle icon-mentor"></td>
-                            <td class="text-center align-middle"><i class="fa fa-plus-circle icon-solo"></td>
-                            <td class="text-center align-middle"><i class="fa fa-check-circle icon-certified"></td>
+                        <td class="text-center align-middle"><i class="fa fa-times-circle icon-no-cert"></i></td>
+                        <td class="text-center align-middle"><i class="fa fa-user-circle icon-mentor"></i></td>
+                        <td class="text-center align-middle"><i class="fa fa-plus-circle icon-solo"></i></td>
+                        <td class="text-center align-middle"><i class="fa fa-check-circle icon-certified"></i></td>
                     </tr>
-                </thead>
+                </tbody>
             </table>
         </div>
         <hr>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
+            @foreach ($rosterTabs as $tab)
             <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home Controllers</a>
+                <a class="nav-link {{ $loop->first ? 'active' : '' }}" id="{{ $tab['id'] }}-tab" data-bs-toggle="tab" href="#{{ $tab['id'] }}" role="tab" aria-controls="{{ $tab['id'] }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">{{ $tab['label'] }}</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" id="visit-tab" data-toggle="tab" href="#visit" role="tab" aria-controls="visit" aria-selected="false">Visiting Controllers</a>
-            </li>
-            @if (auth()->check() && auth()->user()->permissions >= 3)
-            <li class="nav-item">
-                <a class="nav-link" href="{{route('roster.index')}}" style="color: limegreen">Edit Roster</a>
-            </li>
-            @endif
-          </ul>
+            @endforeach
+        </ul>
         <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><br>
+            @foreach ($rosterTabs as $tab)
+            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tab['id'] }}" role="tabpanel" aria-labelledby="{{ $tab['id'] }}-tab"><br>
 
-<!--Vancouver CONTROLLERS ROSTER-->
-        <table id="rosterTable" class="table table-hover">
+                @if ($canManage)
+                <ul class="list-unstyled mb-3">
+                    <li>
+                        <a href="#" data-bs-target="#{{ $tab['addModal'] }}" data-bs-toggle="modal" style="text-decoration:none;">
+                            <span class="blue-text"><i class="fas fa-chevron-right"></i></span>
+                            &nbsp;
+                            <span class="text-colour">Add a controller to the {{ $tab['rosterName'] }} roster</span>
+                        </a>
+                    </li>
+                </ul>
+                @endif
+
+        <table id="{{ $tab['table'] }}" class="table table-hover">
             <thead>
                 <tr>
                     <th style="text-align:center" scope="col"><b>CID</b></th>
@@ -75,278 +89,124 @@
                     <th style="text-align:center" scope="col">APP</th>
                     <th style="text-align:center" scope="col">CTR</th>
                     <th style="text-align:center" scope="col">Remarks</th>
+                    @if ($canManage)
+                    <th style="text-align:center" scope="col">Status</th>
+                    <th style="text-align:center" class="text-danger" scope="col"><b>Actions</b></th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
-            @foreach ($roster as $controller)
-            @if($controller->active == "1")
-                    <th style="text-align: center" scope="row"><a href="{{url('/roster/'.$controller->cid)}}" class="blue-text"><b>{{$controller->cid}}</b></a></th>
-                    <td align="center" >
-                        {{$controller->user->fullName('FL')}}
+            @foreach ($tab['members'] as $member)
+                <tr>
+                    <th style="text-align: center" scope="row"><a href="{{url('/roster/'.$member->cid)}}" class="blue-text"><b>{{$member->cid}}</b></a></th>
+                    <td align="center">
+                        {{$member->user->fullName('FL')}}
                     </td>
                     <td align="center">
-                        {{$controller->user->rating_short}}
+                        {{$member->user->rating_short}}
                     </td>
 
-<!--Vancouver Controller Position Ratings from Db -->
-<!--AAS/RAAS-->
-                                @if ($controller->fss == "0")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($controller->fss == "1")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->fss == "2")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($controller->fss == "3")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
+                    @include('partials.roster-certifications', ['member' => $member])
 
-<!--Delivery/Ground-->
-                                <td align="center">
-                                    @if ($controller->delgnd == "0")
-                                        <i class="fa fa-times-circle icon-no-cert"></i>
-                                    @elseif ($controller->delgnd == "1")
-                                        <i class="far fa-user-circle icon-mentor"></i>
-                                    @elseif ($controller->delgnd == "3")
-                                        @if ($controller->delgnd_t2 != "3")
-                                            <i class="far fa-check-circle icon-certified"></i>
-                                            @endif
-                                    @endif
+                    <!--Remarks-->
+                    <td align="center">
+                        {{$member->remarks}}
+                    </td>
 
-                                    @if ($controller->delgnd_t2 == "1")
-                                        <i class="fa fa-user-circle icon-mentor"></i>
-                                    @elseif ($controller->delgnd_t2 == "3")
-                                        <i class="fa fa-check-circle icon-certified"></i>
-                                @endif</td>
-<!--Tower-->
-                                <td align="center">
-                                    @if ($controller->twr == "0")
-                                        <i class="fa fa-times-circle icon-no-cert"></i>
-                                    @elseif ($controller->twr == "1")
-                                        <i class="far fa-user-circle icon-mentor"></i>
-                                    @elseif ($controller->twr == "2")
-                                        <i class="fa fa-minus-circle icon-solo"></i>
-                                    @elseif ($controller->twr == "3")
-                                        @if ($controller->twr_t2 != "3")
-                                            <i class="far fa-check-circle icon-certified"></i>
-                                            @endif
-                                    @endif
+                    @if ($canManage)
+                    <!--Active Status-->
+                    @if ($member->active == "0")
+                        <td align="center" class="bg-danger text-white">Not Active</td>
+                    @elseif ($member->active == "1")
+                        <td align="center" class="bg-success text-white">Active</td>
+                    @else
+                        <td align="center" class="bg-danger text-white">ERROR</td>
+                    @endif
 
-                                    @if ($controller->twr_t2 == "1")
-                                        <i class="fa fa-user-circle icon-mentor"></i>
-                                    @elseif ($controller->twr_t2 == "2")
-                                        <i class="fa fa-plus-circle icon-solo"></i>
-                                    @elseif ($controller->twr_t2 == "3")
-                                        <i class="fa fa-check-circle icon-certified"></i>
-                                @endif</td>
-
-<!--Departure-->
-                                <td align="center">
-                                    @if ($controller->dep == "0")
-                                        <i class="fa fa-times-circle icon-no-cert"></i>
-                                    @elseif ($controller->dep == "1")
-                                        <i class="fa fa-user-circle icon-mentor"></i>
-                                    @elseif ($controller->dep == "2")
-                                        <i class="fa fa-plus-circle icon-solo"></i>
-                                    @elseif ($controller->dep == "3")
-                                        <i class="fa fa-check-circle icon-certified"></i>
-                                    @endif</td>
-<!--Approach-->
-                                <td align="center">
-                                    @if ($controller->app == "0")
-                                        <i class="fa fa-times-circle icon-no-cert"></i>
-                                    @elseif ($controller->app == "1")
-                                        <i class="far fa-user-circle icon-mentor"></i>
-                                    @elseif ($controller->app == "2")
-                                        <i class="fa fa-minus-circle icon-solo"></i>
-                                    @elseif ($controller->app == "3")
-                                        @if ($controller->app_t2 != "3")
-                                            <i class="far fa-check-circle icon-certified"></i>
-                                            @endif
-                                    @endif
-
-                                    @if ($controller->app_t2 == "1")
-                                        <i class="fa fa-user-circle icon-mentor"></i>
-                                    @elseif ($controller->app_t2 == "2")
-                                        <i class="fa fa-plus-circle icon-solo"></i>
-                                    @elseif ($controller->app_t2 == "3")
-                                        <i class="fa fa-check-circle icon-certified"></i>
-                                @endif</td>
-<!--Centre-->
-                                @if ($controller->ctr == "0")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($controller->ctr == "1")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($controller->ctr == "2")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($controller->ctr == "3")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
-
-                                <!--Remarks-->
-                                <td align="center">
-                                    {{$controller->remarks}}
-                                </td>
-
-<!--Active Status-->
+                    <td align="center" class="align-middle text-nowrap">
+                        <a href="{{ route('roster.editcontrollerform', [$member->cid]) }}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteController" data-name="{{ $member->user->fullName('FL') }}" data-cid="{{ $member->cid }}" data-action="{{ route('roster.deletecontroller', [$member->id]) }}" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </td>
+                    @endif
                 </tr>
-                @endif
             @endforeach
             </tbody>
         </table>
 <br>
-</div>
-<div class="tab-pane fade" id="visit" role="tabpanel" aria-labelledby="visit-tab"><br>
-
-<!--Vancouver VISITING CONTROLLERS ROSTER-->
-        <table id="visitRosterTable" class="table table-hover">
-            <thead>
-                <tr>
-                    <th style="text-align:center" scope="col"><b>CID</b></th>
-                    <th style="text-align:center" scope="col">Controller Name</th>
-                    <th style="text-align:center" scope="col">Rating</th>
-                    <th style="text-align:center" scope="col">FSS</th>
-                    <th style="text-align:center" scope="col">DEL/GND</th>
-                    <th style="text-align:center" scope="col">TWR</th>
-                    <th style="text-align:center" scope="col">DEP</th>
-                    <th style="text-align:center" scope="col">APP</th>
-                    <th style="text-align:center" scope="col">CTR</th>
-                    <th style="text-align:center" scope="col">Remarks</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach ($visitroster as $visitcontroller)
-            @if($visitcontroller->active == "1")
-                <tr>
-                    <th style="text-align: center" scope="row"><a href="{{url('/roster/'.$visitcontroller->cid)}}" class="blue-text"><b>{{$visitcontroller->cid}}</b></a></th>
-                    <td align="center" >
-                        {{$visitcontroller->user->fullName('FL')}}
-                    </td>
-                    <td align="center">
-                        {{$visitcontroller->user->rating_short}}
-                    </td>
-
-<!--Vancouver Controller Position Ratings from Db -->
-<!--AAS/RAAS-->
-                             @if ($visitcontroller->fss == "0")
-                                    <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                                @elseif ($visitcontroller->fss == "1")
-                                    <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                                @elseif ($visitcontroller->fss == "2")
-                                    <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                                @elseif ($visitcontroller->fss == "3")
-                                    <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                                @else
-                                    <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                                @endif
-
-                            <!--Delivery/Ground-->
-                            <td align="center">
-                                @if ($visitcontroller->delgnd == "0")
-                                    <i class="fa fa-times-circle icon-no-cert"></i>
-                                @elseif ($visitcontroller->delgnd == "1")
-                                    <i class="far fa-user-circle icon-mentor"></i>
-                                @elseif ($visitcontroller->delgnd == "3")
-                                    @if ($visitcontroller->delgnd_t2 != "3")
-                                        <i class="far fa-check-circle icon-certified"></i>
-                                        @endif
-                                @endif
-
-                                @if ($visitcontroller->delgnd_t2 == "1")
-                                    <i class="fa fa-user-circle icon-mentor"></i>
-                                @elseif ($visitcontroller->delgnd_t2 == "3")
-                                    <i class="fa fa-check-circle icon-certified"></i>
-                            @endif</td>
-                            <!--Tower-->
-                            <td align="center">
-                            @if ($visitcontroller->twr == "0")
-                                <i class="fa fa-times-circle icon-no-cert"></i>
-                            @elseif ($visitcontroller->twr == "1")
-                                <i class="far fa-user-circle icon-mentor"></i>
-                            @elseif ($visitcontroller->twr == "2")
-                                <i class="fa fa-minus-circle icon-solo"></i>
-                            @elseif ($visitcontroller->twr == "3")
-                                @if ($visitcontroller->twr_t2 != "3")
-                                    <i class="far fa-check-circle icon-certified"></i>
-                                    @endif
-                            @endif
-
-                            @if ($visitcontroller->twr_t2 == "1")
-                                <i class="fa fa-user-circle icon-mentor"></i>
-                            @elseif ($visitcontroller->twr_t2 == "2")
-                                <i class="fa fa-plus-circle icon-solo"></i>
-                            @elseif ($visitcontroller->twr_t2 == "3")
-                                <i class="fa fa-check-circle icon-certified"></i>
-                            @endif</td>
-
-                            <!--Departure-->
-                            <td align="center">
-                            @if ($visitcontroller->dep == "0")
-                                <i class="fa fa-times-circle icon-no-cert"></i>
-                            @elseif ($visitcontroller->dep == "1")
-                                <i class="fa fa-user-circle icon-mentor"></i>
-                            @elseif ($visitcontroller->dep == "2")
-                                <i class="fa fa-plus-circle icon-solo"></i>
-                            @elseif ($visitcontroller->dep == "3")
-                                <i class="fa fa-check-circle icon-certified"></i>
-                            @endif</td>
-                            <!--Approach-->
-                            <td align="center">
-                            @if ($visitcontroller->app == "0")
-                                <i class="fa fa-times-circle icon-no-cert"></i>
-                            @elseif ($visitcontroller->app == "1")
-                                <i class="far fa-user-circle icon-mentor"></i>
-                            @elseif ($visitcontroller->app == "2")
-                                <i class="fa fa-minus-circle icon-solo"></i>
-                            @elseif ($visitcontroller->app == "3")
-                                @if ($visitcontroller->app_t2 != "3")
-                                    <i class="far fa-check-circle icon-certified"></i>
-                                    @endif
-                            @endif
-
-                            @if ($visitcontroller->app_t2 == "1")
-                                <i class="fa fa-user-circle icon-mentor"></i>
-                            @elseif ($visitcontroller->app_t2 == "2")
-                                <i class="fa fa-plus-circle icon-solo"></i>
-                            @elseif ($visitcontroller->app_t2 == "3")
-                                <i class="fa fa-check-circle icon-certified"></i>
-                            @endif</td>
-                            <!--Centre-->
-                            @if ($visitcontroller->ctr == "0")
-                            <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>
-                            @elseif ($visitcontroller->ctr == "1")
-                            <td align="center" ><i class="fa fa-user-circle icon-mentor"></i></td>
-                            @elseif ($visitcontroller->ctr == "2")
-                            <td align="center" ><i class="fa fa-plus-circle icon-solo"></i></td>
-                            @elseif ($visitcontroller->ctr == "3")
-                            <td align="center" ><i class="fa fa-check-circle icon-certified"></i></td>
-                            @else
-                            <td align="center" ><i class="fa fa-exclamation-triangle icon-error"></i></td>
-                            @endif
-
-                            <!--Remarks-->
-                            <td align="center">
-                            {{$visitcontroller->remarks}}
-                            </td>
-                </tr>
-                @endif
+            </div>
             @endforeach
-            </tbody>
-        </table><br>
+        </div>
 
+    @if ($canManage)
+    <div class="modal fade" id="deleteController" tabindex="-1" aria-labelledby="deleteControllerTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" action="#" id="deleteControllerForm">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteControllerTitle">Remove from Roster</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-2">Are you sure you want to remove <strong data-delete-name></strong> (CID <span data-delete-cid></span>) from the roster?</p>
+                        <p class="text-danger mb-0">This deletes their session logs and removes their Controller role!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Remove</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+
+    @foreach ([['id' => 'addController', 'title' => 'Add Controller to Home Roster', 'route' => 'roster.addcontroller', 'roster' => 'Home'], ['id' => 'addVisitController', 'title' => 'Add Controller to Visiting Roster', 'route' => 'roster.addvisitcontroller', 'roster' => 'Visiting']] as $addModal)
+    <div class="modal fade" id="{{ $addModal['id'] }}" tabindex="-1" role="dialog" aria-labelledby="{{ $addModal['id'] }}Title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="{{ $addModal['id'] }}Title">{{ $addModal['title'] }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div align="center" class="modal-body">
+                    <form method="POST" action="{{ route($addModal['route']) }}">
+                        @csrf
+                        <select class="js-example-basic-single form-control" style="width:100%" name="newcontroller">
+                            @foreach ($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->id }} - {{ $user->fname }} {{ $user->lname }}</option>
+                            @endforeach
+                        </select>
+                        <p class="fw-bold mt-3">This user will be added to the {{ $addModal['roster'] }} Roster.</p>
+                        <button type="submit" class="btn btn-success">Add User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
+    @endif
 </div>
-<script>
-        $(document).ready(function() {
-            $.fn.dataTable.enum(['S1', 'S2', 'S3', 'C1', 'C3', 'I1', 'I3', 'SUP', 'ADM'])
-            $('#rosterTable').DataTable( {
-                "order": [[ 0, "asc" ]]
-            } );
-        } );
-    </script>
-    <script src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/enum.js"></script>
 @stop
+
+@push('scripts')
+<script>
+    $(function () {
+        $('#rosterTable, #visitRosterTable').DataTable({
+            order: [[0, 'asc']],
+            @if ($canManage)
+            columnDefs: [{ orderable: false, targets: [-1, -2] }],
+            @endif
+        });
+    });
+
+    @if ($canManage)
+    document.getElementById('deleteController').addEventListener('show.bs.modal', (event) => {
+        const button = event.relatedTarget;
+        document.getElementById('deleteControllerForm').action = button.dataset.action;
+        event.target.querySelector('[data-delete-name]').textContent = button.dataset.name;
+        event.target.querySelector('[data-delete-cid]').textContent = button.dataset.cid;
+    });
+    @endif
+</script>
+@endpush

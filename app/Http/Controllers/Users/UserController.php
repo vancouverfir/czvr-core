@@ -7,17 +7,16 @@ use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Network\SessionLog;
 use App\Models\Settings\AuditLogEntry;
+use App\Models\Users\Role;
 use App\Models\Users\User;
 use App\Models\Users\UserNote;
-use App\Models\Users\UserNotification;
-use App\Models\Users\UserPreferences;
 use App\Notifications\DiscordWelcome;
 use App\Notifications\WelcomeNewUser;
-use Auth;
-use Carbon\Carbon;
+use App\Support\Authorization\PermissionCatalog;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -27,7 +26,6 @@ use mofodojodino\ProfanityFilter\Check;
 use NotificationChannels\Discord\Discord;
 use NotificationChannels\Discord\Exceptions\CouldNotSendNotification;
 use SocialiteProviders\Manager\Config;
-use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -44,25 +42,25 @@ class UserController extends Controller
         return redirect('/dashboard')->with('success', 'Welcome to Vancouver, '.$user->fname.'! We are glad to have you on board!');
     }
 
-    public function privacyDeny(): RedirectResponse
+    public function privacyDeny(Request $request): RedirectResponse
     {
         $user = Auth::user();
-        $preferences = UserPreferences::where('user_id', $user->id);
         if ($user->init == 1) {
             return redirect()->route('index');
         }
-        Auth::logout($user);
+        Auth::logout();
 
         AuditLogEntry::insert(User::find(1), 'User '.$user->fullName('FLC').' denied privacy policy - account deleted', User::find(1), 0);
-        $preferences->delete();
         $user->delete();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('index')->with('info', 'Your account has been removed as you have not accepted the privacy policy!');
     }
 
     public function viewAllUsers(): View
     {
-        $users = User::all()->sortBy('id');
+        $users = User::with('roles')->orderBy('id')->get();
 
         return view('admin.users.index', compact('users'));
     }
@@ -127,27 +125,14 @@ class UserController extends Controller
 
     public function viewConnections($id): View
     {
-        function clockalize($in)
-        {
-            $h = intval($in);
-            $m = round(((($in - $h) / 100.0) * 60.0) * 100, 0);
-            if ($m == 60) {
-                $h++;
-                $m = 0;
-            }
-            $retval = sprintf('%02d:%02d', $h, $m);
-
-            return $retval;
-        }
-
         $connections = SessionLog::where('cid', $id)->get()->sortByDesc('session_start');
-        $user = User::where('id', $id)->first();
+        $user = User::where('id', $id)->firstOrFail();
 
         foreach ($connections as $c) {
             $c['date'] = substr($c['session_start'], 5, 2).'-'.substr($c['session_start'], 8, 2).'-'.substr($c['session_start'], 0, 4);
             $c['session_start'] = substr($c['session_start'], 11, 5);
             $c['session_end'] = substr($c['session_end'], 11, 5);
-            $c['duration'] = clockalize($c['duration']);
+            $c['duration'] = decimal_to_hm($c['duration']);
         }
 
         return view('connections', compact('connections', 'user', 'id'));
@@ -166,133 +151,136 @@ class UserController extends Controller
 
         $xml = [];
         $userNotes = UserNote::where('user_id', $user->id)->orderBy('timestamp', 'desc')->get();
-        // $xml['return'] = file_get_contents('https://cert.vatsim.net/cert/vatsimnet/idstatus.php?cid=' . $user->id);
         $auditLog = AuditLogEntry::where('affected_id', $id)->get();
-        // $allroles = Role::all();
-        // $roles = $user->getRoleNames();
+        $allRoles = Role::query()->with('permissions')->orderBy('name')->get();
+        $permissionGroups = PermissionCatalog::grouped();
+        $user->load(['roles.permissions', 'directPermissions']);
 
-        return view('admin.users.profile', compact('user', 'xml', 'certification', 'active', 'auditLog', 'userNotes'));
+        return view('admin.users.profile', compact('user', 'xml', 'certification', 'active', 'auditLog', 'userNotes', 'allRoles', 'permissionGroups'));
     }
 
-    public function addRole(Request $request): RedirectResponse
+    public function updateAccess(Request $request, $id): RedirectResponse
     {
-        $u = User::whereId($request->input('id'))->first();
-        $r = $request->input('role');
-        $role = Role::where('name', $r)->first();
-        if ($u->hasRole($role->name)) {
-            return back()->withError('This user is already assigned the '.$role->name.' role!');
-        }
-        $u->assignRole($role->name);
-        $audit = new AuditLogEntry;
-        $audit->user_id = Auth::user()->id;
-        $audit->action = 'Added the '.$role->name.' Role.';
-        $audit->affected_id = $u->id;
-        $audit->time = Carbon::now()->toDateTimeString();
-        $audit->private = '0';
-        $audit->save();
+        $validated = $request->validate([
+            'roles' => ['sometimes', 'array'],
+            'roles.*' => ['integer', 'exists:roles,id'],
+            'permissions' => ['sometimes', 'array'],
+            'permissions.*' => ['string', 'exists:permissions,slug'],
+        ]);
 
-        return back()->withSuccess('Added the '.$role->name.' role!');
-    }
+        $user = User::with(['roles', 'directPermissions'])->findOrFail($id);
+        $editor = Auth::user();
+        abort_if(in_array((int) $user->id, [1, 2], true), 403, 'System users cannot be modified!');
 
-    public function deleteRole($id, $user): RedirectResponse
-    {
-        $role = Role::where('name', $id)->first();
-        $m = $role->name;
-        $u = User::whereId($user)->first();
-        if ($role->protected == '2' && ! Auth::user()->hasRole('Administrator')) {
-            return back()->withError('You do not have the permissions to delete this role!');
-        }
-        if ($role->protected == '1' && ! Auth::user()->hasAnyRole('Administrator|Staff')) {
-            return back()->withError('You do not have the permissions to delete this role!');
-        }
-        $u->removeRole($id);
-        $audit = new AuditLogEntry;
-        $audit->user_id = Auth::user()->id;
-        $audit->action = 'Removed the '.$m.' Role.';
-        $audit->affected_id = $u->id;
-        $audit->time = Carbon::now()->toDateTimeString();
-        $audit->private = '0';
-        $audit->save();
+        // Roles and permissions the editor may not hand out keep their current state
+        $requestedRoles = collect($validated['roles'] ?? [])->map(fn ($roleId) => (int) $roleId);
+        $roleIds = Role::query()->get()
+            ->filter(fn (Role $role) => $editor->canAssignRole($role)
+                ? $requestedRoles->contains($role->id)
+                : $user->roles->contains($role))
+            ->modelKeys();
 
-        return back()->withSuccess('Deleted the '.$m.' role!');
-    }
+        $requestedPermissions = $validated['permissions'] ?? [];
+        $directPermissions = collect(PermissionCatalog::slugs())
+            ->filter(fn (string $slug) => $editor->canGrantPermission($slug)
+                ? in_array($slug, $requestedPermissions, true)
+                : $user->directPermissions->contains('slug', $slug))
+            ->values()
+            ->all();
 
-    public function editPermissions(Request $request, $id): RedirectResponse
-    {
-        $user = User::where('id', $id)->firstorFail();
-        $roster = RosterMember::where('cid', $id)->first();
-        $user->permissions = $request->input('permissions');
-        $user->save();
-        if ($roster != null) {
-            $roster->status = $request->input('certification');
-            $roster->save();
-        }
+        $user->roles()->sync($roleIds);
+        $user->syncDirectPermissions($directPermissions);
 
-        return redirect()->back()->withSuccess('User Permissions Changed!');
+        AuditLogEntry::insert(
+            Auth::user(),
+            'Updated roles and direct permissions',
+            $user,
+            0,
+        );
+
+        return back()->withSuccess('Updated roles and permissions for '.$user->fullName('FLC').'!');
     }
 
     public function deleteUser($id): RedirectResponse
     {
-        $user = User::where('id', $id)->firstOrFail();
-        if ($user->id == Auth::user()->id) {
-            abort(403, 'You cannot delete yourself!');
-        }
+        $actor = Auth::user();
+        $user = User::findOrFail($id);
 
-        $entry = new AuditLogEntry([
-            'user_id' => Auth::user()->id,
-            'affected_id' => $user->id,
-            'action' => 'DELETE USER',
-            'time' => date('Y-m-d H:i:s'),
-            'private' => 0,
-        ]);
-        $entry->save();
-        $user->fname = 'Deleted';
-        $user->lname = 'User';
-        $user->email = 'no-reply@czqo.vatcan.ca';
-        $user->rating = 'Deleted';
-        $user->division = 'Deleted';
-        $user->permissions = 0;
-        $user->deleted = 1;
-        $user->save();
+        abort_if($user->is($actor), 403, 'You cannot delete yourself!');
+        abort_if(in_array((int) $user->id, [1, 2], true), 403, 'System users cannot be deleted.');
+        abort_if(
+            $user->hasPermissionTo(PermissionCatalog::ROLES_MANAGE)
+                && ! $actor->hasPermissionTo(PermissionCatalog::ROLES_MANAGE),
+            403,
+            'You cannot delete an access administrator!',
+        );
 
-        return redirect()->route('users.viewall')->with('info', 'User deleted.');
+        AuditLogEntry::insert($actor, 'Deleted user account', $user, 0);
+
+        $user->forceFill([
+            'fname' => 'Deleted',
+            'lname' => 'User',
+            'email' => 'deleted-'.$user->id.'@invalid.local',
+            'rating_id' => null,
+            'rating_short' => null,
+            'rating_long' => null,
+            'rating_GRP' => null,
+            'region_code' => null,
+            'region_name' => null,
+            'division_code' => null,
+            'division_name' => null,
+            'subdivision_code' => null,
+            'subdivision_name' => null,
+            'display_fname' => 'Deleted',
+            'bio' => null,
+            'discord_user_id' => null,
+            'discord_dm_channel_id' => null,
+            'avatar' => '/img/default-profile-img.jpg',
+            'avatar_mode' => 0,
+            'deleted' => true,
+        ])->save();
+        $user->roles()->detach();
+        $user->directPermissions()->detach();
+
+        return redirect()->route('users.viewall')->with('info', 'User deleted!');
     }
 
-    public function editUser($id): never
+    public function editUser($id): RedirectResponse
     {
-        $user = User::where('id', $id)->firstOrFail();
+        User::where('id', $id)->firstOrFail();
 
-        // return view('admin.users.edituser', compact('user'));
-        abort(404, 'Not implemented');
+        return redirect()->route('users.viewprofile', $id);
     }
 
     public function changeUsersAvatar(Request $request): RedirectResponse
     {
-        $request->validate([
-            'file' => 'required',
-            'user_id' => 'required',
+        $validated = $request->validate([
+            'file' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+            'user_id' => ['required', 'integer', 'exists:users,id'],
         ]);
+
         $editUser = Auth::user();
-        $user = User::whereId($request->get('user_id'))->firstOrFail();
+        $user = User::findOrFail($validated['user_id']);
         $uploadedFile = $request->file('file');
-        $filename = $uploadedFile->getClientOriginalName();
-        Storage::disk('local')->putFileAs(
-            'public/files/avatars/'.$user->id.'/'.$editUser->id,
-            $uploadedFile,
-            $filename
-        );
-        $user->avatar = Storage::url('public/files/avatars/'.$user->id.'/'.$editUser->id.'/'.$filename);
+        $filename = Str::uuid().'.'.$uploadedFile->extension();
+        $path = $uploadedFile->storeAs('files/avatars/'.$user->id.'/'.$editUser->id, $filename, 'public');
+        abort_unless($path, 500, 'The avatar could not be saved!');
+
+        // The new file is stored, so the replaced upload can go.
+        $user->deleteUploadedAvatar();
+        $user->avatar = Storage::disk('public')->url($path);
         $user->avatar_mode = 1;
         $user->save();
+        $user->forgetAvatarCache();
         AuditLogEntry::insert($editUser, 'Changed user avatar', $user, 0);
 
-        return redirect()->back()->with('success', 'Avatar changed!');
+        return back()->with('success', 'Avatar changed!');
     }
 
     public function resetUsersAvatar(Request $request): RedirectResponse
     {
         $request->validate([
-            'user_id' => 'required',
+            'user_id' => ['required', 'integer', 'exists:users,id'],
         ]);
         $editUser = Auth::user();
         $user = User::whereId($request->get('user_id'))->firstOrFail();
@@ -300,9 +288,11 @@ class UserController extends Controller
             abort(403, 'The avatar is already the default avatar.');
         }
 
+        $user->deleteUploadedAvatar();
         $user->avatar = '/img/default-profile-img.jpg';
         $user->avatar_mode = 0;
         $user->save();
+        $user->forgetAvatarCache();
         AuditLogEntry::insert($editUser, 'Reset user avatar', $user, 0);
 
         return redirect()->back()->with('success', 'Avatar reset!');
@@ -326,34 +316,6 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Biography reset!');
     }
 
-    public function storeEditUser(Request $request, $id): never
-    {
-        $user = User::find($id);
-        $prevPermissions = $user->permissions;
-        $user->permissions = $request->get('permissions');
-        $user->save();
-        $entry = new AuditLogEntry([
-            'user_id' => Auth::user()->id,
-            'action' => 'EDIT USER',
-            'affected_id' => $user->id,
-            'time' => date('Y-m-d H:i:s'),
-            'private' => 0,
-        ]);
-        $entry->save();
-        if ($prevPermissions != $user->permissions) {
-            $notification = new UserNotification([
-                'user_id' => $user->id,
-                'content' => 'Your permissions have been updated.',
-                'link' => '/dashboard',
-                'dateTime' => date('Y-m-d H:i:s'),
-            ]);
-            $notification->save();
-        }
-
-        // return redirect()->route('users.viewprofile', $user->id)->with('success', 'User edited!');
-        abort(404, 'Not implemented');
-    }
-
     public function emailCreate($id): View
     {
         $user = User::where('id', $id)->firstOrFail();
@@ -362,14 +324,12 @@ class UserController extends Controller
         abort(404, 'Not implemented');
     }
 
-    public function emailStore(Request $request): void
-    {
-    }
+    public function emailStore(Request $request): void {}
 
     public function createUserNote(Request $request, $id): RedirectResponse
     {
         $request->validate([
-            'content' => 'required',
+            'content' => ['required', 'string', 'max:10000'],
         ]);
 
         $user = User::where('id', $id)->firstOrFail();
@@ -377,7 +337,7 @@ class UserController extends Controller
         $content = $request->get('content');
         $note = new UserNote([
             'user_id' => $user->id,
-            'author' => Auth::user()->id,
+            'author_id' => Auth::id(),
             'author_name' => $instructor->fullName('FLC'),
             'content' => $content,
             'timestamp' => date('Y-m-d H:i:s'),
@@ -417,19 +377,21 @@ class UserController extends Controller
     public function changeAvatar(Request $request): RedirectResponse
     {
         $request->validate([
-            'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'file' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ]);
+
         $user = Auth::user();
         $uploadedFile = $request->file('file');
-        $filename = $uploadedFile->getClientOriginalName();
-        Storage::disk('local')->putFileAs(
-            'public/files/avatars/'.$user->id,
-            $uploadedFile,
-            $filename
-        );
-        $user->avatar = Storage::url('public/files/avatars/'.$user->id.'/'.$filename);
+        $filename = Str::uuid().'.'.$uploadedFile->extension();
+        $path = $uploadedFile->storeAs('files/avatars/'.$user->id, $filename, 'public');
+        abort_unless($path, 500, 'The avatar could not be saved!');
+
+        // The new file is stored, so the replaced upload can go.
+        $user->deleteUploadedAvatar();
+        $user->avatar = Storage::disk('public')->url($path);
         $user->avatar_mode = 1;
         $user->save();
+        $user->forgetAvatarCache();
 
         return redirect()->route('dashboard.index')->with('success', 'Avatar changed!');
     }
@@ -437,8 +399,13 @@ class UserController extends Controller
     public function changeAvatarDiscord(): RedirectResponse
     {
         $user = Auth::user();
+        abort_unless($user->hasDiscord(), 422, 'Link a Discord account before using its avatar!');
+
+        $user->deleteUploadedAvatar();
+        $user->avatar = '/img/default-profile-img.jpg';
         $user->avatar_mode = 2;
         $user->save();
+        $user->forgetAvatarCache();
 
         return redirect()->route('dashboard.index')->with('success', 'Avatar changed!');
     }
@@ -447,29 +414,34 @@ class UserController extends Controller
     {
         $user = Auth::user();
         if ($user->isAvatarDefault()) {
-            abort(403, 'Your avatar is already the default avatar.');
+            abort(403, 'Your avatar is already the default avatar!');
         }
 
+        $user->deleteUploadedAvatar();
+        $user->avatar = '/img/default-profile-img.jpg';
         $user->avatar_mode = 0;
         $user->save();
+        $user->forgetAvatarCache();
 
         return redirect()->back()->with('success', 'Avatar reset!');
     }
 
     public function searchUsers(Request $request): mixed
     {
-        if ($request->ajax != false) {
-            abort(400, 'AJAX requests only');
-        }
-        $query = strtolower($request->get('query'));
-        $users = User::where('id', 'LIKE', "%{$query}%")->
-            orWhere('display_fname', 'LIKE', "%{$query}")->
-            orWhere('lname', 'LIKE', "%{$query}%")->get();
-        if (count($users) > 0) {
-            return Response($users);
-        } else {
-            return Response('n/a');
-        }
+        abort_unless($request->ajax(), 400, 'AJAX requests only');
+
+        $validated = $request->validate([
+            'query' => ['required', 'string', 'max:100'],
+        ]);
+        $query = mb_strtolower($validated['query']);
+        $users = User::query()
+            ->where('id', 'like', '%'.$query.'%')
+            ->orWhere('display_fname', 'like', '%'.$query.'%')
+            ->orWhere('lname', 'like', '%'.$query.'%')
+            ->limit(25)
+            ->get();
+
+        return response()->json($users);
     }
 
     public function editBioIndex(): View
@@ -480,7 +452,7 @@ class UserController extends Controller
     public function editBio(Request $request): RedirectResponse
     {
         $request->validate([
-            'bio' => 'sometimes|max:5000',
+            'bio' => ['nullable', 'string', 'max:5000'],
         ]);
 
         // Get user
@@ -491,8 +463,8 @@ class UserController extends Controller
 
         // Run through profanity filter
         $check = new Check;
-        if ($check->hasProfanity($input)) {
-            return redirect()->back()->withInput()->with('error-modal', 'Profanity was detected in your input, please remove it.');
+        if ($input && $check->hasProfanity($input)) {
+            return redirect()->back()->withInput()->with('error-modal', 'Profanity was detected in your input, please remove it!');
         }
 
         // No swear words.. give them the new bio
@@ -506,8 +478,8 @@ class UserController extends Controller
     public function changeDisplayName(Request $request): RedirectResponse
     {
         $request->validate([
-            'display_fname' => 'required',
-            'format' => 'required',
+            'display_fname' => ['required', 'string', 'max:100'],
+            'format' => ['required', 'in:showall,showfirstcid,showcid'],
         ]);
 
         // Get user
@@ -516,7 +488,7 @@ class UserController extends Controller
         // Run through profanity filter
         $check = new Check;
         if ($check->hasProfanity($request->get('display_fname'))) {
-            return redirect()->back()->withInput()->with('error', 'Profanity was detected in your display name. Please use a more appropriate name, if you believe this is in error, please contact our <a href="/dashboard/tickets?create=yes">Webmaster.</a>');
+            return redirect()->back()->withInput()->with('error', 'Profanity was detected in your display name! Please use a more appropriate name, if you believe this is in error, please contact our <a href="/dashboard/tickets?create=yes">Webmaster!</a>');
         }
 
         // No swear words... give them the new name!
@@ -532,6 +504,7 @@ class UserController extends Controller
             $user->display_cid_only = true;
         }
         $user->save();
+        $user->forgetAvatarCache();
 
         // Redirect
         return redirect()->back()->with('success', 'Display name saved!');
@@ -546,66 +519,99 @@ class UserController extends Controller
 
     public function linkDiscord(): mixed
     {
-        return Socialite::with('discord')->setScopes(['identify', 'guilds.join'])->redirect();
+        if (Auth::user()->hasDiscord()) {
+            return redirect()->route('dashboard.index')->with('info', 'A Discord account is already linked!');
+        }
+
+        return $this->discordDriver('redirect')
+            ->setScopes(['identify', 'guilds.join'])
+            ->redirect();
     }
 
     public function linkDiscordRedirect(): RedirectResponse
     {
         try {
-            $config = new Config(
-                config('services.discord.client_id'),
-                config('services.discord.client_secret'),
-                config('services.discord.redirect')
-            );
-
-            $discordUser = Socialite::driver('discord')
-                ->setConfig($config)
-                ->stateless()
-                ->user();
-
-            if (! $discordUser) {
-                abort(403, 'Discord OAuth failed.');
-            }
-
+            $discordUser = $this->discordDriver('redirect')->user();
             $user = Auth::user();
 
-            if (User::where('discord_user_id', $discordUser->id)->first()) {
+            $existingUser = User::where('discord_user_id', $discordUser->id)->first();
+            if ($existingUser && ! $existingUser->is($user)) {
                 return redirect()->route('dashboard.index')->with('error-modal', 'This Discord account has already been linked!');
             }
 
             $user->discord_user_id = $discordUser->id;
             $user->discord_dm_channel_id = app(Discord::class)->getPrivateChannel($discordUser->id);
             $user->save();
+            $user->forgetAvatarCache();
 
             $discord = new DiscordClient(config('services.discord.token'));
-
-            $discord->AddGuildMember(
-                $discordUser->id,
-                $discordUser->token,
-                $user->fullName('FL'),
-                []
-            );
+            $joined = $discord->AddGuildMember($discordUser->id, $discordUser->token, $user->fullName('FL'), []);
 
             try {
                 $user->notify(new DiscordWelcome);
-            } catch (CouldNotSendNotification $e) {
+            } catch (CouldNotSendNotification) {
+                // Linking succeeded even when a welcome direct message is unavailable
             }
 
-            return redirect()->route('dashboard.index')
-                ->with('success', 'Joined the Discord with account '.$discordUser->nickname.'!');
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
+            return $joined
+                ? redirect()->route('dashboard.index')->with('success', 'Joined the Discord with account '.$discordUser->nickname.'!')
+                : redirect()->route('dashboard.index')->with('error-modal', 'Linked Discord account '.$discordUser->nickname.', but you could not be added to the Vancouver Discord server! Please contact staff if this keeps happening.');
+        } catch (Exception $exception) {
+            Log::warning('Discord OAuth callback failed.', ['exception' => $exception::class]);
 
             return redirect()->route('dashboard.index')
                 ->with('error-modal', 'Discord authentication was canceled or failed!');
         }
     }
 
+    public function joinDiscordServerRedirect(): mixed
+    {
+        if (! Auth::user()->hasDiscord()) {
+            return redirect()->route('me.discord.link');
+        }
+
+        return $this->discordDriver('redirect_join')
+            ->setScopes(['identify', 'guilds.join'])
+            ->redirect();
+    }
+
+    public function joinDiscordServer(): RedirectResponse
+    {
+        try {
+            $discordUser = $this->discordDriver('redirect_join')->user();
+            $user = Auth::user();
+            abort_unless((string) $discordUser->id === (string) $user->discord_user_id, 403, 'Discord account mismatch!');
+
+            $discord = new DiscordClient(config('services.discord.token'));
+
+            return $discord->AddGuildMember($discordUser->id, $discordUser->token, $user->fullName('FL'), [])
+                ? redirect()->route('dashboard.index')->with('success', 'Rejoined the Vancouver Discord server!')
+                : redirect()->route('dashboard.index')->with('error-modal', 'You could not be added to the Vancouver Discord server! Please contact staff if this keeps happening.');
+        } catch (Exception $exception) {
+            Log::warning('Discord server join callback failed.', ['exception' => $exception::class]);
+
+            return redirect()->route('dashboard.index')
+                ->with('error-modal', 'Discord authentication was canceled or failed!');
+        }
+    }
+
+    private function discordDriver(string $redirectKey): mixed
+    {
+        $config = new Config(
+            (string) config('services.discord.client_id'),
+            (string) config('services.discord.client_secret'),
+            (string) config('services.discord.'.$redirectKey),
+        );
+
+        return Socialite::driver('discord')->setConfig($config);
+    }
+
     public function unlinkDiscord(): RedirectResponse
     {
-        $discord = new DiscordClient(config('services.discord.token'));
         $user = Auth::user();
+        // memberOfCZVRGuild() is false without a bot token, so the client is only built when it can be used
         if ($user->memberOfCZVRGuild()) {
+            $discord = new DiscordClient(config('services.discord.token'));
             try {
                 $discord->RemoveGuildMember($user->discord_user_id);
                 $discord->SendAuditMessage('<@'.$user->discord_user_id.'> ('.Auth::id().') has unlinked their account and has been kicked!');
@@ -619,14 +625,13 @@ class UserController extends Controller
             $user->avatar_mode = 0;
         }
         $user->save();
+        $user->forgetAvatarCache();
 
         return redirect()->route('dashboard.index')->with('info', 'Account successfully unlinked!');
     }
 
     public function preferences(): View
     {
-        $preferences = Auth::user()->preferences;
-
-        return view('dashboard.me.preferences', compact('preferences'));
+        return view('dashboard.me.preferences');
     }
 }

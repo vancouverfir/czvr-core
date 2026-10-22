@@ -9,6 +9,7 @@ use App\Models\AtcTraining\RosterMember;
 use App\Models\Network\MonitoredPosition;
 use App\Models\Network\SessionLog;
 use App\Models\Settings\CoreSettings;
+use App\Services\TrainingProgressionService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\ConnectionException;
@@ -37,7 +38,7 @@ class ActivityLog extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): int
+    public function handle(TrainingProgressionService $progression): int
     {
         // Because OOMs
         DB::connection()->disableQueryLog();
@@ -63,8 +64,7 @@ class ActivityLog extends Command
             return Command::SUCCESS;
         } catch (\Throwable $e) {
             Log::error('Unexpected error while fetching VATSIM datafeed.', [
-                'message' => $e->getMessage(),
-                'exception' => $e,
+                'exception' => $e::class,
             ]);
 
             return Command::FAILURE;
@@ -73,7 +73,6 @@ class ActivityLog extends Command
         if (! $response->successful()) {
             Log::warning('VATSIM datafeed returned an unsuccessful response. Skipping activity run.', [
                 'status' => $response->status(),
-                'body' => substr($response->body(), 0, 500),
             ]);
 
             return Command::SUCCESS;
@@ -109,12 +108,11 @@ class ActivityLog extends Command
                 // Only send if not sent in the last 15 minutes
                 if (! Cache::has($cacheKey)) {
                     $core = CoreSettings::find(1);
-
-                    $emails = array_filter([
+                    $emails = $core ? array_filter([
                         $core->emailfirchief,
                         $core->emaildepfirchief,
                         $core->emailcinstructor,
-                    ]);
+                    ]) : [];
 
                     foreach ($emails as $email) {
                         Mail::to($email)->send(new UnauthorisedConnection([
@@ -184,7 +182,7 @@ class ActivityLog extends Command
 
             foreach ($onlineControllers as $oc) {
                 if ($oc->cid == $log->cid &&
-                    MonitoredPosition::where('id', $log->monitored_position_id)->first()->identifier == $oc->callsign &&
+                    $log->monitoredPosition?->identifier == $oc->callsign &&
                     Carbon::make($oc->logon_time) == $log->session_start) {
                     $stillOnline = true;
                 }
@@ -217,13 +215,14 @@ class ActivityLog extends Command
                     // Add hours
                     $roster_member->currency += $difference;
 
-                    if ($roster_member->rating == 'S1' || $roster_member->rating == 'S2' || $roster_member->rating == 'S3') {
+                    if (in_array($roster_member->user?->rating_short, ['S1', 'S2', 'S3', 'C1'], true)) {
                         $roster_member->rating_hours += $difference;
                     } else {
                         error_log('Something went wrong adding rating hours (Students)');
                     }
                     // Save roster member
                     $roster_member->save();
+                    $progression->completeConsolidationIfEligible($roster_member);
                 } else {
                     error_log('Something went wrong adding currency!');
                 }

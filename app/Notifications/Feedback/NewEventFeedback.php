@@ -10,6 +10,8 @@ class NewEventFeedback extends Notification
 {
     use Queueable;
 
+    protected mixed $feedback;
+
     /**
      * Create a new notification instance.
      *

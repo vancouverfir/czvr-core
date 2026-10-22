@@ -10,6 +10,8 @@ class MonthlyInactivity extends Notification
 {
     use Queueable;
 
+    protected mixed $badMembers;
+
     /**
      * Create a new notification instance.
      *

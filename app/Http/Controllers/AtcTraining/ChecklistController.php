@@ -9,23 +9,27 @@ use App\Models\AtcTraining\LabelChecklistMap;
 use App\Models\AtcTraining\LabelChecklistVisitorMap;
 use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentChecklistItem;
-use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
+use App\Services\TrainingProgressionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ChecklistController extends Controller
 {
-    public function completeItem(Request $request, $id): RedirectResponse
+    public function completeItem(Request $request, TrainingProgressionService $progression, $id): RedirectResponse
     {
         $item = StudentChecklistItem::findOrFail($id);
         $item->update(['completed' => true]);
 
+        if ($item->student && $progression->completeS1TrainingIfDone($item->student)) {
+            return back()->with('success', 'S1 Training complete! The S2 Training package was assigned!');
+        }
+
         return back()->with('success', 'Checklist item marked as Complete!');
     }
 
-    public function completeMultiple(Request $request, $studentId): RedirectResponse
+    public function completeMultiple(Request $request, TrainingProgressionService $progression, $studentId): RedirectResponse
     {
         $request->validate([
             'checklist_items' => 'required|array',
@@ -40,20 +44,11 @@ class ChecklistController extends Controller
             $item->save();
         }
 
+        if ($progression->completeS1TrainingIfDone($student)) {
+            return back()->with('success', 'S1 Training complete! The S2 Training package was assigned!');
+        }
+
         return back()->with('success', 'Checklist items updated successfully!');
-    }
-
-    public function getTrainingOrder(bool $visitor = false): array
-    {
-        $query = $visitor ? LabelChecklistVisitorMap::class : LabelChecklistMap::class;
-
-        return $query::orderBy('id')
-            ->with('label')
-            ->get()
-            ->pluck('label.name')
-            ->unique()
-            ->values()
-            ->toArray();
     }
 
     private function getChecklistIdsByLabelName(string $label, string $tierType = 'T1', bool $visitor = false): array
@@ -83,11 +78,8 @@ class ChecklistController extends Controller
     public function assignT2Checklist(Request $request, Student $student): RedirectResponse
     {
         $isVisitor = $student->user->visitor;
+        $currentLabel = $student->currentTrainingLabel(Student::trainingOrder($isVisitor));
 
-        $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
-        $trainingOrder = $this->getTrainingOrder($isVisitor);
-
-        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
         if (! $currentLabel) {
             return back()->with('error', 'No valid label found for T2 checklist assignment!');
         }
@@ -105,88 +97,75 @@ class ChecklistController extends Controller
         return back()->with('success', "T2 checklists assigned for {$currentLabel}!");
     }
 
-    public function promoteVisitor(Request $request, Student $student): RedirectResponse
+    public function startRecertification(
+        Student $student,
+        TrainingProgressionService $progression,
+    ): RedirectResponse {
+        if (! $progression->startRecertification($student, Auth::user())) {
+            return back()->with('error', 'Recertification could not be started! Confirm that the controller is rated S1 or higher, is on a waitlist, and that the required training packages have checklists!');
+        }
+
+        return back()->with('success', 'The complete recertification path was assigned through the controller\'s current rating!');
+    }
+
+    public function promoteVisitor(Request $request, Student $student, TrainingProgressionService $progression): RedirectResponse
     {
         $isNonVatcanVisitor = $student->user->division_code !== 'CAN';
+        $trainingOrder = Student::trainingOrder(true);
+        $currentLabel = $student->currentTrainingLabel($trainingOrder);
 
-        $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
-        $trainingOrder = $this->getTrainingOrder(true);
-
-        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
         if (! $currentLabel) {
             return back()->with('error', 'No visitor label assigned to student!');
         }
 
-        $nextLabelName = $this->NextVisitorLabel($currentLabel, $trainingOrder, $isNonVatcanVisitor);
+        $nextLabelName = $isNonVatcanVisitor
+            ? collect($trainingOrder)
+                ->slice(array_search($currentLabel, $trainingOrder, true) + 1)
+                ->first(fn ($label) => ! empty($this->getChecklistIdsByLabelName($label, 'T3', true)))
+            : $student->nextTrainingLabel($trainingOrder);
+
         if (! $nextLabelName) {
-            $student->labels()->delete();
-            $student->checklistItems()->delete();
-            $student->update(['status' => 9]);
+            $student->markTrainingCompleted();
+            CreateNote::newNote($student->id, 'Completed Training', Auth::user()->fullName('FLC').' marked training as completed!');
 
             return back()->with('success', 'Completed training for '.$student->user->fullName('FLC').'!');
         }
 
-        $this->assignNewLabel($student, $nextLabelName, $isNonVatcanVisitor ? 'T3' : 'T1', true);
+        $this->assignNewLabel($progression, $student, $nextLabelName, $isNonVatcanVisitor ? 'T3' : 'T1', true);
 
         CreateNote::newNote($student->id, 'Promoted Visitor', '<u>'.Auth::user()->fullName('FLC').'</u> promoted visitor to '.$nextLabelName);
 
         return back()->with('success', "Visitor promoted to {$nextLabelName} and checklists assigned!");
     }
 
-    private function NextVisitorLabel(string $currentLabel, array $trainingOrder, bool $nonVatcan): ?string
+    private function assignNewLabel(TrainingProgressionService $progression, Student $student, string $labelName, string $tierType, bool $visitor = false): void
     {
-        if ($nonVatcan) {
-            return collect($trainingOrder)
-                ->slice(array_search($currentLabel, $trainingOrder) + 1)
-                ->first(fn ($label) => ! empty($this->getChecklistIdsByLabelName($label, 'T3', true)));
-        }
-
-        $currentIndex = array_search($currentLabel, $trainingOrder);
-
-        return $trainingOrder[$currentIndex + 1] ?? null;
-    }
-
-    private function assignNewLabel(Student $student, string $labelName, string $tierType, bool $visitor = false)
-    {
-        $student->labels()->whereHas('label', fn ($q) => $q->where('exclusive', 1))->delete();
-
-        $nextLabel = StudentLabel::where('name', $labelName)->firstOrFail();
-        StudentInteractiveLabels::create([
-            'student_id' => $student->id,
-            'student_label_id' => $nextLabel->id,
-        ]);
-
-        $student->checklistItems()->delete();
-
-        $checklistIds = $this->getChecklistIdsByLabelName($labelName, $tierType, $visitor);
-        foreach ($checklistIds as $checklistId) {
-            $this->assignChecklistItemsToStudent($student, Checklist::findOrFail($checklistId)->items);
-        }
+        $progression->assignTrainingPackage($student, StudentLabel::where('name', $labelName)->firstOrFail(), $visitor, $tierType);
 
         (new LabelController)->updateStatus($student->refresh());
     }
 
-    public function promoteStudent(Request $request, Student $student): RedirectResponse
+    public function promoteStudent(Request $request, Student $student, TrainingProgressionService $progression): RedirectResponse
     {
-        $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
-        $trainingOrder = $this->getTrainingOrder(false);
+        $student->loadMissing('user.rosterProfile');
 
-        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
-        if (! $currentLabel) {
-            return back()->with('error', 'No label assigned to student!');
+        if ($student->isConsolidating()) {
+            return back()->with('error', sprintf(
+                'Training remains locked until %.1f more consolidation hours are logged or the requirement is waived!',
+                $student->consolidationRemainingHours(),
+            ));
         }
 
-        $currentIndex = array_search($currentLabel, $trainingOrder);
-        $nextLabelName = $trainingOrder[$currentIndex + 1] ?? null;
-        if (! $nextLabelName) {
-            $student->labels()->delete();
-            $student->checklistItems()->delete();
-            $student->update(['status' => 9]);
-
-            return back()->with('success', 'Completed training for '.$student->user->fullName('FLC').'!');
+        if ($student->status !== Student::STATUS_WAITLIST) {
+            return back()->with('error', 'Active training stages now follow VATCAN rating promotions automatically!');
         }
 
-        $this->assignNewLabel($student, $nextLabelName, 'T1');
+        if ($student->startsWithRecertification()) {
+            return back()->with('error', 'This controller already holds S2 or higher! Use Start Recertification instead!');
+        }
+
+        $nextLabelName = Student::RATING_TRAINING_LABELS[0];
+        $this->assignNewLabel($progression, $student, $nextLabelName, 'T1');
 
         CreateNote::newNote($student->id, 'Promoted Student', '<u>'.Auth::user()->fullName('FLC').'</u> promoted student to '.$nextLabelName);
 

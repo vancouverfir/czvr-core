@@ -1,225 +1,157 @@
 @extends('layouts.master')
 
 @section('navbarprim')
-
     @parent
-
 @stop
 
 @section('title', 'Edit User')
 @section('description', "Vancouver FIR's Controller Roster")
 
+@push('styles')
+    <link href="{{ asset('css/pages/roster-edit.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
+@php
+    $levels = [
+        0 => 'Not Authorised',
+        1 => 'With Supervision',
+        2 => 'Solo Approved',
+        3 => 'Certified',
+    ];
+    $icons = [
+        'Unrestricted' => [0 => 'fa fa-times-circle icon-no-cert', 1 => 'far fa-user-circle icon-mentor', 2 => 'fa fa-minus-circle icon-solo', 3 => 'far fa-check-circle icon-certified'],
+        'Tier 2' => [0 => 'fa fa-times-circle icon-no-cert', 1 => 'fa fa-user-circle icon-mentor', 2 => 'fa fa-plus-circle icon-solo', 3 => 'fa fa-check-circle icon-certified'],
+    ];
 
-<div class="container" style="margin-top: 20px;">
-    <a href="{{route('roster.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Roster</a>
-<br>
-<head>
-<style>
-* {
-  box-sizing: border-box;
-}
+    $positions = [
+        'Delivery / Ground' => ['delgnd', 'delgnd_t2', false],
+        'Tower' => ['twr', 'twr_t2', true],
+        'Departure' => [null, 'dep', false],
+        'Arrival' => ['app', 'app_t2', true],
+        'Centre' => [null, 'ctr', true],
+        'FSS' => [null, 'fss', true],
+    ];
+@endphp
 
-/* Create two equal columns that floats next to each other */
-.column {
-  float: left;
-  width: 50%;
-  padding: 10px;
-}
+<div class="container py-4">
+    <a href="{{ route('roster.public') }}" class="blue-text" style="font-size: 1.2em;">
+        <i class="fas fa-arrow-left"></i> Roster
+    </a>
 
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-</style>
-</head>
-
-<div align="center">
-<form method="post" action="{{route('roster.editcontroller', [$cid]) }}"<br>
-  <form class="form-horizontal">
-<fieldset>
-
-<!-- Form Name -->
-<legend>Edit Controller on Roster</legend>
-
-
-<div class="form-group">
-  <label>Controller CID:</label><br>
-  {{$roster->full_name." ".$cid}}<br><br>
-
-  <!--FSS-->
-
-    <input type="hidden" name="cid" value="{{ $cid }}">
-</div>
-<div class="form-row">
-  <div class="col-md-3">
-  </div>
-<div class="form-group col-md-2">
-  <div align="center">
-  <label class="control-label" for="fss">FSS</label>
-  <div align="center">
-  <label class="control-label" for="fss">Unrestricted</label>
-    <select name="fss" class="form-control">
-      <option value="0"{{ $roster->fss == "0" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="1"{{ $roster->fss == "1" ? "selected=selected" : ""}}>Mentor</option>
-      <option value="2"{{ $roster->fss == "2" ? "selected=selected" : ""}}>Solo</option>
-      <option value="3"{{ $roster->fss == "3" ? "selected=selected" : ""}}>Certified</option>
-    </select>
-  </div>
-</div>
-  </div>
-
-<!-- Delivery/Ground -->
-
-<div class="form-group col-md-2">
-  <label class="control-label" for="delgnd">Delivery/Ground</label>
-  <div align="center">
-  <label class="control-label" for="delgnd">Unrestricted</label>
-  <select name="delgnd" class="form-control">
-    <option value="0"{{ $roster->delgnd == "0" ? "selected=selected" : ""}}>Not Certified</option>twr
-    <option value="1"{{ $roster->delgnd == "1" ? "selected=selected" : ""}}>Mentor</option>
-    <option value="3"{{ $roster->delgnd == "3" ? "selected=selected" : ""}}>Certified</option>
-  </select>
-  <br>
-  <label class="control-label" for="delgnd">Tier 2</label>
-  <select name="delgnd_t2" class="form-control">
-    <option value="0"{{ $roster->delgnd_t2 == "0" ? "selected=selected" : ""}}>Not Certified</option>
-    <option value="1"{{ $roster->delgnd_t2 == "1" ? "selected=selected" : ""}}>Mentor</option>
-    <option value="3"{{ $roster->delgnd_t2 == "3" ? "selected=selected" : ""}}>Certified</option>
-  </select>
-  </div>
-</div>
-
-
-<!-- Tower -->
-
-<div class="form-group col-md-2">
-  <label class="control-label" for="twr">Tower</label>
-  <div align="center">
-  <label class="control-label" for="twr">Unrestricted</label>
-    <select name="twr" class="form-control">
-      <option value="0"{{ $roster->twr == "0" ? "selected=selected" : ""}}>Not Certified</option>twr
-      <option value="1"{{ $roster->twr == "1" ? "selected=selected" : ""}}>Mentor</option>
-      <option value="2"{{ $roster->twr == "2" ? "selected=selected" : ""}}>Solo</option>
-      <option value="3"{{ $roster->twr == "3" ? "selected=selected" : ""}}>Certified</option>
-    </select>
-    <br>
-    <label class="control-label" for="twr">Tier 2</label>
-    <select name="twr_t2" class="form-control">
-      <option value="0"{{ $roster->twr_t2 == "0" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="1"{{ $roster->twr_t2 == "1" ? "selected=selected" : ""}}>Mentor</option>
-      <option value="2"{{ $roster->twr_t2 == "2" ? "selected=selected" : ""}}>Solo</option>
-      <option value="3"{{ $roster->twr_t2 == "3" ? "selected=selected" : ""}}>Certified</option>
-    </select>
-  </div>
-
-</div>
-</div>
-
-<br><br>
-
-
-<!-- Departure -->
-
-<div class="form-row">
-  <div class="col-md-3">
-  </div>
-<div class="form-group col-md-2">
-  <label class="control-label" for="dep">Departure</label>
-  <div align="center">
-      <label class="control-label" for="dep">Tier 2</label>
-      <select name="dep" class="form-control">
-        <option value="0"{{ $roster->dep == "0" ? "selected=selected" : ""}}>Not Certified</option>
-        <option value="1"{{ $roster->dep == "1" ? "selected=selected" : ""}}>Mentor</option>
-        <option value="3"{{ $roster->dep == "3" ? "selected=selected" : ""}}>Certified</option>
-      </select>
-    </div>
-  </div>
-
-<br><br>
-
-
-<!-- Approach -->
-
-<div class="form-group col-md-2">
-  <label class="control-label" for="app">Arrival</label>
-  <div align="center">
-    <label class="control-label" for="app">Unrestricted</label>
-      <select name="app" class="form-control">
-        <option value="0"{{ $roster->app == "0" ? "selected=selected" : ""}}>Not Certified</option>
-        <option value="1"{{ $roster->app == "1" ? "selected=selected" : ""}}>Mentor</option>
-        <option value="2"{{ $roster->app == "2" ? "selected=selected" : ""}}>Solo</option>
-        <option value="3"{{ $roster->app == "3" ? "selected=selected" : ""}}>Certified</option>
-      </select>
-      <br>
-      <label class="control-label" for="app">Tier 2</label>
-      <select name="app_t2" class="form-control">
-        <option value="0"{{ $roster->app_t2 == "0" ? "selected=selected" : ""}}>Not Certified</option>
-        <option value="1"{{ $roster->app_t2 == "1" ? "selected=selected" : ""}}>Mentor</option>
-        <option value="2"{{ $roster->app_t2 == "2" ? "selected=selected" : ""}}>Solo</option>
-        <option value="3"{{ $roster->app_t2 == "3" ? "selected=selected" : ""}}>Certified</option>
-      </select>
-    </div>
-  </div>
-
-<br><br>
-<!-- Center -->
-<div class="form-group col-md-2">
-  <label class="control-label" for="ctr">Centre</label>
-  <div align="center">
-    <label class="control-label" for="ctr">Tier 2</label>
-    <select name="ctr" class="form-control">
-      <option value="0"{{ $roster->ctr == "0" ? "selected=selected" : ""}}>Not Certified</option>
-      <option value="1"{{ $roster->ctr == "1" ? "selected=selected" : ""}}>Training</option>
-      <option value="2"{{ $roster->ctr == "2" ? "selected=selected" : ""}}>Solo</option>
-      <option value="3"{{ $roster->ctr == "3" ? "selected=selected" : ""}}>Certified</option>
-    </select>
-  </div>
-  </div>
-</div>
-<br>
-
-<!--Remarks-->
-<div class="form-group">
-  <label class="control-label" for="remarks">Remarks</label><br>
-  <textarea name="remarks" rows="1" cols="5" class="form-control">{{ $roster->remarks }}
-  </textarea>
-</div>
-
-
-
-  <!--Active Status-->
-    <div class="form-row">
-        <div class="col-md-4">
+    <div class="card mt-3">
+        <div class="card-header">
+            <h1 class="blue-text h3 mb-1">Edit Controller Certifications</h1>
+            <p class="mb-0 text-muted">{{ $roster->full_name }} · CID {{ $cid }}</p>
         </div>
-        <div class="form-group col-md-2">
-            <label class="control-label" for"active">Active</label><br>
-            <select name="active" class="form-control" style="width:75px">
-                <option value="1"{{ $roster->active == "1" ? "selected=selected" : ""}}>Active</option>
-                <option value="0"{{ $roster->active == "0" ? "selected=selected" : ""}}>Not Active</option>
-            </select>
-        </div>
-        <!-- Rating Hours-->
-        <div class="form-group col-md-2">
-            <label class="control-label" for "rating_hours">Reset rating hours?</label><br>
-            <select style="width:75px" name="rating_hours" class="form-control">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
+
+        <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger" role="alert">
+                    <strong>The controller could not be updated!</strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('roster.editcontroller', $cid) }}">
+                @csrf
+
+                @php
+                    $columns = collect($positions)->flatMap(fn ($position, $name) => collect(['Unrestricted' => $position[0], 'Tier 2' => $position[1]])
+                        ->filter()
+                        ->map(fn ($field, $tier) => ['position' => $name, 'tier' => $tier, 'field' => $field, 'soloAllowed' => $position[2]])
+                        ->values());
+                    $toggles = [
+                        ['name' => 'active', 'label' => 'Roster status', 'current' => (string) (int) old('active', $roster->active), 'options' => ['1' => 'Active', '0' => 'Not Active']],
+                        ['name' => 'rating_hours', 'label' => 'Reset rating hours', 'current' => old('rating_hours', 'false'), 'options' => ['false' => 'No', 'true' => 'Yes'], 'disabled' => ! $roster->canResetRatingHours()],
+                    ];
+                    $loggedMinutes = (int) round(max(0, (float) $roster->rating_hours) * 60);
+                    $loggedTime = sprintf('%dh %02dm', intdiv($loggedMinutes, 60), $loggedMinutes % 60);
+                @endphp
+                <div class="alert roster-vatcan-note mb-3" role="note">
+                    Endorsements and Solo Certifications must also be updated on VATCAN!
+                </div>
+
+                <div class="table-responsive mb-3">
+                    <table class="table table-hover align-middle roster-cert-table">
+                        <thead>
+                            <tr>
+                                <th scope="col" rowspan="2"></th>
+                                @foreach ($columns->groupBy('position') as $position => $tiers)
+                                    <th scope="colgroup" colspan="{{ $tiers->count() }}" class="text-center roster-cert-position"><span>{{ $position }}</span></th>
+                                @endforeach
+                            </tr>
+                            <tr>
+                                @foreach ($columns as $column)
+                                    <th scope="col" class="text-center text-muted fw-normal small">{{ $column['tier'] }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($levels as $value => $label)
+                                <tr>
+                                    <th scope="row">{{ $label }}</th>
+                                    @foreach ($columns as $column)
+                                        @php($field = $column['field'])
+                                        <td class="text-center">
+                                            @if ($value !== 2 || $column['soloAllowed'])
+                                                <input type="radio" class="btn-check" name="{{ $field }}" id="{{ $field }}-{{ $value }}" value="{{ $value }}" @checked((int) old($field, $roster->{$field}) === $value) aria-label="{{ $column['position'] }} {{ $column['tier'] }}: {{ $label }}" required>
+                                                <label class="roster-cert-option" for="{{ $field }}-{{ $value }}" title="{{ $label }}">
+                                                    <i class="{{ $icons[$column['tier']][$value] }}" aria-hidden="true"></i>
+                                                </label>
+                                            @endif
+                                        </td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mb-3">
+                    <label for="remarks" class="form-label fw-bold">Remarks</label>
+                    <textarea name="remarks" id="remarks" rows="3" maxlength="2000" class="form-control border rounded px-2">{{ old('remarks', $roster->remarks) }}</textarea>
+                </div>
+
+                <div class="d-flex flex-wrap gap-4 mb-4 roster-edit-toggles">
+                    @foreach ($toggles as $toggle)
+                        <div>
+                            <div class="fw-bold mb-1" id="{{ $toggle['name'] }}-label">{{ $toggle['label'] }}</div>
+                            @php($disabled = $toggle['disabled'] ?? false)
+                            @if ($disabled)
+                                <input type="hidden" name="{{ $toggle['name'] }}" value="false">
+                            @endif
+                            <div class="btn-group" role="group" aria-labelledby="{{ $toggle['name'] }}-label">
+                                @foreach ($toggle['options'] as $value => $text)
+                                    <input type="radio" class="btn-check" name="{{ $toggle['name'] }}" id="{{ $toggle['name'] }}-{{ $value }}" value="{{ $value }}" @checked($disabled ? $value === 'false' : $toggle['current'] === (string) $value) @disabled($disabled) required>
+                                    <label class="btn roster-toggle-option" for="{{ $toggle['name'] }}-{{ $value }}">{{ $text }}</label>
+                                @endforeach
+                            </div>
+                            @if ($toggle['name'] === 'active' && (int) $roster->active === 1)
+                                {{-- Only an active controller being deactivated is emailed (RosterController::editController). --}}
+                                <div class="small text-danger mt-1 roster-inactive-warning">Saving will mark this controller inactive and email them!</div>
+                            @endif
+                            @if ($toggle['name'] === 'rating_hours' && $disabled)
+                                <div class="small text-muted mt-1">This controller is not currently under consolidation!</div>
+                            @elseif ($toggle['name'] === 'rating_hours')
+                                <div class="small text-muted mt-1">
+                                    {{ $loggedTime }} logged at the current rating (counts towards consolidation)!
+                                </div>
+                                <div class="small text-danger roster-reset-warning">Saving will reset these hours to 0!</div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    Save Controller
+                </button>
+            </form>
         </div>
     </div>
-@csrf
-<!-- Button -->
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="submit"></label>
-        <div class="col-md-4">
-            <button name="submit" class="btn btn-success">Submit</button>
-        </div>
-    </div>
-    </fieldset>
-  </form>
 </div>
-
 @stop

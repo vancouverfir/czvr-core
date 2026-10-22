@@ -13,9 +13,9 @@ return new class extends Migration
             $table->unsignedInteger('user_cid');
             $table->foreign('user_cid')->references('id')->on('users');
             $table->boolean('is_instructor')->nullable();
-            $table->boolean('is_local');
-            $table->boolean('is_radar');
-            $table->boolean('is_enroute');
+            $table->bigInteger('is_local');
+            $table->bigInteger('is_radar');
+            $table->bigInteger('is_enroute');
             $table->timestamps();
         });
     }

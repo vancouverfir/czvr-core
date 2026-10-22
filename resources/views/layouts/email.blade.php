@@ -10,16 +10,14 @@
 
 <title></title>
 
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600&display=swap" rel="stylesheet">
-
 <style>
 	body, table, td, a {
-	-webkit-text-size-adjust: 100%; 
+	-webkit-text-size-adjust: 100%;
 	-ms-text-size-adjust: 100%;
 	}
 	table { border-collapse: collapse !important; width: 100%; }
 	img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; max-width: 100%; }
-	body { margin: 0; padding: 0; font-family: 'Source Sans Pro', Arial, sans-serif; color: #333333; }
+	body { margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; color: #333333; }
 	a { color: #0068A5; text-decoration: underline; }
 	p { margin: 0 0 15px 0; line-height: 1.5; }
 
@@ -73,9 +71,14 @@
 				<p style="margin:5px 0;">
 				Please do not reply to this email! <a href="{{config('app.url')}}" target="_blank" rel="noopener">Manage your membership or subscriptions</a>
 				</p>
+				@isset($unsubscribeUrl)
 				<p style="margin:5px 0;">
-				<a href="{{config('app.url')}}" target="_blank">Visit</a> | 
-				<a href="{{config('app.url')}}/staff" target="_blank">Contact Us</a> | 
+				Don't want these emails? <a href="{{ $unsubscribeUrl }}" target="_blank" rel="noopener">Unsubscribe</a>
+				</p>
+				@endisset
+				<p style="margin:5px 0;">
+				<a href="{{config('app.url')}}" target="_blank">Visit</a> |
+				<a href="{{config('app.url')}}/staff" target="_blank">Contact Us</a> |
 				<a href="{{config('app.url')}}/privacy" target="_blank">Privacy Policy</a>
 				</p>
 			</td>

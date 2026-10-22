@@ -14,13 +14,12 @@ return [
     |
     */
 
-    'mailgun' => [
-        'domain' => env('MAILGUN_DOMAIN'),
-        'secret' => env('MAILGUN_SECRET'),
+    'postmark' => [
+        'key' => env('POSTMARK_API_KEY'),
     ],
 
-    'postmark' => [
-        'token' => env('POSTMARK_TOKEN'),
+    'resend' => [
+        'key' => env('RESEND_API_KEY'),
     ],
 
     'ses' => [
@@ -28,18 +27,7 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    'sparkpost' => [
-        'secret' => env('SPARKPOST_SECRET'),
-        'guzzle' => [
-            'verify' => true,
-            'decode_content' => true,
-        ],
-        'options' => [
-            'open_tracking' => false,
-            'click_tracking' => false,
-            'transactional' => true,
-        ],
-    ],
+
     'discord' => [
         'token' => env('DISCORD_BOT_TOKEN'),
         'client_id' => env('DISCORD_KEY'),
@@ -47,4 +35,17 @@ return [
         'redirect' => env('DISCORD_REDIRECT_URI'),
         'redirect_join' => env('DISCORD_REDIRECT_URI_JOIN'),
     ],
+
+    'vatcan' => [
+        'key' => env('VATCAN_API_KEY'),
+    ],
+
+    'checkwx' => [
+        'key' => env('AIRPORT_API_KEY'),
+    ],
+
+    'booking' => [
+        'key' => env('BOOKING_API_KEY'),
+    ],
+
 ];

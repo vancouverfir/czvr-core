@@ -379,6 +379,14 @@ def conv_rating(rating):
     except KeyError:
         raise ValueError(f"Not a valid rating {rating}")
 
+def give_controller_role(cur, cid):
+    cur.execute("SELECT id FROM roles WHERE slug = 'controller'")
+    row = cur.fetchone()
+    if row is None:
+        raise RuntimeError("The controller role is missing!")
+    cur.execute("INSERT IGNORE INTO users_roles (user_id, role_id) VALUES (?, ?)", (cid, row[0]))
+
+
 def trim_roster():
     """
     Cleans up the roster and returns a list of players
@@ -394,9 +402,12 @@ def trim_roster():
             print("invalid CID:", db_cid)
             bye.execute("DELETE FROM session_logs WHERE roster_member_id=?", (db_cid,))
             bye.execute("DELETE FROM roster WHERE user_id=?", (db_cid,))
-            bye.execute(
-                "UPDATE users SET permissions = ? WHERE id = ?", ("0", db_cid))
             print("Invalid CID Removed from DB... BUH BYE")
+
+    placeholders = ", ".join("?" * len(CIDSTOR))
+    bye.execute(f"DELETE FROM users_roles WHERE user_id NOT IN ({placeholders})", CIDSTOR)
+    bye.execute(f"DELETE FROM users_permissions WHERE user_id NOT IN ({placeholders})", CIDSTOR)
+    print("Removed roles from users not on the VATCAN roster!")
 
 async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_short):
     """
@@ -407,27 +418,24 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
     try:
         cur = connectSQL.cursor()
 
-        cur.execute("SELECT permissions FROM users WHERE id = ?", (cid,))
-        row = cur.fetchone()
-        permissions = row[0] if row else None
+        cur.execute("SELECT id FROM users WHERE id = ?", (cid,))
 
-        if permissions is not None:
-            print(f"User {cid} exists with permissions: {permissions}")
+        if cur.fetchone() is not None:
+            print(f"User {cid} exists, updating")
             cur.execute("""
                 UPDATE users 
                 SET email=?, lname=?, rating_id=?, rating_short=?, visitor='0'
                 WHERE id=?
             """, (email, lname, rating_id, rating_short, cid))
 
-            if permissions == 0:
-                cur.execute("UPDATE users SET permissions='1' WHERE id=?", (cid,))
-
         else:
             print(f"User {cid} not in DB. Inserting new user!")
             cur.execute("""
-                INSERT INTO users (id, email, fname, lname, rating_id, rating_short, permissions, display_fname)
-                VALUES (?, ?, ?, ?, ?, ?, '1', ?)
+                INSERT INTO users (id, email, fname, lname, rating_id, rating_short, display_fname)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (cid, email, fname, lname, rating_id, rating_short, fname))
+
+        give_controller_role(cur, cid)
 
 
         cur.execute("SELECT user_id FROM roster WHERE cid = ?", (cid,))
@@ -451,12 +459,6 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
                 VALUES (?, ?, ?, 'home', '1', '0')
             """, (cid, cid, fullname))
 
-        if permissions:
-            role_map = {2: 'mentor', 3: 'ins', 4: 'staff', 5: 'exec'}
-            staff_role = role_map.get(permissions) if permissions else None
-            print(f"Assigning staff role '{staff_role}' to {cid}")
-            cur.execute("UPDATE roster SET staff=? WHERE cid=?", (staff_role, cid))
-
         connectSQL.commit()
 
     except Exception as e:
@@ -476,28 +478,24 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, ratin
     try:
         cur = connectSQL.cursor()
 
-        cur.execute("SELECT permissions FROM users WHERE id=?", (cid,))
-        row = cur.fetchone()
-        permissions = row[0] if row else None
+        cur.execute("SELECT id FROM users WHERE id=?", (cid,))
 
-        if permissions is not None:
-            print(f"User {cid} exists with permissions: {permissions}")
+        if cur.fetchone() is not None:
+            print(f"User {cid} exists, updating")
             cur.execute("""
                 UPDATE users 
                 SET email=?, lname=?, rating_id=?, rating_short=?, visitor='1'
                 WHERE id=?
             """, (email, lname, rating_id, rating_short, cid))
 
-
-            if permissions == 0:
-                cur.execute("UPDATE users SET permissions='1' WHERE id=?", (cid,))
-
         else:
             print(f"User {cid} not in DB. Inserting new visitor.")
             cur.execute("""
-                INSERT INTO users (id, email, fname, lname, rating_id, rating_short, permissions, display_fname, visitor)
-                VALUES (?, ?, ?, ?, ?, ?, '1', ?, '1')
+                INSERT INTO users (id, email, fname, lname, rating_id, rating_short, display_fname, visitor)
+                VALUES (?, ?, ?, ?, ?, ?, ?, '1')
             """, (cid, email, fname, lname, rating_id, rating_short, fname))
+
+        give_controller_role(cur, cid)
 
 
         cur.execute("SELECT user_id FROM roster WHERE cid = ?", (cid,))

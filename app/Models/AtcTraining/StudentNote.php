@@ -9,22 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class StudentNote extends Model
 {
     protected $fillable = [
-        'student_id', 'author_id', 'title', 'content', 'created_at',
+        'student_id', 'author_cid', 'title', 'content', 'created_at',
     ];
 
-    public function user(): BelongsTo
+    public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function studentnote(): BelongsTo
-    {
-        return $this->belongsTo(Instructor::class);
-    }
-
-    public function getInstructorAttribute()
-    {
-        return Instructor::whereId($this->author_id)->firstOrFail();
+        return $this->belongsTo(User::class, 'author_cid');
     }
 
     public function student(): BelongsTo

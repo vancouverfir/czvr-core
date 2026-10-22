@@ -12,7 +12,8 @@
     background: transparent;
     border: none;
     box-shadow: none;
-    color: white;
+    color: var(--czvr-text);
+    text-shadow: 0 1px 2px #fff;
 }
 </style>
 
@@ -21,7 +22,7 @@
     <div id="map" style="flex: 1; height: 800px;"></div>
 
     <!-- Control Panel  -->
-    <div id="controlPanel" style="width: 300px; display: block; text-align: center; background-color: #1e1e1e; padding: 20px; border-radius: 8px; color: #fff;">
+    <div id="controlPanel" style="width: 300px; display: block; text-align: center; background-color: #fff; padding: 20px; border: 1px solid #dce5dc; border-radius: 8px; color: #202a23; box-shadow: 0 8px 24px rgba(28, 49, 31, 0.08);">
         <div style="margin-bottom: 10px;">
             <label for="sectorSelect">Sector</label>
             <select id="sectorSelect" style="width: 100%; padding: 10px;"></select>
@@ -47,12 +48,8 @@
 </div>
 
 <!-- Include Leaflet.js -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<!-- Include noUiSlider -->
-<link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
+<link rel="stylesheet" href="{{ asset('vendor/leaflet/leaflet.css') }}" />
+<script src="{{ asset('vendor/leaflet/leaflet.js') }}"></script>
 
 <script>
     const map = L.map('map', {
@@ -61,7 +58,7 @@
         zoom: 5
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
         attribution: '',
         maxZoom: 19
     }).addTo(map);

@@ -13,7 +13,7 @@ class UserNote extends Model
     protected $table = 'user_notes';
 
     protected $fillable = [
-        'user_id', 'position', 'author', 'author_name', 'content', 'confidential', 'timestamp',
+        'user_id', 'author_id', 'author', 'author_name', 'content', 'confidential', 'timestamp',
     ];
 
     /**
@@ -30,5 +30,15 @@ class UserNote extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function setAuthorAttribute(int|string $authorId): void
+    {
+        $this->attributes['author_id'] = $authorId;
     }
 }

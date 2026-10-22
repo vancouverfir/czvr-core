@@ -1,180 +1,510 @@
-@extends('layouts.dashboard')
+@extends('layouts.master')
 
 @section('content')
 
+@include('partials.vendor.dashboard-tour')
 @section('title', 'Dashboard - Vancouver FIR')
 
 <style>
-    .accordion {
-        background-color: #191919;
-        color: #fff;
+    .dashboard-page {
+        background: radial-gradient(circle at 8% 0%, rgba(54, 122, 37, 0.08), transparent 24rem), var(--czvr-canvas);
+        color: var(--czvr-text);
+        min-height: 70vh;
+    }
+
+    .dashboard-shell { max-width: 1180px; }
+
+    .dashboard-header {
+        align-items: center;
+        background: var(--czvr-green-dark);
+        border-radius: 0.75rem;
+        display: flex;
+        gap: 1.5rem;
+        justify-content: space-between;
+        overflow: hidden;
+        padding: 1.75rem 1.5rem;
+        position: relative;
+    }
+
+    .dashboard-header::after {
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 50%;
+        content: "";
+        height: 13rem;
+        position: absolute;
+        right: -4rem;
+        top: -6rem;
+        width: 13rem;
+    }
+
+    .dashboard-header h1,
+    .dashboard-header p {
+        color: var(--czvr-white) !important;
+        margin-bottom: 0;
+    }
+
+    .dashboard-header-copy,
+    .dashboard-tour-button {
+        position: relative;
+        z-index: 1;
+    }
+
+    .dashboard-tour-button {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 0.5rem;
+        color: var(--czvr-white);
+        font-weight: 500;
+        padding: 0.45rem 0.7rem;
+        text-decoration: none;
+    }
+
+    .dashboard-tour-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--czvr-white);
+        transform: translateY(-1px);
+    }
+
+    .dashboard-panel {
+        background: var(--czvr-surface);
+        border: 1px solid var(--czvr-border);
+        border-radius: 0.75rem;
+        margin-top: 1rem;
+        overflow: hidden;
+    }
+
+    .dashboard-panel .card {
+        border: 0;
+        border-radius: 0 !important;
+        box-shadow: none;
+        flex: 1 1 auto;
+    }
+
+    .dashboard-overview > [class*="col-"] {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dashboard-identity { min-height: 7rem; }
+    .dashboard-avatar-control { min-width: 5.75rem; }
+
+    .dashboard-avatar {
+        border: 4px solid var(--czvr-green-soft);
+        box-shadow: 0 8px 20px rgba(28, 49, 31, 0.12);
+        height: 4.75rem;
+        object-fit: cover;
+        width: 4.75rem;
+    }
+
+    .dashboard-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin: 0.65rem 0;
+    }
+
+    .dashboard-meta span {
+        background: var(--czvr-surface-muted);
+        border: 1px solid var(--czvr-border);
+        border-radius: 99rem;
+        color: var(--czvr-text-muted);
+        font-size: var(--czvr-font-size-base);
+        font-weight: 500;
+        padding: 0.28rem 0.55rem;
+    }
+
+    .dashboard-account-settings,
+    .dashboard-management-disclosure {
+        border-top: 1px solid var(--czvr-border);
+    }
+
+    .dashboard-account-settings {
+        margin-top: 1rem;
+        padding: 0.75rem 0 0.85rem;
+    }
+
+    .dashboard-account-settings > summary,
+    .dashboard-management-disclosure > summary {
+        align-items: center;
+        color: var(--czvr-green-dark);
         cursor: pointer;
-        padding: 2%;
-        width: 100%;
-        border: none;
-        text-align: left;
-        outline: none !important;
-        font-size: 12px;
-        transition: 0.4s;
+        display: flex;
+        font-weight: 500;
+        justify-content: space-between;
+        list-style: none;
     }
 
-    .accordion:hover {
-        background-color: #2E2F2F;
-        color: #fff;
+    .dashboard-management-disclosure > summary { padding: 0.8rem 1rem; }
+    .dashboard-management-disclosure[open] > summary { border-bottom: 1px solid var(--czvr-border); }
+
+    .dashboard-account-settings > summary::-webkit-details-marker,
+    .dashboard-management-disclosure > summary::-webkit-details-marker {
+        display: none;
     }
 
-    .active {
-        background-color: #444;
-        color: #fff;
-    }
-
-    .accordion:after {
-        font-family: "Font Awesome 5 Free";
-        content: '\f104';
-        float: right;
-        font-weight: 900;
-    }
-
-    .active:after {
-        font-family: "Font Awesome 5 Free";
+    .dashboard-account-settings > summary::after,
+    .dashboard-management-disclosure > summary::after {
         content: "\f107";
+        font-family: "Font Awesome 7 Free";
+        font-weight: 900;
+        transition: transform 160ms ease;
+    }
+
+    .dashboard-account-settings[open] > summary::after,
+    .dashboard-management-disclosure[open] > summary::after {
+        transform: rotate(180deg);
+    }
+
+    .accordion {
+        background-color: var(--czvr-surface-muted);
+        border: 1px solid var(--czvr-border);
+        border-radius: 0.55rem;
+        color: var(--czvr-text);
+        font-size: var(--czvr-font-size-base);
+        font-weight: 500;
+        margin-top: 0.3rem;
+        outline: none !important;
+        padding: 0.7rem 0.85rem;
+        text-align: left;
+        transition: 0.2s;
+        width: 100%;
+    }
+
+    .accordion:hover { background-color: var(--czvr-green-soft); }
+    .accordion:focus-visible { box-shadow: 0 0 0 0.2rem var(--czvr-focus); }
+
+    .accordion.active {
+        background-color: var(--czvr-green-soft);
+        color: var(--czvr-green-dark);
+    }
+
+    .accordion::after {
+        content: "\f104";
+        float: right;
+        font-family: "Font Awesome 7 Free";
         font-weight: 900;
     }
+
+    .accordion.active::after { content: "\f107"; }
 
     .panel {
-        background-color: #2E2F2F;
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.1s ease-out;
     }
 
-    .introjs-tooltip {
-        background: #2E2F2F !important;
-        color: #fff !important;
+
+    .panel .card-body {
+        padding: 0.45rem 0.85rem;
     }
 
-    .introjs-button {
-        background: #007bff !important;
-        color: #fff !important;
-        box-shadow: none !important;
-        text-shadow: none !important;
-        filter: none !important;
+    .panel .card-body > :last-child,
+    .panel .card-body form > :last-child {
+        margin-bottom: 0;
     }
 
-    .introjs-helperLayer,
-    .introjs-overlay {
-        background: rgba(0, 0, 0, 0.6) !important;
-        box-shadow: 0 0 0 2px #007bff !important;
+    .dashboard-card-title {
+        color: var(--czvr-text);
+        margin-bottom: 0.75rem;
+    }
+
+    .dashboard-statuses {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .dashboard-statuses .badge,
+    .dashboard-activity .badge {
+        font-size: var(--czvr-font-size-base);
+        padding: 0.45rem 0.6rem;
+    }
+
+    .dashboard-activity {
+        border-top: 1px solid var(--czvr-border);
+        margin-top: 0.85rem;
+        padding-top: 0.85rem;
+    }
+
+    .dashboard-activity h3 {
+        font-size: 0.9rem;
+        margin-bottom: 0.45rem;
+    }
+
+    .dashboard-activity p {
+        color: var(--czvr-text-muted);
+        font-size: var(--czvr-font-size-base) !important;
+        margin: 0.45rem 0 0;
+    }
+
+    .dashboard-support-bar {
+        align-items: center;
+        border-top: 1px solid var(--czvr-border);
+        display: flex;
+        justify-content: space-between;
+        padding: 0.65rem 0.8rem;
+    }
+
+    .dashboard-support-bar small {
+        color: var(--czvr-text-muted);
+        display: block;
+    }
+
+    .dashboard-support-actions {
+        display: flex;
+        flex-wrap: wrap;
+        font-weight: 500;
+        gap: 0.75rem;
+    }
+
+    .dashboard-workspace { border-top: 1px solid var(--czvr-border); }
+
+    .dashboard-inline-section {
+        align-items: center;
+        display: flex;
+        gap: 1rem;
+        justify-content: space-between;
+    }
+
+    .dashboard-inline-section .dashboard-card-title {
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+
+    .dashboard-event-empty {
+        align-items: center;
+        color: var(--czvr-text-muted);
+        display: flex;
+        flex: 1 1 auto;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.25rem;
+        justify-content: flex-end;
+    }
+
+    .dashboard-event {
+        align-items: flex-start;
+        border-bottom: 1px solid var(--czvr-border);
+        display: flex;
+        gap: 0.8rem;
+        padding: 0.85rem 0;
+    }
+
+    .dashboard-event:last-child { border-bottom: 0; }
+
+    .dashboard-event-date {
+        background: var(--czvr-green-soft);
+        border-radius: 0.6rem;
+        color: var(--czvr-green-dark);
+        flex: 0 0 3.2rem;
+        font-weight: 500;
+        padding: 0.5rem 0.35rem;
+        text-align: center;
+    }
+
+    .dashboard-event-date small {
+        display: block;
+        font-size: var(--czvr-font-size-base);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .dashboard-management {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        padding: 0.75rem 1rem 1rem;
+    }
+
+    .dashboard-tool {
+        background: var(--czvr-surface);
+        border: 1px solid var(--czvr-border);
+        border-radius: 0.45rem;
+        color: var(--czvr-text);
+        font-weight: 500;
+        line-height: 1.15;
+        padding: 0.45rem 0.65rem;
+        text-decoration: none;
+        transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .dashboard-tool:hover {
+        border-color: rgba(54, 122, 37, 0.45);
+        box-shadow: 0 10px 24px rgba(28, 49, 31, 0.1);
+        color: var(--czvr-green-dark);
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 575.98px) {
+        .dashboard-shell {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        .dashboard-header {
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1.5rem 1.25rem;
+        }
+
+        .dashboard-header-copy {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dashboard-header-copy h1 {
+            font-size: 1.45rem;
+            overflow-wrap: anywhere;
+        }
+
+        .dashboard-tour-button {
+            flex-shrink: 0;
+            font-size: var(--czvr-font-size-base);
+            padding: 0.25rem 0.55rem;
+            white-space: nowrap;
+        }
+
+        .dashboard-support-bar,
+        .dashboard-inline-section {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .dashboard-support-bar { gap: 0.5rem; }
+
+        .dashboard-inline-section .dashboard-event-empty {
+            justify-content: space-between;
+            width: 100%;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .dashboard-overview > [class*="col-"] + [class*="col-"] {
+            border-left: 1px solid var(--czvr-border);
+        }
     }
 </style>
 
-<div style="background-color: #222">
-    <div class="container py-4">
-        <h1 data-step="1" data-intro="Welcome to your Dashboard! This is your central hub for all things Vancouver. Here you can interact with our FIR, and manage your account!" class="font-weight-bold white-text">Dashboard</h1>
-        <a style="color: white" href="javascript:void(0);" onclick="javascript:introJs().setOption('showProgress', true).start();">Dashboard Tutorial</a>
-        <br class="my-2">
-        <div class="row">
-            <div class="col">
+<div class="dashboard-page">
+    <div class="container dashboard-shell py-4">
+        <header class="dashboard-header" data-step="1" data-intro="Welcome to your Dashboard! This is your central hub for all things Vancouver. Here you can interact with our FIR, and manage your account!">
+            <div class="dashboard-header-copy">
+                <h1 class="fw-bold">Welcome to Vancouver, {{ auth()->user()->display_fname }}!</h1>
+            </div>
+            <a class="dashboard-tour-button" href="javascript:void(0);" onclick="startDashboardTour();">
+                <i class="fas fa-compass me-1"></i>Tour
+            </a>
+        </header>
+
+        <div class="dashboard-panel">
+        <div class="row g-0 align-items-stretch dashboard-overview">
+            <div class="col-12 {{ $profile ? 'col-xl-7' : '' }}">
                 <div data-step="2" data-intro="Here is where you manage and view the data we store on you and your Vancouver FIR Profile" class="card">
                     <div class="card-body pb-0">
-                        <h3 class="font-weight-bold blue-text pb-2">Profile</h3>
-                        <div class="row">
-                            <div class="col" data-step="3" data-intro="Here is an overview of your profile, including your CZVR roles! You can change the way your name is displayed by clicking on the 'Change display name' button [CoC A4(b)]!">
-                                <h5 class="font-weight-bold card-title"> {{ auth()->user()->fullName('FLC') }} </h5>
-                                <h6 class="card-subtitle text-muted mb-2"> {{ auth()->user()->rating_GRP }} ({{ auth()->user()->rating_short }}) </h6>
-                                <p><a class="font-italic" style="color: #fff;" data-toggle="modal" data-target="#ratingChange">Rating incorrect?</a></p>
-                                Role: {{ auth()->user()->permissions() }} <br />
-                                @if (auth()->user()->staffProfile)
-                                    Staff Role: {{ auth()->user()->staffProfile->position }}
-                                @endif
-                                <hr>
-                                <div data-step="4" data-intro="Here you can join our Discord server or if you wish to do so unjoin!">
-                                    <h5 class="font-weight-bold blue-text mt-2">Discord</h5>
-                                    <hr>
-                                    @if (!auth()->user()->hasDiscord())
-                                        <p class="mt-1"><i class="fa fa-times-circle" style="color:red"></i> You haven't joined our Discord yet! </p>
-                                        <a href="#" class="btn-sm btn-primary m-0 mt-1" data-toggle="modal" data-target="#discordModal"> Join Vancouver FIR Discord </a>
-                                        <hr>
-                                    @else
-                                        <p class="mt-1"><i class="fa fa-check-circle" style="color:green"> </i> <img style="border-radius:50%; height: 30px;" class="img-fluid" src="{{ auth()->user()->getDiscordAvatar() }}" alt="">&nbsp;&nbsp;{{ auth()->user()->getDiscordUser()->username }}
-                                        </p>
-                                        <a href="#" class="btn-sm btn-danger m-0 mt-1" data-toggle="modal" data-target="#discordModal">Unlink</a>
-                                        <hr>
+                        <div class="row g-3 align-items-center dashboard-identity">
+                            <div data-step="5" data-intro="You can change your avatar here! Your avatar is available when people view your account! This will likely only be staff members, unless you sign up for an event or similar activity!" class="col-auto dashboard-avatar-control">
+                                <div class="text-center">
+                                    <img class="dashboard-avatar rounded-circle mb-2" src="{{ auth()->user()->avatar() }}" alt="{{ auth()->user()->fullName('FLC') }}">
+                                    <div>
+                                        <a role="button" data-bs-toggle="modal" data-bs-target="#changeAvatar" class="btn btn-sm btn-primary" href="#">Edit photo</a>
+                                    </div>
+                                    @if (!auth()->user()->isAvatarDefault())
+                                        <form method="POST" action="{{route('users.resetavatar')}}" class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-sm btn-link text-danger mt-1">Reset</button>
+                                        </form>
                                     @endif
                                 </div>
                             </div>
-
-                            <div data-step="5" data-intro="You can change your avatar here! Your avatar is available when people view your account! This will likely only be staff members, unless you sign up for an event or similar activity!" class="col">
-                                <h5 class="blue-text font-weight-bold card-title text-center" style="padding-bottom: 2%">Avatar</h5>
-                                <div class="text-center">
-                                    <img src="{{ auth()->user()->avatar() }}" style="width: 125px; height: 125px; margin-bottom: 10px; border-radius: 50%;">
+                            <div class="col" data-step="3" data-intro="Here is an overview of your profile, including your CZVR roles! You can change the way your name is displayed by clicking on the 'Change display name' button [CoC A4(b)]!">
+                                <h3 class="h4 fw-bold mb-1">{{ auth()->user()->fullName('FLC') }}</h3>
+                                <div class="dashboard-meta">
+                                    <span>{{ auth()->user()->rating_GRP }} ({{ auth()->user()->rating_short }})</span>
+                                    <span>{{ auth()->user()->accessLabel() }}</span>
+                                    @if (auth()->user()->staffProfile)
+                                        <span>{{ auth()->user()->staffProfile->position }}</span>
+                                    @endif
                                 </div>
-
-                                <center><a role="button" data-toggle="modal" data-target="#changeAvatar" class="btn btn-sm btn-primary" href="#">Change</a></center>
-                                @if (!auth()->user()->isAvatarDefault())
-                                    <center><a role="button" class="btn btn-sm btn-danger" href="{{route('users.resetavatar')}}">Reset</a></center>
-                                @endif
+                                <a class="small fw-bold" data-bs-toggle="modal" data-bs-target="#ratingChange" href="#">
+                                    Rating incorrect?
+                                </a>
                             </div>
                         </div>
-                        <ul class="list-unstyled">
+                        <details class="dashboard-account-settings">
+                            <summary>
+                            <span>
+                                Account settings
+                            </span>
+                            </summary>
+                        <ul class="list-unstyled mb-0 mt-2">
                             <li class="mb-1">
-                                &nbsp;
-                                <button class="accordion">Change Display Name</button>
-                                <div class="panel">
+                                <button type="button" class="accordion" aria-expanded="false" aria-controls="discordPanel" data-step="4" data-intro="Connect or disconnect your Discord account here.">Discord connection</button>
+                                <div class="panel" id="discordPanel">
+                                    <div class="card-body">
+                                        @if (!auth()->user()->hasDiscord())
+                                            <p class="small text-muted mb-2"><i class="fa fa-circle-xmark text-danger me-1"></i> No Discord account linked</p>
+                                            <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#discordModal">Link Discord</a>
+                                        @else
+                                            <p class="small mb-2"><i class="fa fa-check-circle text-success me-1"></i><img style="border-radius:50%; height: 24px;" class="img-fluid me-1" src="{{ auth()->user()->getDiscordAvatar() }}" alt="">{{ auth()->user()->getDiscordUser()->username }}</p>
+                                            <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#discordModal">Unlink</a>
+                                        @endif
+                                    </div>
+                                </div>
+                                <button type="button" class="accordion" aria-expanded="false" aria-controls="displayNamePanel">Change Display Name</button>
+                                <div class="panel" id="displayNamePanel">
                                     <form method="POST" action="{{ route('users.changedisplayname') }}">
-                                        <div class="card-body pb-0">
+                                        <div class="card-body">
                                             @csrf
                                             <div class="form-group">
-                                                <h5 class="font-weight-bold blue-text">First Name</h5>
+                                                <h5 class="fw-bold blue-text">First Name</h5>
                                                 <input type="text" class="form-control"
                                                     value="{{ auth()->user()->display_fname }}" name="display_fname"
                                                     id="input_display_fname">
-                                                <br>
                                                 <script>
                                                     function resetToCertFirstName() {
                                                         $("#input_display_fname").val("{{ auth()->user()->fname }}")
                                                     }
                                                 </script>
                                             </div>
-                                            <div class="form-group">
-                                                <h5 class="font-weight-bold blue-text">Display Options</h5>
-                                                <select name="format" class="custom-select">
+                                            <div class="form-group mt-2">
+                                                <h5 class="fw-bold blue-text">Display Options</h5>
+                                                <select name="format" class="form-select">
                                                     <option value="showall"> Show first name, last name, and CID (e.g. {{ auth()->user()->display_fname }} {{ auth()->user()->lname }} {{ auth()->id() }}) </option>
                                                     <option value="showfirstcid"> Show first name and CID (e.g. {{ auth()->user()->display_fname }} {{ auth()->id() }}) </option>
                                                     <option value="showcid"> Show CID only (e.g. {{ auth()->id() }}) </option>
                                                 </select>
-                                                <br>
-                                                <input type="submit" class="btn btn-sm btn-success ml-0 mt-4" value="Save">
-                                                <a class="btn btn-sm btn-primary mt-4" role="button" onclick="resetToCertFirstName()">
+                                                <input type="submit" class="btn btn-sm btn-success ms-0 mt-2" value="Save">
+                                                <a class="btn btn-sm btn-primary mt-2" role="button" onclick="resetToCertFirstName()">
                                                     <span> Reset to CERT first name </span>
                                                 </a>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
-                                <button class="accordion">Biography Editor</button>
-                                <div class="panel">
-                                    <div class="card-body pb-0">
-                                        <h5 class="font-weight-bold blue-text">Your Biography</h5>
+                                <button type="button" class="accordion" aria-expanded="false" aria-controls="biographyPanel">Biography Editor</button>
+                                <div class="panel" id="biographyPanel">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold blue-text">Your Biography</h5>
                                         <form method="post" action="{{ route('me.editbio') }}">
                                             @csrf
-                                            <textarea name="bio" style="height: 100%;" class="form-control">{{ auth()->user()->bio }}</textarea> <br>
-                                            <p>Please ensure this complies with the VATSIM Code of Conduct.</p>
-                                            <input type="submit" class="btn btn-sm btn-success ml-0" value="Save">
-                                        </form><br>
+                                            <textarea name="bio" style="height: 100%;" class="form-control">{{ auth()->user()->bio }}</textarea>
+                                            <p class="mt-2 mb-2">Please ensure this complies with the VATSIM Code of Conduct.</p>
+                                            <input type="submit" class="btn btn-sm btn-success ms-0" value="Save">
+                                        </form>
                                     </div>
                                 </div>
-                                <button class="accordion">Your Preferences</button>
-                                <div class="panel">
-                                    <div class="card-body pb-0">
-                                        <h5 class="font-weight-bold blue-text">Current Subscription Status</h5>
+                                <button type="button" class="accordion" aria-expanded="false" aria-controls="preferencesPanel">Your Preferences</button>
+                                <div class="panel" id="preferencesPanel">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold blue-text">Current Subscription Status</h5>
                                         @if (auth()->user()->gdpr_subscribed_emails == 0)
-                                            <h3><span class="badge badge-danger p-2">Not subscribed</span></h3>
+                                            <h3><span class="badge text-bg-danger p-2">Not subscribed</span></h3>
                                         @else
-                                            <h3><span class="badge badge-success p-2">Subscribed</span></h3>
+                                            <h3><span class="badge text-bg-success p-2">Subscribed</span></h3>
                                         @endif
                                         <hr>
-                                        <h5 class="font-weight-bold">What Does This Mean?</h5>
+                                        <h5 class="fw-bold">What Does This Mean?</h5>
                                         <p> When you subscribe to our email service, you allow the Vancouver FIR to send you 'promotional' emails as defined by the European Union GDPR. These emails are typically not necessary to your continued participation in the FIR or holding an account with us on our system.<br /> Some examples would include:
                                         </p>
                                         <ul style="list-style: square">
@@ -183,296 +513,185 @@
                                             <li>Updates from other staff members</li>
                                             <li>Event notifications</li>
                                         </ul>
-                                        <br>
                                         <p>To learn more about how we manage your data, please read our <a href="{{ url('/privacy') }}">privacy policy!</a></p>
-                                        <br>
                                         @if (auth()->user()->gdpr_subscribed_emails == 0)
-                                            <a role="button" class="btn btn-sm btn-success ml-0 mt-3" href="{{ url('/dashboard/emailpref/subscribe') }}">Subscribe to Vancouver Emails Now!</a>
+                                            <form method="POST" action="{{ url('/dashboard/emailpref/subscribe') }}" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-sm btn-success ms-0">Subscribe to Vancouver Emails Now!</button>
+                                            </form>
                                         @else
-                                            <a role="button" class="btn btn-sm btn-danger ml-0 mt-3" href="{{ url('/dashboard/emailpref/unsubscribe') }}">Unsubscribe</a>
+                                            <form method="POST" action="{{ url('/dashboard/emailpref/unsubscribe') }}" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-sm btn-danger ms-0">Unsubscribe</button>
+                                            </form>
                                         @endif
                                     </div>
                                 </div>
                             </li>
                         </ul>
+                        </details>
                     </div>
                 </div>
-                <br />
-                @if (auth()->user()->permissions >= 1)
-                    <div data-step="6" data-intro="If you have any enquires or issues for the staff, feel free to make a ticket via the ticketing system!" class="card">
-                        <div class="card-body">
-                            <h3 class="font-weight-bold blue-text pb-2">Support</h3>
-                            <ul class="list-unstyled mb-0 mt-2">
-                                <h5 class="font-weight-bold">Tickets</h5>
-                                @if (count($openTickets) < 1)
-                                    You have no open support tickets
-                                    <br /><br />
-                                @else
-                                    <h5 style="font-weight: bold">
-                                        @if (count($openTickets) == 1)
-                                            1 open ticket
-                                        @else
-                                            {{ count($openTickets) }} open tickets
-                                        @endif
-                                    </h5>
-                                    <div class="list-group">
-                                        @foreach ($openTickets as $ticket)
-                                            <a href="{{ url('/dashboard/tickets/' . $ticket->ticket_id) }}" class="list-group-item list-group-item-action rounded-0">{{ $ticket->title }} <br />
-                                                <small title="{{ $ticket->updated_at }} (GMT+0, Zulu)">Last updated {{ $ticket->updated_at_pretty() }}</small>
-                                            </a>
-                                        @endforeach
-                                    </div>
-                                    <br>
-                                @endif
-                                @if (auth()->user()->permissions >= 4)
-                                    <br>
-                                    <h5 class="font-weight-bold">Staff Tickets</h5>
-
-                                    @if (count($staffTickets) < 1)
-                                        You have no open <b>staff</b> tickets
-                                        <br>
-                                    @else
-                                        <h5 style="font-weight: bold">
-                                            @if (count($staffTickets) == 1)
-                                                1 open staff ticket
-                                            @else
-                                                {{ count($staffTickets) }} open staff tickets
-                                            @endif
-                                        </h5>
-                                        <div class="list-group">
-                                            @foreach ($staffTickets as $ticket)
-                                                <a href="{{ url('/dashboard/tickets/' . $ticket->ticket_id) }}" class="list-group-item list-group-item-action rounded-0">{{ $ticket->title }} <br />
-                                                    <small title="{{ $ticket->updated_at }} (GMT+0, Zulu)">Last updated {{ $ticket->updated_at_pretty() }}</small>
-                                                </a>
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                    <br>
-                                    <li class="mb-2">
-                                        <a href="{{ route('tickets.staff') }}" style="text-decoration:none;">
-                                            <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                            <span class="text-colour">View All Staff Tickets</span>
-                                        </a>
-                                    </li>
-                                @endif
-                                <li class="mb-2">
-                                    <a href="{{ route('tickets.index') }}" style="text-decoration:none;">
-                                        <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                        <span class="text-colour">Open a Support Ticket</span>
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="{{ route('feedback.create') }}" style="text-decoration:none;">
-                                        <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                        <span class="text-colour">Send feedback</span>
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="{{ route('me.data') }}" style="text-decoration:none;">
-                                        <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                        <span class="text-colour">Manage your data</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                @endif
             </div>
             <!-- Vancouver Visitor/Exec/Home Hours -->
-            @if ($user->permissions >= 1)
-            <div class="col">
+            @if ($profile)
+            <div class="col-12 col-xl-5">
                 <div class="card" data-step="7" data-intro="Here you can view your certification status within CZVR!">
                     <div class="card-body">
-                        <h3 class="font-weight-bold blue-text pb-2">Certification and Training</h3>
-                        <h5 class="card-title">Status</h5>
+                        <h2 class="h3 fw-bold dashboard-card-title">Controller status</h2>
 
-                        <div class="d-flex justify-content-left flex-row">
-                            <h3>
-                                <span class="badge badge-{{ $status[0] }} rounded shadow-none"
-                                    @if(isset($status[3])) style="background-color: {{ $status[3] }}" @endif>
-                                    <i class="fa {{ $status[1] }}"></i>&nbsp;{{ $status[2] }}
-                                </span>
-                            </h3>
-
-                            <!-- Active Badge -->
-                            <h3>
-                                <span class="badge badge-{{ $activeStatus[0] }} ml-2 rounded shadow-none">
-                                    <i class="fa {{ $activeStatus[1] }}"></i>&nbsp;{{ $activeStatus[2] }}
-                                </span>
-                            </h3>
+                        <div class="dashboard-statuses">
+                            <span class="badge text-bg-{{ $status[0] }} rounded shadow-none"
+                                @if(isset($status[3])) style="background-color: {{ $status[3] }}" @endif>
+                                <i class="fa {{ $status[1] }}"></i>&nbsp;{{ $status[2] }}
+                            </span>
+                            <span class="badge text-bg-{{ $activeStatus[0] }} rounded shadow-none">
+                                <i class="fa {{ $activeStatus[1] }}"></i>&nbsp;{{ $activeStatus[2] }}
+                            </span>
                         </div>
 
                         <div class="text-danger">
                             @if ($certification === 'not_certified')
-                                <h5>You are currently not certified to control. If you think this is a mistake, please contact us!</h5>
+                                <p class="small mb-1">You are currently not certified to control. If you think this is a mistake, please contact us.</p>
                             @endif
                             @if ($active === 0)
-                                <h5>You are currently inactive, please contact the FIR Chief.</h5>
-                                <h5>You should not control on the network while inactive.</h5>
+                                <p class="small mb-1">You are inactive. Please contact the FIR Chief and do not control on the network.</p>
                             @endif
                         </div>
 
                         <!-- Activity -->
                         @if ($profile && $profile->status !== 'not_certified')
-                            <hr>
-                            <h3 class="font-weight-bold blue-text pb-2">Activity</h3>
+                            <div class="dashboard-activity">
+                            <h3>Quarterly activity</h3>
 
                             @if ($profile->currency < 0.1)
-                                <h3><span class="badge red rounded shadow-none">No hours recorded</span></h3>
+                                <div><span class="badge red rounded shadow-none">No hours recorded</span></div>
                             @else
-                                <h3>
+                                <div>
                                     <span class="badge {{ $profile->currency >= $requiredHours ? 'green' : 'purple' }} rounded shadow-none">
                                         {{ decimal_to_hm($profile->currency) }} hours recorded
                                     </span>
-                                </h3>
+                                </div>
                             @endif
 
                             <p>You require <b>{{ $requiredHours }} hours</b> of activity every quarter!</p>
+                            </div>
+                        @endif
+
+                        @if ($certification === 'not_certified')
+                            <ul class="list-unstyled mt-2 mb-0">
+                                <li class="mb-2">
+                                    <a href="{{ route('join.public') }}" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
+                                        <span class="text-colour">How to Become a Vancouver Controller</span>
+                                    </a>
+                                </li>
+                            </ul>
                         @endif
                     </div>
-
-                    @elseif ($certification === 'not_certified')
-                    <ul class="list-unstyled mt-2 mb-0">
-                        <li class="mb-2">
-                            <a href="{{route('application.list')}}" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                <span class="text-colour">View Your Applications</span>
-                            </a>
-                        </li>
-                    </ul>
                 </div>
             </div>
             @endif
+            <div class="dashboard-support-bar" data-step="6" data-intro="Open and review your support tickets here.">
+                <span>
+                    <strong>Support</strong>
+                    <small>{{ count($openTickets) }} open {{ count($openTickets) === 1 ? 'ticket' : 'tickets' }}</small>
+                </span>
+                <span class="dashboard-support-actions">
+                    <a href="{{ route('tickets.index') }}">My tickets</a>
+                    @can('tickets.manage')
+                        <a href="{{ route('tickets.staff') }}">Staff tickets</a>
+                    @endcan
+                    <a href="{{ route('feedback.create') }}">Feedback</a>
+                </span>
+            </div>
         </div>
-        <br />
-        <div class="card" data-step="8" data-intro="Here you can view upcoming events and your signups for them!">
-            <div class="card-body">
-                <h3 class="font-weight-bold blue-text pb-2">Upcoming Events</h3>
-                <div class="list-group">
+        <div class="dashboard-workspace">
+            <div class="card" data-step="8" data-intro="Here you can view upcoming events and your signups for them!">
+                <div class="card-body {{ count($confirmedevent) < 1 ? 'dashboard-inline-section' : '' }}">
+                <h2 class="h3 fw-bold dashboard-card-title">Upcoming events</h2>
+                <div>
                     @if (count($confirmedevent) < 1)
-                        <h5>There are no scheduled events!</h5>
+                        <div class="dashboard-event-empty">
+                            <span>No upcoming events</span>
+                            @if (count($unconfirmedapp) < 1)
+                                <span>No active applications</span>
+                            @elseif (count($unconfirmedapp) == 1)
+                                <a href="#" data-bs-target="#unconfirmedEvents" data-bs-toggle="modal">1 active application</a>
+                            @else
+                                <a href="#" data-bs-target="#unconfirmedEvents" data-bs-toggle="modal">{{ count($unconfirmedapp) }} active applications</a>
+                            @endif
+                        </div>
                     @else
                         @foreach ($confirmedevent as $cevent)
-                            <div style="margin-bottom: 10px;">
-                                <h5>
-                                    <b>
-                                        <a href="{{ route('events.view', $cevent->slug) }}" class="blue-text">
-                                            {{ $cevent->name }}
-                                        </a>
-                                    </b>
-                                    on {{ $cevent->start_timestamp_pretty() }}
-                                </h5>
-
-                                @foreach ($confirmedapp as $capp)
-                                    @if ($cevent->id == $capp->event->id)
-                                        <div style="margin-left: 10px; margin-bottom: 4px;">
-                                            <b>Confirmed</b> {{ $capp->airport }}
-
-                                            {{ ($capp->start_timestamp)->format('H:i') }}z - {{ ($capp->end_timestamp)->format('H:i') }}z
-                                        </div>
-                                    @endif
-                                @endforeach
-
+                            <div class="dashboard-event">
+                                <div class="dashboard-event-date">
+                                    {{ $cevent->start_timestamp->format('d') }}
+                                    <small>{{ $cevent->start_timestamp->format('M') }}</small>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <a href="{{ route('events.view', $cevent->slug) }}" class="fw-bold">{{ $cevent->name }}</a>
+                                    <div class="small text-muted mt-1">{{ $cevent->start_timestamp_pretty() }}</div>
+                                    @foreach ($confirmedapp as $capp)
+                                        @if ($cevent->id == $capp->event->id)
+                                            <div class="small mt-2">
+                                                <span class="badge text-bg-success me-1">Confirmed</span>
+                                                {{ $capp->airport }} · {{ ($capp->start_timestamp)->format('H:i') }}z–{{ ($capp->end_timestamp)->format('H:i') }}z
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
                             </div>
-
                         @endforeach
-                    @endif
-
-                    @if (count($unconfirmedapp) < 1)
-                        <span> You have<text class="text-primary"> <b>no</b> </text> active event applications </span>
-                    @elseif (count($unconfirmedapp) == 1)
-                        <a href="" data-target="#unconfirmedEvents" data-toggle="modal" style="text-decoration:none;">
-                            <span class="blue-text"> <i class="fas fa-chevron-right"></i> </span>
-                            <span class="text-white">You have <text class="text-success"><b>{{ count($unconfirmedapp) }}</b></text> active event application</span>
-                        </a>
-                    @else
-                        <a href="" data-target="#unconfirmedEvents" data-toggle="modal" style="text-decoration:none;">
-                            <span class="blue-text"> <i class="fas fa-chevron-right"></i> </span>
-                            <span class="text-white">You have <text class="text-success"><b>{{ count($unconfirmedapp) }}</b></text> active event applications</span>
-                        </a>
-                    @endif
-
-                    @if (count($confirmedevent) != 0)
-                        <a href="{{ url('/dashboard/events/view') }}" class="blue-text" style="text-align: center">View Event Rosters</a>
+                        <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between mt-3">
+                            @if (count($unconfirmedapp) < 1)
+                                <span class="text-muted">No active applications</span>
+                            @elseif (count($unconfirmedapp) == 1)
+                                <a href="#" data-bs-target="#unconfirmedEvents" data-bs-toggle="modal">1 active application</a>
+                            @else
+                                <a href="#" data-bs-target="#unconfirmedEvents" data-bs-toggle="modal">{{ count($unconfirmedapp) }} active applications</a>
+                            @endif
+                            <a href="{{ url('/dashboard/events/view') }}" class="btn btn-sm btn-outline-primary">View event rosters</a>
+                        </div>
                     @endif
                 </div>
+                </div>
             </div>
+        @if (auth()->user()->hasAnyPermission(['roster.manage', 'news.manage', 'feedback.manage', 'users.manage', 'training.manage', 'roles.manage', 'site-settings.manage', 'staff.manage', 'audit-log.access', 'network.manage']))
+            <details class="dashboard-management-disclosure">
+                <summary>
+                    <span>
+                        Management
+                    </span>
+                </summary>
+            <section class="dashboard-management">
+                @can('roster.manage')
+                    <a class="dashboard-tool" href="{{ route('roster.public') }}">Controller roster</a>
+                @endcan
+                @can('news.manage')
+                    <a class="dashboard-tool" href="{{ route('news.index') }}">News</a>
+                @endcan
+                @can('feedback.manage')
+                    <a class="dashboard-tool" href="{{ route('staff.feedback.index') }}">Feedback</a>
+                @endcan
+                @can('users.manage')
+                    <a class="dashboard-tool" href="{{ route('users.viewall') }}">Users</a>
+                @endcan
+                @can('training.manage')
+                    <a class="dashboard-tool" href="{{ route('trainingtimes') }}">Training</a>
+                @endcan
+                @can('settings.access')
+                    <a class="dashboard-tool" href="{{ route('settings.index') }}">Settings</a>
+                @endcan
+                @can('network.manage')
+                    <a class="dashboard-tool" href="{{ route('network.index') }}">Network data</a>
+                @endcan
+            </section>
+            </details>
+        @endif
         </div>
-        <br />
-        @if (auth()->user()->permissions >= 4)
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="font-weight-bold blue-text pb-2">Staff</h3>
-                    <ul class="list-unstyled mb-0 mt-2">
-                        <li class="mb-2">
-                            <a href="{{ route('roster.index') }}" style="text-decoration:none;">
-                                <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                <span class="text-colour">Manage Controller Roster</span>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="{{ route('news.index') }}" style="text-decoration:none;">
-                                <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                <span class="text-colour">Manage News</span>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="{{ route('staff.feedback.index') }}" style="text-decoration:none;">
-                                <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                <span class="text-colour">Manage Feedback</span>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="{{ route('users.viewall') }}" style="text-decoration:none;">
-                                <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                <span class="text-colour">Manage Users</span>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="{{ route('trainingtimes') }}" style="text-decoration:none;">
-                                <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                <span class="text-colour">Manage Waittimes</span>
-                            </a>
-                        </li>
-                        @if (auth()->user()->permissions >= 5)
-                            <li class="mb-2">
-                                <a href="{{ route('dashboard.upload') }}" style="text-decoration:none;">
-                                    <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                    <span class="text-colour">File Uploader</span>
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="{{ route('dashboard.uploadmanage') }}" style="text-decoration:none;">
-                                    <span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                    <span class="text-colour">Manage Uploads</span>
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </div>
-            </div>
-        @endif
-        <br />
-        @if (auth()->user()->permissions >= 5)
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="font-weight-bold blue-text pb-2">Site Admin</h3>
-                    <ul class="list-unstyled mb-0 mt-2">
-                        <li class="mb-2">
-                            <a href="{{ route('settings.index') }}" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp;
-                                <span class="text-colour">Settings</span>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="{{ route('network.index') }}" style="text-decoration:none;">
-                                <span class="blue-text"><i class="fas fa-chevron-right"></i></span>
-                                &nbsp;
-                                <span class="text-colour">View network data</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        @endif
+        </div>
     </div>
 </div>
 
@@ -484,7 +703,9 @@
         acc[i].addEventListener("click", function() {
             this.classList.toggle("active");
             var panel = this.nextElementSibling;
-            if (panel.style.maxHeight) {
+            var isOpen = Boolean(panel.style.maxHeight);
+            this.setAttribute("aria-expanded", isOpen ? "false" : "true");
+            if (isOpen) {
                 panel.style.maxHeight = null;
             } else {
                 panel.style.maxHeight = panel.scrollHeight + "px";
@@ -500,29 +721,33 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Change avatar</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <form id="discord-avatar-form" method="POST" action="{{ route('users.changeavatar.discord') }}" class="d-none">
+                @csrf
+                @method('PATCH')
+            </form>
             <form method="post" action="{{ route('users.changeavatar') }}" enctype="multipart/form-data" class="" id="">
                 <div class="modal-body">
                     <p>Please ensure your avatar complies with the VATSIM Code of Conduct. This avatar will be visible to staff members, if you place a controller booking, and if you're a staff member yourself, on the staff page.</p>
                     @csrf
                     <div class="input-group pb-3">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="file">
-                            <label class="custom-file-label">Choose file</label>
+                        <div class="mb-3">
+                            <input type="file" class="form-control" name="file">
+
                         </div>
                     </div>
                     @if (auth()->user()->hasDiscord())
                         or use your Discord avatar (refreshes every 6 hours)<br />
                         <p class="mt-1"><img style="border-radius:50%; height: 60px;" class="img-fluid" src="{{ auth()->user()->getDiscordAvatar() }}" alt="">
-                            <a href="{{ route('users.changeavatar.discord') }}" class="btn btn-outline-success bg-CZQO-blue-light mt-3">Use Discord Avatar</a>
+                            <button type="submit" form="discord-avatar-form" class="btn btn-outline-success bg-CZQO-blue-light mt-3">Use Discord Avatar</button>
                         </p>
                     @endif
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                     <input type="submit" class="btn btn-success" value="Upload">
                 </div>
             </form>
@@ -539,10 +764,11 @@
                 <h5 class="modal-title">How can I update my rating?</h5>
             </div>
             <div class="modal-body">
-                <p>If you would like to update your rating on our website, you may <a href="/logout" class="blue-text">logout</a> and log back in, or wait until we update it automatically!</p>
+                <form id="rating-logout-form" method="POST" action="{{route('auth.logout')}}" class="d-none">@csrf</form>
+                <p>If you would like to update your rating on our website, you may <button type="submit" form="rating-logout-form" class="border-0 bg-transparent p-0 blue-text">logout</button> and log back in, or wait until we update it automatically!</p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-sm btn-light" data-dismiss="modal">Dismiss</button>
+                <button class="btn btn-sm btn-light" data-bs-dismiss="modal">Dismiss</button>
             </div>
         </div>
     </div>
@@ -556,7 +782,7 @@
             @if (!auth()->user()->hasDiscord())
                 <div class="modal-header">
                     <h5 class="modal-title" id="discordModalTitle">Join the Vancouver FIR Discord</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -569,12 +795,12 @@
 
                 <div class="modal-footer justify-content-center">
                     <a href="{{ route('me.discord.link') }}" class="btn btn-primary">Join Discord</a>
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                 </div>
             @else
                 <div class="modal-header">
                     <h5 class="modal-title">Unlink your Discord account</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -584,8 +810,12 @@
                 </div>
 
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
-                    <a href="{{ route('me.discord.unlink') }}" class="btn btn-danger">Unlink Account</a>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
+                    <form method="POST" action="{{ route('me.discord.unlink') }}" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Unlink Account</button>
+                    </form>
                 </div>
             @endif
         </div>
@@ -599,25 +829,25 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Events You've Applied For</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 @foreach ($confirmedevent as $cevent)
-                    <h5><span class="font-weight-bold blue-text">{{ $cevent->name }}</span> on
+                    <h5><span class="fw-bold blue-text">{{ $cevent->name }}</span> on
                         {{ $cevent->start_timestamp_pretty() }}</h5>
                     @foreach ($unconfirmedapp as $uapp)
                         @if ($cevent->name == $uapp->event->name)
                             <li>
-                                <span class="font-weight-bold"> Position Requested:</span> {{ $uapp->position }} from {{ $uapp->start_availability_timestamp }}z - {{ $uapp->end_availability_timestamp }}z
+                                <span class="fw-bold"> Position Requested:</span> {{ $uapp->position }} from {{ $uapp->start_availability_timestamp }}z - {{ $uapp->end_availability_timestamp }}z
                             </li> <br />
                         @endif
                     @endforeach
                 @endforeach
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
             </div>
         </div>
     </div>

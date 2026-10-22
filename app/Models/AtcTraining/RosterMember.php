@@ -3,6 +3,7 @@
 namespace App\Models\AtcTraining;
 
 use App\Models\Events\EventConfirm;
+use App\Models\Network\SessionLog;
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,13 +16,32 @@ class RosterMember extends Model
     protected $table = 'roster';
 
     protected $fillable = [
-        'cid', 'user_id', 'status', 'full_name', 'rating', 'del', 'gnd', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr', 'currency', 'rating_hours', 'remarks', 'active', 'home_fir', 'visit', 'staff',
-
+        'cid', 'user_id', 'full_name', 'status', 'active', 'currency', 'rating_hours',
+        'fss', 'delgnd', 'delgnd_t2', 'twr', 'twr_t2', 'dep', 'app', 'app_t2',
+        'ctr', 'remarks', 'visit',
     ];
+
+    public const CERTIFICATION_FIELDS = ['fss', 'delgnd', 'delgnd_t2', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr'];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function hasAnyCertification(): bool
+    {
+        foreach (self::CERTIFICATION_FIELDS as $field) {
+            if ((int) $this->{$field} > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function canResetRatingHours(): bool
+    {
+        return (bool) $this->user?->studentProfile?->consolidationIsPending();
     }
 
     public function getLeaderboardHours()
@@ -29,33 +49,19 @@ class RosterMember extends Model
         return $this->monthly_hours;
     }
 
-    public function meetsActivityRequirement()
+    // Every active roster member needs the same quarterly hours for their status (config/currency.php)
+    public function meetsActivityRequirement(): bool
     {
-        if ($this->status == 'visit' && $this->active == '1' && $this->currency >= 3.0) {
-            return true;
-        } elseif ($this->status == 'home' && $this->staff == 'mentor' && $this->active == '1' && $this->currency >= 3.0) {
-            return true;
-        } elseif ($this->status == 'home' && $this->staff == 'staff' && $this->active == '1' && $this->currency >= 3.0) {
-            return true;
-        } elseif ($this->status == 'home' && $this->staff == 'exec' && $this->active == '1' && $this->currency >= 5.0) {
-            return true;
-        } elseif ($this->status == 'home' && $this->active == '1' && $this->currency >= 3.0) {
-            return true;
-        } elseif ($this->status == 'instructor' && $this->staff == 'exec' && $this->active == '1' && $this->currency >= 5.0) {
-            return true;
-        } elseif ($this->status == 'instructor' && $this->active == '1' && $this->currency >= 3.0) {
-            return true;
-        } elseif ($this->status == 'instructor' && $this->active == '1' && $this->currency >= 3.0) {
-            return true;
-        } else {
-            return $IsActive = false;
-        }
-
-        return false;
+        return $this->active == '1' && (float) $this->currency >= (float) config('currency.'.$this->status, 3);
     }
 
     public function eventconfirm(): HasMany
     {
-        return $this->hasMany(EventConfirm::class);
+        return $this->hasMany(EventConfirm::class, 'user_id', 'user_id');
+    }
+
+    public function sessionLogs(): HasMany
+    {
+        return $this->hasMany(SessionLog::class, 'roster_member_id');
     }
 }

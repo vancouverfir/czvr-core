@@ -10,6 +10,8 @@ class WelcomeNewUser extends Notification
 {
     use Queueable;
 
+    protected mixed $user;
+
     /**
      * Create a new notification instance.
      *

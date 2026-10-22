@@ -25,11 +25,11 @@ use Illuminate\Support\Facades\Schedule;
 
 Schedule::command(ActivityLog::class)->everyMinute()->evenInMaintenanceMode()->sentryMonitor();
 Schedule::command(SendSessionReminder::class)->everyMinute();
-Schedule::command(CacheVatsim::class)->everyFiveMinutes();
+Schedule::command(CacheVatsim::class)->everyMinute();
 Schedule::command(CacheWeather::class)->everyFifteenMinutes();
-Schedule::command(FetchVatcanNotes::class)->everyFifteenMinutes();
-Schedule::command(RenewNotification::class)->hourly();
-Schedule::command(SyncStudents::class)->hourly();
+Schedule::command(FetchVatcanNotes::class)->everyFifteenMinutes()->withoutOverlapping(15);
+Schedule::command(RenewNotification::class)->hourly()->withoutOverlapping(15);
+Schedule::command(SyncStudents::class)->hourly()->withoutOverlapping(30);
 Schedule::command('backup:clean')->daily()->at('00:31');
 Schedule::command('backup:run')->daily()->at('01:01');
 // Schedule::command(EventReminders::class)->everyMinute();

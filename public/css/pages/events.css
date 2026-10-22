@@ -1,0 +1,100 @@
+.event-coverage-toggle {
+    align-items: center;
+    color: var(--czvr-green-dark);
+    display: inline-flex;
+    font-size: var(--czvr-font-size-base);
+    font-weight: 600;
+    gap: 0.5rem;
+    text-decoration: underline;
+    text-decoration-color: rgba(40, 94, 27, 0.38);
+    text-underline-offset: 0.22rem;
+}
+
+.event-coverage-toggle:hover,
+.event-coverage-toggle:focus {
+    color: var(--czvr-green);
+    text-decoration-color: currentColor;
+}
+
+.event-coverage-toggle i {
+    font-size: var(--czvr-font-size-base);
+    transition: transform 180ms ease;
+}
+
+.event-coverage-toggle[aria-expanded='true'] i {
+    transform: rotate(180deg);
+}
+
+.event-coverage-panel {
+    margin: 0 0 1rem;
+}
+
+.event-coverage-content {
+    align-items: center;
+    background: #edf5ea;
+    border: 1px solid rgba(40, 94, 27, 0.18);
+    border-radius: 0.6rem;
+    display: flex;
+    gap: 1.5rem;
+    justify-content: space-between;
+    padding: 1.15rem 1.3rem;
+}
+
+.event-coverage-copy {
+    max-width: 700px;
+}
+
+.event-coverage-copy h2 {
+    color: var(--czvr-green-dark);
+    font-size: 1.08rem;
+    font-weight: 500;
+    margin: 0 0 0.3rem;
+}
+
+.event-coverage-copy p {
+    color: var(--czvr-text);
+    font-size: var(--czvr-font-size-base);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.event-coverage-actions {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.55rem;
+}
+
+.event-coverage-actions .btn {
+    margin: 0;
+}
+
+.event-guide-link {
+    color: var(--czvr-green) !important;
+    font-size: var(--czvr-font-size-base);
+    text-decoration: underline;
+    text-underline-offset: 0.18rem;
+}
+
+.event-guide-link:hover,
+.event-guide-link:focus {
+    color: var(--czvr-green-dark) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .event-coverage-toggle i {
+        transition: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .event-coverage-content {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.9rem;
+    }
+
+    .event-coverage-actions {
+        flex-wrap: wrap;
+    }
+}

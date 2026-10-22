@@ -13,8 +13,8 @@ return new class extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->text('qualification');
-            $table->string('email');
             $table->timestamps();
+            $table->string('email');
         });
     }
 

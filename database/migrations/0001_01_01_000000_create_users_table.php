@@ -10,9 +10,11 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->unsignedInteger('id')->primary();
+            $table->unique('id');
+            $table->string('email')->unique();
+            $table->rememberToken();
             $table->string('fname');
             $table->string('lname');
-            $table->string('email');
             $table->integer('rating_id')->nullable();
             $table->string('rating_short')->nullable();
             $table->string('rating_long')->nullable();
@@ -24,13 +26,11 @@ return new class extends Migration
             $table->string('division_name')->nullable();
             $table->string('subdivision_code')->nullable();
             $table->string('subdivision_name')->nullable();
-            $table->unsignedInteger('permissions')->default(0);
             $table->integer('gdpr_subscribed_emails')->default(0);
             $table->boolean('deleted')->default(false);
             $table->integer('init')->default(0);
             $table->string('avatar')->default('/img/default-profile-img.jpg');
             $table->longText('bio')->nullable();
-            $table->rememberToken();
             $table->tinyInteger('display_cid_only')->default(0);
             $table->string('display_fname')->nullable();
             $table->tinyInteger('display_last_name')->default(1);

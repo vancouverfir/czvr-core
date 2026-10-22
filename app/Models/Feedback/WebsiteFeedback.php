@@ -5,9 +5,14 @@ namespace App\Models\Feedback;
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WebsiteFeedback extends Model
 {
+    use SoftDeletes;
+
+    protected $table = 'website_feedback';
+
     protected $hidden = ['id'];
 
     protected $fillable = [

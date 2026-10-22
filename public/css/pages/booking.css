@@ -1,0 +1,125 @@
+.booking-row-button {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    text-align: left;
+    width: 100%;
+}
+
+.training-panel > .booking-row-button + .training-session-row,
+.training-panel > .training-session-row + .booking-row-button {
+    border-top: 1px solid var(--czvr-border);
+}
+
+.booking-status-mine {
+    background: var(--czvr-surface-muted);
+    color: var(--czvr-text-muted);
+}
+
+.booking-header-side {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    gap: 1rem;
+}
+
+.booking-clock {
+    color: var(--czvr-text);
+    font-size: 1.1rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+}
+
+.booking-clock small {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    font-weight: 500;
+}
+
+.booking-day-label {
+    background: var(--czvr-surface-muted);
+    border-top: 1px solid var(--czvr-border);
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+}
+
+.training-panel-header + .booking-day-label {
+    border-top: 0;
+}
+
+.booking-page .training-session-row {
+    padding-bottom: 0.95rem;
+    padding-top: 0.95rem;
+}
+
+.booking-page .training-row-title {
+    font-size: var(--czvr-font-size-base);
+    font-weight: 600;
+}
+
+.booking-page .training-row-meta {
+    font-variant-numeric: tabular-nums;
+}
+
+.booking-strip {
+    align-items: center;
+    color: var(--czvr-text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: var(--czvr-font-size-base);
+    font-variant-numeric: tabular-nums;
+    gap: 0.5rem 2.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.booking-strip-part {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.booking-strip strong {
+    color: var(--czvr-text);
+    font-weight: 600;
+}
+
+.booking-strip-label {
+    color: var(--czvr-text);
+    font-weight: 500;
+}
+
+.booking-strip-dot {
+    background: var(--czvr-border);
+    border-radius: 50%;
+    height: 0.5rem;
+    width: 0.5rem;
+}
+
+.booking-strip-dot.is-live {
+    background: var(--czvr-green);
+}
+
+.booking-page .training-panel {
+    box-shadow: 0 1px 2px rgba(28, 49, 31, 0.04), 0 10px 24px -16px rgba(28, 49, 31, 0.18);
+}
+
+.booking-page .training-session-row {
+    transition: background-color 150ms ease;
+}
+
+.booking-row-chevron {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    opacity: 0;
+    transform: translateX(-3px);
+    transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.booking-row-button:hover .booking-row-chevron,
+.booking-row-button:focus-visible .booking-row-chevron {
+    opacity: 1;
+    transform: none;
+}

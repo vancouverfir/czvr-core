@@ -14,12 +14,12 @@ return new class extends Migration
             $table->text('group');
             $table->text('description')->nullable();
             $table->text('email')->nullable();
+            $table->timestamps();
             $table->text('shortform');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('group_id')->unsigned();
             $table->foreign('group_id')->references('id')->on('staff_groups');
-            $table->timestamps();
         });
     }
 

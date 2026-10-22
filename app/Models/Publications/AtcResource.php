@@ -2,6 +2,7 @@
 
 namespace App\Models\Publications;
 
+use App\Support\Publications\BcVfrTerminalProcedures;
 use App\Traits\HasMarkdownFields;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,8 +11,23 @@ class AtcResource extends Model
     use HasMarkdownFields;
 
     protected $fillable = [
-        'user_id', 'title', 'font_awesome', 'description', 'url', 'atc_only',
+        'user_id', 'title', 'font_awesome', 'description', 'url',
     ];
+
+    public function resolvedUrl(): string
+    {
+        return BcVfrTerminalProcedures::resolveUrl($this->url);
+    }
+
+    public function resolvedTitle(): string
+    {
+        return BcVfrTerminalProcedures::resolveText($this->title, $this->url);
+    }
+
+    public function resolvedDescription(): string
+    {
+        return BcVfrTerminalProcedures::resolveText($this->description ?? '', $this->url);
+    }
 
     /**
      * Retrieve the list of fields that should be processed as Markdown.

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\AtcTraining;
 
+use App\Console\Commands\RenewNotification;
 use App\Helpers\CreateNote;
 use App\Http\Controllers\Controller;
-use App\Models\AtcTraining\Checklist;
 use App\Models\AtcTraining\Instructor;
-use App\Models\AtcTraining\RosterMember;
 use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentInteractiveLabels;
 use App\Models\AtcTraining\StudentLabel;
@@ -14,69 +13,97 @@ use App\Models\AtcTraining\StudentNote;
 use App\Models\AtcTraining\TrainingWaittime;
 use App\Models\Publications\AtcResource;
 use App\Models\Users\User;
+use App\Notifications\RenewalSuccessfulNotification;
+use App\Services\TrainingProgressionService;
+use App\Services\VatcanInstructorClient;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Throwable;
 
 class TrainingController extends Controller
 {
-    public function index(VatcanController $vatcan): View|RedirectResponse
+    public function __construct(private readonly VatcanInstructorClient $vatcan) {}
+
+    public function index(VatcanController $vatcanController): View|RedirectResponse
     {
         if (! Auth::check()) {
             return redirect()->guest(route('auth.connect.login'));
         }
 
-        $user = Auth::user();
+        $student = Student::with('user.rosterProfile')->where('user_id', Auth::id())->first();
+        $instructor = Auth::user()->activeInstructorProfile;
 
-        $student = Student::where('user_id', $user->id)->first();
-        $instructor = Instructor::where('user_id', $user->id)->first();
-
-        $labels = $student
-            ? StudentLabel::cursor()->filter(fn ($label) => ! StudentInteractiveLabels::where('student_id', $student->id)
-                ->where('student_label_id', $label->id)
-                ->exists()
-            )
+        $yourStudents = $instructor
+            ? Student::with([
+                'user.rosterProfile',
+                'instructingSessions' => fn ($query) => $query
+                    ->where('start_time', '>=', now())
+                    ->orderBy('start_time'),
+                'instructingSessions.student.user',
+            ])->where('instructor_id', $instructor->id)->get()
             : collect();
 
-        $yourStudents = $instructor ? Student::where('instructor_id', $instructor->id)->get() : null;
+        $upcomingSessions = $yourStudents
+            ->flatMap(fn (Student $assignedStudent) => $assignedStudent->instructingSessions)
+            ->sortBy('start_time')
+            ->take(5)
+            ->values();
 
-        $waitlistPosition = null;
-        $studentChecklistGroups = null;
+        return view('training.indexinstructor', [
+            'yourStudents' => $yourStudents,
+            'upcomingSessions' => $upcomingSessions,
+            'student' => $student,
+            'preview' => false,
+            ...$this->studentDashboard($student, $vatcanController),
+        ]);
+    }
 
-        $training_time = null;
+    public function previewStudent($id, VatcanController $vatcanController): View
+    {
+        $student = Student::with('user.rosterProfile')->findOrFail($id);
 
-        $Visitors = Student::where('status', 3)->count();
+        return view('training.indexinstructor', [
+            'yourStudents' => collect(),
+            'upcomingSessions' => collect(),
+            'student' => $student,
+            'preview' => true,
+            ...$this->studentDashboard($student, $vatcanController),
+        ]);
+    }
 
-        $vatcanNotes = [];
-        if ($student) {
-            $training_time = TrainingWaittime::find(1);
-
-            if (in_array($student->status, [0, 3])) {
-                $waitlistIds = Student::where('status', $student->status)
-                    ->orderBy('position')
-                    ->pluck('id')
-                    ->toArray();
-                $index = array_search($student->id, $waitlistIds, true);
-                $waitlistPosition = $index !== false ? $index + 1 : null;
-            }
-
-            $student->load('checklistItems.checklistItem', 'checklistItems.checklistItem.checklist');
-
-            $studentChecklistGroups = $student->checklistItems->groupBy(
-                fn ($item) => $item->checklistItem->checklist->name
-            );
-
-            $vatcanNotes = collect($vatcan->getVatcanNotes($student->id))
-                ->sortByDesc('friendly_time')
-                ->take(3)
-                ->values()
-                ->all();
+    private function studentDashboard(?Student $student, VatcanController $vatcanController): array
+    {
+        if (! $student) {
+            return ['waitlistPosition' => null, 'studentChecklistGroups' => null, 'training_time' => null, 'vatcanNotes' => []];
         }
 
-        return view('training.indexinstructor', compact('yourStudents', 'student', 'Visitors', 'waitlistPosition', 'studentChecklistGroups', 'training_time', 'vatcanNotes'));
+        $waitlistPosition = null;
+
+        if ($student->isWaitlisted()) {
+            $waitlistIds = Student::where('status', $student->status)
+                ->orderBy('position')
+                ->pluck('id')
+                ->toArray();
+            $index = array_search($student->id, $waitlistIds, true);
+            $waitlistPosition = $index !== false ? $index + 1 : null;
+        }
+
+        $student->load('checklistItems.checklistItem.checklist');
+
+        return [
+            'waitlistPosition' => $waitlistPosition,
+            'studentChecklistGroups' => $student->checklistItems->groupBy(fn ($item) => $item->checklistItem->checklist->name),
+            'training_time' => TrainingWaittime::find(1),
+            'vatcanNotes' => $this->latestVatcanNotes($vatcanController, $student),
+        ];
     }
 
     public function joinvancouver(): View
@@ -91,22 +118,6 @@ class TrainingController extends Controller
         return view('training.resources', compact('atcResources'));
     }
 
-    public function allNotes($id, VatcanController $vatcan): View
-    {
-        $student = Student::findOrFail($id);
-
-        if ($student->user_id !== auth()->id() && auth()->user()->permissions < 2) {
-            abort(403);
-        }
-
-        $vatcanNotes = collect($vatcan->getVatcanNotes($student->id))
-            ->sortByDesc('friendly_time')
-            ->values()
-            ->all();
-
-        return view('training.students.viewstudentnotes', compact('student', 'vatcanNotes'));
-    }
-
     public function newNoteView($id): View
     {
         $student = Student::findOrFail($id);
@@ -117,55 +128,91 @@ class TrainingController extends Controller
     public function addNote(Request $request, $id): RedirectResponse
     {
         $student = Student::findOrFail($id);
-        $instructor = Instructor::where('user_id', Auth::id())->first();
 
-        if (! $instructor) {
-            return redirect()->route('training.students.view', ['id' => $student->id])->withError('Insufficient Permissions!');
-        }
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'content' => ['required', 'string'],
+        ]);
 
         StudentNote::create([
             'student_id' => $student->id,
-            'author_id' => $instructor->id,
-            'title' => $request->title,
-            'content' => $request->content,
+            'author_cid' => Auth::id(),
+            'title' => $validated['title'],
+            'content' => $validated['content'],
             'created_at' => now(),
         ]);
 
         return redirect()->route('training.students.view', ['id' => $student->id])->withSuccess('Staff Comment added for '.$student->user->fullName('FLC').'!');
     }
 
-    public function completeTraining(Request $request, Student $student): RedirectResponse
-    {
+    public function completeTraining(
+        Request $request,
+        Student $student,
+        TrainingProgressionService $progression,
+    ): RedirectResponse {
+        $student->loadMissing('labels.label', 'user');
+        $isRecertification = $student->isRecertification();
+
+        if ($isRecertification && (int) $student->user->rating_id < 5) {
+            $nextStage = $progression->completeRecertification($student, Auth::user());
+
+            if ($nextStage === false) {
+                return back()->withError('Recertification could not be completed because the next normal training package is missing!');
+            }
+
+            return redirect()->route('training.students.view', ['id' => $student->id])->with(
+                'success',
+                'Recertification completed for '.$student->user->fullName('FLC').'. '.$nextStage.' is now active as normal training!',
+            );
+        }
+
+        if ($student->instructor_id) {
+            try {
+                $this->vatcan->unassign((int) $student->user_id);
+            } catch (Throwable $exception) {
+                return $this->vatcanFailure($exception, (int) $student->user_id, 'complete training');
+            }
+        }
+
         $student->instructor_id = null;
 
-        $student->labels()->delete();
+        if ($isRecertification) {
+            $progression->completeRecertification($student, Auth::user());
+        } else {
+            $student->markTrainingCompleted();
 
-        $student->checklistItems()->delete();
+            CreateNote::newNote(
+                $student->id,
+                'Completed Training',
+                Auth::user()->fullName('FLC').' marked training as completed',
+            );
+        }
 
-        $student->update(['status' => 9]);
-
-        CreateNote::newNote($student->id, 'Completed Training', Auth::user()->fullName('FLC').' marked training as completed');
-
-        return redirect()->route('training.students.completed')->with('success', 'Completed training for '.$student->user->fullName('FLC').'!');
+        return redirect()->route('training.students.completed')->with(
+            'success',
+            ($isRecertification ? 'Completed recertification for ' : 'Completed training for ').$student->user->fullName('FLC').'!',
+        );
     }
 
     public function trainingTime(): View
     {
         $training_time = TrainingWaittime::find(1);
-        $waitlist = Student::where('status', 0)->get();
-        $visitorWaitlist = Student::where('status', 3)->get();
+        $waitlist = Student::where('status', Student::STATUS_WAITLIST)->get();
+        $visitorWaitlist = Student::where('status', Student::STATUS_VISITOR_WAITLIST)->get();
 
         return view('trainingtimes', compact('training_time', 'waitlist', 'visitorWaitlist'));
     }
 
     public function editTrainingTime(Request $request): RedirectResponse
     {
-        $request->validate(['waitTime' => 'required']);
+        $validated = $request->validate([
+            'waitTime' => ['required', 'string', 'max:100'],
+            'trainingTimeColour' => ['required', 'string', 'max:30'],
+        ]);
 
-        $trainingTime = TrainingWaittime::find(1);
-        $trainingTime->update([
-            'wait_length' => $request->waitTime,
-            'colour' => $request->trainingTimeColour,
+        TrainingWaittime::findOrFail(1)->update([
+            'wait_length' => $validated['waitTime'],
+            'colour' => $validated['trainingTimeColour'],
         ]);
 
         return back()->withSuccess('Waittime updated successfully!');
@@ -173,64 +220,47 @@ class TrainingController extends Controller
 
     public function instructorsIndex(): View
     {
-        $instructors = Instructor::all();
-        $potentialinstructor = RosterMember::where('status', 'instructor')->get();
+        $instructors = Instructor::where('active', true)->get();
 
-        return view('training.instructors.index', compact('instructors', 'potentialinstructor'));
-    }
-
-    public function addInstructor(Request $request): RedirectResponse
-    {
-        Instructor::create([
-            'user_id' => $request->input('cid'),
-            'qualification' => $request->input('qualification'),
-            'email' => $request->input('email'),
-        ]);
-
-        return redirect()->back()->withSuccess('Added '.$request->input('cid').' as an Instructor!');
+        return view('training.instructors.index', compact('instructors'));
     }
 
     public function newStudent(Request $request): RedirectResponse
     {
-        $userId = $request->student_id;
-
-        if (Student::where('user_id', $userId)->exists()) {
-            return back()->withError('This student already exists!');
-        }
-
-        $instructor = $request->instructor !== 'unassign' ? $request->instructor : null;
-
-        $isVisitor = $request->is_visitor == 1;
-        $visitorType = $request->visitor_type;
-
-        $status = $isVisitor ? 3 : 0;
-
-        $position = Student::where('status', $status)->max('position') + 1;
-
-        $student = Student::create([
-            'user_id' => $request->student_id,
-            'instructor_id' => $instructor,
-            'position' => $position,
-            'status' => $status,
-            'created_at' => now(),
-            'updated_at' => now(),
+        $validated = $request->validate([
+            'student_id' => ['required', 'integer', 'exists:users,id', 'unique:students,user_id'],
+            'instructor' => ['nullable', 'integer', Rule::exists('instructors', 'id')->where('active', true)],
+            'is_visitor' => ['required', 'boolean'],
+            'visitor_type' => ['nullable', 'required_if:is_visitor,1', 'in:vatcan,non_vatcan'],
         ]);
 
-        if (in_array($status, [0, 3])) {
-            $student->position = Student::where('status', $status)->max('position') + 1;
-            $student->save();
+        $isVisitor = (bool) $validated['is_visitor'];
+        $status = $isVisitor ? Student::STATUS_VISITOR_WAITLIST : Student::STATUS_WAITLIST;
+        $position = Student::nextQueuePosition($status);
+
+        if (! empty($validated['instructor'])) {
+            $instructor = Instructor::where('active', true)->findOrFail($validated['instructor']);
+
+            try {
+                $this->vatcan->assign((int) $validated['student_id'], (int) $instructor->user_id, (int) Auth::id());
+            } catch (Throwable $exception) {
+                return $this->vatcanFailure($exception, (int) $validated['student_id'], 'assign the instructor');
+            }
         }
 
-        $labels = $isVisitor ? ['Visitor Waitlist', $visitorType === 'vatcan' ? 'Visitor VATCAN' : 'Visitor Non-VATCAN'] : ['Waitlist'];
+        $student = Student::create([
+            'user_id' => $validated['student_id'],
+            'instructor_id' => $validated['instructor'] ?? null,
+            'position' => $position,
+            'status' => $status,
+        ]);
+
+        $labels = $isVisitor
+            ? ['Visitor Waitlist', $validated['visitor_type'] === 'vatcan' ? 'Visitor VATCAN' : 'Visitor Non-VATCAN']
+            : ['Waitlist'];
 
         foreach ($labels as $labelName) {
-            $labelId = StudentLabel::whereName($labelName)->first()?->id;
-            if ($labelId) {
-                StudentInteractiveLabels::create([
-                    'student_label_id' => $labelId,
-                    'student_id' => $student->id,
-                ]);
-            }
+            $student->addLabel($labelName);
         }
 
         return redirect()->route('training.students.view', ['id' => $student->id])->withSuccess('Added New Visitor/Student - '.$student->user->fullName('FLC').'!');
@@ -238,183 +268,371 @@ class TrainingController extends Controller
 
     public function AllStudents(): View
     {
-        $students = Student::with(['user', 'labels.label', 'instructor'])->get();
+        $lists = StudentLabel::where('visible_home', true)
+            ->with([
+                'students.student.user.rosterProfile',
+                'students.student.labels.label',
+                'students.student.instructor.user',
+            ])
+            ->get();
 
-        $potentialstudent = User::has('studentProfile', '<', 1)->get();
-
-        $instructors = Instructor::all();
-
-        $lists = StudentLabel::where('visible_home', true)->get();
-
-        return view('training.students.allstudents', compact('students', 'potentialstudent', 'instructors', 'lists'));
+        return view('training.students.allstudents', compact('lists'));
     }
 
     public function completedStudents(): View
     {
-        $students = Student::where('status', 9)->get();
-        $potentialstudent = User::all();
-        $instructors = Instructor::all();
+        $students = Student::where('status', Student::STATUS_COMPLETED)->get();
 
-        return view('training.students.completed', compact('students', 'potentialstudent', 'instructors'));
+        return view('training.students.completed', compact('students'));
     }
 
     public function newStudents(): View
     {
-        $students = Student::where('status', '0')->get();
-
-        $waitlistStudents = Student::where('status', 0)->orderBy('position')->get();
-        $visitorWaitlist = Student::where('status', 3)->orderBy('position')->get();
+        $waitlistStudents = Student::with(['user.rosterProfile', 'latestWaitlistContactEvent.author'])
+            ->where('status', Student::STATUS_WAITLIST)
+            ->orderBy('position')
+            ->get();
+        $visitorWaitlist = Student::with(['user.rosterProfile', 'latestWaitlistContactEvent.author'])
+            ->where('status', Student::STATUS_VISITOR_WAITLIST)
+            ->orderBy('position')
+            ->get();
 
         $potentialstudent = User::all();
-        $instructors = Instructor::all();
+        $instructors = Instructor::where('active', true)->get();
 
         return view('training.students.waitlist', compact('waitlistStudents', 'visitorWaitlist', 'potentialstudent', 'instructors'));
     }
 
-    public function viewStudent($id, VatcanController $vatcan): View
+    public function updateWaitlistContact(Request $request, Student $student): RedirectResponse
+    {
+        $validated = $request->validate([
+            'contacted' => ['required', 'boolean'],
+        ]);
+
+        return DB::transaction(function () use ($student, $validated): RedirectResponse {
+            $student = Student::with('latestWaitlistContactEvent.author')
+                ->lockForUpdate()
+                ->findOrFail($student->id);
+
+            if (! $student->isWaitlisted()) {
+                return back()->withError('Contact tracking is only available for waitlisted students and visitors!');
+            }
+
+            $latestEvent = $student->latestWaitlistContactEvent;
+            $currentlyContacted = $latestEvent?->title === 'Waitlist Contacted';
+
+            if ((bool) $validated['contacted']) {
+                if ($currentlyContacted) {
+                    $contactName = $latestEvent->author?->fullName('FLC') ?? 'another staff member';
+
+                    return back()->with('info', 'This person was already marked as contacted by '.$contactName.'!');
+                }
+
+                StudentNote::create([
+                    'student_id' => $student->id,
+                    'author_cid' => Auth::id(),
+                    'title' => 'Waitlist Contacted',
+                    'content' => '<u>'.e(Auth::user()->fullName('FLC')).'</u> marked as contacted',
+                    'created_at' => now(),
+                ]);
+
+                return back()->withSuccess('Marked as contacted!');
+            }
+
+            if (! $currentlyContacted) {
+                return back()->with('info', 'This person is not currently marked as contacted!');
+            }
+
+            StudentNote::create([
+                'student_id' => $student->id,
+                'author_cid' => Auth::id(),
+                'title' => 'Waitlist Contact Cleared',
+                'content' => '<u>'.e(Auth::user()->fullName('FLC')).'</u> unmarked as contacted',
+                'created_at' => now(),
+            ]);
+
+            return back()->withSuccess('Contact status cleared!');
+        });
+    }
+
+    public function viewStudent($id, VatcanController $vatcanController, TrainingProgressionService $progression): View
     {
         $student = Student::with([
             'checklistItems.checklistItem.checklist',
             'labels.label',
+            'user.rosterProfile',
         ])->findOrFail($id);
 
-        $instructors = Instructor::all();
-        $checklists = Checklist::all();
-        $times = $student->times;
-
-        $studentChecklistGroups = $student->checklistItems->groupBy(function ($item) {
-            return $item->checklistItem->checklist->name;
-        });
+        $instructors = Instructor::where('active', true)->get();
+        $studentChecklistGroups = $student->checklistItems->groupBy(fn ($item) => $item->checklistItem->checklist->name);
 
         $interactiveLabelIds = StudentInteractiveLabels::where('student_id', $student->id)
             ->pluck('student_label_id')
             ->toArray();
 
-        $labels = StudentLabel::whereNotIn('id', $interactiveLabelIds)->get();
+        $isVisitor = $student->isVisitor();
+        $labels = StudentLabel::assignableTo($student)
+            ->whereNotIn('id', $interactiveLabelIds)
+            ->get();
 
-        $ChecklistController = new ChecklistController;
+        $canStartRecertification = $student->isWaitlisted()
+            && (int) $student->user->rating_id >= 2
+            && ! $student->isRecertification();
 
-        $isVisitor = in_array($student->status, [3, 5]);
+        $recertificationPackages = $canStartRecertification
+            ? $progression->recertificationPackages($student)
+            : collect();
 
-        $trainingOrder = $ChecklistController->getTrainingOrder($isVisitor);
+        $nextLabel = $student->nextTrainingLabel($isVisitor ? Student::trainingOrder(true) : Student::RATING_TRAINING_LABELS);
 
-        $labelNames = $student->labels->pluck('label.name')->unique()->toArray();
-        $currentLabel = collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames));
+        $vatcanNotes = $this->latestVatcanNotes($vatcanController, $student);
 
-        $currentIndex = array_search($currentLabel, $trainingOrder);
-        $nextLabel = $trainingOrder[$currentIndex + 1] ?? null;
+        return view('training.students.viewstudent', compact('student', 'instructors', 'labels', 'studentChecklistGroups', 'isVisitor', 'nextLabel', 'vatcanNotes', 'canStartRecertification', 'recertificationPackages'));
+    }
 
-        $vatcanNotes = collect($vatcan->getVatcanNotes($student->id))
-            ->sortByDesc('friendly_time')
-            ->take(3)
-            ->values()
-            ->all();
+    public function waiveConsolidation(Student $student, TrainingProgressionService $progression): RedirectResponse
+    {
+        if (! $progression->waiveConsolidation($student, Auth::user())) {
+            return back()->with('info', 'This student has no active consolidation requirement!');
+        }
 
-        return view('training.students.viewstudent', compact('student', 'instructors', 'times', 'labels', 'checklists', 'studentChecklistGroups', 'isVisitor', 'trainingOrder', 'currentLabel', 'nextLabel', 'vatcanNotes'));
+        return back()->withSuccess('The consolidation requirement was waived! Training is now available!');
     }
 
     public function sort(Request $request): JsonResponse
     {
-        foreach ($request->order as $item) {
-            Student::where('id', $item['id'])->update(['position' => $item['position']]);
+        return $this->reorderQueue($request, Student::STATUS_WAITLIST);
+    }
+
+    public function sortVisitor(Request $request): JsonResponse
+    {
+        return $this->reorderQueue($request, Student::STATUS_VISITOR_WAITLIST);
+    }
+
+    private function reorderQueue(Request $request, int $status): JsonResponse
+    {
+        $validated = $request->validate([
+            'order' => ['required', 'array'],
+            'order.*.id' => ['required', 'integer', 'exists:students,id'],
+            'order.*.position' => ['required', 'integer', 'min:1'],
+        ]);
+
+        foreach ($validated['order'] as $item) {
+            Student::where('id', $item['id'])->where('status', $status)->update(['position' => $item['position']]);
         }
 
         return response()->json(['success' => true]);
     }
 
-    public function sortVisitor(Request $request): JsonResponse
-    {
-        foreach ($request->order as $item) {
-            Student::where('id', $item['id'])->update(['position' => $item['position']]);
-        }
-
-        return response()->json(['status' => 'success']);
-    }
-
     public function editTimes(Request $request, Student $student): RedirectResponse
     {
-        $validated = $request->validate([
-            'times' => 'nullable|string|max:1000',
-        ]);
+        $this->authorizeStudentAccess($student);
 
-        $student->times = $validated['times'];
+        $validated = $this->validateAvailability($request);
+
+        $student->availability = $validated['availability'];
+        $student->times = $validated['availability_comment'];
+        $availabilityChanged = $student->isDirty(['availability', 'times']);
         $student->save();
 
-        $student->labels()->where('student_label_id', 7)->delete();
+        $this->clearWaitlistContactAfterAvailabilityChange($student, $availabilityChanged);
 
-        return redirect()->back()->with('success', 'Times updated successfully!');
+        $student->labels()->whereHas('label', fn ($query) => $query->where('name', 'Availability Requested'))->delete();
+
+        return redirect()->back()->with('success', 'Availability updated successfully!');
     }
 
-    public function renewTraining($token): RedirectResponse
+    public function showRenewTraining(string $token): View|RedirectResponse
     {
-        $student = Student::where('renewal_token', $token)->first();
+        $student = Student::where('renewal_token', $token)
+            ->whereNotNull('renewal_notified_at')
+            ->whereIn('status', Student::WAITLIST_STATUSES)
+            ->where('user_id', Auth::id())
+            ->first();
 
         if (! $student) {
             return redirect()->route('training.index')
                 ->withError('Invalid link!');
         }
 
-        $expirationDays = 14;
-
-        if (
-            $student->status == 4 ||
-            ($student->renewal_notified_at && $student->renewal_notified_at->lte(now()->subDays($expirationDays)))
-        ) {
-            $student->renewal_token = null;
-            $student->save();
-
+        if ($student->renewalWindowExpired()) {
             return redirect()->route('training.index')->withError('Your renewal period has expired and training cannot be renewed!');
         }
 
-        $student->renewed_at = now();
-        $student->renewal_token = null;
-        $student->renewal_notified_at = null;
+        return view('training.renew', compact('student', 'token'));
+    }
+
+    public function renewTraining(Request $request, string $token): RedirectResponse
+    {
+        return DB::transaction(function () use ($request, $token): RedirectResponse {
+            $student = Student::where('renewal_token', $token)
+                ->whereNotNull('renewal_notified_at')
+                ->whereIn('status', Student::WAITLIST_STATUSES)
+                ->where('user_id', Auth::id())
+                ->lockForUpdate()
+                ->first();
+
+            if (! $student) {
+                return redirect()->route('training.index')
+                    ->withError('Invalid or already-used renewal link!');
+            }
+
+            if ($student->renewalWindowExpired()) {
+                $student->update(['renewal_token' => null]);
+
+                return redirect()->route('training.index')->withError('Your renewal period has expired and training cannot be renewed!');
+            }
+
+            $validated = $this->validateAvailability($request);
+            $student->availability = $validated['availability'];
+            $student->times = $validated['availability_comment'];
+            $availabilityChanged = $student->isDirty(['availability', 'times']);
+
+            $student->renewed_at = now();
+            $student->renewal_token = null;
+            $student->renewal_notified_at = null;
+            $student->renewal_reminded_at = null;
+            $student->save();
+            $this->clearWaitlistContactAfterAvailabilityChange($student, $availabilityChanged);
+
+            if ($student->user && filled($student->user->email)) {
+                $student->user->notify(new RenewalSuccessfulNotification($student));
+            }
+
+            StudentNote::create([
+                'student_id' => $student->id,
+                'title' => 'Renewal Successful',
+                'content' => sprintf(
+                    'Student successfully renewed their training within the %d-day response window!',
+                    RenewNotification::RENEWAL_GRACE_DAYS,
+                ),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+
+            return redirect()->route('training.index')->withSuccess('Your waitlist request has been renewed!');
+        });
+    }
+
+    /**
+     * @return array{availability: array<int, array{days: array<int, string>, start: string, end: string}>, availability_comment: ?string}
+     */
+    private function validateAvailability(Request $request): array
+    {
+        $validated = $request->validate([
+            'availability' => ['required', 'array', 'min:1', 'max:21'],
+            'availability.*.days' => ['required', 'array', 'min:1', 'max:7'],
+            'availability.*.days.*' => ['required', 'string', 'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday'],
+            'availability.*.start' => ['required', 'date_format:H:i'],
+            'availability.*.end' => ['required', 'date_format:H:i'],
+            'availability_comment' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        $dayOrder = array_flip($days);
+        $slots = collect($validated['availability'])
+            ->map(fn (array $slot): array => [
+                'days' => collect($days)
+                    ->filter(fn (string $day): bool => in_array($day, $slot['days'], true))
+                    ->values()
+                    ->all(),
+                'start' => $slot['start'],
+                'end' => $slot['end'],
+            ]);
+
+        foreach ($slots as $index => $slot) {
+            if ($slot['end'] <= $slot['start']) {
+                throw ValidationException::withMessages([
+                    "availability.{$index}.end" => 'The end time must be later than the start time on the same day!',
+                ]);
+            }
+        }
+
+        if ($slots->unique(fn (array $slot): string => implode(',', $slot['days']).'|'.$slot['start'].'|'.$slot['end'])->count() !== $slots->count()) {
+            throw ValidationException::withMessages([
+                'availability' => 'The same availability period cannot be added twice!',
+            ]);
+        }
+
+        return [
+            'availability' => $slots
+                ->sortBy(fn (array $slot): string => sprintf('%d-%s', $dayOrder[$slot['days'][0]], $slot['start']))
+                ->values()
+                ->all(),
+            'availability_comment' => filled($validated['availability_comment'] ?? null)
+                ? trim($validated['availability_comment'])
+                : null,
+        ];
+    }
+
+    private function clearWaitlistContactAfterAvailabilityChange(Student $student, bool $availabilityChanged): void
+    {
+        if (! $availabilityChanged || $student->latestWaitlistContactEvent()->value('title') !== 'Waitlist Contacted') {
+            return;
+        }
+
         StudentNote::create([
             'student_id' => $student->id,
-            'author_id' => 1,
-            'title' => 'Renewal Successful',
-            'content' => 'Student successfully renewed their training within the 14 day time frame!',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'title' => 'Waitlist Contact Cleared',
+            'content' => '<u>'.e(Auth::user()->fullName('FLC')).'</u> unmarked as contacted',
+            'created_at' => now(),
         ]);
-        $student->save();
-
-        return redirect()->route('training.index')->withSuccess('Your training has been renewed!');
     }
 
     public function assignInstructorToStudent(Request $request, $id): RedirectResponse
     {
-        $student = Student::findOrFail($id);
+        $validated = $request->validate([
+            'remove_instructor' => ['sometimes', 'boolean'],
+            'instructor' => ['nullable', 'integer', Rule::exists('instructors', 'id')->where('active', true)],
+        ]);
+        $student = Student::with('user')->findOrFail($id);
 
-        if ($request->filled('remove_instructor') && $request->remove_instructor == 1) {
+        if ((bool) ($validated['remove_instructor'] ?? false)) {
+            try {
+                $this->vatcan->unassign((int) $student->user_id);
+            } catch (Throwable $exception) {
+                return $this->vatcanFailure($exception, (int) $student->user_id, 'unassign the instructor');
+            }
+
             $student->update(['instructor_id' => null]);
-
             CreateNote::newNote($student->id, 'Removed Instructor', '<u>'.Auth::user()->fullName('FLC').'</u> removed instructor from student');
 
-            return back()->withSuccess("Unassigned {$student->user->fullName('FLC')} from Instructor!");
+            return back()->withSuccess('Unassigned '.$student->user->fullName('FLC').' from Instructor!');
         }
 
-        if ($request->filled('instructor')) {
-            $student->update(['instructor_id' => $request->instructor]);
+        if (! empty($validated['instructor'])) {
+            $instructor = Instructor::with('user')->where('active', true)->findOrFail($validated['instructor']);
 
-            $instructorText = Auth::user()->id === $student->instructor->user_id ? 'assigned themselves to student' : 'assigned instructor '.$student->instructor->user->fullName('FLC').' to student';
+            try {
+                $this->vatcan->assign((int) $student->user_id, (int) $instructor->user_id, (int) Auth::id());
+            } catch (Throwable $exception) {
+                return $this->vatcanFailure($exception, (int) $student->user_id, 'assign the instructor');
+            }
 
+            $student->update(['instructor_id' => $instructor->id]);
+            $student->setRelation('instructor', $instructor);
+            $instructorText = Auth::id() === $student->instructor->user_id
+                ? 'assigned themselves to student'
+                : 'assigned instructor '.$student->instructor->user->fullName('FLC').' to student';
             CreateNote::newNote($student->id, 'Assigned Instructor', '<u>'.Auth::user()->fullName('FLC').'</u> '.$instructorText);
 
-            return back()->withSuccess("Paired {$student->user->fullName('FLC')} with Instructor {$student->instructor->user->fullName('FLC')}!");
+            return back()->withSuccess('Paired '.$student->user->fullName('FLC').' with Instructor '.$student->instructor->user->fullName('FLC').'!');
         }
-    }
 
-    public function showDeleteForm($id): View
-    {
-        $student = Student::findOrFail($id);
-
-        return view('training.students.removestudents', compact('student'));
+        return back()->with('info', 'No instructor change was requested!');
     }
 
     public function removeStudent($id): RedirectResponse
     {
         $student = Student::findOrFail($id);
+
+        if ($student->instructor_id) {
+            try {
+                $this->vatcan->unassign((int) $student->user_id);
+            } catch (Throwable $exception) {
+                return $this->vatcanFailure($exception, (int) $student->user_id, 'remove the student');
+            }
+        }
 
         $student->trainingNotes()->delete();
         $student->instructingSessions()->delete();
@@ -423,5 +641,40 @@ class TrainingController extends Controller
         $student->delete();
 
         return redirect()->route('training.students.students')->withSuccess('Student removed successfully!');
+    }
+
+    /** The student themselves, an active instructor, or training managers */
+    private function authorizeStudentAccess(Student $student): void
+    {
+        abort_if(
+            $student->user_id !== Auth::id()
+                && Auth::user()->activeInstructorProfile === null
+                && ! Auth::user()->hasPermissionTo('training.manage'),
+            403
+        );
+    }
+
+    private function latestVatcanNotes(VatcanController $vatcanController, Student $student): array
+    {
+        return collect($vatcanController->getVatcanNotes($student->id))
+            ->sortByDesc('friendly_time')
+            ->values()
+            ->all();
+    }
+
+    private function vatcanFailure(Throwable $exception, int $studentCid, string $action): RedirectResponse
+    {
+        Log::warning('VATCAN instructor synchronization failed!', [
+            'student_cid' => $studentCid,
+            'action' => $action,
+            'message' => $exception->getMessage(),
+        ]);
+
+        // A 4xx means VATCAN refused the change (e.g. not a VATCAN instructor), so retrying won't help
+        if ($exception->getCode() >= 400 && $exception->getCode() < 500) {
+            return back()->withError('VATCAN refused to '.$action.'. Check that the instructor is a Vancouver instructor on VATCAN! No local changes were made!');
+        }
+
+        return back()->withError('VATCAN could not '.$action.'! No local changes were made! Please try again!');
     }
 }

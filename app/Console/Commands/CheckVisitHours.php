@@ -186,7 +186,6 @@ class CheckVisitHours extends Command
                 Log::warning("VATSIM API server error for controller {$cid}.", [
                     'attempt' => $attempt,
                     'status' => $response->status(),
-                    'body' => $response->body(),
                 ]);
 
                 $this->sleepBeforeRetry($attempt);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessDataExport;
+use App\Models\Users\User;
 use Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class DataController extends Controller
 {
     public function emailPref(): View
     {
-        return view('dashboard.index');
+        return view('dashboard.emailpref');
     }
 
     public function subscribeEmails(): RedirectResponse
@@ -39,6 +40,18 @@ class DataController extends Controller
         $user->save();
 
         return redirect()->route('dashboard.index')->with('success', 'You have unsubscribed from emails.');
+    }
+
+    public function unsubscribeFromEmail(User $user): View
+    {
+        return view('emails-unsubscribe', ['user' => $user, 'done' => false]);
+    }
+
+    public function confirmUnsubscribeFromEmail(User $user): View
+    {
+        $user->update(['gdpr_subscribed_emails' => 0]);
+
+        return view('emails-unsubscribe', ['user' => $user, 'done' => true]);
     }
 
     public function index(): View

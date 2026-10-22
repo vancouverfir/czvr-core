@@ -7,6 +7,10 @@ use App\Models\AtcTraining;
 use App\Models\Events;
 use App\Models\News;
 use App\Models\Tickets;
+use App\Models\Users\Concerns\HasRolesAndPermissions;
+use App\Support\Authorization\SystemRoleCatalog;
+use App\Support\VatcanFacilities;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,12 +18,20 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Format;
 use Intervention\Image\ImageManager;
 use Throwable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasFactory, HasRolesAndPermissions, Notifiable;
+
+    public $incrementing = false;
+
+    protected $keyType = 'int';
 
     /**
      * The attributes that are mass assignable.
@@ -28,7 +40,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'id', 'fname', 'lname', 'email', 'rating_id', 'rating_short', 'rating_long', 'rating_GRP',
-        'reg_date', 'permissions', 'init', 'gdpr_subscribed_emails', 'avatar', 'bio', 'display_cid_only', 'display_fname', 'display_last_name',
+        'reg_date', 'init', 'gdpr_subscribed_emails', 'avatar', 'bio', 'display_cid_only', 'display_fname', 'display_last_name',
         'discord_user_id', 'discord_dm_channel_id', 'avatar_mode',
         'region_code', 'region_name', 'division_code', 'division_name', 'subdivision_code', 'subdivision_name', 'used_connect',
     ];
@@ -65,6 +77,11 @@ class User extends Authenticatable
         return $this->hasOne(AtcTraining\Instructor::class);
     }
 
+    public function activeInstructorProfile(): HasOne
+    {
+        return $this->hasOne(AtcTraining\Instructor::class)->where('active', true);
+    }
+
     public function studentProfile(): HasOne
     {
         return $this->hasOne(AtcTraining\Student::class);
@@ -83,6 +100,25 @@ class User extends Authenticatable
     public function staffProfile(): HasOne
     {
         return $this->hasOne(StaffMember::class);
+    }
+
+    public function canWaiveTrainingRequirements(): bool
+    {
+        return $this->hasRole(SystemRoleCatalog::ADMINISTRATOR)
+            && $this->staffProfile()->whereIn('position', ['FIR Chief', 'Deputy FIR Chief', 'Chief Instructor'])->exists();
+    }
+
+    /** The Staff and Administrator roles can only be given, removed or edited by an administrator */
+    public function canAssignRole(Role $role): bool
+    {
+        return $this->hasRole(SystemRoleCatalog::ADMINISTRATOR)
+            || ! in_array($role->slug, SystemRoleCatalog::administratorOnlySlugs(), true);
+    }
+
+    /** Non-administrators can only hand out permissions they hold themselves */
+    public function canGrantPermission(string $slug): bool
+    {
+        return $this->hasRole(SystemRoleCatalog::ADMINISTRATOR) || $this->hasPermissionTo($slug);
     }
 
     public function rosterProfile(): HasOne
@@ -104,17 +140,41 @@ class User extends Authenticatable
         return $difference;
     }
 
-    public function permissions()
+    public function isController(): bool
     {
-        return match ($this->permissions) {
-            0 => 'Guest',
-            1 => 'Controller/Trainee',
-            2 => 'Mentor',
-            3 => 'Instructor',
-            4 => 'Staff Member',
-            5 => 'Administrator',
-            default => 'Unknown',
-        };
+        return $this->hasRole('controller');
+    }
+
+    public function accessLabel(): string
+    {
+        if ($this->isAdministrator()) {
+            return 'Administrator';
+        }
+
+        if ($this->hasRole('instructor')) {
+            return 'Instructor';
+        }
+
+        if ($this->hasRole('mentor')) {
+            return 'Mentor';
+        }
+
+        if ($this->hasRole('staff')) {
+            return 'Staff';
+        }
+
+        return $this->isController() ? 'Controller/Trainee' : 'Guest';
+    }
+
+    public function homeFacilityName(): string
+    {
+        return VatcanFacilities::homeFacilityName((int) $this->id)
+            ?: ($this->subdivision_name ?: ($this->division_name ?: ($this->region_name ?: 'Unknown')));
+    }
+
+    public function emailUnsubscribeUrl(): string
+    {
+        return URL::signedRoute('emails.unsubscribe', ['user' => $this->id]);
     }
 
     public function fullName($format)
@@ -151,13 +211,15 @@ class User extends Authenticatable
         return false;
     }
 
-    public function certified()
+    public function certified(): bool
     {
-        if (! $this->rosterProfile()) {
-            return false;
-        }
+        return $this->rosterProfile()->exists();
+    }
 
-        return true;
+    /** Event controller applications are open to roster members holding at least one position certification. */
+    public function canApplyForEvents(): bool
+    {
+        return (bool) $this->rosterProfile?->hasAnyCertification();
     }
 
     public function routeNotificationForDiscord()
@@ -181,9 +243,12 @@ class User extends Authenticatable
                 return null;
             }
 
-            $discord = new DiscordClient(config('services.discord.token'));
+            $token = config('services.discord.token');
+            if (! is_string($token) || $token === '') {
+                return null;
+            }
 
-            return $discord->GetDiscordUser($this->discord_user_id);
+            return (new DiscordClient($token))->GetDiscordUser($this->discord_user_id);
         });
     }
 
@@ -191,15 +256,25 @@ class User extends Authenticatable
     {
         return Cache::remember('users.discorduserdata.'.$this->id.'.avatar', 21600, function () {
             $user = $this->getDiscordUser();
+
+            if (! $user?->id || ! $user?->avatar) {
+                return '/img/default-profile-img.jpg';
+            }
+
             $url = 'https://cdn.discordapp.com/avatars/'.$user->id.'/'.$user->avatar.'.png';
 
             return $url;
         });
     }
 
-    public function memberOfCZVRGuild()
+    public function memberOfCZVRGuild(): bool
     {
-        $discord = new DiscordClient(config('services.discord.token'));
+        $token = config('services.discord.token');
+        if (! $this->discord_user_id || ! is_string($token) || $token === '') {
+            return false;
+        }
+
+        $discord = new DiscordClient($token);
         try {
             if ($discord->GetGuildMember($this->discord_user_id)) {
                 return true;
@@ -209,21 +284,6 @@ class User extends Authenticatable
         }
 
         return false;
-    }
-
-    public function currentDiscordBan()
-    {
-        $ban = DiscordBan::whereDate('ban_end_timestamp', '>', Carbon::now())->where('user_id', $this->id)->first();
-        if ($ban) {
-            return $ban;
-        } else {
-            return null;
-        }
-    }
-
-    public function discordBans(): HasMany
-    {
-        return $this->hasMany(DiscordBan::class);
     }
 
     public function avatar()
@@ -238,7 +298,7 @@ class User extends Authenticatable
 
                 $width = 125;
                 $height = 125;
-                $image = ImageManager::gd()->create($width, $height);
+                $image = ImageManager::usingDriver(Driver::class)->createImage($width, $height);
 
                 $centerX = $image->width() / 2;
                 $centerY = $image->height() / 2;
@@ -250,14 +310,13 @@ class User extends Authenticatable
                     $font->size(65);
                     $font->color('#6CC24A');
 
-                    $font->align('center');
-                    $font->valign('middle');
+                    $font->align('center', 'center');
                 });
 
-                $path = 'public/files/avatars/'.$this->id.'/initials.png';
-                Storage::put($path, $image->toPng());
+                $path = 'files/avatars/'.$this->id.'/initials.png';
+                Storage::disk('public')->put($path, (string) $image->encodeUsingFormat(Format::PNG));
 
-                return Storage::url($path);
+                return Storage::disk('public')->url($path);
             });
         } elseif ($this->avatar_mode == 1) {
             return $this->avatar;
@@ -266,8 +325,38 @@ class User extends Authenticatable
         }
     }
 
-    public function preferences(): HasOne
+    public function forgetAvatarCache(): void
     {
-        return $this->hasOne(UserPreferences::class);
+        Cache::forget('users.discorduserdata.'.$this->id);
+        Cache::forget('users.discorduserdata.'.$this->id.'.avatar');
+        Cache::forget('users.'.$this->id.'.initialsavatar');
+    }
+
+    public function deleteUploadedAvatar(): void
+    {
+        $path = $this->uploadedAvatarPath();
+
+        if ($path !== null) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
+    private function uploadedAvatarPath(): ?string
+    {
+        $urlPath = (string) parse_url((string) ($this->getAttributes()['avatar'] ?? ''), PHP_URL_PATH);
+
+        if (! Str::startsWith($urlPath, '/storage/')) {
+            return null;
+        }
+
+        $path = Str::after($urlPath, '/storage/');
+
+        if (! Str::startsWith($path, 'files/avatars/'.$this->id.'/')
+            || Str::contains($path, '..')
+            || basename($path) === 'initials.png') {
+            return null;
+        }
+
+        return $path;
     }
 }

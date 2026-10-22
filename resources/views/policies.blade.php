@@ -10,31 +10,32 @@
 @section('description', 'Policies and Guidelines from the Vancouver FIR')
 
 @section('content')
+@include('partials.vendor.flatpickr')
     <div class="container" style="margin-top: 20px;">
-        <h1 class="font-weight-bold blue-text">Policies</h1>
+        <h1 class="fw-bold blue-text">Policies</h1>
 
-        @if (auth()->check() && auth()->user()->permissions >= 4)
+        @can('policies.manage')
             <hr>
-            <div class="card w-75">
+            <div class="card" style="max-width: 720px;">
                 <div class="card-body">
-                    <h5 class="card-title font-weight-bold">Policy Admin</h5>
-                    <div class="row" style="padding-left: 8px">
-                        <a href="#" data-toggle="modal" data-target="#addPolicyModal" class="btn btn-primary">Add New Policy</a>
-                        <a href="#" data-toggle="modal" data-target="#addPolicySectionModal" class="btn btn-light">Add New Policy Section</a>
-                        <a href="#" data-toggle="modal" data-target="#deletePolicySectionModal" class="btn btn-danger">Delete Policy Sections</a>
+                    <h5 class="card-title fw-bold">Policy Admin</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#addPolicyModal" class="btn btn-sm btn-primary">Add New Policy</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#addPolicySectionModal" class="btn btn-sm btn-light">Add New Policy Section</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#deletePolicySectionModal" class="btn btn-sm btn-danger">Delete Policy Sections</a>
                     </div>
                 </div>
             </div>
-        @endif
+        @endcan
         @foreach($policySections as $s)
             <hr>
-            <h5 class="font-weight-bold">{{$s->section_name}}</h5>
+            <h5 class="fw-bold">{{$s->section_name}}</h5>
             @foreach ($s->policies as $policy)
-                <div id="accordion">
+                <div id="policyAccordion{{$policy->id}}">
                     <div aria-expanded="true"  class="card">
-                        <div class="card-header" id="headingOne">
+                        <div class="card-header" id="policyHeading{{$policy->id}}">
                             <h5 class="mb-0">
-                                <button class="text-colour btn btn-link" data-toggle="collapse" data-target="#policy{{$policy->id}}" aria-expanded="true" aria-controls="policy{{$policy->id}}">
+                                <button class="text-colour btn btn-link" data-bs-toggle="collapse" data-bs-target="#policy{{$policy->id}}" aria-expanded="true" aria-controls="policy{{$policy->id}}">
                                     {{ $policy->name }}
                                     @if($policy->staff_only == 1)
                                         - <b class="text-danger">This is a private staff-only policy.</b>
@@ -42,15 +43,18 @@
                                 </button>
                             </h5>
                         </div>
-                        <div id="policy{{$policy->id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div id="policy{{$policy->id}}" class="collapse" aria-labelledby="policyHeading{{$policy->id}}" data-bs-parent="#policyAccordion{{$policy->id}}">
                             <div class="card-body">
-                                @if (auth()->check() && auth()->user()->permissions >= 4)
-                                    <div class="row" style="padding: 10px;">
-                                        <a href="#" data-toggle="modal" data-target="#editPolicyModal{{$policy->id}}" class="btn btn-primary">Edit Policy</a>
-                                        <a href="{{url('/policies/'.$policy->id.'/delete')}}" class="btn btn-danger">Delete Policy</a>
+                                @can('policies.manage')
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#editPolicyModal{{$policy->id}}" class="btn btn-sm btn-primary">Edit Policy</a>
+                                        <form method="POST" action="{{url('/policies/'.$policy->id.'/delete')}}" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete Policy</button>
+                                        </form>
                                     </div>
-                                    <br>
-                                @endif
+                                @endcan
                                 <b>Effective Date: {{$policy->releaseDate }}</b>
                                 <p>{{$policy->details}}</p>
                                 <a target="_blank" href="{{$policy->link}}">Download the .PDF file HERE.</a>
@@ -66,16 +70,16 @@
             <br>
         @endforeach
         @auth
-            @if(auth()->user()->permissions >= 4)
+            @can('policies.manage')
                 <hr>
-                <h5 class="font-weight-bold text-danger" >Policies without a section, staff only view</h5>
+                <h5 class="fw-bold text-danger" >Policies without a section, staff only view</h5>
                 @if(count($nullPolicies) >= 1)
                     @foreach($nullPolicies as $policy)
-                        <div id="accordion">
+                        <div id="policyAccordion{{$policy->id}}">
                             <div aria-expanded="true"  class="card">
-                                <div class="card-header" id="headingOne">
+                                <div class="card-header" id="policyHeading{{$policy->id}}">
                                     <h5 class="mb-0">
-                                        <button class="btn btn-link" data-toggle="collapse" data-target="#policy{{$policy->id}}" aria-expanded="true" aria-controls="policy{{$policy->id}}">
+                                        <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#policy{{$policy->id}}" aria-expanded="true" aria-controls="policy{{$policy->id}}">
                                             {{ $policy->name }}
                                             @if($policy->staff_only == 1)
                                                 - <b class="text-danger">This is a private staff-only policy.</b>
@@ -83,13 +87,16 @@
                                         </button>
                                     </h5>
                                 </div>
-                                <div id="policy{{$policy->id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                <div id="policy{{$policy->id}}" class="collapse" aria-labelledby="policyHeading{{$policy->id}}" data-bs-parent="#policyAccordion{{$policy->id}}">
                                     <div class="card-body">
-                                            <div class="border" style="padding: 10px;">
-                                                <a href="#" data-toggle="modal" data-target="#editPolicyModal{{$policy->id}}" class="btn btn-primary">Edit Policy</a>
-                                                <a href="{{url('/policies/'.$policy->id.'/delete')}}" class="btn btn-danger">Delete Policy</a>
+                                            <div class="d-flex flex-wrap gap-2 border p-2 mb-3">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#editPolicyModal{{$policy->id}}" class="btn btn-sm btn-primary">Edit Policy</a>
+                                                <form method="POST" action="{{url('/policies/'.$policy->id.'/delete')}}" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger">Delete Policy</button>
+                                                </form>
                                             </div>
-                                            <br>
                                         <b>Effective Date: {{$policy->releaseDate }}</b>
                                         <p>{{$policy->details}}</p>
                                         <a target="_blank" href="{{$policy->link}}">Download the .PDF file HERE.</a>
@@ -103,10 +110,10 @@
                         <br>
                     @endforeach
                 @else
-                    <h6 class="font-weight-bold">🎉 Congratulations! 🎉 There are no policies without a section.</h6>
+                    <h6 class="fw-bold">🎉 Congratulations! 🎉 There are no policies without a section.</h6>
                     <br>
                 @endif
-            @endif
+            @endcan
         @endauth
         <br>
 
@@ -114,15 +121,15 @@
         <div class="modal fade" id="addPolicyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
+                    <form method="POST" action="{{route('policies.create')}}" enctype="multipart/form-data">
+                        @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">New Policy</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                      <form method="POST" action="{{route('policies.create')}}" class="form-group" enctype="multipart/form-data">
-
                           <div class="form-group">
                             <label for="recipient-name" class="col-form-label">Policy Name</label>
                             <input type="text" name="name" class="form-control"></input>
@@ -169,41 +176,32 @@
                         </div>
                         <div class="form-group">
                             <label for="recipient-name" class="col-form-label">Effective Date</label>
-                            <input type="datetime" id="date" name="date" placeholder="Choose a Date" class="form-control flatpickr"></input>
+                            <input type="datetime" name="date" placeholder="Choose a Date" class="form-control flatpickr policy-date"></input>
                         </div>
-                        <script>
-                            flatpickr('#date', {
-                                enableTime: false,
-                                noCalendar: false,
-                                dateFormat: "Y-m-d",
-                                time_24hr: true,
-                            });
-                        </script>
-                        @csrf
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Submit</button>
-                        <button type="button" class="btn light" data-dismiss="modal">Cancel</button>
-                    </form>
+                        <button type="button" class="btn light" data-bs-dismiss="modal">Cancel</button>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    @if(auth()->check() && auth()->user()->permissions >= 4)
+    @can('policies.manage')
         @foreach($allPolicies as $p)
             <div class="modal fade" id="editPolicyModal{{$p->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
+                        <form method="POST" action="{{url('/policies/'.$p->id.'/edit')}}" enctype="multipart/form-data">
+                            @csrf
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Edit Policy - {{$p->name}}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form method="POST" action="{{url('/policies/'.$p->id.'/edit')}}" class="form-group" enctype="multipart/form-data">
-
                                 <div class="form-group">
                                     <label for="recipient-name" class="col-form-label">Policy Name</label>
                                     <input type="text" name="name" class="form-control" value="{{$p->name}}"></input>
@@ -251,28 +249,19 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="recipient-name" class="col-form-label">Effective Date</label>
-                                    <input type="datetime" id="date" name="date" placeholder="Choose a Date" class="form-control flatpickr"></input>
+                                    <input type="datetime" name="date" placeholder="Choose a Date" class="form-control flatpickr policy-date"></input>
                                 </div>
-                                <script>
-                                    flatpickr('#date', {
-                                        enableTime: false,
-                                        noCalendar: false,
-                                        dateFormat: "Y-m-d",
-                                        time_24hr: true,
-                                    });
-                                </script>
-                            @csrf
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success">Submit</button>
-                            <button type="button" class="btn light" data-dismiss="modal">Cancel</button>
-                            </form>
+                            <button type="button" class="btn light" data-bs-dismiss="modal">Cancel</button>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
         @endforeach
-    @endif
+    @endcan
 
     <div class="modal fade" id="addPolicySectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -292,7 +281,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Submit</button>
-                        <button type="button" class="btn light" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn light" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -310,15 +299,34 @@
                 <div class="modal-body">
                     @foreach($policySections as $s)
                         <div class="form-group">
-                            <text class="font-weight-bold">{{$s->id}} - {{$s->section_name}}</text>
-                            <a class="btn btn-sm btn-danger" href="{{url('/policies/section/'.$s->id.'/delete/')}}">Delete Section</a>
+                            <text class="fw-bold">{{$s->id}} - {{$s->section_name}}</text>
+                            <form method="POST" action="{{url('/policies/section/'.$s->id.'/delete/')}}" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">Delete Section</button>
+                            </form>
                         </div>
                     @endforeach
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn light" data-dismiss="modal">Dismiss</button>
+                    <button type="button" class="btn light" data-bs-dismiss="modal">Dismiss</button>
                 </div>
             </div>
         </div>
     </div>
 @stop
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.flatpickr) {
+            flatpickr('.policy-date', {
+                enableTime: false,
+                noCalendar: false,
+                dateFormat: 'Y-m-d',
+                time_24hr: true,
+            });
+        }
+    });
+</script>
+@endpush

@@ -1,0 +1,127 @@
+.training-navbar {
+    background: var(--czvr-surface) !important;
+    border-bottom: 1px solid var(--czvr-border);
+    box-shadow: 0 3px 12px rgba(28, 49, 31, 0.05);
+}
+
+.training-navbar-inner {
+    align-items: center;
+    display: flex;
+    gap: 1.75rem;
+    min-height: 64px;
+}
+
+.training-navbar-brand {
+    align-items: center;
+    color: var(--czvr-green-dark);
+    display: flex;
+    flex: 0 0 auto;
+    font-size: 1.05rem;
+    font-weight: 600;
+    gap: 0.7rem;
+    text-decoration: none;
+}
+
+.training-navbar-brand img {
+    height: 42px;
+    object-fit: contain;
+    width: 42px;
+}
+
+.training-navbar-brand small {
+    color: var(--czvr-text-muted);
+    display: block;
+    font-size: var(--czvr-font-size-base);
+    font-weight: 400;
+    margin-top: 0.05rem;
+}
+
+.training-nav-scroll {
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.training-nav-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.training-navbar .nav {
+    flex-wrap: nowrap;
+    gap: 0.2rem;
+    min-width: max-content;
+}
+
+.training-navbar .nav-link {
+    border-radius: 0.4rem;
+    color: var(--czvr-text-muted) !important;
+    font-size: var(--czvr-font-size-base);
+    font-weight: 500;
+    padding: 0.45rem 0.65rem;
+    white-space: nowrap;
+}
+
+.training-navbar .nav-link:hover,
+.training-navbar .nav-link:focus,
+.training-navbar .nav-link.active {
+    background: var(--czvr-green-soft);
+    color: var(--czvr-green-dark) !important;
+}
+
+.training-page {
+    margin-bottom: 2.5rem;
+    margin-top: 2rem;
+    max-width: 1120px;
+}
+
+.training-page-header {
+    align-items: flex-end;
+    border-bottom: 1px solid var(--czvr-border);
+    display: flex;
+    gap: 1.25rem;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+}
+
+.training-page-header h1 {
+    margin: 0;
+}
+
+.training-page-header p {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base) !important;
+    margin: 0.3rem 0 0;
+}
+
+.training-surface {
+    background: var(--czvr-surface);
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.training-form-shell {
+    max-width: 760px;
+    padding: 1.25rem;
+}
+
+.training-form-shell .form-group:first-child {
+    margin-top: 0 !important;
+}
+
+@media (max-width: 575.98px) {
+    .training-navbar-inner {
+        gap: 0.75rem;
+    }
+
+    .training-navbar-brand-copy {
+        display: none;
+    }
+
+    .training-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}

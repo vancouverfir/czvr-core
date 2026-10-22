@@ -13,10 +13,8 @@ class CheckCertified
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        if (Auth::check()) {
-            if (Auth::user()->permissions >= 1) {
-                return $next($request);
-            }
+        if (Auth::check() && Auth::user()->isController()) {
+            return $next($request);
         }
 
         abort(403, 'You are not a certified Vancouver Controller!');

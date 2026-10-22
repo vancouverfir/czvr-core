@@ -1,8 +1,9 @@
 @extends('layouts.master')
 @section('content')
+@include('partials.vendor.easymde')
 <div class="container py-4">
     <a href="{{route('news.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> News</a>
-    <h1 class="font-weight-bold blue-text">{{$article->title}}</h1>
+    <h1 class="fw-bold blue-text">{{$article->title}}</h1>
     <h5>Published {{$article->published_pretty()}}</h5>
 <form method="POST" action="{{route('news.articles.edit', [$article->id])}}" enctype="multipart/form-data">
     @csrf
@@ -22,13 +23,13 @@
                         <div class="form-group">
                             <label for="">Author</label>
                             <div class="d-flex flex-row justify-content-between">
-                                <select class="custom-select disabled" value="{{$article->user_id}}" name="author">
+                                <select class="form-select disabled" value="{{$article->user_id}}" name="author" data-searchable>
                                     @foreach ($staff as $s)
                                         <option value="{{$s->user->id}}">{{$s->user->fullName('FLC')}} ({{$s->position}})</option>
                                     @endforeach
                                     <option value="{{$article->user_id}}">{{$article->user->fullName('FLC')}}</option>
                                 </select>
-                                <div class="ml-3">
+                                <div class="ms-3">
                                     <input type="checkbox" name="showAuthor" class="" id="defaultUnchecked">
                                     <label class="" for="defaultUnchecked">Show author publicly</label>
                                 </div>
@@ -53,9 +54,9 @@
                         @endif
                         <p class="mt-4">This image will be the thumbnail, as well as the photo at the top of the story.</p>
                         <div class="input-group pb-3">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" name="image">
-                                <label class="custom-file-label">Choose image</label>
+                            <div class="mb-3">
+                                <input type="file" class="form-control" name="image">
+
                             </div>
                         </div>
                     </div>
@@ -69,7 +70,7 @@
                         <label for="">Use Markdown</label>
                         <textarea id="contentMD" name="content" class="w-75">{{$article->content}}</textarea>
                         <script>
-                            var simplemde = new SimpleMDE({ element: document.getElementById("contentMD"), toolbar: false });
+                            var easymde = new EasyMDE({ spellChecker: false, element: document.getElementById("contentMD"), toolbar: false });
                         </script>
                     </div>
 
@@ -81,14 +82,14 @@
                     </a>
                     <div class="step-content w-75 pt-0">
                         <div class="form-group">
-                            <div class="mr-2">
+                            <div class="me-2">
                                 <input type="checkbox" checked="true"  class="" name="articleVisible" id="articleVisible">
                                 <label class="" for="">Publicly visible (published)</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="d-flex flex-col">
-                            Email level: asd
+                            Emails: {{ (int) $article->email_level === \App\Models\News\News::EMAIL_SUBSCRIBERS ? 'sent to subscribers when published' : 'none' }}
                             </div>
                         </div>
                         <input type="submit" value="Edit Article" class="btn btn-primary">

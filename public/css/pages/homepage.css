@@ -1,0 +1,666 @@
+.home-landing {
+    height: max(520px, calc(100svh - 95px));
+}
+
+.home-hero {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.homepage-background {
+    height: 100%;
+    inset: 0;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    transition: opacity 900ms ease-in-out;
+    user-select: none;
+    -webkit-user-drag: none;
+    width: 100%;
+}
+
+.homepage-background.is-active {
+    opacity: 1;
+}
+
+.homepage-hero-inner {
+    align-items: flex-start;
+    display: flex;
+    height: 100%;
+    padding-top: clamp(7rem, 57vh, 15rem);
+    position: relative;
+    z-index: 1;
+}
+
+.homepage-hero-copy {
+    color: #fff;
+    isolation: isolate;
+    max-width: 740px;
+    position: relative;
+}
+
+.homepage-hero-copy {
+    --hero-gutter: 0.75rem;
+}
+
+@media (min-width: 576px) { .homepage-hero-copy { --hero-gutter: calc((100vw - 540px) / 2 + 0.75rem); } }
+@media (min-width: 768px) { .homepage-hero-copy { --hero-gutter: calc((100vw - 720px) / 2 + 0.75rem); } }
+@media (min-width: 992px) { .homepage-hero-copy { --hero-gutter: calc((100vw - 960px) / 2 + 0.75rem); } }
+@media (min-width: 1200px) { .homepage-hero-copy { --hero-gutter: calc((100vw - 1140px) / 2 + 0.75rem); } }
+@media (min-width: 1400px) { .homepage-hero-copy { --hero-gutter: calc((100vw - 1320px) / 2 + 0.75rem); } }
+
+.homepage-hero-leaf {
+    container-type: inline-size;
+    left: calc(-1 * var(--hero-gutter));
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    z-index: -1;
+}
+
+.homepage-hero-leaf i {
+    color: var(--czvr-green-dark);
+    font-size: 200cqw;
+    left: -100cqw;
+    line-height: 1;
+    opacity: 0.55;
+    position: absolute;
+    top: 0;
+    transform: translateY(-31.5%) rotate(+35deg);
+}
+
+.homepage-hero-copy h1,
+.homepage-hero-copy p,
+.homepage-hero-copy .home-explore-link {
+    animation: homeHeroLineReveal 680ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.homepage-hero-copy h1 {
+    animation-delay: 80ms;
+}
+
+.homepage-hero-copy p {
+    animation-delay: 170ms;
+}
+
+.homepage-hero-copy .home-explore-link {
+    animation-delay: 260ms;
+}
+
+@keyframes homeHeroLineReveal {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .homepage-background {
+        transition: none;
+    }
+
+    .homepage-hero-copy h1,
+    .homepage-hero-copy p,
+    .homepage-hero-copy .home-explore-link {
+        animation: none;
+    }
+}
+
+.homepage-hero-copy h1 {
+    color: #fff;
+    font-family: inherit;
+    font-size: clamp(3.35rem, 5.5vw, 5.4rem);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+    margin: 0;
+    text-indent: -0.035em;
+    /* One soft, wide shadow lifts the text off bright skies without drawing a dark outline. */
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+    text-wrap: balance;
+}
+
+.homepage-hero-copy p {
+    color: #fff;
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    line-height: 1.55;
+    margin: 0.85rem 0 1.15rem;
+    font-weight: 500;
+    max-width: 560px;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
+}
+
+.homepage-hero-copy .home-explore-link {
+    align-items: center;
+    background: transparent;
+    color: #fff !important;
+    display: inline-flex;
+    font-size: 0.98rem;
+    font-weight: 600;
+    gap: 0.55rem;
+    padding: 0;
+    text-decoration: none;
+    /* White text with a thin green outline */
+    text-shadow:
+        0 0 1px #6cc24a,
+        0 0 1px #6cc24a;
+}
+
+.homepage-hero-copy .home-explore-link:hover,
+.homepage-hero-copy .home-explore-link:focus {
+    background: transparent;
+    color: #fff !important;
+    text-decoration: none;
+}
+
+.homepage-hero-copy .home-explore-link i {
+    animation: homeArrowNudge 3s ease-in-out 1s infinite;
+}
+
+@keyframes homeArrowNudge {
+    0%,
+    30%,
+    100% {
+        transform: translateY(0);
+    }
+
+    10%,
+    22% {
+        transform: translateY(5px);
+    }
+
+    16% {
+        transform: translateY(1px);
+    }
+}
+
+.homepage-hero-copy .home-explore-link:hover i,
+.homepage-hero-copy .home-explore-link:focus i {
+    animation: none;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .homepage-hero-copy .home-explore-link i {
+        animation: none;
+    }
+}
+
+.home-inline-credit {
+    bottom: 0.7rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: var(--czvr-font-size-base);
+    position: absolute;
+    right: 1rem;
+    text-decoration: underline;
+    text-shadow: 0 1px 3px #000;
+    text-underline-offset: 0.15rem;
+    z-index: 1;
+}
+
+.home-overview {
+    background: #fff;
+    padding: 0.55rem 1.25rem 2.75rem;
+}
+
+.home-overview-inner {
+    background: #fff;
+    margin: 0 auto;
+    max-width: 1280px;
+    padding: 0 2rem 1.5rem;
+}
+
+.home-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.home-overview-column {
+    min-width: 0;
+    padding: 0.45rem 1.65rem 0;
+}
+
+.home-overview-column:first-child {
+    padding-left: 0;
+}
+
+.home-overview-column:last-child {
+    padding-right: 0;
+}
+
+.home-overview-column + .home-overview-column {
+    border-left: 1px solid var(--czvr-border);
+}
+
+.home-section-heading {
+    color: var(--czvr-green-dark);
+    font-size: var(--czvr-font-size-base);
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    margin: 0 0 0.6rem;
+    text-transform: uppercase;
+}
+
+/* Section headings hop one after another, like a wave, when the overview scrolls into view (public/js/homepage.js). */
+.home-overview.is-waving .home-section-heading {
+    animation: homeHeadingWave 700ms ease-in-out both;
+    animation-delay: calc(var(--wave-index, 0) * 110ms);
+}
+
+@keyframes homeHeadingWave {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    30% {
+        transform: translateY(-7px);
+    }
+
+    55% {
+        transform: translateY(0);
+    }
+
+    72% {
+        transform: translateY(-2px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-overview.is-waving .home-section-heading {
+        animation: none;
+    }
+}
+
+.home-info-row {
+    align-items: center;
+    border-bottom: 1px solid var(--czvr-border);
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    min-height: 38px;
+    padding: 0.4rem 0;
+}
+
+.home-info-row:last-child {
+    border-bottom: 0;
+}
+
+.home-info-primary {
+    color: var(--czvr-text);
+    font-size: var(--czvr-font-size-base);
+    font-weight: 400;
+    text-decoration: none;
+}
+
+.home-info-primary[href] {
+    text-decoration: underline;
+    text-decoration-color: rgba(40, 94, 27, 0.42);
+    text-underline-offset: 0.18rem;
+}
+
+.home-info-primary[href]:hover,
+.home-info-primary[href]:focus {
+    color: var(--czvr-green-dark);
+    text-decoration-color: var(--czvr-green-dark);
+}
+
+.home-info-secondary {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    text-align: right;
+}
+
+.home-event-live {
+    color: var(--czvr-green-dark);
+    font-weight: 600;
+}
+
+.home-empty {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    margin: 0;
+    padding: 0.55rem 0;
+}
+
+.home-weather-row {
+    align-items: start;
+    column-gap: 0.45rem;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+}
+
+.home-weather-badges {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.home-weather-category {
+    border-radius: 0 !important;
+}
+
+.home-weather-content {
+    min-width: 0;
+}
+
+.home-weather-report {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    line-height: 1.4;
+    margin-top: 0.2rem;
+    overflow-wrap: anywhere;
+}
+
+.home-ranking-list {
+    margin: 0;
+}
+
+.home-rank {
+    align-items: baseline;
+    border-bottom: 1px solid var(--czvr-border);
+    display: flex;
+    gap: 0.45rem;
+    min-height: 38px;
+    min-width: 0;
+    padding: 0.4rem 0;
+}
+
+.home-rank:last-child {
+    border-bottom: 0;
+}
+
+.home-rank-number {
+    color: var(--czvr-green);
+    font-size: var(--czvr-font-size-base);
+    font-weight: 600;
+}
+
+.home-rank-name {
+    font-size: var(--czvr-font-size-base);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.home-rank-time {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+    .home-landing {
+        height: 72svh;
+        min-height: 560px;
+    }
+
+    .homepage-hero-inner {
+        padding: 4.5rem 1.25rem 1.25rem;
+    }
+
+    .homepage-hero-copy {
+        max-width: 520px;
+    }
+
+    .homepage-hero-copy p {
+        margin: 0.9rem 0 1.1rem;
+    }
+
+    .home-overview {
+        padding: 1.5rem 0.75rem 1rem;
+    }
+
+    .home-overview-inner {
+        padding: 0 1rem 1.25rem;
+    }
+
+    .home-overview-grid {
+        display: block;
+    }
+
+    .home-overview-column {
+        padding: 0;
+    }
+
+    .home-overview-column + .home-overview-column {
+        border-left: 0;
+        border-top: 1px solid var(--czvr-border);
+        margin-top: 1.6rem;
+        padding: 1.6rem 0 0;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1099.98px) {
+    .home-overview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        row-gap: 1.8rem;
+    }
+
+    .home-overview-column:nth-child(3),
+    .home-overview-column:nth-child(5) {
+        border-left: 0;
+        padding-left: 0;
+    }
+}
+
+.home-livemap {
+    border-top: 1px solid var(--czvr-border);
+    margin-top: 2rem;
+    min-width: 0;
+    padding-top: 2rem;
+}
+
+@media (min-width: 1500px) {
+    .home-overview-inner {
+        max-width: 1840px;
+    }
+
+    .home-overview-layout {
+        align-items: stretch;
+        display: grid;
+        gap: 0;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+
+    .home-overview-grid {
+        align-content: start;
+        grid-template-areas:
+            "atc weather"
+            "events weather"
+            "news weather"
+            "top weather";
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+        grid-template-rows: repeat(3, auto) 1fr;
+    }
+
+    .home-overview-column:nth-child(1) { grid-area: atc; }
+    .home-overview-column:nth-child(2) { grid-area: weather; }
+    .home-overview-column:nth-child(3) { grid-area: events; }
+    .home-overview-column:nth-child(4) { grid-area: news; }
+    .home-overview-column:nth-child(5) { grid-area: top; }
+
+    .home-overview-column:nth-child(n) {
+        border-left: 0;
+        padding: 0.45rem 1.65rem 0 0;
+    }
+
+    .home-overview-column:nth-child(3),
+    .home-overview-column:nth-child(4),
+    .home-overview-column:nth-child(5) {
+        border-top: 1px solid var(--czvr-border);
+        margin-top: 1.4rem;
+        padding-top: 1.4rem;
+    }
+
+    .home-overview-column:nth-child(2) {
+        border-left: 1px solid var(--czvr-border);
+        padding: 0.45rem 1.65rem 0;
+    }
+
+    .home-livemap {
+        border-left: 1px solid var(--czvr-border);
+        border-top: 0;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0.45rem 0 0 2rem;
+    }
+
+    .home-livemap .map-shell {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+    }
+
+    .home-livemap #map {
+        flex: 1 1 auto;
+        height: auto;
+        min-height: 520px;
+    }
+}
+
+.map-status {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    justify-self: end;
+    white-space: nowrap;
+}
+
+.live-map-airports {
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.6rem;
+    display: inline-flex;
+    gap: 0.2rem;
+    justify-self: end;
+    order: 3;
+    overflow-x: auto;
+    padding: 0.2rem;
+    max-width: 100%;
+}
+
+.live-map-airports button {
+    background: transparent;
+    border: 0;
+    border-radius: 0.4rem;
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    font-weight: 500;
+    padding: 0.35rem 0.65rem;
+    white-space: nowrap;
+}
+
+.live-map-airports button:hover,
+.live-map-airports button:focus,
+.live-map-airports button.active {
+    background: var(--czvr-green-soft);
+    color: var(--czvr-green-dark);
+}
+
+.map-shell {
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    position: relative;
+}
+
+#map {
+    height: min(560px, 65vh);
+    min-height: 420px;
+}
+
+.map-meta {
+    align-items: center;
+    background: var(--czvr-white);
+    border-bottom: 1px solid var(--czvr-border);
+    display: grid;
+    gap: 0.6rem 1rem;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    padding: 0.5rem 0.85rem;
+}
+
+@media (max-width: 991.98px) {
+    .map-meta {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .live-map-airports {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+}
+
+.map-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.map-legend-item {
+    align-items: center;
+    color: var(--czvr-text-muted);
+    display: inline-flex;
+    font-size: var(--czvr-font-size-base);
+    gap: 0.35rem;
+}
+
+.map-legend-dot {
+    background: var(--czvr-green);
+    border-radius: 50%;
+    height: 0.55rem;
+    width: 0.55rem;
+}
+
+.map-legend-dot.taken {
+    background: #bb4747;
+}
+
+.map-legend-plane {
+    color: var(--czvr-green-dark);
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+.aircraft-marker {
+    align-items: center;
+    color: var(--czvr-green-dark);
+    display: flex;
+    filter: drop-shadow(0 0 1px var(--czvr-white)) drop-shadow(0 1px 1px rgba(27, 54, 30, 0.25));
+    font-size: 16px;
+    height: 20px;
+    justify-content: center;
+    width: 20px;
+}
+
+.aircraft-marker span {
+    display: block;
+    line-height: 1;
+}
+
+.leaflet-popup-content {
+    font-size: var(--czvr-font-size-base);
+    line-height: 1.55;
+    margin: 0.8rem 0.9rem;
+}
+
+.leaflet-popup-content strong {
+    font-size: var(--czvr-font-size-base);
+    font-weight: 600;
+}
+
+@media (max-width: 767.98px) {
+    #map {
+        min-height: 380px;
+    }
+}

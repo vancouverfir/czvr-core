@@ -6,10 +6,13 @@ use App\Models\Users\User;
 use App\Traits\HasMarkdownFields;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ControllerFeedback extends Model
 {
-    use HasMarkdownFields;
+    use HasMarkdownFields, SoftDeletes;
+
+    protected $table = 'controller_feedback';
 
     protected $hidden = ['id'];
 
@@ -31,5 +34,10 @@ class ControllerFeedback extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function controller(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'controller_cid');
     }
 }

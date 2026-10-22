@@ -10,7 +10,7 @@
 
     <div class="container" style="margin-top: 20px;">
         <a href="{{route('staff.feedback.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Feedback</a>
-        <h1 class="blue-text font-weight-bold mt-2">Controller Feedback ID: #{{ $id }}</h1>
+        <h1 class="blue-text fw-bold mt-2">Controller Feedback ID: #{{ $id }}</h1>
         <hr>
         <div class="row">
             <div class="col-3">
@@ -25,10 +25,22 @@
             <div class="col-3" style="text-align: center">
                 {{$feedback->approval == 0 ? 'Actions (needs your attention):' : 'Actions:'}}
                 <br>
-                <a href="#" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil-alt"></i></a>&nbsp;
-                <a href="{{url('/admin/feedback/controller/'.$id.'/approve')}}"><i class="fa fa-check" style={{$feedback->approval == 2 ? 'color: green' : 'color: white'}}></i></a>&nbsp;
-                <a href="{{url('/admin/feedback/controller/'.$id.'/deny')}}"><i class="fa fa-times" style={{$feedback->approval == 1 ? 'color: red' : 'color: white'}}></i></a>&nbsp;
-                <a href="{{url('/admin/feedback/controller/'.$id.'/delete')}}"><i class="fa fa-trash-alt"></i></a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa fa-pencil-alt"></i></a>&nbsp;
+                <form method="POST" action="{{url('/admin/feedback/controller/'.$id.'/approve')}}" class="d-inline">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="border-0 bg-transparent p-0 {{ $feedback->approval == 2 ? 'text-success' : 'text-secondary' }}"><i class="fa fa-check"></i></button>
+                </form>&nbsp;
+                <form method="POST" action="{{url('/admin/feedback/controller/'.$id.'/deny')}}" class="d-inline">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="border-0 bg-transparent p-0 {{ $feedback->approval == 1 ? 'text-danger' : 'text-secondary' }}"><i class="fa fa-times"></i></button>
+                </form>&nbsp;
+                <form method="POST" action="{{url('/admin/feedback/controller/'.$id.'/delete')}}" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="border-0 bg-transparent p-0 blue-text"><i class="fa fa-trash-alt"></i></button>
+                </form>
             </div>
         </div>
         <h6 style="white-space: pre-line;">Feedback: {{$feedback->content}}</h6>
@@ -47,14 +59,14 @@
                 <form method="POST" action="{{route('staff.feedback.controller.edit', $id)}}">
                     @csrf
                     <div class="modal-body">
-                        <h5 class="font-weight-bold" style="color: red;">Editing controller feedback should only be used for clarity reasons.</h5>
+                        <h5 class="fw-bold" style="color: red;">Editing controller feedback should only be used for clarity reasons.</h5>
                         <br>
-                        <p class="font-weight-bold">Feedback:</p>
+                        <p class="fw-bold">Feedback:</p>
                         <textarea name="content" class="form-control" placeholder="What a fantastic controller!">{{$feedback->content}}</textarea>
                     </div>
                     <div class="modal-footer">
                         <input role="button" type="submit" class="btn btn-primary" value="Edit">
-                        <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                     </div>
                 </form>
             </div>

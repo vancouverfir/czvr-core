@@ -1,22 +1,22 @@
 @extends('layouts.master')
 
-@section('content')
-
+@push('styles')
 <style>
   .roster-table th, .roster-table td {
-    border: 1px solid #333 !important;
+    border: 1px solid var(--czvr-border) !important;
     vertical-align: middle;
   }
   .roster-table tbody tr:hover {
-    background: #2b2b2b;
+    background: var(--czvr-green-soft);
   }
 
   .sticky-col {
     position: sticky;
     left: 0;
-    background: #111;
+    background: var(--czvr-surface);
+    color: var(--czvr-text);
     z-index: 5;
-    border-right: 2px solid #333 !important;
+    border-right: 2px solid var(--czvr-border) !important;
   }
   .left-col {
     min-width: 160px;
@@ -40,7 +40,7 @@
   }
 
   .position-name {
-    font-size: .85rem;
+    font-size: var(--czvr-font-size-base);
     font-weight: 700;
     text-transform: uppercase;
   }
@@ -55,29 +55,34 @@
     display: block;
   }
 </style>
+@endpush
 
+@section('content')
+
+@include('partials.vendor.flatpickr')
+@include('partials.vendor.easymde')
 <div class="container py-4">
     <a href="{{route('events.admin.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Events</a>
-    <h1 class="font-weight-bold blue-text">Managing: "{{$event->name}}"</h1>
+    <h1 class="fw-bold blue-text">Managing: "{{$event->name}}"</h1>
     <hr>
     <div class="row">
         <div class="col-md-3">
-            <h4 class="font-weight-bold blue-text">Actions</h4>
+            <h4 class="fw-bold blue-text">Actions</h4>
             <ul class="list-unstyled mt-3 mb-0" style="font-size: 1.05em;">
                 <li class="mb-2">
-                    <a href="" data-toggle="modal" data-target="#editEvent" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Edit event details</span></a>
+                    <a href="" data-bs-toggle="modal" data-bs-target="#editEvent" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Edit event details</span></a>
                 </li>
                 <li class="mb-2">
-                    <a href="" data-toggle="modal" data-target="#createUpdate" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Create update</span></a>
+                    <a href="" data-bs-toggle="modal" data-bs-target="#createUpdate" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Create update</span></a>
                 </li>
                 <li class="mb-2">
-                    <a href="" data-toggle="modal" data-target="#confirmController" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Add Controller to Event Roster</span></a>
+                    <a href="" data-bs-toggle="modal" data-bs-target="#confirmController" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Add Controller to Event Roster</span></a>
                 </li>
                 <li class="mb-2">
                     <a href="{{route('event.viewapplications', [$event->id]) }}" style="text-decoration:none;"><span class="blue-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">View Controller Applications</span></a>
                 </li>
                 <li class="mb-2">
-                    <a href="" data-toggle="modal" data-target="#deleteEvent" style="text-decoration:none;"><span class="red-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Delete event</span></a>
+                    <a href="" data-bs-toggle="modal" data-bs-target="#deleteEvent" style="text-decoration:none;"><span class="red-text"><i class="fas fa-chevron-right"></i></span> &nbsp; <span class="text-body">Delete event</span></a>
                 </li>
 
             {{-- <li class="mb-2">
@@ -86,7 +91,7 @@
             </ul>
         </div>
         <div class="col-md-9">
-          <h4 class="font-weight-bold blue-text">Details</h4>
+          <h4 class="fw-bold blue-text">Details</h4>
           <div class="row">
               <div class="col-md-6">
                   <table class="table table-borderless table-striped">
@@ -119,9 +124,9 @@
               </div>
           </div>
             <hr>
-          <h4 class="font-weight-bold blue-text">Description</h4>
+          <h4 class="fw-bold blue-text">Description</h4>
             {{$event->description}}<hr>
-          <h4 class="font-weight-bold blue-text">Updates</h4>
+          <h4 class="fw-bold blue-text">Updates</h4>
             @if (count($updates) == 0)
                 None yet!
             @else
@@ -129,7 +134,12 @@
                     <div class="card p-3">
                         <h4>{{$u->title}}</h4>
                         <div class="d-flex flex-row align-items-center">
-                            <i class="far fa-clock"></i>&nbsp;&nbsp;Created {{$u->created_pretty()}}</span>&nbsp;&nbsp;•&nbsp;&nbsp;<i class="far fa-user-circle"></i>&nbsp;&nbsp;{{$u->author_pretty()}}&nbsp;&nbsp;•&nbsp;&nbsp;<a href="{{route('events.admin.update.delete', [$event->slug, $u->id])}}" class="red-text">Delete</a>
+                            <i class="far fa-clock"></i>&nbsp;&nbsp;Created {{$u->created_pretty()}}&nbsp;&nbsp;•&nbsp;&nbsp;<i class="far fa-user-circle"></i>&nbsp;&nbsp;{{$u->author_pretty()}}&nbsp;&nbsp;•&nbsp;&nbsp;
+                            <form method="POST" action="{{route('events.admin.update.delete', [$event->slug, $u->id])}}" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="red-text border-0 bg-transparent p-0">Delete</button>
+                            </form>
                         </div>
                         <hr>
                         {{$u->toHtml('content')}}
@@ -140,17 +150,17 @@
 
             <hr>
 
-            <h4 class="font-weight-bold text-light mt-3">Event Roster</h4>
+            <h4 class="fw-bold mt-3">Event Roster</h4>
 
             @if (count($eventroster) < 1)
             <div class="alert alert-secondary">Nobody is confirmed to control yet!</div>
             @else
-                <div class="card bg-dark text-light shadow-sm p-3">
+                <div class="card shadow-sm p-3">
                     <div class="table-responsive" style="max-height: 600px; overflow: auto;">
                     <table class="table table-sm mb-0 text-center roster-table">
                         <thead class="sticky-top">
                             <tr>
-                                <th class="align-middle text-white sticky-col left-col">Controller</th>
+                                <th class="align-middle sticky-col left-col">Controller</th>
                                 @php
                                 $start = strtotime($event->start_timestamp);
                                 $end   = strtotime($event->end_timestamp);
@@ -171,7 +181,7 @@
                                 @endphp
 
                                 @foreach($slots as $slot)
-                                    <th class="small font-weight-bold text-muted px-2">{{ $slot }}</th>
+                                    <th class="small fw-bold text-muted px-2">{{ $slot }}</th>
                                 @endforeach
                             </tr>
                         </thead>
@@ -183,7 +193,7 @@
                             $totalSlots = count($slots);
                             @endphp
                             <tr>
-                            <td class="font-weight-bold text-light sticky-col left-col">
+                            <td class="fw-bold sticky-col left-col">
                                 {{ $user->fullName('FL') }}
                             </td>
 
@@ -211,7 +221,7 @@
                                     $color = $positionColors[$pos] ?? '#6c757d';
                                 @endphp
                                 <td colspan="{{ $mergeCount }}" class="p-0 controller-cell">
-                                    <div class="controller-block" style="background-color: {{ $color }};" data-toggle="tooltip" title="{{ $assignment->airport }} {{ date('H:i', strtotime($assignment->start_timestamp)) }}z → {{ date('H:i', strtotime($assignment->end_timestamp)) }}z">
+                                    <div class="controller-block" style="background-color: {{ $color }};" data-bs-toggle="tooltip" title="{{ $assignment->airport }} {{ date('H:i', strtotime($assignment->start_timestamp)) }}z → {{ date('H:i', strtotime($assignment->end_timestamp)) }}z">
                                     <span class="position-name">{{ $assignment->airport }}</span>
                                     <form method="POST" action="{{ route('event.deletecontroller', [$assignment->user_id]) }}" class="controller-delete">
                                         @csrf
@@ -237,20 +247,18 @@
     </div>
 </div>
 
-<script>
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-  })
-</script>
 
 <!--Delete event modal-->
 
-<div class="modal fade" id="deleteEvent" tabindex="-1" role="dialog">
+<div class="modal fade" id="deleteEvent" tabindex="-1" role="dialog" aria-labelledby="deleteEventTitle">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+            <form method="POST" action="{{route('events.admin.delete', $event->slug)}}">
+                @csrf
+                @method('DELETE')
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="deleteEventTitle">Are you sure?</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -258,8 +266,8 @@
                 <p>This will soft delete the event, so it still exists in the database but cannot be viewed!</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
-                <a href="{{route('events.admin.delete', $event->slug)}}" role="button" class="btn btn-danger">Delete Event</a>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
+                <button type="submit" class="btn btn-danger">Delete Event</button>
             </div>
             </form>
         </div>
@@ -270,22 +278,22 @@
 
 <!--Edit event modal-->
 
-<div class="modal fade" id="editEvent" tabindex="-1" role="dialog">
+<div class="modal fade" id="editEvent" tabindex="-1" role="dialog" aria-labelledby="editEventTitle">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+            <form method="POST" action="{{route('events.admin.edit.post', $event->slug)}}" enctype="multipart/form-data">
+                @csrf
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Edit {{$event->name}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="editEventTitle">Edit {{$event->name}}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" action="{{route('events.admin.edit.post', $event->slug)}}" enctype="multipart/form-data">
-                @csrf
                 <div class="modal-body">
                     @if($errors->editEventErrors->any())
                     <div class="alert alert-danger">
                         <h4>There were errors editing the event!</h4>
-                        <ul class="pl-0 ml-0 list-unstyled">
+                        <ul class="ps-0 ms-0 list-unstyled">
                             @foreach ($errors->editEventErrors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -319,20 +327,6 @@
                                     <label for="">Arrival airport ICAO (optional)</label>
                                     <input maxlength="4" type="text" value="{{$event->arrival_icao}}" name="arrival_icao" id="" class="form-control" placeholder="EIDW">
                                 </div>
-                                <script>
-                                    flatpickr('#event_start', {
-                                        enableTime: true,
-                                        noCalendar: false,
-                                        dateFormat: "Y-m-d H:i",
-                                        time_24hr: true,
-                                    });
-                                    flatpickr('#event_end', {
-                                        enableTime: true,
-                                        noCalendar: false,
-                                        dateFormat: "Y-m-d H:i",
-                                        time_24hr: true,
-                                    });
-                                </script>
                             </div>
                         </li>
                         <li class="active">
@@ -344,9 +338,6 @@
                                 <div class="form-group">
                                     <label for="">Use Markdown</label>
                                     <textarea id="contentMD" name="description" class="w-75">{{$event->description}}</textarea>
-                                    <script>
-                                        var simplemde = new SimpleMDE({ element: document.getElementById("contentMD"), toolbar: false });
-                                    </script>
                                 </div>
                             </div>
                         </li>
@@ -363,9 +354,9 @@
                                 @endif
                                 <p>An image can be displayed for the event! Please ensure we have the right to use the image, and that it is of an acceptable resolution! Make sure the image has no text or logos on it!</p>
                                 <div class="input-group pb-3">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" name="image">
-                                        <label class="custom-file-label">Choose image</label>
+                                    <div class="mb-3">
+                                        <input type="file" class="form-control" name="image">
+
                                     </div>
                                 </div>
                             </div>
@@ -377,7 +368,7 @@
                             </a>
                             <div class="step-content w-75 pt-0">
                                 <div class="form-group">
-                                    <div class="mr-2">
+                                    <div class="me-2">
                                         <input type="checkbox" class="" name="openControllerApps" id="openControllerApps" {{ $event->controller_applications_open == "1" ? "checked=checked" : ""}}>
                                         <label class="" for="">Open controller applications</label>
                                     </div>
@@ -387,7 +378,7 @@
                     </ul>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                     <button type="submit" class="btn btn-primary">Edit</button>
                 </div>
             </form>
@@ -395,32 +386,27 @@
     </div>
 </div>
 
-@if($errors->editEventErrors->any())
-<script>
-    $("#editEvent").modal('show');
-</script>
-@endif
 
 <!--End edit event modal-->
 
 
 <!--Create update modal-->
 
-<div class="modal fade" id="createUpdate" tabindex="-1" role="dialog">
+<div class="modal fade" id="createUpdate" tabindex="-1" role="dialog" aria-labelledby="createUpdateTitle">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+            <form method="POST" action="{{route('events.admin.update.post', $event->slug)}}" enctype="multipart/form-data">
+                @csrf
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Create Event Update</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="createUpdateTitle">Create Event Update</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" action="{{route('events.admin.update.post', $event->slug)}}" enctype="multipart/form-data">
-                @csrf
                 <div class="modal-body">
                     @if($errors->createUpdateErrors->any())
                     <div class="alert alert-danger">
-                        <ul class="pl-0 ml-0 list-unstyled">
+                        <ul class="ps-0 ms-0 list-unstyled">
                             @foreach ($errors->createUpdateErrors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -434,50 +420,38 @@
                     <div class="form-group">
                         <label for="">Use Markdown</label>
                         <textarea id="updateContent" name="updateContent"></textarea>
-                        <script>
-                            var simplemde = new SimpleMDE({ element: document.getElementById("updateContent"), toolbar: false });
-                        </script>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                     <button type="submit" class="btn btn-success">Create</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-@endsection
-
-@if($errors->createUpdateErrors->any())
-<script>
-    $("#createUpdate").modal('show');
-</script>
-@endif
 
 <!--End app update modal-->
 
 <!--Add Confirmed controller modal-->
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-<div class="modal fade" id="confirmController" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="confirmController" tabindex="-1" role="dialog" aria-labelledby="confirmControllerTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+            <form id="app-form" method="POST" action="{{ route('event.addcontroller', [$event->id] )}}">
+                @csrf
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Add Controller to Event {{$event->name}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="confirmControllerTitle">Add Controller to Event {{$event->name}}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
-              <div align="center" class="modal-body">
-                    <form id="app-form" method="POST" action="{{ route('event.addcontroller', [$event->id] )}}">
+            <div class="modal-body">
                     <div class="form-group row">
                         <label for="dropdown" class="col-sm-4 col-form-label text-md-right">Pick a controller!</label>
 
-                        <select class="custom-select" name="user_cid">
+                        <select class="form-select" name="user_cid">
                             @foreach($users as $user)
                             <option value="{{ $user->id}}">{{$user->id}} - {{$user->fname}} {{$user->lname}}</option>
                             @endforeach
@@ -485,7 +459,7 @@
 
                         <div class="col-md-12">
 
-                            <td align="center">
+                            <div class="w-100">
                                 <input type="hidden" name="event_id" value="{{$event->id}}">
                                 <input type="hidden" name="event_name" value="{{$event->name}}">
                                 <input type="hidden" name="event_date" value="{{$event->start_timestamp}}">
@@ -495,19 +469,56 @@
                                 <input type="datetime-local" name="end_timestamp" class="form-control" id="end_timestamp" value="{{ ($event->end_timestamp) }}" min="{{ ($event->start_timestamp) }}" max="{{ ($event->end_timestamp) }}">
                                 <label class="mt-2" for="">Airport Callsign (e.g. CZVR_CTR)</label>
                                 <input type="text" name="airport" class="form-control" id="airport">
-                                @csrf
-                            </td>
+                            </div>
 
                         </div>
                     </div>
             </div>
 
-            <div align="center" class="modal-footer">
-              <div align="center"><button type="submit" class="btn btn-success">Confirm Controller</button></div>
-                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button></form>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Confirm Controller</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
 
 <!--End confirmed controller modal-->
+@endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+
+        if (window.flatpickr) {
+            flatpickr('#event_start', {
+                enableTime: true,
+                noCalendar: false,
+                dateFormat: 'Y-m-d H:i',
+                time_24hr: true,
+            });
+            flatpickr('#event_end', {
+                enableTime: true,
+                noCalendar: false,
+                dateFormat: 'Y-m-d H:i',
+                time_24hr: true,
+            });
+        }
+
+        if (window.EasyMDE) {
+            new EasyMDE({ spellChecker: false, element: document.getElementById('contentMD'), toolbar: false });
+            new EasyMDE({ spellChecker: false, element: document.getElementById('updateContent'), toolbar: false });
+        }
+
+        @if($errors->editEventErrors->any())
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('editEvent')).show();
+        @endif
+
+        @if($errors->createUpdateErrors->any())
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('createUpdate')).show();
+        @endif
+    });
+</script>
+@endpush

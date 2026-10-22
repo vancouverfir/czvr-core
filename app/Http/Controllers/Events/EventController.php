@@ -9,7 +9,6 @@ use App\Models\Events\Event;
 use App\Models\Events\EventConfirm;
 use App\Models\Events\EventPosition;
 use App\Models\Events\EventUpdate;
-use App\Models\Publications\UploadedImage;
 use App\Models\Settings\AuditLogEntry;
 use App\Models\Users\User;
 use App\Notifications\events\EventSignup;
@@ -29,22 +28,11 @@ class EventController extends Controller
     */
     public function index(): View
     {
-        // $events = Event::cursor()->filter(function ($event) {
-        //     return ! $event->event_in_past();
-        // })->sortBy('start_timestamp');
-        // $pastEvents = Event::cursor()->filter(function ($event) {
-        //     return $event->event_in_past();
-        // })->sortBy('start_timestamp');
 
         $events = Event::where('start_timestamp', '>=', Carbon::now())->orderBy('start_timestamp', 'asc')->get();
         $pastEvents = Event::where('start_timestamp', '<', Carbon::now())->orderBy('start_timestamp', 'asc')->get();
 
         return view('events.index', compact('events', 'pastEvents'));
-    }
-
-    public function coverage(): View
-    {
-        return view('events.coverage');
     }
 
     public function viewEvent($slug): View
@@ -77,9 +65,18 @@ class EventController extends Controller
     public function controllerApplicationAjaxSubmit(Request $request): RedirectResponse
     {
         $request->validate([
+            'event_id' => ['required', 'integer', 'exists:events,id'],
             'availability_start' => 'required',
             'availability_end' => 'required',
         ]);
+
+        if (! Auth::user()->canApplyForEvents()) {
+            return redirect()->back()->with('error', 'Only rostered controllers with at least one certification can apply to control events!');
+        }
+
+        if (! Event::whereKey($request->integer('event_id'))->value('controller_applications_open')) {
+            return redirect()->back()->with('error', 'Controller applications for this event are closed!');
+        }
 
         if (ControllerApplication::where('user_id', Auth::id())
             ->where('event_id', $request->get('event_id'))
@@ -203,7 +200,7 @@ class EventController extends Controller
         // Validate
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100',
-            'image' => 'mimes:jpeg,jpg,png,gif',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
             'description' => 'required',
             'start' => 'required',
             'end' => 'required',
@@ -225,12 +222,18 @@ class EventController extends Controller
         // Assign user
         $event->user_id = Auth::id();
         // Upload image if it exists
-        if ($request->file('image')) {
-            $basePath = 'public/files/'.Carbon::now()->toDateString().'/'.rand(1000, 2000);
-            $path = $request->file('image')->store($basePath);
-            $event->image_url = Storage::url($path);
+        if ($request->hasFile('image')) {
+            $path = Storage::disk('public')->putFile('files/events', $request->file('image'));
+
+            if (! $path) {
+                return back()->withInput()->with('error', 'The event image could not be stored!');
+            }
+
+            $event->image_url = Storage::disk('public')->url($path);
         }
+
         // Create slug
+
         $event->slug = Str::slug($request->get('name').'-'.Carbon::now()->toDateString());
         // Assign departure icao and arrival icao if they exist
         if ($request->get('departure_icao') && $request->get('arrival_icao')) {
@@ -275,7 +278,7 @@ class EventController extends Controller
         // Validate
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100',
-            'image' => 'mimes:jpeg,jpg,png,gif',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
             'description' => 'required',
             'start' => 'required',
             'end' => 'required',
@@ -300,15 +303,14 @@ class EventController extends Controller
         $event->description = $request->get('description');
 
         // Upload image if it exists
-        if ($request->file('image')) {
-            $basePath = 'public/files/'.Carbon::now()->toDateString().'/'.rand(1000, 2000);
-            $path = $request->file('image')->store($basePath);
-            $event->image_url = Storage::url($path);
-        }
+        if ($request->hasFile('image')) {
+            $path = Storage::disk('public')->putFile('files/events', $request->file('image'));
 
-        // If there is a uploaded image selected lets put it on there
-        if ($request->get('uploadedImage')) {
-            $event->image_url = UploadedImage::whereId($request->get('uploadedImage'))->first()->path;
+            if (! $path) {
+                return back()->withInput()->with('error', 'The event image could not be stored!');
+            }
+
+            $event->image_url = Storage::disk('public')->url($path);
         }
 
         // Assign departure icao and arrival icao if they exist

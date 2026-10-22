@@ -9,14 +9,14 @@
 @section('content')
     <div class="container" style="margin-top: 20px;">
         <a href="{{route('settings.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Settings</a>
-        <h1 class="blue-text font-weight-bold mt-2">Staff</h1>
+        <h1 class="blue-text fw-bold mt-2">Staff</h1>
         <hr>
-            <button class="btn btn-primary" href="" data-toggle="modal" data-target="#addStaff">Add Staff Member</button>
+            <button class="btn btn-primary" href="" data-bs-toggle="modal" data-bs-target="#addStaff">Add Staff Member</button>
         <div class="row">
             @foreach ($groups as $g)
         <div class="container">
             <hr>
-            <h3 class="blue-text font-weight-bold mt-2">{{$g->name}}</h3>
+            <h3 class="blue-text fw-bold mt-2">{{$g->name}}</h3>
         </div>
             @foreach ($g->members as $s)
             <div class="col-md-4 mb-3">
@@ -79,7 +79,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle">Add Staff Member</h2>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -92,7 +92,7 @@
                             <div class="col-md-12">
                                 <form method="POST" action="{{ route('settings.staff.addmember')}}">
                                   <label class="form-control">Select User</label>
-                                <select class="custom-select" name="newstaff">
+                                <select class="form-select" name="newstaff">
                                   @foreach($users as $user)
                                   <option value="{{ $user->id}}">{{$user->id}} - {{$user->fname}} {{$user->lname}}</option>
                                   @endforeach
@@ -108,16 +108,16 @@
                                 <label class="form-control">Staff Number (ZVR_)</label>
                                 <input type="text" class="form-control" name="shortform">
                                 <label class="form-control">Select a group</label>
-                                <select class="custom-select form-group" name="group">
+                                <select class="form-select form-group" name="group">
                                   @foreach($groups as $group)
                                         <option value="{{$group->id}}">{{$group->name}}</option>
                                   @endforeach
                                 </select>
 
-                                <td align="center">
+                                <div class="text-center">
                                       @csrf
                                       <button type="submit" class="btn btn-success">Add Staff</button>
-                                </td>
+                                </div>
                                 </form>
                             </div>
                         </div>
@@ -125,7 +125,7 @@
                 </div>
 
                 <div align="center" class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button></form>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                 </div>
             </div>
         </div>

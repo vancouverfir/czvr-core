@@ -1,177 +1,144 @@
-<!DOCTYPE HTML>
+<!doctype html>
 <html lang="en">
     <head>
+        @php
+            $coreSettings ??= \App\Models\Settings\CoreSettings::query()->find(1);
+            $isHoliday = now('UTC')->month === 12;
+        @endphp
         <!--
-        {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->sys_name}}
-        {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->release}} ({{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->sys_build}})
-        Built on Bootstrap 4 and Laravel 6
+        {{ $coreSettings?->sys_name ?? 'Vancouver FIR Core' }}
+        {{ $coreSettings?->release ?? 'Development' }} ({{ $coreSettings?->sys_build ?? 'local' }})
+        Built on Bootstrap 5 and Laravel 13
 
         Written by Liesel D... edited by a hundred Vancouverers
 
-        For Flight Simulation Use Only - Not to be used for real-world navigation. All content on this web site may not be shared, copied, reproduced or used in any way without prior express written consent of Vancouver FIR. © Copyright {{App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->copyright_year}} Vancouver FIR , All Rights Reserved.
+        For Flight Simulation Use Only - Not to be used for real-world navigation. All content on this web site may not be shared, copied, reproduced or used in any way without prior express written consent of Vancouver FIR. © Copyright {{ $coreSettings?->copyright_year ?? now()->year }} Vancouver FIR, All Rights Reserved.
         -->
 
         <!--Metadata-->
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-        <!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
+        @if ($isHoliday)
+            <link rel="icon" href="{{ asset('holiday.ico') }}" type="image/x-icon">
+        @else
+            <link rel="icon" href="{{ asset('CZVR_Mark.svg') }}" type="image/svg+xml">
+            <link rel="alternate icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+        @endif
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta name="theme-color" content="#6CC24A">
+        <meta name="theme-color" content="#ffffff">
         <title>@yield('title', 'Vancouver FIR')</title>
         <meta name="description" content="@yield('description', '')">
-        <meta name="theme-color" content="#6CC24A">
-        <meta name="og:title" content="@yield('title', 'Vancouver FIR')">
-        <meta name="og:description" content="@yield('description', '')">
-        <meta name="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-        <!-- <link rel="shortcut icon" href="{{ asset('holiday.ico') }}" type="image/x-icon"> -->
-        <link rel="preload" as="style" href="{{ asset('css/bootstrap.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" as="style" href="{{ asset('css/mdb.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="preload" as="style" href="{{ asset('css/all.css') }}" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <!-- Bootstrap core CSS -->
-        <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-        <!-- Material Design Bootstrap -->
-        <link href="{{ asset('css/mdb.min.css') }}" rel="stylesheet">
-        <!--SimpleMDE Editor-->
-        <link href="{{ asset('css/simplemde.min.css') }}" rel="stylesheet">
-        <script src="{{ asset('js/simplemde.min.js') }}" defer></script>
-        <!-- JQuery -->
-        <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
-        <!-- Bootstrap tooltips -->
-        <script type="text/javascript" src="{{ asset('js/popper.min.js') }}"></script>
-        <!-- Bootstrap core JavaScript -->
-        <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
-        <!-- MDB core JavaScript -->
-        <script type="text/javascript" src="{{ asset('js/mdb.min.js') }}"></script>
-        <!--CZQO specific CSS-->
-        @if (auth()->check())
-        @switch (auth()->user()->preferences)
-            @case("default")
-            <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
-            @break
-            @default
-            <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
-        @endswitch
-        @else
-        <link href="{{ asset('css/czqomd.css') }}" rel="stylesheet">
-        @endif
-        <!--Leaflet-->
-        <script src="{{ asset('js/leaflet.js') }}"></script>
-        <link rel="stylesheet" href="{{ asset('css/leaflet.css') }}">
-        <!--TinyMCE-->
-        <script src="{{ asset('js/tinymce.min.js') }}" defer></script>
-        <!--DataTables-->
-        <link rel="stylesheet" type="text/css" href="{{ asset('css/dataTables.bootstrap4.min.css') }}"/>
-        <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
-        <!--CSS Emoticons-->
-        <link href="{{asset('css/jquery.cssemoticons.css')}}" media="screen" rel="stylesheet" type="text/css" />
-        <script src="{{asset('/js/jquery.cssemoticons.js')}}" type="text/javascript" defer></script>
-        <!--IntroJS-->
-        <link rel="stylesheet" href="{{asset('introjs/introjs.min.css')}}">
-        <script src="{{asset('introjs/intro.min.js')}}" defer></script>
-        <!--Date picker-->
-        <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
-        <script src="{{ asset('js/flatpickr.min.js') }}"></script>
-        <!--SimpleMDE-->
-        <link rel="stylesheet" href="{{ asset('css/simplemde.min.css') }}">
-        <script src="{{ asset('js/simplemde.min.js') }}" defer></script>
-        <!--Dropzone-->
-        <script src="{{asset('js/dropzone.js')}}"></script>
-        <!--JqueryValidate-->
-        <script src="{{ asset('js/jquery.validate.min.js') }}" defer></script>
-        <!---->
-        <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
+        <meta property="og:title" content="@yield('title', 'Vancouver FIR')">
+        <meta property="og:description" content="@yield('description', '')">
+        <meta property="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
+        <!-- Package-managed vendor styles -->
+        <link href="{{ asset('vendor/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('vendor/fontawesome/all.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('vendor/fontawesome/v4-shims.min.css') }}" rel="stylesheet">
+
+        @stack('vendor-styles')
+
+        <!-- Shared application theme -->
+        <link href="{{ asset('css/theme.css') }}" rel="stylesheet">
+        @stack('styles')
+
+        <!-- Package-managed vendor scripts -->
+        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
+        <!-- Libraries a page needs (partials/vendor); Select2 and Flatpickr are loaded by form-controls.js when a page has those fields -->
+        @stack('vendor')
     </head>
     <body class="background">
     <!--Header-->
-    <!-- <script src="/js/snowflakes.js"></script> -->
-    @if (\App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->banner)
-        <div class="alert alert-{{\App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->bannerMode}}" style="margin: 0; border-radius: 0; border: none;">
+    @if ($isHoliday)
+        <script src="{{ asset('js/snowflakes.js') }}"></script>
+    @endif
+    @if ($coreSettings?->banner)
+        <div class="alert alert-{{ $coreSettings->bannerMode }}" style="margin: 0; border-radius: 0; border: none;">
             <div class="text-center align-self-center">
-                <a href="{{\App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->bannerLink}}" target="_blank"><span style="margin: 0;">{{\App\Models\Settings\CoreSettings::where('id', 1)->firstOrFail()->banner}}</span></a>
+                @if(filled($coreSettings->bannerLink))
+                    <a href="{{ $coreSettings->bannerLink }}" target="_blank" rel="noopener"><span style="margin: 0;">{{ $coreSettings->banner }}</span></a>
+                @else
+                    <span style="margin: 0;">{{ $coreSettings->banner }}</span>
+                @endif
             </div>
         </div>
     @endif
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark p-0 main-colour" style="min-height:59px">
+        <nav class="navbar navbar-expand-lg navbar-light p-0 site-navbar" style="min-height:59px">
             <div class="container">
-                <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset('CZVR_Colour_Long.png') }}" alt=""></a>
-                <!-- <a class="navbar-brand" href="{{route('index')}}"><img style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset('Holiday Long.png') }}" alt=""></a> -->
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                <a class="navbar-brand" href="{{route('index')}}"><img width="310" height="35" style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset($isHoliday ? 'Holiday Long.png' : 'CZVR_Colour_Long.svg') }}" alt="Vancouver FIR"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item {{ Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
-                            @if(auth()->check() && auth()->user()->permissions >= 4)
-                            <li class="nav-item dropdown {{ Request::is('news') || Request::is('news/*') || Request::is('news') ? 'active' : '' }}">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">News</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="{{route('news')}}">News</a>
-                                <a class="dropdown-item {{ Request::is('news') ? 'active white-text' : '' }}" href="{{route('news.index')}}">Manage News</a>
-                            @else
+                    <ul class="navbar-nav me-auto">
+                        @can('news.manage')
+                            <li class="nav-item dropdown {{ request()->routeIs('news', 'news.*') ? 'active' : '' }}">
+                                <a class="nav-link dropdown-toggle" style="cursor:pointer" id="newsDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">News</a>
+                                <div class="dropdown-menu" aria-labelledby="newsDropdown">
+                                    <a class="dropdown-item {{ request()->routeIs('news', 'news.articlepublic') ? 'active white-text' : '' }}" href="{{route('news')}}">News</a>
+                                    <a class="dropdown-item {{ request()->routeIs('news.index', 'news.articles.*') ? 'active white-text' : '' }}" href="{{route('news.index')}}">Manage News</a>
+                                </div>
+                            </li>
+                        @else
+                            <li class="nav-item {{ request()->routeIs('news', 'news.*') ? 'active' : '' }}">
                                 <a href="{{route('news')}}" class="nav-link">News</a>
-                            @endif
-                        </li>
-                        <li class="nav-item {{ Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
-                            @if(auth()->check() && auth()->user()->permissions >= 4)
-                            <li class="nav-item dropdown {{ Request::is('events') || Request::is('events/*') || Request::is('events') ? 'active' : '' }}">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="{{route('events.index')}}">Events</a>
-                                <a class="dropdown-item {{ Request::is('events') ? 'active white-text' : '' }}" href="{{route('events.admin.index')}}">Manage Events</a>
-                            @else
-                                <a href="{{route('events.index')}}" class="nav-link">Events</a>
-                            @endif
-                        </li>
-                        <li class="nav-item dropdown {{ Request::is('dashboard/applicationdashboard/application') || Request::is('dashboard/application/*') || Request::is('atcresources')}}">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="{{route('booking')}}">ATC Booking</a>
-                            <a class="dropdown-item" href="{{route('roster.public')}}">Roster</a>
-                            @if(auth()->check() && auth()->user()->permissions >= 3)
-                                <a class="dropdown-item {{ Request::is('roster') ? 'active white-text' : '' }}" href="{{route('roster.index')}}">Manage Roster</a>
-                            @endif
-                            @if(!auth()->check() || auth()->user()->permissions == 0)
-                                <a class="dropdown-item {{ Request::is('join') ? 'active white-text' : '' }}" href="{{url ('/join')}}">How to Become a Vancouver Controller</a>
-                            @endif
+                            </li>
+                        @endif
+                        <li class="nav-item dropdown {{ request()->routeIs('events.*', 'editmap') ? 'active' : '' }}">
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="eventsDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
+                            <div class="dropdown-menu" aria-labelledby="eventsDropdown">
+                                <a class="dropdown-item {{ request()->routeIs('events.index', 'events.view') ? 'active white-text' : '' }}" href="{{route('events.index')}}">Events</a>
+                                <a class="dropdown-item" href="{{ route('events.index') }}#eventCoverage">Need ATC Coverage?</a>
+                                @can('events.manage')
+                                    <a class="dropdown-item {{ request()->routeIs('events.admin.*') ? 'active white-text' : '' }}" href="{{route('events.admin.index')}}">Manage Events</a>
+                                    <a class="dropdown-item {{ request()->routeIs('editmap') ? 'active white-text' : '' }}" href="{{ route('editmap') }}">Edit Map</a>
+                                @endcan
                             </div>
                         </li>
-                        <li class="nav-item dropdown {{ Request::is('airports') ? 'active' : '' }}">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown01">
-                                <a class="dropdown-item" href="{{route('airports')}}">Airports</a>
-                                <a class="dropdown-item" href="{{route('preferredrouting')}}">Preferred Routing</a>
-                                <a class="dropdown-item" href="{{route('livemap')}}">YVR Live Map</a>
-                                <a class="dropdown-item" href="{{route('vfr')}}">VFR</a>
-                                <a class="dropdown-item" href="https://vatsim.net/docs/pilots/pilots" target="_blank">VATSIM Resources</a>
+                        <li class="nav-item dropdown {{ request()->routeIs('booking', 'booking.*', 'roster.public', 'roster.*', 'join.public', 'policies') ? 'active' : '' }}">
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="atcDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ATC</a>
+                            <div class="dropdown-menu" aria-labelledby="atcDropdown">
+                            <a class="dropdown-item {{ request()->routeIs('booking', 'booking.*') ? 'active white-text' : '' }}" href="{{route('booking')}}">ATC Booking</a>
+                            <a class="dropdown-item {{ request()->routeIs('roster.public') ? 'active white-text' : '' }}" href="{{route('roster.public')}}">Roster</a>
+                            @if(!auth()->check() || ! auth()->user()->isController())
+                                <a class="dropdown-item {{ request()->routeIs('join.public') ? 'active white-text' : '' }}" href="{{url ('/join')}}">How to Become a Vancouver Controller</a>
+                            @endif
+                            <a class="dropdown-item {{ request()->routeIs('policies') ? 'active white-text' : '' }}" href="{{route('policies')}}">Policies</a>
                             </div>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Publications</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown01">
-                                <a class="dropdown-item {{ Request::is('policies') ? 'active white-text' : '' }}" href="{{route('policies')}}">Policies</a>
-                                <a class="dropdown-item {{ Request::is('meetingminutes') ? 'active white-text' : '' }}" href="{{route('meetingminutes')}}">Meeting Minutes</a>
-                                <a class="dropdown-item {{ Request::is('privacy') ? 'active white-text' : '' }}" href="{{route('privacy')}}">Privacy Policy</a>
+                        <li class="nav-item dropdown {{ request()->routeIs('airports', 'preferredrouting', 'pdc', 'vfr') ? 'active' : '' }}">
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="pilotsDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilots</a>
+                            <div class="dropdown-menu" aria-labelledby="pilotsDropdown">
+                                <a class="dropdown-item {{ request()->routeIs('airports') ? 'active white-text' : '' }}" href="{{route('airports')}}">Airports</a>
+                                <a class="dropdown-item {{ request()->routeIs('preferredrouting') ? 'active white-text' : '' }}" href="{{route('preferredrouting')}}">Preferred Routing</a>
+                                <a class="dropdown-item {{ request()->routeIs('pdc') ? 'active white-text' : '' }}" href="{{ route('pdc') }}">Pre-Departure Clearance</a>
+                                <a class="dropdown-item {{ request()->routeIs('vfr') ? 'active white-text' : '' }}" href="{{route('vfr')}}">VFR</a>
+                                <a class="dropdown-item" href="https://vatsim.net/docs/pilots/pilots" target="_blank" rel="noopener">VATSIM Resources <i class="fas fa-arrow-up-right-from-square fa-xs ms-1 opacity-50" aria-hidden="true"></i></a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown {{ request()->routeIs('meetingminutes', 'privacy') ? 'active' : '' }}">
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="publicationsDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Publications</a>
+                            <div class="dropdown-menu" aria-labelledby="publicationsDropdown">
+                                <a class="dropdown-item {{ request()->routeIs('meetingminutes') ? 'active white-text' : '' }}" href="{{route('meetingminutes')}}">Meeting Minutes</a>
+                                <a class="dropdown-item {{ request()->routeIs('privacy') ? 'active white-text' : '' }}" href="{{route('privacy')}}">Privacy Policy</a>
                             </div>
                         </li>
                         <li class="nav-item  {{ Request::is('staff') ? 'active' : '' }}">
                             <a class="nav-link" href="{{url ('/staff')}}" aria-expanded="false">Staff</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Feedback</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown01">
-                                <a class="dropdown-item {{ Request::is('feedback') ? 'active white-text' : '' }}" href="{{route('feedback.create')}}">Submit Feedback</a>
-                                <a class="dropdown-item {{ Request::is('yourfeedback') ? 'active white-text' : '' }}" href="{{route('yourfeedback')}}">Your Feedback</a>
+                        <li class="nav-item dropdown {{ request()->routeIs('feedback.create', 'feedback.create.post', 'yourfeedback') ? 'active' : '' }}">
+                            <a class="nav-link dropdown-toggle" style="cursor:pointer" id="feedbackDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Feedback</a>
+                            <div class="dropdown-menu" aria-labelledby="feedbackDropdown">
+                                <a class="dropdown-item {{ request()->routeIs('yourfeedback') ? 'active white-text' : '' }}" href="{{route('yourfeedback')}}">Your Feedback</a>
+                                <a class="dropdown-item {{ request()->routeIs('feedback.create', 'feedback.create.post') ? 'active white-text' : '' }}" href="{{route('feedback.create')}}">Submit Feedback</a>
                             </div>
                         </li>
                     </ul>
-                    <ul class="navbar-nav ml-auto nav-flex-icons">
+                    <ul class="navbar-nav ms-auto nav-flex-icons">
                         @unless (auth()->check())
                         <li class="nav-item d-flex align-items-center">
                             <a href="{{route('auth.connect.login')}}" class="nav-link waves-effect waves-light">
@@ -180,37 +147,34 @@
                         </li>
                         @endunless
                         @auth
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{auth()->user()->avatar()}}" style="height: 27px; width: 27px; margin-right: 7px; margin-bottom: 3px; border-radius: 50%;">&nbsp;<span class="font-weight-bold">{{auth()->user()->fullName("F")}}</span>
+                        <li class="nav-item dropdown user-nav-dropdown">
+                            <a class="nav-link dropdown-toggle user-menu-toggle" href="#" role="button" id="navbarDropdownMenuLink-333" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="{{auth()->user()->avatar()}}" style="height: 27px; width: 27px; margin-right: 7px; margin-bottom: 3px; border-radius: 50%;">&nbsp;<span class="fw-bold"><span class="d-none d-xl-inline">Hi, </span>{{auth()->user()->fullName("F")}}<span class="d-none d-xl-inline">!</span></span>
                             </a>
 
-                            <div class="dropdown-menu dropdown-default py-0" aria-labelledby="navbarDropdownMenuLink-333">
-                                    <a class="dropdown-item" href="{{route('dashboard.index')}}"> <i class="fas fas fa-tachometer-alt mr-2"></i> Dashboard </a>
-                                @if (auth()->check() && ((auth()->user()->instructorProfile) || auth()->user()->permissions == 5))
-                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Instructors </a>
-                                @elseif (auth()->check() && auth()->user()->permissions == 2)
-                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Mentors </a>
-                                @elseif (auth()->check() && (auth()->user()->studentProfile))
-                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher mr-2"></i> Training </a>
+                            <div class="dropdown-menu dropdown-default user-dropdown-menu" aria-labelledby="navbarDropdownMenuLink-333">
+                                    <a class="dropdown-item" href="{{route('dashboard.index')}}"> <i class="fa-regular fa-user me-2"></i> Dashboard </a>
+                                @if (auth()->user()->activeInstructorProfile || auth()->user()->can('training.manage'))
+                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher me-2"></i> Instructors </a>
+                                @elseif (auth()->user()->studentProfile)
+                                    <a class="dropdown-item" href="{{route('training.index')}}"> <i class="fas fa-chalkboard-teacher me-2"></i> Training </a>
                                 @endif
-                                    <a class="dropdown-item red-text" href="{{route('auth.logout')}}"> <i class="fa fa-sign-out-alt mr-2"> </i> &nbsp; Logout </a>
+                                    <form method="POST" action="{{route('auth.logout')}}" class="m-0">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger border-0 bg-transparent text-start"> <i class="fa fa-sign-out-alt me-2"> </i> &nbsp; Logout </button>
+                                    </form>
                             </div>
                         </li>
                         @endauth
-                        <li class="nav-item d-flex align-items-center">
-                            <a href="https://www.twitter.com/vancouverfir" class="nav-link waves-effect waves-light" target="_BLANK" >
-                                <i style="font-size: 1.7em;" class="fab fa-twitter"></i>
+                        <li class="nav-item d-flex align-items-center gap-3 gap-lg-0">
+                            <a href="https://www.twitter.com/vancouverfir" class="nav-link waves-effect waves-light" target="_blank" rel="noopener" aria-label="Vancouver FIR on Twitter">
+                                <i class="fab fa-twitter social-brand-icon social-outline-icon" aria-hidden="true"></i>
                             </a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center">
                             <a href="https://www.instagram.com/czvrfir/" class="nav-link waves-effect waves-light" target="_BLANK" >
-                                <i style="font-size: 1.7em;" class="fab fa-instagram"></i>
+                                <i class="fab fa-instagram social-brand-icon" aria-hidden="true"></i>
                             </a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center">
-                            <a class="nav-link waves-effect waves-light" data-toggle="modal" data-target="#discordTopModal" target="_BLANK" >
-                                <i style="font-size: 1.7em;" class="fab fa-discord"></i>
+                            <a class="nav-link waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#discordTopModal" role="button" aria-label="Open Discord information">
+                                <i class="fab fa-discord social-brand-icon social-outline-icon" aria-hidden="true"></i>
                             </a>
                         </li>
                     </ul>
@@ -250,23 +214,19 @@
     @endif
     <!--End header-->
     <!--SIDEBAR-->
-    <div class="sidebar" id="cywgSidebar">
+    <div class="sidebar" id="czvrSidebar">
       @yield('sidebar')
     </div>
     <div id="czqoContent">
         @yield('content')
     </div>
     <!-- Footer -->
-    <footer class="page-footer text-light font-small py-4 {{Request::is('/dashboard') ? 'mt-5' : ''}}">
+    <footer class="page-footer font-small py-4 {{Request::is('dashboard') ? 'mt-5' : ''}}">
         <div class="container">
-            <p style="color:white">For Flight Simulation Use Only - Not to be used for real-world navigation. By using this site, you agree to hold harmless and indemnify the owners and authors of these web pages, those listed on these pages, and all pages that this site that may be pointed to (i.e. external links).</p>
-            <p style="color:white">Copyright © {{ date('Y') }} Vancouver FIR | All Rights Reserved</p>
+            <p>For Flight Simulation Use Only - Not to be used for real-world navigation. By using this site, you agree to hold harmless and indemnify the owners and authors of these web pages, those listed on these pages, and all pages that this site that may be pointed to (i.e. external links).</p>
+            <p>Copyright © {{ date('Y') }} Vancouver FIR | All Rights Reserved</p>
             <div class="flex-left mt-3">
             <a href="{{route('about')}}">Github</a>
-                &nbsp;
-                •
-                &nbsp;
-                <a href="{{route('feedback.create')}}">Feedback</a>
                 &nbsp;
                 •
                 &nbsp;
@@ -278,23 +238,23 @@
                 &nbsp;
                 •
                 &nbsp;
-                <a href="https://www.vatcan.ca">VATCAN</a>
+                <a href="https://www.vatcan.ca" target="_blank" rel="noopener">VATCAN <i class="fas fa-arrow-up-right-from-square fa-xs ms-1 opacity-50" aria-hidden="true"></i></a>
                 &nbsp;
                 •
                 &nbsp;
-                <a href="https://www.vatsim.net">VATSIM</a>
+                <a href="https://www.vatsim.net" target="_blank" rel="noopener">VATSIM <i class="fas fa-arrow-up-right-from-square fa-xs ms-1 opacity-50" aria-hidden="true"></i></a>
             </div>
         </div>
     </footer>
     <!-- Footer -->
     @if (auth()->check() && auth()->user()->init == 0 && Request::is('privacy') == false)
     <!--Privacy welcome modal-->
-    <div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    <div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="welcomeModalTitle"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Welcome to CZVR!</b></h5>
+                    <h5 class="modal-title" id="welcomeModalTitle">Welcome to CZVR!</h5>
                 </div>
                 <div class="modal-body">
                     Welcome to the Vancouver FIR Website. Here you can access important pilot and controller resources! Before
@@ -304,25 +264,32 @@
                     subscribe - we highly recommend it!
                 </div>
                 <div class="modal-footer">
-                    <a role="button" href="{{ URL('/privacydeny') }}" class="btn btn-outline-danger">I Disagree</a>
-                    <a href="{{url('/privacyaccept')}}" role="button" class="btn btn-success">I Agree</a>
+                    <form method="POST" action="{{ URL('/privacydeny') }}" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-outline-danger">I Disagree</button>
+                    </form>
+                    <form method="POST" action="{{url('/privacyaccept')}}" class="d-inline">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-success">I Agree</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
         <script>
-            $('#welcomeModal').modal({backdrop: 'static'});
-            $('#welcomeModal').modal('show');
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('welcomeModal'), { backdrop: 'static' }).show();
         </script>
     <!-- End privacy welcome modal-->
     @endif
     <!-- Contact us modal-->
-    <div class="modal fade" id="contactUsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="contactUsModal" tabindex="-1" role="dialog" aria-labelledby="contactUsModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Contact CZWG</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <h5 class="modal-title" id="contactUsModalTitle">Contact Vancouver FIR</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -341,69 +308,53 @@
     <!-- End contact us modal-->
     @if (\Session::has('error-modal'))
     <!-- Error modal -->
-    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content bg-dark">
+            <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle"><span class="font-weight-bold red-text"><i class="fas fa-exclamation-circle"></i> An error occurred...</span></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="errorModalTitle"><span class="fw-bold red-text"><i class="fas fa-exclamation-circle"></i> An error occurred...</span></h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <span class="white-text">{{\Session::get('error-modal')}}</span>
-                    <div class="alert black-text bg-white mt-4">
-                        <small>If you believe this is a mistake, please create a <a target="_blank" class="black-text" href="{{route('tickets.index')}}">support ticket.</a></small>
+                    <span>{{\Session::get('error-modal')}}</span>
+                    <div class="alert alert-light mt-4">
+                        <small>If you believe this is a mistake, please create a <a target="_blank" href="{{route('tickets.index')}}">support ticket.</a></small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <script>
-    $("#errorModal").modal();
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('errorModal')).show();
     </script>
     <!-- End error modal -->
     @endif
     <!-- Start Discord (top nav) modal -->
-    <div class="modal fade" id="discordTopModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="discordTopModal" tabindex="-1" role="dialog" aria-labelledby="discordTopModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Join the Vancouver FIR Discord!</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <h5 class="modal-title" id="discordTopModalTitle">Join the Vancouver FIR Discord!</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <p>To join our Discord community, please head to your <a href="{{route('dashboard.index')}}">dashboard.</a></p>
-                    <p>VATCAN has a Discord too! You can join the VATCAN discord by clicking <a href="https://vatcan.ca/my/integrations" rel="noopener noreferrer" target="_blank">here!</a>
+                    <p>VATCAN has a Discord too! You can join the VATCAN Discord by clicking <a href="https://vatcan.ca/my/integrations" rel="noopener noreferrer" target="_blank">here!</a></p>
                 </div>
             </div>
         </div>
     </div>
     <!-- End Discord (top nav) modal -->
-    <script type="text/javascript">
-        Dropzone.options.dropzone =
-            {
-                maxFilesize: 12,
-                renameFile: function (file) {
-                    var dt = new Date();
-                    var time = dt.getTime();
-                    return time + file.name;
-                },
-                acceptedFiles: ".jpeg,.jpg,.png,.gif",
-                addRemoveLinks: true,
-                timeout: 5000,
-                success: function (file, response) {
-                    console.log(response);
-                },
-                error: function (file, response) {
-                    return false;
-                }
-            };
-    </script>
     <script>
-        $("blockquote").addClass('blockquote');
+        if (window.jQuery) {
+            $("blockquote").addClass('blockquote');
+        }
     </script>
+    <script src="{{ asset('js/form-controls.js') }}"></script>
+    @stack('scripts')
     </body>
 </html>

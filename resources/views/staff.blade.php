@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="container" style="margin-top: 20px;">
-    <h1 class="blue-text font-weight-bold">Staff</h1>
+    <h1 class="blue-text fw-bold">Staff</h1>
     <hr>
     <div class="row">
         <div class="col-md-3">
@@ -21,14 +21,14 @@
                     {{$g->name}}
                 </a>
                 @endforeach
-                <a href="{{('instructors')}}" style="background-color: #feba00" class="list-group-item list-group-item-action">Instructors & Mentors</a>
+                <a href="{{('instructors')}}" style="background-color: var(--czvr-green); color: #fff;" class="list-group-item list-group-item-action">Instructors & Mentors</a>
             </div>
         </div>
         <div class="col-md-9">
             @foreach($groups as $g)
-            <a id="{{$g->slug}}"><h3 class="mb-3 blue-text font-weight-bold">{{$g->name}}</h3></a>
+            <a id="{{$g->slug}}"><h3 class="mb-3 blue-text fw-bold">{{$g->name}}</h3></a>
             <p style="margin-top: 5px; margin-bottom: 10px;">{{$g->description}}</p>
-            <div class="row justify-content-center  mb-2" class="staff_img_container">
+            <div class="row justify-content-center mb-2">
                 @foreach ($g->members as $member)
                     <div class="col-sm-4">
                         <div style="text-align: center;">
@@ -51,7 +51,7 @@
                                         <img style="height: 125px;" src="{{$member->user->avatar()}}">
                                         <div class="img_overlay">
                                             <div class="img_overlay_text">
-                                                <a href="#" data-toggle="modal" data-target="#viewStaffBio{{$member->id}}">View Bio</a>
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#viewStaffBio{{$member->id}}">View Bio</a>
                                             </div>
                                         </div>
                                     </div>
@@ -84,7 +84,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">{{$member->user->fname}}'s biography</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -96,7 +96,7 @@
                     @endif
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                 </div>
             </div>
         </div>

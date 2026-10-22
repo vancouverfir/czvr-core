@@ -3,10 +3,10 @@
 @section('description', 'Vancouver FIR Branding')
 @section('content')
 <div class="container py-4">
-    <h1 class="font-weight-bold blue-text">Branding</h1>
+    <h1 class="fw-bold blue-text">Branding</h1>
     <p>We kindly request that you maintain the images in their original, published state without making modifications. Resizing is acceptable, as long as the aspect ratio remains unaltered</p>
     <hr>
-    <h4 class="font-weight-bold blue-text">Horizontal Logos</h4>
+    <h4 class="fw-bold blue-text">Horizontal Logos</h4>
     <div class="pt-1">
         <div class="row">
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
@@ -16,7 +16,7 @@
             </div>
 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                <img style="background-color: #fffff" src="https://czvr.ca/storage/files/branding/czvr-short-wordmark.png" class="img-fluid" alt="">
+                <img style="background-color: #ffffff" src="https://czvr.ca/storage/files/branding/czvr-short-wordmark.png" class="img-fluid" alt="">
                 <br/>
                 <a href="https://czvr.ca/storage/files/branding/czvr-short-wordmark.png">Color Short Wordmark</a>
             </div>
@@ -28,19 +28,19 @@
             </div>
 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center" style="padding-top: 2%">
-                <img style="background-color: #fffff" src="https://czvr.ca/storage/files/branding/czvr-bw-inv-short-wordmark.png" class="img-fluid" alt="">
+                <img style="background-color: #ffffff" src="https://czvr.ca/storage/files/branding/czvr-bw-inv-short-wordmark.png" class="img-fluid" alt="">
                 <br/>
                 <a href="https://czvr.ca/storage/files/branding/czvr-bw-inv-short-wordmark.png">Inverted Gray Short Wordmark</a>
             </div>
 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center" style="padding-top: 2%">
-                <img style="background-color: #fffff" src="https://czvr.ca/storage/files/branding/czvr-bw-long-wordmark.png" class="img-fluid" alt="">
+                <img style="background-color: #ffffff" src="https://czvr.ca/storage/files/branding/czvr-bw-long-wordmark.png" class="img-fluid" alt="">
                 <br/>
                 <a href="https://czvr.ca/storage/files/branding/czvr-bw-long-wordmark.png">Gray Long Wordmark</a>
             </div>
 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center" style="padding-top: 2%">
-                <img style="background-color: #fffff" src="https://czvr.ca/storage/files/branding/czvr-bw-short-wordmark.png" class="img-fluid" alt="">
+                <img style="background-color: #ffffff" src="https://czvr.ca/storage/files/branding/czvr-bw-short-wordmark.png" class="img-fluid" alt="">
                 <br/>
                 <a href="https://czvr.ca/storage/files/branding/czvr-bw-short-wordmark.png">Gray Short Wordmark</a>
             </div>
@@ -49,11 +49,11 @@
 </div>
 
 <div class="container py-4">
-    <h4 class="font-weight-bold blue-text">Square Logos</h4>
+    <h4 class="fw-bold blue-text">Square Logos</h4>
         <div class="pt-1">
             <div class="row">
                 <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                    <img style="background-color: #fffff; height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-logomark.png" class="img-fluid" alt="">
+                    <img style="background-color: #ffffff; height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-logomark.png" class="img-fluid" alt="">
                     <br/>
                     <a href="https://czvr.ca/storage/files/branding/czvr-logomark.png">Color Logo</a>
                 </div>
@@ -101,7 +101,7 @@
 
 <div class="container py-4">
     <hr>
-    <h4 class="font-weight-bold blue-text">CZVR Colors</h4>
+    <h4 class="fw-bold blue-text">CZVR Colors</h4>
     <div class="color-palette">
     	<div class="color-box-container">
         <div class="color-box" style="background-color: #6cc24a;"></div>
@@ -116,7 +116,7 @@
         <div class="color-name">#cbcbc8</div>
         </div>
     </div>
-    
+
 </div>
 
 @endsection

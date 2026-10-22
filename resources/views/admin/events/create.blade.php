@@ -1,10 +1,11 @@
 @extends('layouts.master')
 @section('content')
+@include('partials.vendor.flatpickr')
+@include('partials.vendor.easymde')
 <div class="container py-4">
     <a href="{{route('events.admin.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Events</a>
-    <h1 class="font-weight-bold blue-text">Create Event</h1>
+    <h1 class="fw-bold blue-text">Create Event</h1>
     <hr>
-    @csrf
     <div class="row">
         <div class="col-md-12">
             <form method="POST" action="{{route('events.admin.create.post')}}" enctype="multipart/form-data">
@@ -12,7 +13,7 @@
             @if($errors->createEventErrors->any())
             <div class="alert alert-danger">
                 <h4>There were errors creating the event</h4>
-                <ul class="pl-0 ml-0 list-unstyled">
+                <ul class="ps-0 ms-0 list-unstyled">
                     @foreach ($errors->createEventErrors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -70,24 +71,8 @@
                     </a>
                     <div class="step-content w-75 pt-0">
                         <div class="form-group">
-                            <label for="">Use Markdown</label>
-                            <textarea id="tiny" name="description" class="w-75"></textarea>
-                            <script>
-                                var simplemde = new SimpleMDE({ element: document.getElementById("contentMD"), toolbar: false });
-                            </script>
-                            <script>
-                            tinymce.init({
-                            selector: 'textarea#tiny',
-                            height: 500,
-                            plugins: [
-                            'advlist autolink lists link image charmap print preview anchor',
-                            'searchreplace visualblocks code fullscreen',
-                            'insertdatetime media table paste imagetools wordcount'
-                            ],
-                            toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                            });
-                            </script>
+                            <label for="contentMD">Description (Markdown supported)</label>
+                            <textarea id="contentMD" name="description" class="form-control"></textarea>
                         </div>
                     </div>
                 </li>
@@ -99,19 +84,12 @@
                     <div class="step-content w-75 pt-0">
                         <p>An image can be displayed for the event. Please ensure we have the right to use the image, and that it is of an acceptable resolution. Make sure the image has no text or logos on it.</p>
                         <div class="input-group pb-3">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" name="image">
-                                <label class="custom-file-label">Choose image</label>
+                            <div class="mb-3">
+                                <input type="file" class="form-control" name="image">
+
                             </div>
                         </div>
 
-                        <div class="collapse" id="collapseExample">
-                            <div class="mt-3">
-                                  <script>
-                                    $("select.image-picker").imagepicker()
-                                  </script>
-                            </div>
-                        </div>
                     </div>
                 </li>
                 <li class="active">
@@ -121,7 +99,7 @@
                     </a>
                     <div class="step-content w-75 pt-0">
                         <div class="form-group">
-                            <div class="mr-2">
+                            <div class="me-2">
                                 <input type="checkbox" class="" name="openControllerApps" id="openControllerApps">
                                 <label class="" for="">Open controller applications</label>
                             </div>
@@ -135,3 +113,13 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    const eventDescriptionEditor = document.getElementById('contentMD');
+
+    if (eventDescriptionEditor && typeof EasyMDE !== 'undefined') {
+        new EasyMDE({ spellChecker: false, element: eventDescriptionEditor });
+    }
+</script>
+@endpush

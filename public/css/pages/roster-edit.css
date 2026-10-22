@@ -1,0 +1,74 @@
+.roster-vatcan-note {
+    background-color: #3d842a;
+    border: 0;
+    color: var(--czvr-white);
+}
+
+.roster-cert-table thead th {
+    white-space: nowrap;
+}
+
+.roster-toggle-option {
+    background-color: var(--czvr-white);
+    border: 1px solid var(--czvr-green);
+    color: var(--czvr-green-dark);
+    padding: 0.4rem 1rem;
+}
+
+.btn-check:not(:checked) + .roster-toggle-option:hover {
+    background-color: var(--czvr-surface-muted);
+    border-color: var(--czvr-green);
+    color: var(--czvr-green-dark);
+}
+
+.roster-reset-warning,
+.roster-inactive-warning {
+    display: none;
+}
+
+.roster-edit-toggles :has(#rating_hours-true:checked) .roster-reset-warning,
+.roster-edit-toggles :has(#active-0:checked) .roster-inactive-warning {
+    display: block;
+}
+
+.roster-edit-toggles .btn-check:checked + .roster-toggle-option {
+    background-color: var(--czvr-green);
+    border-color: var(--czvr-green);
+    color: var(--czvr-white);
+}
+
+.roster-edit-toggles .btn-check:focus-visible + .roster-toggle-option {
+    box-shadow: 0 0 0 0.2rem var(--czvr-focus) !important;
+}
+
+.roster-cert-table thead tr:first-child th {
+    border-bottom: 0;
+    padding-bottom: 0.25rem;
+}
+
+.roster-cert-position span {
+    border-bottom: 2px solid var(--czvr-border);
+    display: block;
+    font-weight: 600;
+    margin: 0 0.6rem;
+    padding-bottom: 0.35rem;
+}
+
+.roster-cert-option {
+    cursor: pointer;
+    margin: 0;
+    padding: 0.15rem;
+}
+
+.btn-check:not(:checked) + .roster-cert-option {
+    opacity: 0.25;
+}
+
+.btn-check:not(:checked) + .roster-cert-option:hover {
+    opacity: 0.6;
+}
+
+.btn-check:focus-visible + .roster-cert-option {
+    border-radius: 50%;
+    box-shadow: 0 0 0 0.2rem var(--czvr-focus);
+}

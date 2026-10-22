@@ -3,7 +3,7 @@
 @section('title', 'Your Data - Vancouver FIR')
 <div class="container py-4">
     <a href="{{route('dashboard.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Dashboard</a>
-    <h1 class="blue-text font-weight-bold mt-2">Your Data</h1>
+    <h1 class="blue-text fw-bold mt-2">Your Data</h1>
     <hr>
     <p>Under our <a href="{{route('privacy')}}">Privacy Policy</a>, you have the right to export and delete data from our service.</p>
     <br>
@@ -15,7 +15,7 @@
                 </div>
                 <div class="card-body">
                     To export your data, you may either:
-                    <ul class="mt-0 pt-0 pl-0 stepper stepper-vertical">
+                    <ul class="mt-0 pt-0 ps-0 stepper stepper-vertical">
                         <li class="active">
                           <a href="#!">
                             <span class="circle">1</span>
@@ -32,7 +32,7 @@
                                 @if($errors->exportAll->any())
                                 <div class="alert alert-danger">
                                     <h4>Error</h4>
-                                    <ul class="pl-0 ml-0">
+                                    <ul class="ps-0 ms-0">
                                         @foreach ($errors->exportAll->all() as $error)
                                             <li>{{ $error }}</li>
                                         @endforeach
@@ -46,7 +46,7 @@
                                 @endif
                                 <input type="submit" value="Request Data" class="btn btn-primary">
                             </form>
-                          </div> 
+                          </div>
                         </li>
                         <li class="active">
                             <a href="#!">

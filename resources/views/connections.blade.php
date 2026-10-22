@@ -3,9 +3,10 @@
 @section('description', $id.'\'s connections on Vancouver positions')
 
 @section('content')
+@include('partials.vendor.datatables')
     <div class="container py-4">
         <a href="{{url('/roster/'.$id)}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> {{$user->fullName('FL')}}'s profile</a>
-        <h1 class="blue-text font-weight-bold mt-2">Monthly Connections for {{$id}}</h1>
+        <h1 class="blue-text fw-bold mt-2">Monthly Connections for {{$id}}</h1>
         <hr>
         <table id="connectionsTable" class="table dt table-hover">
             <thead>

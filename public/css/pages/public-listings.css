@@ -1,0 +1,118 @@
+.public-listing-page {
+    max-width: 1140px;
+}
+
+.public-listing-header {
+    border-bottom: 1px solid var(--czvr-border);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.85rem;
+}
+
+.public-listing-header h1 {
+    font-size: clamp(1.75rem, 3vw, 2.35rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    margin: 0;
+}
+
+.news-index-list {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.news-index-card {
+    background: var(--czvr-surface);
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.65rem;
+    box-shadow: 0 5px 18px rgba(31, 48, 35, 0.07);
+    overflow: hidden;
+}
+
+.news-index-image {
+    background: #e7efe5;
+    display: block;
+    height: clamp(220px, 31vw, 340px);
+    overflow: hidden;
+}
+
+.news-index-image img {
+    height: 100%;
+    object-fit: cover;
+    transition: transform 220ms ease;
+    width: 100%;
+}
+
+.news-index-image:hover img,
+.news-index-image:focus img {
+    transform: scale(1.015);
+}
+
+.news-index-content {
+    padding: 1.3rem 1.5rem 1.4rem;
+}
+
+.news-index-title {
+    color: var(--czvr-green-dark);
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.25;
+    text-decoration: underline;
+    text-decoration-color: rgba(40, 94, 27, 0.35);
+    text-underline-offset: 0.2rem;
+}
+
+.news-index-title:hover,
+.news-index-title:focus {
+    color: var(--czvr-green);
+    text-decoration-color: currentColor;
+}
+
+.news-index-summary {
+    color: var(--czvr-text);
+    font-size: var(--czvr-font-size-base);
+    line-height: 1.6;
+    margin: 0.7rem 0 0;
+}
+
+.news-index-summary > :last-child {
+    margin-bottom: 0;
+}
+
+.news-index-meta {
+    color: var(--czvr-text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: var(--czvr-font-size-base);
+    gap: 0.45rem 1.15rem;
+    margin-top: 0.4rem;
+}
+
+.news-index-meta i {
+    color: var(--czvr-green-dark);
+    margin-right: 0.28rem;
+}
+
+.public-listing-empty {
+    background: var(--czvr-surface);
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.65rem;
+    color: var(--czvr-text-muted);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .news-index-image img {
+        transition: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .news-index-image {
+        height: 210px;
+    }
+
+    .news-index-content {
+        padding: 1.1rem;
+    }
+}

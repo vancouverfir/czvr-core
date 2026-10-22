@@ -4,22 +4,20 @@
 @section('content')
 
     <div class="container" style="margin-top: 30px;">
-        <h1 class="blue-text font-weight-bold">Training</h1>
+        <h1 class="blue-text fw-bold">Training</h1>
             <p>Vancouver FIR holds training to the highest standards, the training we provide is always extremely professional, precise and cultivates a culture of teaching and learning between all ratings. Our most successful students are those who engage in the community and contribute their unique skills and perspectives!</p>
         <hr>
-        <h3 class="font-weight-bold blue-text">Current Wait Time</h3>
-        <div class="row" style="padding-left:8px">
-            <h3 class="btn btn-{{$training_time->colour}}" style="color:white" data-toggle="modal" data-target="#waitTime"><b>Estimated Wait Time:</b> {{$training_time->wait_length}}</h3>
-            <div class="row" style="padding-left:8px">
-                <h3 class="btn btn-primary" style="color:white" data-toggle="modal" data-target="#waitList"><b>Students On Waitlist:</b> {{count($waitlist)}}</h3>
-                @if(auth()->check() && auth()->user()->permissions >= 5)
-                <h3 class="btn btn-primary" data-toggle="modal" data-target="#waitEdit">Wait Time Editor</h3>
-                @endif
-            </div>
+        <h3 class="fw-bold blue-text">Current Wait Time</h3>
+        <div class="d-grid gap-2">
+            <h3 class="btn btn-{{ ['green' => 'success', 'yellow' => 'warning', 'red' => 'danger'][$training_time->colour] ?? 'secondary' }} mb-0" data-bs-toggle="modal" data-bs-target="#waitTime"><b>Estimated Wait Time:</b> {{$training_time->wait_length}}</h3>
+            <h3 class="btn btn-primary mb-0" data-bs-toggle="modal" data-bs-target="#waitList"><b>Students On Waitlist:</b> {{count($waitlist)}}</h3>
+            @can('training.administer')
+            <h3 class="btn btn-primary mb-0" data-bs-toggle="modal" data-bs-target="#waitEdit">Wait Time Editor</h3>
+            @endcan
         </div>
         <hr>
         <div>
-            <h3 class="font-weight-bold blue-text">Interested In Joining Vancouver?</h3>
+            <h3 class="fw-bold blue-text">Interested In Joining Vancouver?</h3>
             <p>Come join the community of students, controllers and instructors in Vancouver today by clicking <a href="{{url('/join')}}">HERE!</a></p>
         </div>
         <hr>
@@ -37,7 +35,7 @@
                     Our waitlist updates live whenever any students are added! Check back here for updates on what our wait time, and our wait list is like!
                     </div>
                 <div class="modal-footer">
-                    <button class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                    <button class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                 </div>
             </div>
         </div>
@@ -55,14 +53,14 @@
                         Our wait time tracker is calculated based on the FIR's current Instructor and Mentor numbers, as well as the amount of students in training and awaiting training!
                     </div>
                 <div class="modal-footer">
-                    <button class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                    <button class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                 </div>
             </div>
         </div>
     </div>
 <!-- End Wait Time modal -->
 
-@if(auth()->check() && auth()->user()->permissions >= 5)
+@can('training.administer')
 
 <!-- Start Time Editor modal -->
     <div class="modal fade" id="waitEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -79,14 +77,14 @@
                         <br>
                         <h4>Colour:</h4>
                         <select name="trainingTimeColour" id="trainingTimeColourSelect" class="form-control">
-                            <option value="green" class="btn-green" {{$training_time->colour == 'green' ? 'selected=selected' : ''}}>Green</option>
-                            <option value="yellow" class="btn-yellow" {{$training_time->colour == 'yellow' ? 'selected=selected' : ''}}>Yellow</option>
-                            <option value="red" class="btn-red" {{$training_time->colour == 'red' ? 'selected=selected' : ''}}>Red</option>
+                            <option value="green" {{$training_time->colour == 'green' ? 'selected=selected' : ''}}>Green</option>
+                            <option value="yellow" {{$training_time->colour == 'yellow' ? 'selected=selected' : ''}}>Yellow</option>
+                            <option value="red" {{$training_time->colour == 'red' ? 'selected=selected' : ''}}>Red</option>
                         </select>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-success">Edit</button>
-                        <button class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                        <button class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                     </div>
                 </form>
             </div>
@@ -94,5 +92,5 @@
     </div>
 <!-- End Time Editor modal -->
 
-@endif
+@endcan
 @endsection
