@@ -28,7 +28,6 @@ class EventController extends Controller
     */
     public function index(): View
     {
-
         $events = Event::where('start_timestamp', '>=', Carbon::now())->orderBy('start_timestamp', 'asc')->get();
         $pastEvents = Event::where('start_timestamp', '<', Carbon::now())->orderBy('start_timestamp', 'asc')->get();
 

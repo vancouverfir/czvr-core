@@ -7,7 +7,7 @@ use Symfony\Component\Mime\Email;
 
 /**
  * For emails people receive because they subscribed (news, event reminders): a footer unsubscribe link and the
- * List-Unsubscribe headers, so mail apps can offer one-click unsubscribe
+ * List-Unsubscribe headers, so mail apps can offer one-click unsubscribe.
  */
 trait HasUnsubscribeLink
 {

@@ -30,7 +30,9 @@ use Throwable;
 
 class TrainingController extends Controller
 {
-    public function __construct(private readonly VatcanInstructorClient $vatcan) {}
+    public function __construct(private readonly VatcanInstructorClient $vatcan)
+    {
+    }
 
     public function index(VatcanController $vatcanController): View|RedirectResponse
     {
