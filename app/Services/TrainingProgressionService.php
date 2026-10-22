@@ -161,7 +161,7 @@ class TrainingProgressionService
 
     /**
      * S1 Training (DEL/GND) ends without a new rating, so completing its whole
-     * checklist unlocks the S2 Training (TWR) package
+     * checklist unlocks the S2 Training (TWR) package.
      */
     public function completeS1TrainingIfDone(Student $student): bool
     {
