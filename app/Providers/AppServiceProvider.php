@@ -31,10 +31,6 @@ class AppServiceProvider extends ServiceProvider
         ]));
         Gate::define('training.consolidation.override', fn ($user): bool => $user->canWaiveTrainingRequirements());
         Gate::define('training.stats', fn ($user): bool => $user->hasRole(SystemRoleCatalog::ADMINISTRATOR));
-        Gate::define('instructing-sessions.access', fn ($user): bool => $user->hasAnyPermission([
-            PermissionCatalog::INSTRUCTING_SESSIONS_MANAGE,
-            PermissionCatalog::TRAINING_MANAGE,
-        ]));
 
         Event::listen(function (SocialiteWasCalled $event) {
             $event->extendSocialite('discord', Provider::class);

@@ -353,6 +353,7 @@
         if (window.jQuery) {
             $("blockquote").addClass('blockquote');
         }
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => bootstrap.Tooltip.getOrCreateInstance(element));
     </script>
     <script src="{{ asset('js/form-controls.js') }}"></script>
     @stack('scripts')

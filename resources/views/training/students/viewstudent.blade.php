@@ -235,7 +235,7 @@
                             <div class="student-action text-success"><i class="fas fa-check-circle"></i>Training completed {{ $student->updated_at?->format('F j, Y') }}</div>
                             @endif
                             @can('training.manage') <a href="{{ route('training.students.preview', $student->id) }}" class="student-action"><i class="far fa-eye"></i>Preview as Student</a> @endcan
-                            @can('training.administer') <button type="button" class="student-action student-action-danger" data-bs-toggle="modal" data-bs-target="#deleteStudentModal"><i class="far fa-trash-can"></i>Delete Student</button> @endcan
+                            @can('training.students.delete') <button type="button" class="student-action student-action-danger" data-bs-toggle="modal" data-bs-target="#deleteStudentModal"><i class="far fa-trash-can"></i>Delete Student</button> @endcan
                             </div>
                             <div class="student-joined"><i class="far fa-calendar-plus me-1"></i>Joined {{$student->created_at?->format('F j, Y')}}</div>
                         </div>
@@ -359,7 +359,7 @@
 @elseif ($modal === 'assignLabel')
 @include('training.students.partials.vatcan-notes-modal')
 
-@can('training.administer')
+@can('training.students.delete')
 <div class="modal fade" id="deleteStudentModal" tabindex="-1" aria-labelledby="deleteStudentTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

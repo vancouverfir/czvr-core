@@ -221,7 +221,7 @@ class SettingsController extends Controller
 
     public function viewRoles(Request $request): View
     {
-        $roles = Role::query()->with('permissions')->orderBy('name')->get();
+        $roles = Role::query()->with('permissions')->ordered()->get();
         $permissionGroups = PermissionCatalog::grouped();
         $selectedRole = $roles->firstWhere('id', (int) $request->integer('role')) ?? $roles->first();
 

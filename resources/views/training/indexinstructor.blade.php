@@ -22,9 +22,11 @@
                 <h1 class="blue-text">Training Centre</h1>
                 <p>Your students and upcoming sessions are together in one place!</p>
             </div>
-            <a href="{{ route('training.instructingsessions.index', ['action' => 'new']) }}" class="btn btn-primary btn-sm flex-shrink-0">
-                New session
-            </a>
+            @can('instructing-sessions.manage')
+                <a href="{{ route('training.instructingsessions.index', ['action' => 'new']) }}" class="btn btn-primary btn-sm flex-shrink-0">
+                    New session
+                </a>
+            @endcan
         </header>
 
         <div class="training-portal-grid">
@@ -59,6 +61,7 @@
                 @endforelse
             </section>
 
+            @can('instructing-sessions.manage')
             <section class="training-panel" aria-labelledby="upcoming-sessions-heading">
                 <div class="training-panel-header">
                     <h2 id="upcoming-sessions-heading">Upcoming Sessions</h2>
@@ -81,6 +84,7 @@
                     <div class="training-empty">No upcoming sessions scheduled.</div>
                 @endforelse
             </section>
+            @endcan
         </div>
     </main>
     @elseif ($student)
@@ -324,7 +328,7 @@
     </script>
 
     @else
-        <div class="d-flex justify-content-center align-items-center min-vh-100" style="margin-top: 50px; margin-bottom: 50px;">
+        <div class="d-flex justify-content-center pb-5" style="padding-top: 15rem;">
             <div class="text-center" style="max-width: 700px; width: 100%;">
                 <h1 class="fw-bold blue-text mb-3">
                     <i class="fas fa-info-circle"></i> Uh Oh! 👀
@@ -336,13 +340,13 @@
                 </p>
 
                 <div class="d-flex justify-content-center flex-wrap gap-2">
-                    <a href="{{ route('trainingtimes') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('trainingtimes') }}" class="btn btn-primary">
                         <i class="fas fa-book"></i> Training FAQ
                     </a>
-                    <a href="{{ route('join.public') }}" class="btn btn-outline-success">
+                    <a href="{{ route('join.public') }}" class="btn btn-primary">
                         <i class="fas fa-plane-departure"></i> Join Our FIR
                     </a>
-                    <a href="{{ route('staff') }}" class="btn btn-outline-info">
+                    <a href="{{ route('staff') }}" class="btn btn-primary">
                         <i class="fas fa-envelope"></i> Contact Staff
                     </a>
                 </div>

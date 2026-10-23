@@ -263,7 +263,7 @@
                         <li class="d-flex align-items-center">Member of the Vancouver Discord: <i style="margin-left: 5px;font-size: 20px;" class="{{$user->memberOfCZVRGuild() ? 'fas fa-check-circle green-text' : 'fas fa-times-circle red-text'}}"></i></li>
                     </ul>
                     @else
-                    This user does not have a linked Discord account.
+                    This user does not have a linked Discord account!
                     @endif
                 </div>
             </div>
@@ -276,6 +276,9 @@
             @endphp
             <h2 class="fw-bold blue-text pb-2 mt-4">Access</h2>
             <div class="card p-3 mb-4">
+                @if ($user->isSystemAccount())
+                <p class="mb-0 text-muted">This is a system account, so its roles and permissions can't be changed!</p>
+                @else
                 <form method="POST" action="{{ route('users.access.update', $user->id) }}">
                     @csrf
                     @method('PUT')
@@ -290,6 +293,7 @@
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="user-role-{{ $role->id }}"
                                             name="roles[]" value="{{ $role->id }}"
+                                            data-permissions="{{ json_encode(in_array($role->slug, ['admin', 'administrator'], true) ? \App\Support\Authorization\PermissionCatalog::slugs() : $role->permissions->pluck('slug')->all()) }}"
                                             @checked(in_array($role->id, $assignedRoleIds, true))
                                             @disabled(! auth()->user()->canAssignRole($role))>
                                         <label class="form-check-label" for="user-role-{{ $role->id }}">{{ $role->name }}</label>
@@ -316,10 +320,11 @@
                                         </summary>
                                         <div class="user-access-grid">
                                     @foreach ($permissions as $slug => $permission)
-                                                <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="user-permission-{{ Str::slug($slug) }}" name="permissions[]" value="{{ $slug }}" @checked(in_array($slug, $directPermissionSlugs, true)) @disabled(! auth()->user()->canGrantPermission($slug))>
-                                            <label class="form-check-label" for="user-permission-{{ Str::slug($slug) }}">{{ $permission['label'] }}</label>
-                                        </div>
+                                        @include('partials.permission-checkbox', [
+                                            'id' => 'user-permission-'.Str::slug($slug),
+                                            'checked' => in_array($slug, $directPermissionSlugs, true),
+                                            'disabled' => ! auth()->user()->canGrantPermission($slug),
+                                        ])
                                     @endforeach
                                         </div>
                                     </details>
@@ -330,6 +335,7 @@
 
                     <button type="submit" class="btn btn-sm btn-success mt-3">Save access</button>
                 </form>
+                @endif
             </div>
         @endcan
     </div>
@@ -432,4 +438,7 @@
             bootstrap.Modal.getOrCreateInstance(document.getElementById('deleteModal')).show();
         }
     </script>
+@push('scripts')
+    <script src="{{ asset('js/permission-dependencies.js') }}"></script>
+@endpush
 @stop

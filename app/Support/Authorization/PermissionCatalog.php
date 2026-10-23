@@ -10,7 +10,11 @@ final class PermissionCatalog
 
     public const TRAINING_INSTRUCT = 'training.instruct';
 
+    public const TRAINING_WAITLIST_MANAGE = 'training.waitlist.manage';
+
     public const TRAINING_ADMINISTER = 'training.administer';
+
+    public const TRAINING_STUDENTS_DELETE = 'training.students.delete';
 
     public const INSTRUCTING_SESSIONS_MANAGE = 'instructing-sessions.manage';
 
@@ -42,33 +46,35 @@ final class PermissionCatalog
 
     public const MEETING_MINUTES_MANAGE = 'meeting-minutes.manage';
 
-    /** @return array<string, array{label: string, group: string, description: string}> */
+    /** @return list<string> */
     public static function all(): array
     {
         return [
-            self::ROSTER_MANAGE => ['label' => 'Manage controller roster', 'group' => 'Controllers', 'description' => 'View, add, edit, and remove controller roster entries.'],
-            self::TRAINING_MANAGE => ['label' => 'Manage training', 'group' => 'Controllers', 'description' => 'Manage students, instructors, wait times, and training records.'],
-            self::TRAINING_INSTRUCT => ['label' => 'Instructor tools', 'group' => 'Controllers', 'description' => 'Instructors page, staff comments and activity on students, waitlist emails and waitlist order.'],
-            self::TRAINING_ADMINISTER => ['label' => 'Training administration', 'group' => 'Controllers', 'description' => 'Delete students and edit the training wait time.'],
-            self::INSTRUCTING_SESSIONS_MANAGE => ['label' => 'Manage instructing sessions', 'group' => 'Controllers', 'description' => 'Create, edit, and cancel instructing sessions.'],
-            self::BOOKINGS_MANAGE => ['label' => 'Manage all bookings', 'group' => 'Controllers', 'description' => 'Edit or delete any controller booking.'],
-            self::ATC_RESOURCES_MANAGE => ['label' => 'Manage ATC resources', 'group' => 'Controllers', 'description' => 'Access, upload, and remove controller training resources.'],
-            self::EVENTS_MANAGE => ['label' => 'Manage events', 'group' => 'Operations', 'description' => 'Create and edit events and manage controller applications.'],
-            self::TICKETS_MANAGE => ['label' => 'Manage staff tickets', 'group' => 'Operations', 'description' => 'Access, reply to, hold, reopen, and close staff tickets.'],
-            self::FEEDBACK_MANAGE => ['label' => 'Manage submitted feedback', 'group' => 'Operations', 'description' => 'Access, approve, edit, and delete submitted feedback.'],
-            self::NEWS_MANAGE => ['label' => 'Manage news', 'group' => 'Content', 'description' => 'Create, edit, publish, and delete news articles.'],
-            self::POLICIES_MANAGE => ['label' => 'Manage policies', 'group' => 'Content', 'description' => 'Access private policies and create, edit, and delete policy documents and sections.'],
-            self::MEETING_MINUTES_MANAGE => ['label' => 'Manage meeting minutes', 'group' => 'Content', 'description' => 'Upload and delete meeting minutes.'],
-            self::USERS_MANAGE => ['label' => 'Manage users', 'group' => 'Administration', 'description' => 'Search users and edit their accounts and profile data.'],
-            self::ROLES_MANAGE => ['label' => 'Manage roles and permissions', 'group' => 'Administration', 'description' => 'Create roles, choose permissions, and assign access.'],
-            self::STAFF_MANAGE => ['label' => 'Edit staff directory', 'group' => 'Administration', 'description' => 'Add, edit, and remove staff directory entries.'],
-            self::SITE_SETTINGS_MANAGE => ['label' => 'Manage site settings', 'group' => 'Administration', 'description' => 'Change site information, email contacts, banners, and homepage images.'],
-            self::AUDIT_LOG_ACCESS => ['label' => 'Access audit log', 'group' => 'Administration', 'description' => 'Access the site administration audit trail.'],
-            self::NETWORK_MANAGE => ['label' => 'Manage network data', 'group' => 'Administration', 'description' => 'Access and configure monitored network positions.'],
+            self::USERS_MANAGE => ['label' => 'Manage users', 'group' => 'Administration', 'description' => 'Search users and open their admin profile: certificate names, notes, avatar and bio resets, emailing them, and deleting the account!'],
+            self::ROLES_MANAGE => ['label' => 'Manage roles and permissions', 'group' => 'Administration', 'description' => 'Create, edit, and delete roles, and give users roles and individual permissions!'],
+            self::STAFF_MANAGE => ['label' => 'Edit staff directory', 'group' => 'Administration', 'description' => 'Add, edit, and remove people on the public staff page!'],
+            self::SITE_SETTINGS_MANAGE => ['label' => 'Manage site settings', 'group' => 'Administration', 'description' => 'Change site information, staff email addresses, the site banner, and homepage images!'],
+            self::AUDIT_LOG_ACCESS => ['label' => 'Access audit log', 'group' => 'Administration', 'description' => 'Read the audit log of administrative changes!'],
+            self::NETWORK_MANAGE => ['label' => 'Manage network data', 'group' => 'Administration', 'description' => 'Open Network data (controller activity, position sessions, statistics) and add, edit, and remove monitored positions!'],
+            self::TRAINING_MANAGE => ['label' => 'Manage students', 'group' => 'Training Centre', 'description' => 'View the student list, waitlist, and individual students, add new students, assign instructors and labels, complete checklists, promote, start recertification, complete training, and preview a student\'s view!'],
+            self::TRAINING_INSTRUCT => ['label' => 'Manage staff comments', 'group' => 'Training Centre', 'description' => 'Open the instructors page, read and add staff comments, and see student activity!', 'requires' => [self::TRAINING_MANAGE]],
+            self::TRAINING_WAITLIST_MANAGE => ['label' => 'Manage waitlist order', 'group' => 'Training Centre', 'description' => 'Reorder the waitlists, see waitlisted students\' email and Discord, and mark them contacted!', 'requires' => [self::TRAINING_MANAGE]],
+            self::INSTRUCTING_SESSIONS_MANAGE => ['label' => 'Manage instructing sessions', 'group' => 'Training Centre', 'description' => 'Open the instructing sessions calendar and create, edit, and cancel sessions!'],
+            self::TRAINING_ADMINISTER => ['label' => 'Edit wait times', 'group' => 'Training Centre', 'description' => 'Edit the estimated wait time on the Training FAQ page!'],
+            self::TRAINING_STUDENTS_DELETE => ['label' => 'Delete students', 'group' => 'Training Centre', 'description' => 'Delete a student and their training records, from the Delete Student button on the student page!', 'requires' => [self::TRAINING_MANAGE]],
+            self::NEWS_MANAGE => ['label' => 'Manage news', 'group' => 'Content', 'description' => 'Create, edit, publish, and delete news articles, and see unpublished ones!'],
+            self::POLICIES_MANAGE => ['label' => 'Manage policies', 'group' => 'Content', 'description' => 'See staff-only policies and create, edit, and delete policies and policy sections!'],
+            self::MEETING_MINUTES_MANAGE => ['label' => 'Manage meeting minutes', 'group' => 'Content', 'description' => 'Upload and delete meeting minutes!'],
+            self::ROSTER_MANAGE => ['label' => 'Manage controller roster', 'group' => 'Controllers', 'description' => 'Add, edit, and remove controllers on the roster, see ATC-inactive members, and edit certifications!'],
+            self::BOOKINGS_MANAGE => ['label' => 'Manage all bookings', 'group' => 'Controllers', 'description' => 'Edit or delete anyone\'s booking!'],
+            self::ATC_RESOURCES_MANAGE => ['label' => 'Manage ATC resources', 'group' => 'Controllers', 'description' => 'Upload, edit, and remove ATC resources!'],
+            self::EVENTS_MANAGE => ['label' => 'Manage events', 'group' => 'Operations', 'description' => 'Create, edit, and delete events and their updates, confirm and remove controller applications, and edit the West Coast Madness map!'],
+            self::TICKETS_MANAGE => ['label' => 'Manage staff tickets', 'group' => 'Operations', 'description' => 'See every staff ticket and reply to, hold, reopen, and close them!'],
+            self::FEEDBACK_MANAGE => ['label' => 'Manage submitted feedback', 'group' => 'Operations', 'description' => 'Read submitted feedback and approve, deny, edit, or delete it!'],
         ];
     }
 
-    /** @return array<string, array<string, array{label: string, group: string, description: string}>> */
+    /** @return array<string, array<string, array{label: string, group: string, description: string, requires?: list<string>}>> */
     public static function grouped(): array
     {
         return collect(self::all())->groupBy('group', preserveKeys: true)->all();

@@ -33,7 +33,29 @@
 .select-option-color-light { background: #f8f9fa; }
 .select-option-color-dark { background: #222; }
 .select-option-color-white { background: #fff; }
+.role-editor-shell { margin-top: 1.25rem; }
+.role-editor-sidebar { padding: .75rem; background: var(--czvr-surface-muted); border-right: 1px solid var(--czvr-border); }
+.role-editor-link { display: flex; align-items: center; justify-content: space-between; padding: .55rem .65rem; border-radius: .45rem; color: var(--czvr-text); text-decoration: none; }
+.role-editor-link:hover, .role-editor-link.active { color: var(--czvr-green-dark); background: var(--czvr-surface); }
+.role-editor-link.active { box-shadow: inset 3px 0 var(--czvr-green); }
+.role-editor-link small { color: var(--czvr-text-muted); }
+.role-editor-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; padding: 1rem 1.1rem; }
+.role-editor-header h2 { margin: 0; font-size: 1.25rem; }
+.role-editor-header small, .role-editor-note { color: var(--czvr-text-muted); }
+.role-editor-note { margin: -.5rem 1.1rem .75rem; font-size: .85em; }
+.role-editor-shell .role-permission-group { padding: 0 1.1rem; }
+.role-permission-group { border-top: 1px solid var(--czvr-border); }
+.role-permission-group > summary { display: flex; align-items: center; gap: .75rem; padding: .7rem 0; color: var(--czvr-green-dark); font-weight: 500; list-style: none; cursor: pointer; }
+.role-permission-group > summary::-webkit-details-marker { display: none; }
+.role-permission-group > summary > span { flex: 1; }
+.role-permission-group > summary small { color: var(--czvr-text-muted); font-weight: 400; }
+.role-permission-group > summary::after { content: "\f107"; font-family: "Font Awesome 7 Free"; font-weight: 900; transition: transform 150ms ease; }
+.role-permission-group[open] > summary::after { transform: rotate(180deg); }
+.role-permission-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4rem 1rem; padding-bottom: .75rem; }
+.role-permission-grid .form-check { min-width: 0; margin: 0; }
 @media (max-width: 767.98px) {
+    .role-editor-sidebar { border-right: 0; border-bottom: 1px solid var(--czvr-border); }
+    .role-permission-grid { grid-template-columns: 1fr; }
     .settings-grid { grid-template-columns: 1fr; }
     .settings-item, .settings-item:nth-child(odd), .settings-item:nth-last-child(-n + 2) { border-right: 0; border-bottom: 1px solid var(--czvr-border); }
     .settings-item:last-child { border-bottom: 0; }

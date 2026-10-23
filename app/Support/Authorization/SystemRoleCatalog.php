@@ -48,11 +48,13 @@ final class SystemRoleCatalog
         $instructor = [
             ...$mentor,
             PermissionCatalog::TRAINING_INSTRUCT,
+            PermissionCatalog::TRAINING_WAITLIST_MANAGE,
             PermissionCatalog::ROSTER_MANAGE,
         ];
         $staff = [
             ...$instructor,
             PermissionCatalog::TRAINING_ADMINISTER,
+            PermissionCatalog::TRAINING_STUDENTS_DELETE,
             PermissionCatalog::ATC_RESOURCES_MANAGE,
             PermissionCatalog::MEETING_MINUTES_MANAGE,
             PermissionCatalog::BOOKINGS_MANAGE,

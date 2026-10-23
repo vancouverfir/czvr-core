@@ -152,7 +152,7 @@ class UserController extends Controller
         $xml = [];
         $userNotes = UserNote::where('user_id', $user->id)->orderBy('timestamp', 'desc')->get();
         $auditLog = AuditLogEntry::where('affected_id', $id)->get();
-        $allRoles = Role::query()->with('permissions')->orderBy('name')->get();
+        $allRoles = Role::query()->with('permissions')->ordered()->get();
         $permissionGroups = PermissionCatalog::grouped();
         $user->load(['roles.permissions', 'directPermissions']);
 
@@ -170,7 +170,7 @@ class UserController extends Controller
 
         $user = User::with(['roles', 'directPermissions'])->findOrFail($id);
         $editor = Auth::user();
-        abort_if(in_array((int) $user->id, [1, 2], true), 403, 'System users cannot be modified!');
+        abort_if($user->isSystemAccount(), 403, 'System users cannot be modified!');
 
         // Roles and permissions the editor may not hand out keep their current state
         $requestedRoles = collect($validated['roles'] ?? [])->map(fn ($roleId) => (int) $roleId);
@@ -207,7 +207,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         abort_if($user->is($actor), 403, 'You cannot delete yourself!');
-        abort_if(in_array((int) $user->id, [1, 2], true), 403, 'System users cannot be deleted.');
+        abort_if($user->isSystemAccount(), 403, 'System users cannot be deleted!');
         abort_if(
             $user->hasPermissionTo(PermissionCatalog::ROLES_MANAGE)
                 && ! $actor->hasPermissionTo(PermissionCatalog::ROLES_MANAGE),

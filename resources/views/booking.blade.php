@@ -35,7 +35,6 @@
     $onNow = $allBookings->filter(fn ($b) => $b['start']->lte($now))->values();
     $next = $allBookings->first(fn ($b) => $b['start']->gt($now));
 
-    // Group the list by day; anything already running is listed under today
     $byDay = $allBookings->groupBy(fn ($b) => $b['start']->copy()->max($now)->format('Y-m-d'));
     $dayName = function ($date) use ($now) {
         $day = \Carbon\Carbon::parse($date, 'UTC');
@@ -72,7 +71,6 @@
 
     <div class="booking-strip">
         <span class="booking-strip-part">
-            <span @class(['booking-strip-dot', 'is-live' => $onNow->isNotEmpty()]) aria-hidden="true"></span>
             <span class="booking-strip-label">Booked now</span>
             @forelse ($onNow as $booking)
                 <span><strong>{{ $booking['title'] }}</strong> · {{ $booking['name'] }} · until {{ $booking['end']->format('H:i') }} UTC</span>

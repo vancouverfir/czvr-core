@@ -116,6 +116,11 @@ class User extends Authenticatable
     }
 
     /** Non-administrators can only hand out permissions they hold themselves */
+    public function isSystemAccount(): bool
+    {
+        return in_array((int) $this->id, [1, 2], true);
+    }
+
     public function canGrantPermission(string $slug): bool
     {
         return $this->hasRole(SystemRoleCatalog::ADMINISTRATOR) || $this->hasPermissionTo($slug);

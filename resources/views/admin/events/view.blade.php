@@ -490,8 +490,6 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        $('[data-bs-toggle="tooltip"]').tooltip();
-
         if (window.flatpickr) {
             flatpickr('#event_start', {
                 enableTime: true,

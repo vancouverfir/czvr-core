@@ -1051,6 +1051,20 @@ table.table a {
     color: var(--czvr-white);
 }
 
+.permission-label {
+    cursor: help;
+}
+
+.permission-needs {
+    margin-left: 0.35rem;
+    color: var(--czvr-text-muted);
+    font-size: 0.8em;
+}
+
+.permission-needs[hidden] {
+    display: none;
+}
+
 .flatpickr-calendar {
     border: 1px solid var(--czvr-border);
     border-radius: 0.65rem;

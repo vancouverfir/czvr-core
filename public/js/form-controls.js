@@ -24,7 +24,7 @@
         return loading[name];
     }
 
-    var selectSelector = 'select:not(.no-custom-select)';
+    var selectSelector = 'select:not(.no-custom-select):not(.flatpickr-monthDropdown-months)';
     var pickerSelector = 'input[type="date"]:not(.no-custom-picker), ' +
         'input[type="time"]:not(.no-custom-picker), ' +
         'input[type="datetime-local"]:not(.no-custom-picker)';

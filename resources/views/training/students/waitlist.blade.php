@@ -78,8 +78,8 @@
                                             $hasAvailability = filled($student->availability);
                                         @endphp
                                         <tr data-id="{{ $student->id }}">
-                                            <th scope="row" class="waitlist-position {{ auth()->user()->can('training.instruct') ? 'drag-sortable' : '' }}">
-                                                @can('training.instruct')
+                                            <th scope="row" class="waitlist-position {{ auth()->user()->can('training.waitlist.manage') ? 'drag-sortable' : '' }}">
+                                                @can('training.waitlist.manage')
                                                     <i class="fas fa-grip-vertical" aria-hidden="true"></i>
                                                 @endcan
                                                 <span class="waitlist-position-number">{{ $loop->iteration }}</span>
@@ -100,7 +100,7 @@
                                                 </span>
                                             </td>
                                             <td class="waitlist-contact-cell">
-                                                @if (auth()->user()->can('training.instruct'))
+                                                @if (auth()->user()->can('training.waitlist.manage'))
                                                     <div class="dropdown">
                                                         <button type="button" class="btn btn-link p-0 border-0 shadow-none dropdown-toggle waitlist-email-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                                             {{ $student->user->email }}
@@ -234,7 +234,7 @@
             }
         });
 
-    @can('training.instruct')
+    @can('training.waitlist.manage')
 
         $(function () {
             function makeQueueSortable(bodySelector, url, errorMessage) {
