@@ -22,7 +22,7 @@
         gap: 1.5rem;
         justify-content: space-between;
         overflow: hidden;
-        padding: 1.75rem 1.5rem;
+        padding: 2.75rem 1.5rem;
         position: relative;
     }
 
@@ -41,6 +41,17 @@
     .dashboard-header p {
         color: var(--czvr-white) !important;
         margin-bottom: 0;
+    }
+
+    .dashboard-header-label {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        margin-bottom: 0.4rem;
+        white-space: nowrap;
+        color: var(--czvr-white);
+        font-size: 1rem;
+        font-weight: 500;
     }
 
     .dashboard-header-copy,
@@ -344,7 +355,7 @@
         .dashboard-header {
             align-items: flex-start;
             gap: 0.75rem;
-            padding: 1.5rem 1.25rem;
+            padding: 2.75rem 1.25rem 1.75rem;
         }
 
         .dashboard-header-copy {
@@ -389,6 +400,7 @@
     <div class="container dashboard-shell py-4">
         <header class="dashboard-header" data-step="1" data-intro="Welcome to your Dashboard! This is your central hub for all things Vancouver. Here you can interact with our FIR, and manage your account!">
             <div class="dashboard-header-copy">
+                <span class="dashboard-header-label">Dashboard</span>
                 <h1 class="fw-bold">Welcome to Vancouver, {{ auth()->user()->display_fname }}!</h1>
             </div>
             <a class="dashboard-tour-button" href="javascript:void(0);" onclick="startDashboardTour();">

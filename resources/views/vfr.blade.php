@@ -4,7 +4,7 @@
 
 @push('styles')
 <style>
-    .vfr-page-header {
+    .vfr-page-header p {
         max-width: 760px;
     }
 
@@ -44,8 +44,6 @@
     .vfr-card-heading span {
         color: var(--czvr-text-muted);
         font-size: var(--czvr-font-size-base);
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
     }
 
     .vfr-card-body {
@@ -103,21 +101,11 @@
 
     .vfr-note {
         align-items: flex-start;
-        background: var(--czvr-surface-muted);
-        border: 1px solid var(--czvr-border);
-        border-radius: 0.65rem;
-        color: var(--czvr-text);
         display: flex;
         font-size: var(--czvr-font-size-base);
         gap: 0.7rem;
         line-height: 1.65;
         margin-top: 1rem;
-        padding: 0.75rem 0.85rem;
-    }
-
-    .vfr-note > i {
-        color: var(--czvr-green-dark);
-        margin-top: 0.25rem;
     }
 
     .vfr-note p {
@@ -140,10 +128,8 @@
     .vfr-tower-column h3 {
         color: var(--czvr-green-dark);
         font-size: var(--czvr-font-size-base);
-        font-weight: 600;
-        letter-spacing: 0.07em;
+        font-weight: 500;
         margin: 0 0 0.55rem;
-        text-transform: uppercase;
     }
 
     .vfr-tower-column p {
@@ -165,7 +151,7 @@
 @section('content')
 
 <div class="container py-4 vfr-page">
-    <header class="vfr-page-header mb-4">
+    <header class="page-heading vfr-page-header">
         <h1 class="blue-text mb-2">VFR in CZVR</h1>
         <p class="mb-2">CZVR is home to some of the most beautiful landscapes to navigate visually. With increasing flight sim fidelity and distinct landscapes, CZVR provides easy visual navigation and world class sight seeing.</p>
         <p class="mb-0">Both new and seasoned VFR pilots are welcome. No need to be intimidated, our friendly controllers are happy to help learn when possible.</p>
@@ -197,8 +183,7 @@
                         </li>
                     </ul>
 
-                    <aside class="vfr-note">
-                        <i class="fas fa-circle-info" aria-hidden="true"></i>
+                    <aside class="page-note vfr-note">
                         <div>
                             <p>It is likely these procedures may be new to many Vatsim pilots. Although the procedures may be enforced it is important not to accept a procedure if you do not understand it.</p>
                             <p>If you do not understand ask the controller for assistance or clarity as needed, we are here to help and learn together. For example, as controller loads permit we may instead assign a heading or altitude to emulate the procedure.</p>

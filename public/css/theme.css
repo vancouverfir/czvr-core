@@ -66,6 +66,67 @@ a:focus {
     color: var(--czvr-white);
 }
 
+.mochi-peek {
+    position: relative;
+    z-index: 2;
+    align-self: stretch;
+    width: 0;
+}
+
+.mochi-peek-spot {
+    position: absolute;
+    top: 50%;
+    left: calc(-1rem - 16px);
+    width: 16px;
+    height: 35px;
+    transform: translateY(-50%);
+}
+
+.mochi-peek-window {
+    position: absolute;
+    top: 50%;
+    left: -1rem;
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.mochi-peek-window img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transform: translateX(-110%) rotate(-180deg);
+    transition: transform 0.45s ease;
+}
+
+.mochi-peek:hover .mochi-peek-window,
+.mochi-peek:focus-visible .mochi-peek-window {
+    pointer-events: auto;
+}
+
+.mochi-peek:hover .mochi-peek-window img,
+.mochi-peek:focus-visible .mochi-peek-window img {
+    transform: translateX(0) rotate(0);
+}
+
+.site-navbar .navbar-collapse {
+    transition: margin-left 0.45s ease;
+}
+
+.site-navbar .container:has(.mochi-peek:hover, .mochi-peek:focus-visible) .navbar-collapse {
+    margin-left: 40px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mochi-peek-window img,
+    .site-navbar .navbar-collapse {
+        transition: none;
+    }
+}
+
 .site-navbar {
     background: var(--czvr-green) !important;
     border-bottom: 1px solid var(--czvr-green-dark);
@@ -1049,6 +1110,140 @@ table.table a {
 .select2-container--default .select2-results__option[aria-selected='true'] {
     background: var(--czvr-green);
     color: var(--czvr-white);
+}
+
+.page-heading {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--czvr-border);
+}
+
+.page-heading h1 {
+    margin: 0 0 0.3rem;
+}
+
+.page-heading p {
+    margin: 0;
+    color: var(--czvr-text-muted);
+}
+
+.page-heading p + p {
+    margin-top: 0.5rem;
+}
+
+.page-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.page-tabs .nav-link {
+    color: var(--czvr-text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.page-tabs .nav-link.active {
+    color: var(--czvr-green-dark);
+    box-shadow: inset 0 -2px var(--czvr-green);
+}
+
+.page-note {
+    padding: 0.85rem 1.1rem;
+    border: 1px solid #cfe4ca;
+    border-left: 4px solid var(--czvr-green);
+    border-radius: 0.55rem;
+    color: var(--czvr-green-dark);
+    background: var(--czvr-green-soft);
+}
+
+.page-section {
+    margin-top: 1.8rem;
+}
+
+.page-section h2 {
+    margin-bottom: 0.6rem;
+    color: var(--czvr-green-dark);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.page-list {
+    overflow: hidden;
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.5rem;
+    background: var(--czvr-surface);
+}
+
+.page-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+}
+
+.page-list-item + .page-list-item {
+    border-top: 1px solid var(--czvr-border);
+}
+
+.page-list-item.is-link {
+    position: relative;
+}
+
+.page-list-item.is-link:hover {
+    background: var(--czvr-green-soft);
+}
+
+.page-list-item.is-link .stretched-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.page-list-item.is-link .page-list-actions {
+    position: relative;
+    z-index: 2;
+}
+
+.page-list-open {
+    margin-left: auto;
+    color: var(--czvr-text-muted);
+}
+
+.page-list-item.is-link:hover .page-list-open {
+    color: var(--czvr-green-dark);
+}
+
+.page-list-item strong,
+.page-list-item small {
+    display: block;
+}
+
+.page-list-item strong {
+    font-weight: 500;
+}
+
+.page-list-item small {
+    color: var(--czvr-text-muted);
+}
+
+.page-list-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.page-list-actions .btn {
+    white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+    .page-list-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 .permission-label {

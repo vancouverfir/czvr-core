@@ -483,14 +483,13 @@ class TrainingProgressionService
         $labelName = self::NEXT_TRAINING_PACKAGE[$rating] ?? null;
 
         if ($labelName === null) {
-            $student->update(['status' => Student::STATUS_COMPLETED]);
             CreateNote::newNote(
                 $student->id,
-                'Training Completed Automatically',
-                sprintf('VATCAN posted the %s rating! The controller is now fully certified!', $rating),
+                'Ready to Complete Training',
+                sprintf('VATCAN posted the %s rating! Training can now be completed with Complete Training!', $rating),
             );
 
-            return 'completed training status';
+            return 'the Complete Training step';
         }
 
         $label = StudentLabel::where('name', $labelName)->first();

@@ -16,37 +16,6 @@
         color: var(--czvr-text-muted);
     }
 
-    .airport-tabs {
-        border: 1px solid var(--czvr-border);
-        border-radius: 0.7rem;
-        display: flex;
-        gap: 0.25rem;
-        overflow-x: auto;
-        padding: 0.3rem;
-        scrollbar-width: thin;
-    }
-
-    .airport-tabs .nav-link {
-        border: 0;
-        border-radius: 0.45rem;
-        color: var(--czvr-text-muted);
-        font-size: var(--czvr-font-size-base);
-        font-weight: 500;
-        padding: 0.55rem 0.75rem;
-        white-space: nowrap;
-    }
-
-    .airport-tabs .nav-link:hover,
-    .airport-tabs .nav-link:focus {
-        background: var(--czvr-surface-muted);
-        color: var(--czvr-green-dark);
-    }
-
-    .airport-tabs .nav-link.active {
-        background: var(--czvr-green-soft);
-        box-shadow: none;
-        color: var(--czvr-green-dark);
-    }
 
     .airport-panel {
         padding-top: 2rem;
@@ -104,8 +73,6 @@
 
     .airport-atis-letter span {
         font-size: var(--czvr-font-size-base);
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
     }
 
     .airport-atis-letter strong {
@@ -120,12 +87,10 @@
 
     .airport-weather-copy h3,
     .airport-section-title {
-        color: var(--czvr-text);
-        font-size: var(--czvr-font-size-base);
-        font-weight: 600;
-        letter-spacing: 0.08em;
+        color: var(--czvr-green-dark);
+        font-size: 1rem;
+        font-weight: 500;
         margin-bottom: 0.55rem;
-        text-transform: uppercase;
     }
 
     .airport-weather-copy p {
@@ -143,6 +108,7 @@
     }
 
     .airport-scenery-card {
+        background: var(--czvr-white);
         border: 1px solid var(--czvr-border);
         border-radius: 0.65rem;
         display: flex;
@@ -161,8 +127,6 @@
     .airport-scenery-type {
         color: var(--czvr-text-muted);
         font-size: var(--czvr-font-size-base);
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
     }
 
     .airport-scenery-card a {
@@ -189,12 +153,12 @@
 @section('content')
 
 <div class="container py-4 airport-page">
-    <div class="airport-page-header mb-4">
-        <h1 class="blue-text mb-2">Airport guide</h1>
+    <div class="page-heading">
+        <h1 class="blue-text">Airport guide</h1>
         <p class="mb-0">Weather, airport information, and recommended scenery for Vancouver FIR's primary airports!</p>
     </div>
 
-    <ul class="nav airport-tabs" id="myTab" role="tablist" aria-label="Vancouver FIR airports">
+    <ul class="nav nav-tabs page-tabs" id="myTab" role="tablist" aria-label="Vancouver FIR airports">
         <li class="nav-item">
             <a class="nav-link active" id="cyvr-tab" data-bs-toggle="tab" href="#cyvr" role="tab" aria-controls="cyvr" aria-selected="true">Vancouver (CYVR)</a>
         </li>

@@ -3,72 +3,8 @@
 @section('description', 'Vancouver FIR preferred routing')
 @push('styles')
 <style>
-    .routing-header {
-        max-width: 740px;
-    }
-
-    .routing-header h1 {
-        font-size: 1.65rem;
-        font-weight: 500;
-    }
-
-    .routing-header p {
-        color: var(--czvr-text-muted);
-    }
-
-    .routing-tabs {
-        border: 1px solid var(--czvr-border);
-        border-radius: 0.7rem;
-        display: flex;
-        gap: 0.25rem;
-        overflow-x: auto;
-        padding: 0.3rem;
-    }
-
-    .routing-tabs .nav-link {
-        border: 0;
-        border-radius: 0.45rem;
-        color: var(--czvr-text-muted);
-        font-size: var(--czvr-font-size-base);
-        font-weight: 500;
-        padding: 0.55rem 0.8rem;
-        white-space: nowrap;
-    }
-
-    .routing-tabs .nav-link:hover,
-    .routing-tabs .nav-link:focus {
-        background: var(--czvr-surface-muted);
-        color: var(--czvr-green-dark);
-    }
-
-    .routing-tabs .nav-link.active {
-        background: var(--czvr-green-soft);
-        color: var(--czvr-green-dark);
-    }
-
     .airac-note {
-        align-items: center;
-        background: var(--czvr-surface-muted);
-        border: 1px solid var(--czvr-border);
-        border-radius: 0.65rem;
-        color: var(--czvr-text-muted);
-        display: flex;
-        font-size: var(--czvr-font-size-base);
-        gap: 0.65rem;
-        margin: 1rem 0 1.5rem;
-        padding: 0.7rem 0.85rem;
-    }
-
-    .airac-symbol {
-        align-items: center;
-        background: var(--czvr-green-soft);
-        border-radius: 50%;
-        color: var(--czvr-green-dark);
-        display: inline-flex;
-        flex: 0 0 1.65rem;
-        font-weight: 600;
-        height: 1.65rem;
-        justify-content: center;
+        margin: 0 0 1.5rem;
     }
 
     .routing-panel {
@@ -110,12 +46,10 @@
     }
 
     .route-column h3 {
-        color: var(--czvr-text-muted);
+        color: var(--czvr-green-dark);
         font-size: var(--czvr-font-size-base);
-        font-weight: 600;
-        letter-spacing: 0.08em;
+        font-weight: 500;
         margin: 0 0 0.65rem;
-        text-transform: uppercase;
     }
 
     .route-list {
@@ -199,17 +133,16 @@
 @section('content')
 
 <div class="container py-4 routing-page">
-    <div class="routing-header">
+    <div class="page-heading">
         <h1 class="blue-text mb-2">Preferred routing</h1>
         <p class="mb-0">Common routes between Vancouver FIR airports and nearby destinations!</p>
     </div>
 
-    <div class="airac-note">
-        <span class="airac-symbol">#</span>
+    <div class="page-note airac-note">
         <span>STAR versions vary by AIRAC cycle! Always refer to the latest charts!</span>
     </div>
 
-    <ul class="nav routing-tabs" id="airportTabs" role="tablist" aria-label="Preferred routes by airport">
+    <ul class="nav nav-tabs page-tabs" id="airportTabs" role="tablist" aria-label="Preferred routes by airport">
       <li class="nav-item">
         <a class="nav-link active" id="cyvr-tab" data-bs-toggle="tab" href="#CYVR" role="tab" aria-controls="CYVR" aria-selected="true">Vancouver (CYVR)</a>
       </li>

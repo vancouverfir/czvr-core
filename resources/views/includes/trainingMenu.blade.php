@@ -24,10 +24,13 @@
                     <a class="nav-link {{ request()->routeIs('training.index') ? 'active' : '' }}" href="{{ route('training.index') }}">Home</a>
                 </li>
 
-                @if ($isTrainingStaff)
+                @can('instructing-sessions.manage')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('training.instructingsessions.*') ? 'active' : '' }}" href="{{ route('training.instructingsessions.index') }}">Sessions</a>
                     </li>
+                @endcan
+
+                @if ($isTrainingStaff)
                     @can('training.instruct')
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('training.instructors') ? 'active' : '' }}" href="{{ route('training.instructors') }}">Instructors</a>

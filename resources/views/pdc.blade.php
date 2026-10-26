@@ -21,9 +21,11 @@
 @section('content')
 
     <div class="container py-4">
-        <h1 class="blue-text">Pre-Departure Clearance</h1>
-        <p>Pre-Departure Clearances in the Vancouver FIR are issued upon request by the pilot or during high volumes of traffic.</p>
-        <blockquote class="pdc-example">PDC service is currently provided at CYVR, CYYJ, CYXX, CYLW, and CYXS. When available, "PDC Available on request" will be listed in the ATIS NOTAMS.</blockquote>
+        <div class="page-heading">
+            <h1 class="blue-text">Pre-Departure Clearance</h1>
+            <p>Pre-Departure Clearances in the Vancouver FIR are issued upon request by the pilot or during high volumes of traffic.</p>
+        </div>
+        <p class="page-note">PDC service is currently provided at CYVR, CYYJ, CYXX, CYLW, and CYXS. When available, "PDC Available on request" will be listed in the ATIS NOTAMS.</p>
         <hr>
         <h3 class="fw-bold blue-text">Requesting a PDC</h3>
         <p>PDCs are issued via private message on all VATSIM pilot clients - pilots may request a PDC via voice or text. The format to a PDC will note similar information to an IFR clearance, as shown in the example below:</p>

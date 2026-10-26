@@ -65,7 +65,7 @@
                         @if ($ticket->status == 0)
                             <a role="button" data-bs-toggle="modal" data-bs-target="#holdTicket" class="btn btn-outline-warning">Put on Hold</a>
                         @else
-                            <button type="submit" form="ticketStatusForm" class="btn btn-outline-success">Reopen Ticket</button>
+                            <a role="button" data-bs-toggle="modal" data-bs-target="#reopenTicket" class="btn btn-outline-success">Reopen Ticket</a>
                         @endif
                         <a role="button" data-bs-toggle="modal" data-bs-target="#closeTicket" class="btn btn-outline-danger">Close Ticket</a>
                     @endcan
@@ -73,7 +73,7 @@
             </form>
         @else
             @can('tickets.manage')
-                <button type="submit" form="ticketStatusForm" class="btn btn-outline-success">Reopen Ticket</button>
+                <a role="button" data-bs-toggle="modal" data-bs-target="#reopenTicket" class="btn btn-outline-success">Reopen Ticket</a>
             @endcan
         @endif
         @can('tickets.manage')
@@ -97,6 +97,23 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" form="ticketStatusForm" class="btn btn-outline-warning">Put on Hold</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reopenTicket" tabindex="-1" aria-labelledby="reopenTicketTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reopenTicketTitle">Reopen Ticket?</h5>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">Ticket #{{ $ticket->ticket_id }} will move back to Open Tickets, and a note saying you reopened it is added to the ticket!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="ticketStatusForm" class="btn btn-outline-success">Reopen Ticket</button>
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
             </div>
         </div>

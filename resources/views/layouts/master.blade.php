@@ -69,6 +69,7 @@
         <nav class="navbar navbar-expand-lg navbar-light p-0 site-navbar" style="min-height:59px">
             <div class="container">
                 <a class="navbar-brand" href="{{route('index')}}"><img width="310" height="35" style="height: 35px; width:auto; vertical-align:inherit;" src="{{ asset($isHoliday ? 'Holiday Long.png' : 'CZVR_Colour_Long.svg') }}" alt="Vancouver FIR"></a>
+                <a href="{{ route('mochi') }}" class="mochi-peek d-none d-lg-block" aria-label="Mochi!"><span class="mochi-peek-spot"></span><span class="mochi-peek-window"><img src="https://czvr.ca/storage/files/easteregg/1671213201.png" alt=""></span></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

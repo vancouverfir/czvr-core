@@ -216,7 +216,7 @@ class NewsController extends Controller
 
     public function minutesIndex(): View
     {
-        $minutes = MeetingMinutes::all();
+        $minutes = MeetingMinutes::with('user')->latest()->get();
 
         return view('dashboard.news.meetingminutes', compact('minutes'));
     }
