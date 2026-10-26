@@ -148,12 +148,12 @@ Route::get('/yourfeedback', [FeedbackController::class, 'yourFeedback'])->name('
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::redirect('/event-coverage', '/events#eventCoverage');
 Route::get('/events/{slug}', [EventController::class, 'viewEvent'])->name('events.view');
-Route::view('/about', 'other.about')->name('about');
-Route::view('/branding', 'other.branding')->name('branding');
+Route::view('/about', 'about.index')->name('about');
+Route::view('/branding', 'about.branding')->name('branding');
 Route::get('/news/{slug}', [NewsController::class, 'viewArticlePublic'])->name('news.articlepublic');
 Route::get('/news', [NewsController::class, 'viewAllPublic'])->name('news');
 Route::get('/trainingtimes', [TrainingController::class, 'trainingTime'])->name('trainingtimes');
-Route::view('/mochi', 'other.mochi')->name('mochi');
+Route::view('/mochi', 'mochi.index')->name('mochi');
 Route::view('/pdc', 'pilots.pdc')->name('pdc');
 Route::view('/vfr', 'pilots.vfr')->name('vfr');
 Route::get('/livemap/data', [LiveMapController::class, 'data'])->name('livemap.data');
