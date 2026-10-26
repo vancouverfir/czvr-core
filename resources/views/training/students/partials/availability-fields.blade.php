@@ -23,9 +23,6 @@
         <div>
             <h4>Choose the days and times when you can normally train! All times are UTC!</h4>
         </div>
-        <button type="button" class="btn btn-sm btn-primary" data-add-availability>
-            <i class="fas fa-plus me-1" aria-hidden="true"></i>Add time
-        </button>
     </div>
 
     @error('availability')
@@ -100,6 +97,10 @@
         </div>
     </template>
 
+    <button type="button" class="btn btn-sm btn-primary" data-add-availability>
+        <i class="fas fa-plus me-1" aria-hidden="true"></i>Add time
+    </button>
+    
     <div class="availability-comment">
         <label class="form-label" for="{{ $availabilityEditorId }}Comment">Comment <span class="text-muted">(optional)</span></label>
         <textarea class="form-control" id="{{ $availabilityEditorId }}Comment" name="availability_comment" rows="2" maxlength="1000" placeholder="Anything else our instructors should know!">{{ old('availability_comment', $student->times) }}</textarea>

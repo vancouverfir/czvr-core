@@ -52,7 +52,8 @@
                         </thead>
                         <tbody>
 
-<!--AAS/RAAS-->         <tr>
+                        <!--AAS/RAAS-->
+                        <tr>
                             <th scope="row" style="text-align: center;"><b>AAS/RAAS</b></th>
                             @if ($rosterMember->fss == "0")
                                 <td align="center"><i class="fa fa-times-circle icon-no-cert"></i></td>

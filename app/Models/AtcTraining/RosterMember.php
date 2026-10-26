@@ -39,6 +39,17 @@ class RosterMember extends Model
         return false;
     }
 
+    public function tier2EndorsementLevel(): ?string
+    {
+        return match (true) {
+            (int) $this->ctr === 3 => 'CTR',
+            (int) $this->dep === 3 && (int) $this->app_t2 === 3 => 'TML',
+            (int) $this->twr_t2 === 3 => 'TWR',
+            (int) $this->delgnd_t2 === 3 => 'GND',
+            default => null,
+        };
+    }
+
     public function canResetRatingHours(): bool
     {
         return (bool) $this->user?->studentProfile?->consolidationIsPending();

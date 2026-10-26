@@ -23,13 +23,13 @@ class PoliciesController extends Controller
         if (! Auth::check() || ! Auth::user()->hasPermissionTo(PermissionCatalog::POLICIES_MANAGE)) {
             $policySections = PolicySection::all();
 
-            return view('policies', compact('policySections'));
+            return view('publications.policies', compact('policySections'));
         } else {
             $policySections = PolicySection::all();
             $nullPolicies = Policy::where('section_id', null)->get();
             $allPolicies = Policy::all();
 
-            return view('policies', compact('nullPolicies', 'policySections', 'allPolicies'));
+            return view('publications.policies', compact('nullPolicies', 'policySections', 'allPolicies'));
         }
     }
 

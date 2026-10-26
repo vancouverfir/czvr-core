@@ -15,7 +15,7 @@ use App\Models\Publications\AtcResource;
 use App\Models\Users\User;
 use App\Notifications\RenewalSuccessfulNotification;
 use App\Services\TrainingProgressionService;
-use App\Services\VatcanInstructorClient;
+use App\Services\VatcanClient;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -30,7 +30,7 @@ use Throwable;
 
 class TrainingController extends Controller
 {
-    public function __construct(private readonly VatcanInstructorClient $vatcan)
+    public function __construct(private readonly VatcanClient $vatcan)
     {
     }
 
@@ -110,7 +110,7 @@ class TrainingController extends Controller
 
     public function joinvancouver(): View
     {
-        return view('joinvancouver');
+        return view('training.join');
     }
 
     public function viewResources(): View
@@ -202,7 +202,7 @@ class TrainingController extends Controller
         $waitlist = Student::where('status', Student::STATUS_WAITLIST)->get();
         $visitorWaitlist = Student::where('status', Student::STATUS_VISITOR_WAITLIST)->get();
 
-        return view('trainingtimes', compact('training_time', 'waitlist', 'visitorWaitlist'));
+        return view('training.times', compact('training_time', 'waitlist', 'visitorWaitlist'));
     }
 
     public function editTrainingTime(Request $request): RedirectResponse

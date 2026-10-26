@@ -94,6 +94,10 @@ Route::domain('training.czvr.ca')->group(function () {
         Route::get('/students/{id}/preview', [TrainingController::class, 'previewStudent'])->middleware('can:training.manage')->name('training.students.preview');
         Route::post('/students/{id}/assigninstructor', [TrainingController::class, 'assignInstructorToStudent'])->name('training.students.assigninstructor');
 
+        // VATCAN training notes
+        Route::post('/students/{student}/vatcan-notes', [VatcanController::class, 'storeNote'])->name('training.students.vatcan.notes.store');
+        Route::patch('/students/{student}/vatcan-notes/{note}', [VatcanController::class, 'updateNote'])->whereNumber('note')->name('training.students.vatcan.notes.update');
+
         // Staff comments
         Route::post('/trainingnotes/add/{id}', [TrainingController::class, 'addNote'])->middleware('can:training.instruct')->name('add.trainingnote');
         Route::get('/trainingnotes/create/{id}', [TrainingController::class, 'newNoteView'])->middleware('can:training.instruct')->name('view.add.note');
@@ -124,14 +128,14 @@ Route::domain('training.czvr.ca')->group(function () {
     });
 });
 
-// Unsubscribe link in subscription emails signed, so it works without logging in (POST is the one-click unsubscribe)
+// Unsubscribe link in subscription emails: signed, so it works without logging in (POST is the one-click unsubscribe)
 Route::get('/emails/unsubscribe/{user}', [DataController::class, 'unsubscribeFromEmail'])->middleware('signed')->name('emails.unsubscribe');
 Route::post('/emails/unsubscribe/{user}', [DataController::class, 'confirmUnsubscribeFromEmail'])->middleware('signed')->name('emails.unsubscribe.confirm');
 
 // Public pages
 Route::get('/', [HomeController::class, 'view'])->name('index');
 Route::get('/airports', [AirportController::class, 'index'])->name('airports');
-Route::view('/preferredrouting', 'preferredrouting')->name('preferredrouting');
+Route::view('/preferredrouting', 'pilots.preferredrouting')->name('preferredrouting');
 Route::get('/roster', [RosterController::class, 'showPublic'])->name('roster.public');
 Route::get('/roster/{id}', [UserController::class, 'viewProfile']);
 Route::get('/roster/{id}/connections', [UserController::class, 'viewConnections']);
@@ -139,25 +143,25 @@ Route::get('/join', [TrainingController::class, 'joinvancouver'])->name('join.pu
 Route::get('/staff', [StaffListController::class, 'index'])->name('staff');
 Route::get('/policies', [PoliciesController::class, 'index'])->name('policies');
 Route::get('/meetingminutes', [NewsController::class, 'minutesIndex'])->name('meetingminutes');
-Route::view('/privacy', 'privacy')->name('privacy');
+Route::view('/privacy', 'publications.privacy')->name('privacy');
 Route::get('/yourfeedback', [FeedbackController::class, 'yourFeedback'])->name('yourfeedback');
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::redirect('/event-coverage', '/events#eventCoverage');
 Route::get('/events/{slug}', [EventController::class, 'viewEvent'])->name('events.view');
-Route::view('/about', 'about')->name('about');
-Route::view('/branding', 'branding')->name('branding');
+Route::view('/about', 'other.about')->name('about');
+Route::view('/branding', 'other.branding')->name('branding');
 Route::get('/news/{slug}', [NewsController::class, 'viewArticlePublic'])->name('news.articlepublic');
 Route::get('/news', [NewsController::class, 'viewAllPublic'])->name('news');
 Route::get('/trainingtimes', [TrainingController::class, 'trainingTime'])->name('trainingtimes');
-Route::view('/mochi', 'mochi')->name('mochi');
-Route::view('/pdc', 'pdc')->name('pdc');
-Route::view('/vfr', 'vfr')->name('vfr');
+Route::view('/mochi', 'other.mochi')->name('mochi');
+Route::view('/pdc', 'pilots.pdc')->name('pdc');
+Route::view('/vfr', 'pilots.vfr')->name('vfr');
 Route::get('/livemap/data', [LiveMapController::class, 'data'])->name('livemap.data');
-Route::view('/editmap', 'editmap')->middleware(['auth', 'can:events.manage'])->name('editmap');
+Route::view('/editmap', 'events.editmap')->middleware(['auth', 'can:events.manage'])->name('editmap');
 Route::get('sitemap.xml', function () {
     return response()->file(public_path('sitemap.xml'), ['Content-Type' => 'application/xml']);
 });
-Route::view('/instructors', 'instructors')->name('instructors');
+Route::view('/instructors', 'training.public-instructors')->name('instructors');
 
 // Redirects
 Route::get('/github', function () {

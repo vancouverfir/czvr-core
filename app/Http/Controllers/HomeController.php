@@ -153,7 +153,7 @@ class HomeController extends Controller
             Log::error('Failed to prepare event banner: '.$e->getMessage());
         }
 
-        return view('index', compact('finalPositions', 'news', 'nextEvents', 'topControllersArray', 'weather', 'background', 'backgroundUrl', 'backgroundImages', 'coreSettings'));
+        return view('other.home', compact('finalPositions', 'news', 'nextEvents', 'topControllersArray', 'weather', 'background', 'backgroundUrl', 'backgroundImages', 'coreSettings'));
     }
 
     private function cachedArray(string $key): ?array

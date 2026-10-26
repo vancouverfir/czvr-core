@@ -219,8 +219,8 @@
                                     $consolidationHours = number_format(\App\Services\TrainingProgressionService::CONSOLIDATION_HOURS, 0);
                                     $nextStep = match ($student->currentTrainingLabel(\App\Models\AtcTraining\Student::RATING_TRAINING_LABELS)) {
                                         'S1 Training' => 'Complete every S1 checklist item to unlock S2 Training!',
-                                        'S2 Training' => "Student must pass the S2 OTS, then log {$consolidationHours} hours of consolidation to unlock S3 Training!",
-                                        'S3 Training' => "Student must pass the S3 OTS, then log {$consolidationHours} hours of consolidation to unlock C1 Training!",
+                                        'S2 Training' => "Student must pass the S2 OTS, then log {$consolidationHours} hours on TWR positions to unlock S3 Training!",
+                                        'S3 Training' => "Student must pass the S3 OTS, then log {$consolidationHours} hours on APP, DEP or TML positions to unlock C1 Training!",
                                         'C1 Training' => 'Student must pass the C1 OTS to complete training!',
                                         default => null,
                                     };
@@ -248,7 +248,7 @@
                                     <h3 class="student-panel-title blue-text">Latest 3 VATCAN Notes</h3>
                                 </div>
                                 <div class="d-flex gap-1">
-                                    <a href="https://vatcan.ca/manage/training/notes/controller/{{ $student->user_id }}" target="_blank" rel="noopener" class="btn btn-sm btn-success">New VATCAN Note</a>
+                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#vatcanNoteModal" data-vatcan-note-new>New VATCAN Note</button>
                                     <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#allVatcanNotes">View all</button>
                                 </div>
                             </div>
@@ -256,6 +256,7 @@
                         <div class="student-panel-body">
                             @if (empty($vatcanNotes)) <p class="text-muted mb-0">No training notes yet! Check back later to view your latest 3!</p>
                             @else
+                            @php($editableVatcanNotes = true)
                             @foreach (array_slice($vatcanNotes, 0, 3) as $note)
                                 @include('training.students.partials.vatcan-note', ['note' => $note])
                             @endforeach
@@ -357,7 +358,9 @@
     </div>
 </div>
 @elseif ($modal === 'assignLabel')
+@php($editableVatcanNotes = true)
 @include('training.students.partials.vatcan-notes-modal')
+@include('training.students.partials.vatcan-note-form')
 
 @can('training.students.delete')
 <div class="modal fade" id="deleteStudentModal" tabindex="-1" aria-labelledby="deleteStudentTitle" aria-hidden="true">

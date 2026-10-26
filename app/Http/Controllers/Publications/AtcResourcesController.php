@@ -29,7 +29,7 @@ class AtcResourcesController extends Controller
     {
         $resources = AtcResource::query()->orderBy('title')->get();
 
-        return view('atcresources', compact('resources'));
+        return view('training.manage-resources', compact('resources'));
     }
 
     public function uploadResource(Request $request): RedirectResponse

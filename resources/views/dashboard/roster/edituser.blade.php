@@ -73,7 +73,7 @@
                     $loggedTime = sprintf('%dh %02dm', intdiv($loggedMinutes, 60), $loggedMinutes % 60);
                 @endphp
                 <div class="alert roster-vatcan-note mb-3" role="note">
-                    Endorsements and Solo Certifications must also be updated on VATCAN!
+                    Tier 2 endorsements are updated on VATCAN automatically when you save! Solo Certifications must still be updated on VATCAN!
                 </div>
 
                 <div class="table-responsive mb-3">

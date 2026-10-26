@@ -194,7 +194,7 @@ class BookingController extends Controller
 
         $bookings = $this->getCachedBookings();
 
-        return view('booking', ['bookings' => $bookings, 'callsigns' => $callsigns, 'events' => $events]);
+        return view('booking.index', ['bookings' => $bookings, 'callsigns' => $callsigns, 'events' => $events]);
     }
 
     public function create(Request $request): RedirectResponse

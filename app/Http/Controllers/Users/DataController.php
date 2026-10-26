@@ -44,14 +44,14 @@ class DataController extends Controller
 
     public function unsubscribeFromEmail(User $user): View
     {
-        return view('emails-unsubscribe', ['user' => $user, 'done' => false]);
+        return view('other.unsubscribe', ['user' => $user, 'done' => false]);
     }
 
     public function confirmUnsubscribeFromEmail(User $user): View
     {
         $user->update(['gdpr_subscribed_emails' => 0]);
 
-        return view('emails-unsubscribe', ['user' => $user, 'done' => true]);
+        return view('other.unsubscribe', ['user' => $user, 'done' => true]);
     }
 
     public function index(): View

@@ -25,7 +25,7 @@ class StaffListController extends Controller
 
         $staff = StaffMember::with('user')->get();
 
-        return view('staff', compact('staff', 'instructors', 'groups'));
+        return view('other.staff', compact('staff', 'instructors', 'groups'));
     }
 
     public function editIndex(): View

@@ -120,7 +120,7 @@ class UserController extends Controller
             $time = [];
         }
 
-        return view('profile', compact('id', 'user', 'quarterlyHours', 'rosterMember', 'time', 'connections'));
+        return view('roster.profile', compact('id', 'user', 'quarterlyHours', 'rosterMember', 'time', 'connections'));
     }
 
     public function viewConnections($id): View
@@ -135,7 +135,7 @@ class UserController extends Controller
             $c['duration'] = decimal_to_hm($c['duration']);
         }
 
-        return view('connections', compact('connections', 'user', 'id'));
+        return view('roster.connections', compact('connections', 'user', 'id'));
     }
 
     public function adminViewUserProfile($id): View

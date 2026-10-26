@@ -216,7 +216,9 @@ class ActivityLog extends Command
                     $roster_member->currency += $difference;
 
                     if (in_array($roster_member->user?->rating_short, ['S1', 'S2', 'S3', 'C1'], true)) {
-                        $roster_member->rating_hours += $difference;
+                        if ($progression->sessionCountsTowardRatingHours($roster_member, $log->callsign)) {
+                            $roster_member->rating_hours += $difference;
+                        }
                     } else {
                         error_log('Something went wrong adding rating hours (Students)');
                     }

@@ -136,7 +136,7 @@ class NewsController extends Controller
             abort(404);
         }
 
-        return view('publicarticle', compact('article'));
+        return view('news.article', compact('article'));
     }
 
     public function editArticle(Request $request, $id): RedirectResponse
@@ -211,14 +211,14 @@ class NewsController extends Controller
     {
         $news = News::where('visible', true)->get()->sortByDesc('id');
 
-        return view('publicnews', compact('news'));
+        return view('news.index', compact('news'));
     }
 
     public function minutesIndex(): View
     {
         $minutes = MeetingMinutes::with('user')->latest()->get();
 
-        return view('dashboard.news.meetingminutes', compact('minutes'));
+        return view('publications.meetingminutes', compact('minutes'));
     }
 
     public function minutesDelete($id): RedirectResponse

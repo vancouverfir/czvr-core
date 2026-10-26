@@ -45,8 +45,14 @@ class TrainingProgressionService
     /** @var list<string> */
     private const CONSOLIDATION_RATINGS = ['S2', 'S3'];
 
-    /** Rating hours to log at a new S2/S3 rating before the next training package unlocks. */
+    /** Rating hours to log at a new S2/S3 rating before the next training package unlocks */
     public const CONSOLIDATION_HOURS = 25.0;
+
+    /** During consolidation only sessions on the newly certified positions count */
+    public const CONSOLIDATION_POSITIONS = [
+        'S2' => ['TWR'],
+        'S3' => ['APP', 'DEP', 'TML'],
+    ];
 
     /**
      * Update a local rating and advance the training workflow when a future
@@ -123,6 +129,21 @@ class TrainingProgressionService
         ]);
 
         return true;
+    }
+
+    /** Whether a finished session on this callsign adds to the controller's rating hours */
+    public function sessionCountsTowardRatingHours(RosterMember $roster, ?string $callsign): bool
+    {
+        $rating = Student::where('user_id', $roster->user_id ?: $roster->cid)->value('consolidation_rating');
+        $positions = self::CONSOLIDATION_POSITIONS[$rating] ?? null;
+
+        if ($positions === null) {
+            return true;
+        }
+
+        $suffix = strtoupper((string) str($callsign ?? '')->afterLast('_'));
+
+        return in_array($suffix, $positions, true);
     }
 
     public function completeConsolidationIfEligible(RosterMember $roster): bool
@@ -471,9 +492,10 @@ class TrainingProgressionService
             $student->id,
             'Rating Promotion Detected',
             sprintf(
-                'System detected promotion to %s, reset rating hours, and started the %.0f-hour consolidation period!',
+                'System detected promotion to %s, reset rating hours, and started the %.0f-hour consolidation period (only %s positions count)!',
                 $rating,
                 $requiredHours,
+                implode('/', self::CONSOLIDATION_POSITIONS[$rating] ?? []),
             ),
         );
     }

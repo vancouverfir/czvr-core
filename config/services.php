@@ -38,6 +38,7 @@ return [
 
     'vatcan' => [
         'key' => env('VATCAN_API_KEY'),
+        'url' => env('VATCAN_API_URL', 'https://vatcan.ca/api/v2'),
     ],
 
     'checkwx' => [

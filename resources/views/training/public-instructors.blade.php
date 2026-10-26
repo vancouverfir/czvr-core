@@ -17,7 +17,6 @@
                                 <img src="{{$instructor->user->avatar()}}" style="border-radius: 50%; width: 100px; height: 100px; margin-right: 4%;">
                                 <div class="d-flex flex-column">
                                     <h3 class="mb-1 fw-bold blue-text">{{$instructor->user->fullName('FL')}}</h3>
-                                    <!-- <a href="mailto:{{$instructor->user->email}}"><h5 class="blue-text">{{$instructor->user->email}}</h5></a> -->
                                     <div class="d-flex flex-wrap gap-2 mt-2">
                                         @if($instructor->is_local)
                                             <span class="qualification-badge qualification-local">Local</span>
@@ -46,7 +45,6 @@
                                 <img src="{{$instructor->user->avatar()}}" style="border-radius: 50%; width: 100px; height: 100px; margin-right: 4%;">
                                 <div class="d-flex flex-column">
                                     <h3 class="mb-1 fw-bold blue-text">{{$instructor->user->fullName('FL')}}</h3>
-                                    <!-- <a href="mailto:{{$instructor->user->email}}"><h5 class="blue-text">{{$instructor->user->email}}</h5></a> -->
                                     <div class="d-flex flex-wrap gap-2 mt-2">
                                         @if($instructor->is_local)
                                             <span class="qualification-badge qualification-local">Local</span>

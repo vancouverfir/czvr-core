@@ -9,6 +9,7 @@ use App\Models\Teacher;
 use App\Models\Users\Role;
 use App\Models\Users\User;
 use App\Services\TrainingProgressionService;
+use App\Services\VatcanClient;
 use App\Support\Authorization\SystemRoleCatalog;
 use App\Support\VatcanFacilities;
 use Carbon\Carbon;
@@ -43,7 +44,7 @@ class SyncStudents extends Command
                 ->connectTimeout(5)
                 ->timeout(35)
                 ->retry(2, 500, throw: false)
-                ->get('https://vatcan.ca/api/v2/facility/roster');
+                ->get(VatcanClient::url('facility/roster'));
 
             if ($response->failed()) {
                 $this->error('API Request Failed. Status: '.$response->status());

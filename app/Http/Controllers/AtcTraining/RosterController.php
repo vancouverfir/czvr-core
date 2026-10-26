@@ -8,12 +8,15 @@ use App\Models\AtcTraining\RosterMember;
 use App\Models\Network\SessionLog;
 use App\Models\Users\Role;
 use App\Models\Users\User;
+use App\Services\VatcanClient;
 use App\Support\Authorization\SystemRoleCatalog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
+use Throwable;
 
 class RosterController extends Controller
 {
@@ -31,7 +34,7 @@ class RosterController extends Controller
         $visitroster = $members->where('visit', 1);
         $users = $canManage ? User::query()->orderBy('id')->get(['id', 'fname', 'lname']) : collect();
 
-        return view('roster', compact('roster', 'visitroster', 'users', 'canManage'));
+        return view('roster.index', compact('roster', 'visitroster', 'users', 'canManage'));
     }
 
     public function index(): RedirectResponse
@@ -124,7 +127,7 @@ class RosterController extends Controller
         return view('dashboard.roster.edituser', compact('roster'))->with('cid', $cid);
     }
 
-    public function editController(Request $request, $cid): RedirectResponse
+    public function editController(Request $request, $cid, VatcanClient $vatcan): RedirectResponse
     {
         $roster = RosterMember::where('cid', $cid)->firstOrFail();
         $validated = $request->validate([
@@ -142,8 +145,27 @@ class RosterController extends Controller
             'rating_hours' => ['required', 'in:true,false'],
         ]);
 
+        $oldTier2 = $roster->tier2EndorsementLevel();
+
         foreach (['fss', 'delgnd', 'delgnd_t2', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr'] as $field) {
             $roster->{$field} = $validated[$field];
+        }
+
+        $newTier2 = $roster->tier2EndorsementLevel();
+
+        if ($oldTier2 !== $newTier2) {
+            try {
+                $this->syncTier2Endorsement($vatcan, $roster, $oldTier2, $newTier2);
+            } catch (Throwable $exception) {
+                Log::warning('VATCAN Tier 2 endorsement update failed!', [
+                    'cid' => $roster->cid,
+                    'from' => $oldTier2,
+                    'to' => $newTier2,
+                    'message' => $exception->getMessage(),
+                ]);
+
+                return back()->withInput()->withError('VATCAN did not update the Tier 2 endorsement, so nothing was saved! '.$exception->getMessage());
+            }
         }
 
         $wasActive = (int) $roster->active === 1;
@@ -163,5 +185,26 @@ class RosterController extends Controller
         }
 
         return redirect()->route('roster.public')->withSuccess('Successfully edited!');
+    }
+
+    private function syncTier2Endorsement(VatcanClient $vatcan, RosterMember $roster, ?string $old, ?string $new): void
+    {
+        $cid = (int) $roster->cid;
+
+        $vatcan->removeEndorsement($cid, VatcanClient::TIER_2_ENDORSEMENT);
+
+        if ($new === null) {
+            return;
+        }
+
+        try {
+            $vatcan->addEndorsement($cid, VatcanClient::TIER_2_ENDORSEMENT, $new, (int) auth()->id());
+        } catch (Throwable $exception) {
+            if ($old !== null) {
+                rescue(fn () => $vatcan->addEndorsement($cid, VatcanClient::TIER_2_ENDORSEMENT, $old, (int) auth()->id()));
+            }
+
+            throw $exception;
+        }
     }
 }

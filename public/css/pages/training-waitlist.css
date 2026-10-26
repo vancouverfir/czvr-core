@@ -53,13 +53,13 @@
 .waitlist-contact-state {
     color: var(--czvr-green-dark);
     display: block;
-    font-size: var(--czvr-font-size-base);
-    line-height: 1.2;
+    font-size: inherit;
+    line-height: 1.4;
 }
 .waitlist-contact-state time {
     color: var(--czvr-text-muted);
     display: block;
-    font-size: var(--czvr-font-size-base);
+    font-size: inherit;
     margin-top: .08rem;
     white-space: nowrap;
 }

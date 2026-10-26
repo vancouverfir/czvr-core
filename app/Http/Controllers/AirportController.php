@@ -29,6 +29,6 @@ class AirportController extends Controller
             ];
         }
 
-        return view('airports', compact('airportWeather'));
+        return view('pilots.airports', compact('airportWeather'));
     }
 }
