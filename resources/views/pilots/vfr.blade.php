@@ -3,149 +3,7 @@
 @section('description', 'VFR charts, procedures, and pilot guidance for the Vancouver FIR')
 
 @push('styles')
-<style>
-    .vfr-page-header p {
-        max-width: 760px;
-    }
-
-    .vfr-page-header h1 {
-        font-size: 1.65rem;
-        font-weight: 500;
-    }
-
-    .vfr-page-header p,
-    .vfr-copy {
-        color: var(--czvr-text);
-        line-height: 1.7;
-    }
-
-    .vfr-card {
-        background: var(--czvr-white);
-        border: 1px solid var(--czvr-border);
-        border-radius: 0.75rem;
-        overflow: hidden;
-    }
-
-    .vfr-card-heading {
-        align-items: center;
-        border-bottom: 1px solid var(--czvr-border);
-        display: flex;
-        gap: 1rem;
-        justify-content: space-between;
-        padding: 0.85rem 1rem;
-    }
-
-    .vfr-card-heading h2 {
-        font-size: 1rem;
-        font-weight: 500;
-        margin: 0;
-    }
-
-    .vfr-card-heading span {
-        color: var(--czvr-text-muted);
-        font-size: var(--czvr-font-size-base);
-    }
-
-    .vfr-card-body {
-        padding: 1rem;
-    }
-
-    .vfr-card-body > p {
-        margin-bottom: 0.85rem;
-    }
-
-    .vfr-resource-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .vfr-resource-list li + li {
-        border-top: 1px solid var(--czvr-border);
-    }
-
-    .vfr-resource-list a {
-        align-items: center;
-        color: var(--czvr-text);
-        display: flex;
-        font-size: var(--czvr-font-size-base);
-        gap: 0.65rem;
-        padding: 0.7rem 0;
-        text-decoration: none;
-    }
-
-    .vfr-resource-list li:first-child a {
-        padding-top: 0;
-    }
-
-    .vfr-resource-list li:last-child a {
-        padding-bottom: 0;
-    }
-
-    .vfr-resource-list a:hover,
-    .vfr-resource-list a:focus {
-        color: var(--czvr-green-dark);
-    }
-
-    .vfr-resource-list a > i:first-child {
-        color: var(--czvr-green-dark);
-        text-align: center;
-        width: 1rem;
-    }
-
-    .vfr-resource-list .fa-arrow-up-right-from-square {
-        color: var(--czvr-text-muted);
-        font-size: var(--czvr-font-size-base);
-        margin-left: auto;
-    }
-
-    .vfr-note {
-        align-items: flex-start;
-        display: flex;
-        font-size: var(--czvr-font-size-base);
-        gap: 0.7rem;
-        line-height: 1.65;
-        margin-top: 1rem;
-    }
-
-    .vfr-note p {
-        font-size: inherit !important;
-        margin: 0;
-    }
-
-    .vfr-note p + p {
-        margin-top: 0.35rem;
-    }
-
-    .vfr-tower-column {
-        padding: 1rem;
-    }
-
-    .vfr-tower-column + .vfr-tower-column {
-        border-left: 1px solid var(--czvr-border);
-    }
-
-    .vfr-tower-column h3 {
-        color: var(--czvr-green-dark);
-        font-size: var(--czvr-font-size-base);
-        font-weight: 500;
-        margin: 0 0 0.55rem;
-    }
-
-    .vfr-tower-column p {
-        color: var(--czvr-text);
-        font-size: var(--czvr-font-size-base) !important;
-        line-height: 1.65;
-        margin: 0;
-    }
-
-    @media (max-width: 767.98px) {
-        .vfr-tower-column + .vfr-tower-column {
-            border-left: 0;
-            border-top: 1px solid var(--czvr-border);
-        }
-    }
-</style>
+    <link href="{{ asset('css/pages/pilots.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -154,7 +12,7 @@
     <header class="page-heading vfr-page-header">
         <h1 class="blue-text mb-2">VFR in CZVR</h1>
         <p class="mb-2">CZVR is home to some of the most beautiful landscapes to navigate visually. With increasing flight sim fidelity and distinct landscapes, CZVR provides easy visual navigation and world class sight seeing.</p>
-        <p class="mb-0">Both new and seasoned VFR pilots are welcome. No need to be intimidated, our friendly controllers are happy to help learn when possible.</p>
+        <p class="mb-0">Both new and seasoned VFR pilots are welcome! No need to be intimidated, our friendly controllers are happy to help learn when possible!</p>
     </header>
 
     <div class="row g-3 mb-3">

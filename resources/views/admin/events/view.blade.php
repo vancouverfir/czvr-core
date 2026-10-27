@@ -1,60 +1,7 @@
 @extends('layouts.master')
 
 @push('styles')
-<style>
-  .roster-table th, .roster-table td {
-    border: 1px solid var(--czvr-border) !important;
-    vertical-align: middle;
-  }
-  .roster-table tbody tr:hover {
-    background: var(--czvr-green-soft);
-  }
-
-  .sticky-col {
-    position: sticky;
-    left: 0;
-    background: var(--czvr-surface);
-    color: var(--czvr-text);
-    z-index: 5;
-    border-right: 2px solid var(--czvr-border) !important;
-  }
-  .left-col {
-    min-width: 160px;
-  }
-
-  .controller-block {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    padding: 6px;
-    font-weight: 600;
-    font-size: .9rem;
-    color: #fff;
-    position: relative;
-    transition: all .2s ease-in-out;
-  }
-  .controller-block:hover {
-    box-shadow: inset 0 0 0 2px #fff3;
-    z-index: 2;
-  }
-
-  .position-name {
-    font-size: var(--czvr-font-size-base);
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  .controller-delete {
-    position: absolute;
-    top: 4px;
-    right: 6px;
-    display: none;
-  }
-  .controller-block:hover .controller-delete {
-    display: block;
-  }
-</style>
+    <link href="{{ asset('css/pages/events.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')

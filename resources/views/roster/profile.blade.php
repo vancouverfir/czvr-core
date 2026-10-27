@@ -3,15 +3,7 @@
 @section('description', $id.'\'s user profile')
 
 @push('styles')
-<style>
-    .flex-container {
-        display: flex;
-        position: relative;
-        align-items: center;
-        justify-content: center;
-        margin: 0;
-    }
-</style>
+    <link href="{{ asset('css/pages/roster.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')

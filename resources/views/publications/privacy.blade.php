@@ -5,10 +5,7 @@
 @php($privacyPolicyUrl = 'https://czvr.ca/storage/files/uploads/1670724539.pdf')
 
 @push('styles')
-<style>
-.privacy-frame { overflow: hidden; border: 1px solid var(--czvr-border); border-radius: .5rem; background: var(--czvr-surface); }
-.privacy-frame iframe { display: block; width: 100%; height: 80vh; border: 0; }
-</style>
+    <link href="{{ asset('css/pages/public.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')

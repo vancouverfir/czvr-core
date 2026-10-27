@@ -1,56 +1,6 @@
 @extends('layouts.master')
 @section('navbarprim') @parent @stop
 
-@push('styles')
-<link href="{{ asset('css/pages/training-availability.css') }}" rel="stylesheet">
-<style>
-.student-tabs { background: var(--czvr-surface-muted); border: 1px solid var(--czvr-border); border-radius: 12px; padding: 6px; }
-.student-tabs .nav-link { border-radius: 10px; color: var(--czvr-text-muted); font-weight: 500; }
-.student-tabs .nav-link:hover, .student-tabs .nav-link.active { background: var(--czvr-green-soft) !important; color: var(--czvr-green-dark); }
-.student-overview, .student-panel { box-shadow: none; }
-.student-overview .card-body, .student-panel-body { padding: 0.85rem; }
-.student-identity { min-width: 240px; }
-.student-name, .student-panel-title { font-size: 0.92rem; font-weight: 500; margin: 0; }
-.student-meta, .student-panel-subtitle { color: var(--czvr-text-muted); font-size: var(--czvr-font-size-base); margin-top: 0.15rem; }
-.student-label { align-items: center; border-radius: 0.3rem; color: #fff; display: inline-flex; font-size: var(--czvr-font-size-base); line-height: 1.2; padding: 0.22rem 0.45rem; }
-.student-label > span { align-items: center; display: inline-flex; gap: 0.3rem; }
-.student-label button { all: unset; align-items: center; cursor: pointer; display: inline-flex; gap: 0.3rem; }
-.student-label-add { border: 1px dashed var(--czvr-border); border-radius: 0.3rem; color: var(--czvr-text-muted); height: 1.55rem; width: 1.75rem; }
-.student-facts { display: grid; flex: 1; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); }
-.student-fact { border-left: 1px solid var(--czvr-border); min-width: 0; padding: 0.3rem 1rem; }
-.student-fact-label { color: var(--czvr-text-muted); display: block; font-size: var(--czvr-font-size-base); margin-bottom: 0.3rem; text-transform: uppercase; }
-.student-fact-value { align-items: center; display: flex; font-size: var(--czvr-font-size-base); gap: 0.4rem; }
-.student-fact-link { cursor: pointer; }
-.student-fact-link:hover, .student-action:hover, .student-action:focus-visible { color: var(--czvr-green-dark); }
-.student-panel-header { align-items: center; background: var(--czvr-surface); border-bottom: 1px solid var(--czvr-border); display: flex; justify-content: space-between; min-height: 3.25rem; padding: 0.7rem 0.85rem; z-index: 2; }
-.student-action { align-items: center; background: transparent; border: 0; border-radius: 0.4rem; color: var(--czvr-text); display: flex; font-size: var(--czvr-font-size-base); gap: 0.65rem; min-height: 2.2rem; padding: 0.45rem 0.55rem; text-align: left; text-decoration: none; width: 100%; }
-.student-action:hover, .student-action:focus-visible { background: var(--czvr-green-soft); }
-.student-action:disabled { background: transparent; cursor: not-allowed; opacity: 0.55; }
-.student-action i { color: var(--czvr-text-muted); width: 1rem; }
-.assign-label-grid { display: grid; gap: 0.5rem; }
-.assign-label-option { align-items: center; background: var(--label-colour); border-radius: 0.45rem; color: #fff; cursor: pointer; display: flex; font-size: var(--czvr-font-size-base); gap: 0.6rem; justify-content: center; margin: 0; padding: 0.6rem 0.7rem; transition: box-shadow 120ms ease; }
-.btn-check:checked + .assign-label-option { box-shadow: 0 0 0 2px var(--czvr-surface), 0 0 0 4px var(--label-colour); }
-.btn-check:focus-visible + .assign-label-option { outline: 2px solid var(--czvr-green); outline-offset: 3px; }
-.student-action-danger { color: #b42318; }
-.student-action-danger:hover, .student-action-danger:focus-visible { background: #fff1f0; color: #8f1c13; }
-.student-automation-note, .activity-bubble { background: var(--czvr-surface-muted); border-radius: 0.45rem; }
-.student-automation-note { align-items: flex-start; color: var(--czvr-text-muted); display: flex; font-size: var(--czvr-font-size-base); gap: 0.55rem; line-height: 1.45; margin-bottom: 0.45rem; padding: 0.6rem; }
-.student-automation-note i { color: var(--czvr-green-dark); margin-top: 0.15rem; }
-.student-joined { border-top: 1px solid var(--czvr-border); color: var(--czvr-text-muted); font-size: var(--czvr-font-size-base); margin-top: 0.5rem; padding: 0.65rem 0.55rem 0; }
-.checklist-scroll { max-height: 700px; overflow-y: auto; }
-.checklist-group { border: 1px solid var(--czvr-border); border-radius: 0.55rem; margin-bottom: 0.75rem; overflow: hidden; }
-.checklist-group-title { background: var(--czvr-surface-muted); border-bottom: 1px solid var(--czvr-border); font-size: var(--czvr-font-size-base); font-weight: 500; margin: 0; padding: 0.6rem 0.75rem; }
-.checklist-group td { border-color: var(--czvr-border); font-size: var(--czvr-font-size-base); padding: 0.48rem 0.75rem; }
-.activity-icon { align-items: center; background: var(--czvr-green); border-radius: 50%; display: flex; flex-shrink: 0; height: 36px; justify-content: center; width: 36px; }
-.activity-bubble { border-left: 3px solid var(--czvr-green); flex: 1; padding: 12px; }
-@media (max-width: 767.98px) {
-    .student-overview .card-body { align-items: flex-start !important; flex-direction: column; }
-    .student-facts { grid-template-columns: 1fr; width: 100%; }
-    .student-fact { border-left: 0; border-top: 1px solid var(--czvr-border); padding: 0.7rem 0; }
-}
-</style>
-@endpush
-
 @section('content')
 @include('includes.trainingMenu')
 
@@ -116,7 +66,7 @@
                         </div>
                         <div class="student-fact student-fact-link" role="link" tabindex="0" onclick="window.location='{{ url('/roster/' . $student->user->id . '/connections') }}'" onkeydown="if (event.key === 'Enter') this.click();">
                             <span class="student-fact-label">Activity</span>
-                            <span class="student-fact-value"><i class="far fa-clock"></i>{{ ($student->user->rosterProfile?->currency ?? 0) == 0 ? 'No hours recorded' : decimal_to_hm($student->user->rosterProfile->currency) . ' hours recorded' }}</span>
+                            <span class="student-fact-value"><i class="far fa-clock"></i>{{ ($student->user->rosterProfile?->currency ?? 0) == 0 ? 'No hours recorded' : decimal_to_hm($student->user->rosterProfile->currency) . ' recorded' }}</span>
                         </div>
                         <div class="student-fact student-fact-link" role="button" tabindex="0" data-bs-toggle="modal" data-bs-target="#editTimesModal">
                             <span class="student-fact-label">Availability</span>

@@ -1,39 +1,6 @@
 @extends('layouts.master')
 @section('title', 'Training Statistics - Vancouver FIR')
 
-@push('styles')
-    <link href="{{ asset('css/pages/training-instructor-dashboard.css') }}" rel="stylesheet">
-    <style>
-        .training-stats-body { padding: 1rem; }
-        .stats-pane-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); }
-        .stats-summary { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
-        .stats-summary-item strong { color: var(--czvr-green-dark); display: block; font-size: 2rem; font-weight: 500; line-height: 1.1; }
-        .stats-summary-item span { color: var(--czvr-text-muted); font-size: var(--czvr-font-size-base); }
-        .stats-tabs .nav-link { color: var(--czvr-text-muted); }
-        .stats-tabs .nav-link.active { color: var(--czvr-green-dark); }
-        .stats-tiles { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
-        .stats-tile { background: var(--czvr-surface-muted); border-radius: 0.5rem; padding: 0.7rem 0.85rem; }
-        .stats-tile strong { color: var(--czvr-text); display: block; font-size: 1.5rem; font-weight: 500; line-height: 1.2; }
-        .stats-tile span { color: var(--czvr-text-muted); font-size: var(--czvr-font-size-base); }
-        .stats-subheading { color: var(--czvr-text-muted); font-size: var(--czvr-font-size-base); margin: 0 0 0.5rem; text-transform: uppercase; }
-        .stats-subheading:not(:first-child) { margin-top: 1rem; }
-        .stats-bars { display: grid; gap: 0.45rem; }
-        .stats-bar { align-items: center; display: grid; gap: 0.6rem; grid-template-columns: minmax(7rem, 11rem) 1fr 3.5rem; }
-        .stats-bar-label { color: var(--czvr-text); font-size: var(--czvr-font-size-base); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .stats-bar-track { background: var(--czvr-surface-muted); border-radius: 4px; height: 0.9rem; overflow: hidden; }
-        .stats-bar-fill { background: var(--czvr-green); border-radius: 0 4px 4px 0; height: 100%; min-width: 2px; }
-        .stats-bar-fill.is-empty { min-width: 0; }
-        .stats-bar-value { color: var(--czvr-text-muted); font-size: var(--czvr-font-size-base); text-align: end; white-space: nowrap; }
-        .stats-columns { align-items: end; display: grid; gap: 4px; grid-template-columns: repeat(12, 1fr); height: 11rem; }
-        .stats-column { align-items: center; display: flex; flex-direction: column; height: 100%; justify-content: flex-end; }
-        .stats-column-value { color: var(--czvr-text-muted); font-size: var(--czvr-font-size-base); margin-bottom: 0.2rem; }
-        .stats-column-fill { background: var(--czvr-green); border-radius: 4px 4px 0 0; min-height: 2px; width: 70%; }
-        .stats-column-fill.is-empty { background: var(--czvr-border); }
-        .stats-column-labels { display: grid; gap: 4px; grid-template-columns: repeat(12, 1fr); margin-top: 0.35rem; }
-        .stats-column-labels span { color: var(--czvr-text-muted); font-size: var(--czvr-font-size-base); text-align: center; }
-    </style>
-@endpush
-
 @php
     // Horizontal bar rows scaled to the largest value in the set
     $bars = function (array $values, string $unit) {

@@ -78,7 +78,7 @@ Route::domain('training.czvr.ca')->group(function () {
         Route::delete('/instructingsessions/{session}', [InstructingSessionsController::class, 'cancel'])->name('training.instructingsessions.cancel');
     });
 
-    // Students (Manage students)
+    // Students (Access Training Centre)
     Route::middleware(['auth', 'can:training.manage'])->group(function () {
         // Labels
         Route::post('/students/{id}/assign/label', [LabelController::class, 'assignLabel'])->name('training.students.assign.label');
@@ -305,8 +305,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/search/ajax', [UserController::class, 'searchUsers'])->middleware('can:users.manage')->name('users.search.ajax');
         Route::get('/{id}', [UserController::class, 'adminViewUserProfile'])->middleware('can:users.manage')->name('users.viewprofile');
         Route::put('/{id}/access', [UserController::class, 'updateAccess'])->middleware('can:roles.manage')->name('users.access.update');
-        Route::post('/{id}', [UserController::class, 'createUserNote'])->middleware('can:users.manage')->name('users.createnote');
-        Route::delete('/{user_id}/note/{note_id}/delete', [UserController::class, 'deleteUserNote'])->middleware('can:users.manage')->name('users.deletenote');
         Route::post('/func/avatarchange', [UserController::class, 'changeUsersAvatar'])->middleware('can:users.manage')->name('users.changeusersavatar');
         Route::post('/func/avatarreset', [UserController::class, 'resetUsersAvatar'])->middleware('can:users.manage')->name('users.resetusersavatar');
         Route::post('/func/bioreset', [UserController::class, 'resetUsersBio'])->middleware('can:users.manage')->name('users.resetusersbio');

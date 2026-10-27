@@ -1,6 +1,10 @@
 @extends('layouts.master')
 @section('title', 'Branding - Vancouver FIR')
 @section('description', 'Vancouver FIR Branding')
+@push('styles')
+    <link href="{{ asset('css/pages/public.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
 <div class="container py-4">
     <h1 class="fw-bold blue-text">Branding</h1>
@@ -72,32 +76,6 @@
         </div>
 </div>
 
-<style>
-    .color-palette {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 20px;
-    }
-    .color-box {
-        width: 120px;
-        height: 120px;
-        border-radius: 5px;
-        margin: 0 3px 5px 3px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: bold;
-        color: #fff;
-    }
-    .color-box-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0 1px 1px 1px;
-    }
-</style>
 
 <div class="container py-4">
     <hr>

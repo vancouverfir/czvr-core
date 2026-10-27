@@ -6,10 +6,6 @@
 
 @stop
 
-@push('styles')
-    <link href="{{ asset('css/pages/training-waitlist.css') }}" rel="stylesheet">
-@endpush
-
 @section('content')
 @include('partials.vendor.select2')
     @include('includes.trainingMenu')

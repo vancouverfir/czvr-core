@@ -3,17 +3,7 @@
 @section('description', 'Join the Vancouver FIR!')
 
 @push('styles')
-<style>
-.join-page { max-width: 1040px; }
-.join-panel { overflow: hidden; border: 1px solid var(--czvr-border); border-top: 0; border-radius: 0 0 .5rem .5rem; background: var(--czvr-surface); }
-.join-step { padding: 1.25rem 1.4rem; }
-.join-step + .join-step { border-top: 1px solid var(--czvr-border); }
-.join-step h2 { margin: 0 0 .65rem; color: var(--czvr-green-dark); font-size: 1.1rem; font-weight: 500; }
-.join-step ol { margin: 0; padding-left: 1.3rem; line-height: 1.65; }
-.join-step li + li { margin-top: .35rem; }
-.join-note { margin: 1.25rem 1.4rem 0; border-color: #b9e3f4; border-left-color: #33b5e5; color: #0c4a63; background: #e6f6fc; }
-.join-step p { line-height: 1.65; }
-</style>
+    <link href="{{ asset('css/pages/training.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')

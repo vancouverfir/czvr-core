@@ -7,8 +7,7 @@
 @stop
 
 @push('styles')
-    <link href="{{ asset('css/pages/training-instructor-dashboard.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/pages/booking.css') }}?v={{ filemtime(public_path('css/pages/booking.css')) }}" rel="stylesheet">
+    <link href="{{ asset('css/pages/training.css') }}" rel="stylesheet">
 @endpush
 
 @php

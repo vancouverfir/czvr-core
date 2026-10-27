@@ -9,7 +9,6 @@ use App\Models\Network\SessionLog;
 use App\Models\Settings\AuditLogEntry;
 use App\Models\Users\Role;
 use App\Models\Users\User;
-use App\Models\Users\UserNote;
 use App\Notifications\DiscordWelcome;
 use App\Notifications\WelcomeNewUser;
 use App\Support\Authorization\PermissionCatalog;
@@ -60,9 +59,10 @@ class UserController extends Controller
 
     public function viewAllUsers(): View
     {
-        $users = User::with('roles')->orderBy('id')->get();
+        $users = User::with('roles')->withCount('directPermissions')->orderBy('id')->get();
+        $individualCount = $users->where('direct_permissions_count', '>', 0)->count();
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index', compact('users', 'individualCount'));
     }
 
     public function viewProfile($id): View
@@ -150,13 +150,12 @@ class UserController extends Controller
         }
 
         $xml = [];
-        $userNotes = UserNote::where('user_id', $user->id)->orderBy('timestamp', 'desc')->get();
         $auditLog = AuditLogEntry::where('affected_id', $id)->get();
         $allRoles = Role::query()->with('permissions')->ordered()->get();
         $permissionGroups = PermissionCatalog::grouped();
         $user->load(['roles.permissions', 'directPermissions']);
 
-        return view('admin.users.profile', compact('user', 'xml', 'certification', 'active', 'auditLog', 'userNotes', 'allRoles', 'permissionGroups'));
+        return view('admin.users.profile', compact('user', 'xml', 'certification', 'active', 'auditLog', 'allRoles', 'permissionGroups'));
     }
 
     public function updateAccess(Request $request, $id): RedirectResponse
@@ -326,54 +325,6 @@ class UserController extends Controller
 
     public function emailStore(Request $request): void
     {
-    }
-
-    public function createUserNote(Request $request, $id): RedirectResponse
-    {
-        $request->validate([
-            'content' => ['required', 'string', 'max:10000'],
-        ]);
-
-        $user = User::where('id', $id)->firstOrFail();
-        $instructor = Auth::user();
-        $content = $request->get('content');
-        $note = new UserNote([
-            'user_id' => $user->id,
-            'author_id' => Auth::id(),
-            'author_name' => $instructor->fullName('FLC'),
-            'content' => $content,
-            'timestamp' => date('Y-m-d H:i:s'),
-        ]);
-
-        if ($request->get('confidential') == 'on') {
-            $note->confidential = 1;
-        }
-
-        $note->save();
-
-        return redirect()->route('users.viewprofile', $user->id)->with('success', 'User note saved!');
-    }
-
-    public function deleteUserNote($user_id, $note_id): RedirectResponse
-    {
-        $user = User::where('id', $user_id)->firstOrFail();
-        $note = UserNote::where('id', $note_id)->where('user_id', $user->id)->firstOrFail();
-
-        $entry = new AuditLogEntry([
-            'user_id' => Auth::user()->id,
-            'action' => 'DELETE USER NOTE '.$note->id,
-            'affected_id' => $user->id,
-            'time' => date('Y-m-d H:i:s'),
-            'private' => 0,
-        ]);
-        if ($note->confidential == 1) {
-            $entry->private = 1;
-        }
-        $entry->save();
-
-        $note->delete();
-
-        return redirect()->route('users.viewprofile', $user->id)->with('success', 'User note deleted.');
     }
 
     public function changeAvatar(Request $request): RedirectResponse

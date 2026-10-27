@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title', 'Network Data - Vancouver FIR')
-@push('styles')<link href="{{ asset('css/pages/network-data.css') }}" rel="stylesheet">@endpush
+@push('styles')<link href="{{ asset('css/pages/dashboard.css') }}" rel="stylesheet">@endpush
 @section('content')
 <main class="container py-4 network-page">
     <a class="network-back" href="{{ route('settings.index') }}"><i class="fas fa-arrow-left"></i> Settings</a>

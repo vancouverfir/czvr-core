@@ -4,32 +4,7 @@
 @section('description', 'Submit feedback for our controllers')
 
 @push('styles')
-<style>
-    .feedback-form-shell {
-        border: 1px solid var(--czvr-border);
-        border-radius: .75rem;
-        box-shadow: var(--czvr-shadow);
-        max-width: 780px;
-        overflow: hidden;
-    }
-
-    .feedback-form-heading {
-        background: var(--czvr-surface-muted);
-        border-bottom: 1px solid var(--czvr-border);
-        padding: 1rem 1.25rem;
-    }
-
-    .feedback-form-body {
-        background: var(--czvr-surface);
-        padding: 1.25rem;
-    }
-
-    .feedback-fields {
-        border-top: 1px solid var(--czvr-border);
-        margin-top: 1.25rem;
-        padding-top: 1.25rem;
-    }
-</style>
+    <link href="{{ asset('css/pages/feedback.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')

@@ -131,11 +131,6 @@ class User extends Authenticatable
         return $this->hasOne(AtcTraining\RosterMember::class);
     }
 
-    public function notes(): HasMany
-    {
-        return $this->hasMany(UserNote::class);
-    }
-
     public function userSinceInDays()
     {
         $created = $this->created_at;

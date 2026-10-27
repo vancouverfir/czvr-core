@@ -2,20 +2,7 @@
 @section('title', 'PDC - Vancouver FIR')
 
 @push('styles')
-<style>
-    .pdc-example {
-        background: var(--czvr-surface-muted);
-        border-left: 0.25rem solid var(--czvr-green);
-        border-radius: 0 0.4rem 0.4rem 0;
-        font-size: var(--czvr-font-size-base);
-        margin: 0 0 1rem;
-        padding: 0.6rem 1rem;
-    }
-
-    .pdc-example-message {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-</style>
+    <link href="{{ asset('css/pages/pilots.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')

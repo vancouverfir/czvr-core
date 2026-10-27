@@ -8,7 +8,7 @@
 @section('description', "Vancouver FIR's Controller Roster")
 
 @push('styles')
-    <link href="{{ asset('css/pages/roster-edit.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/pages/roster.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -69,8 +69,7 @@
                         ['name' => 'active', 'label' => 'Roster status', 'current' => (string) (int) old('active', $roster->active), 'options' => ['1' => 'Active', '0' => 'Not Active']],
                         ['name' => 'rating_hours', 'label' => 'Reset rating hours', 'current' => old('rating_hours', 'false'), 'options' => ['false' => 'No', 'true' => 'Yes'], 'disabled' => ! $roster->canResetRatingHours()],
                     ];
-                    $loggedMinutes = (int) round(max(0, (float) $roster->rating_hours) * 60);
-                    $loggedTime = sprintf('%dh %02dm', intdiv($loggedMinutes, 60), $loggedMinutes % 60);
+                    $loggedTime = decimal_to_hm(max(0, (float) $roster->rating_hours));
                 @endphp
                 <div class="alert roster-vatcan-note mb-3" role="note">
                     Tier 2 endorsements are updated on VATCAN automatically when you save! Solo Certifications must still be updated on VATCAN!

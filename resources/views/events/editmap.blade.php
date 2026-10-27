@@ -1,21 +1,11 @@
 @extends('layouts.master')
 @section('title', 'West Coast Madness - Vancouver FIR')
+@push('styles')
+    <link href="{{ asset('css/pages/events.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
 
-<style>
-.leaflet-tooltip.sector-label {
-    text-align: center;
-    white-space: pre-line;
-    line-height: 1.2;
-    font-size: 12px;
-    padding: 4px 8px;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    color: var(--czvr-text);
-    text-shadow: 0 1px 2px #fff;
-}
-</style>
 
 <div style="display: flex; flex-direction: row; gap: 20px;">
     <!-- Map section -->

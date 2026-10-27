@@ -71,6 +71,7 @@ a:focus {
     z-index: 2;
     align-self: stretch;
     width: 0;
+    margin-right: auto;
 }
 
 .mochi-peek-spot {
@@ -103,11 +104,13 @@ a:focus {
 }
 
 .mochi-peek:hover .mochi-peek-window,
+.mochi-peek.is-out .mochi-peek-window,
 .mochi-peek:focus-visible .mochi-peek-window {
     pointer-events: auto;
 }
 
 .mochi-peek:hover .mochi-peek-window img,
+.mochi-peek.is-out .mochi-peek-window img,
 .mochi-peek:focus-visible .mochi-peek-window img {
     transform: translateX(0) rotate(0);
 }
@@ -116,7 +119,7 @@ a:focus {
     transition: margin-left 0.45s ease;
 }
 
-.site-navbar .container:has(.mochi-peek:hover, .mochi-peek:focus-visible) .navbar-collapse {
+.site-navbar .container:has(.mochi-peek:hover, .mochi-peek:focus-visible, .mochi-peek.is-out) .navbar-collapse {
     margin-left: 40px;
 }
 
@@ -135,11 +138,6 @@ a:focus {
 
 .site-navbar .navbar-brand img {
     filter: brightness(0) invert(1);
-}
-
-.site-navbar .navbar-brand {
-    align-items: center;
-    display: flex;
 }
 
 .site-navbar .navbar-brand img {
@@ -309,8 +307,7 @@ a:focus {
 .card,
 .modal-content,
 .list-group-item,
-.popover,
-.jumbotron {
+.popover {
     background-color: var(--czvr-surface);
     color: var(--czvr-text);
 }
@@ -350,12 +347,6 @@ a:focus {
 .modal-content .modal-header h5.modal-title {
     color: var(--czvr-green-dark) !important;
     font-size: 1.2rem;
-    font-weight: 700 !important;
-}
-
-.close {
-    color: var(--czvr-text) !important;
-    opacity: 0.7;
 }
 
 .list-group-item {
@@ -374,25 +365,16 @@ a:focus {
     color: var(--czvr-white) !important;
 }
 
-.bg-dark,
-.bg-black,
 .black {
     background-color: var(--czvr-surface-muted) !important;
     color: var(--czvr-text) !important;
 }
 
-.bg-dark .text-white,
-.bg-dark .text-light,
-.bg-dark .white-text,
-.bg-black .text-white,
-.bg-black .text-light,
 .black .white-text {
     color: var(--czvr-text) !important;
 }
 
 .form-control,
-.custom-select,
-.custom-file-label,
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple,
 .select2-dropdown,
@@ -403,7 +385,6 @@ a:focus {
 }
 
 .form-control:focus,
-.custom-select:focus,
 .select2-container--default.select2-container--focus .select2-selection--multiple,
 .select2-container--default .select2-selection--single:focus {
     border-color: var(--czvr-green) !important;
@@ -411,23 +392,13 @@ a:focus {
 }
 
 .form-control:disabled,
-.form-control[readonly],
-.custom-select:disabled {
+.form-control[readonly] {
     background-color: var(--czvr-surface-muted) !important;
 }
 
 ::placeholder {
     color: #78847b !important;
     opacity: 1 !important;
-}
-
-.custom-file {
-    border-color: var(--czvr-border);
-    border-radius: 0.45rem !important;
-}
-
-.custom-file-input:lang(en) ~ .custom-file-label::after {
-    border-left-color: var(--czvr-border);
 }
 
 .form-control[type="file"] {
@@ -482,17 +453,6 @@ a:focus {
 .table-hover tbody tr:hover {
     background-color: var(--czvr-green-soft);
     color: var(--czvr-text);
-}
-
-.table-dark,
-.table-dark > th,
-.table-dark > td,
-.table-dark th,
-.table-dark td,
-.thead-dark th {
-    background: var(--czvr-surface-muted) !important;
-    border-color: var(--czvr-border) !important;
-    color: var(--czvr-text) !important;
 }
 
 table.table a {
@@ -571,8 +531,7 @@ table.table a {
 
 .card.green,
 .card.blue,
-.card.bg-success,
-.card.bg-primary {
+.card.bg-success {
     background-color: var(--czvr-green) !important;
     color: var(--czvr-white) !important;
 }
@@ -601,7 +560,6 @@ table.table a {
 .card.purple a,
 .card.red a,
 .card.bg-success a,
-.card.bg-primary a,
 .card.bg-info a,
 .card.bg-danger a,
 .card.btn-primary a {
@@ -629,36 +587,13 @@ table.table a {
     color: var(--czvr-white) !important;
 }
 
-.blue-text,
-.dashboard-card-actions {
+.blue-text {
     color: var(--czvr-green-dark) !important;
 }
 
-.bg-czqo-blue-light,
-.circle-color,
-.bg-ins {
+.bg-czqo-blue-light {
     background-color: var(--czvr-green-soft) !important;
     color: var(--czvr-text) !important;
-}
-
-.btn-discord {
-    background: #4752c4 !important;
-    color: var(--czvr-white) !important;
-}
-
-.btn-local {
-    background-color: #237a45 !important;
-    color: var(--czvr-white) !important;
-}
-
-.btn-radar {
-    background-color: #257a48 !important;
-    color: var(--czvr-white) !important;
-}
-
-.btn-enroute {
-    background-color: #14725f !important;
-    color: var(--czvr-white) !important;
 }
 
 .qualification-badge {
@@ -690,20 +625,17 @@ table.table a {
     color: var(--czvr-white);
 }
 
-.text-colour,
-.vancouver-text {
+.text-colour {
     color: var(--czvr-text) !important;
 }
 
 .homepage-hero-copy,
-.homepage-hero-copy .vancouver-text,
 .homepage-hero-copy .blue-text,
 .homepage-hero-copy a {
     color: var(--czvr-white) !important;
 }
 
-.content-font-color,
-.content-font-color-dark {
+.content-font-color {
     color: var(--czvr-text) !important;
 }
 
@@ -720,22 +652,6 @@ table.table a {
 .roster-legend {
     border: 1px solid var(--czvr-border);
     padding: 1.25rem;
-}
-
-.placeholder-font-color {
-    color: var(--czvr-text-muted);
-}
-
-.card-padding {
-    padding: 1rem 0.5% 0;
-}
-
-.card-header-size {
-    font-size: 1.6em;
-}
-
-.card-hf-padding {
-    padding: 0.2rem 0.1rem 0.1rem !important;
 }
 
 .corner {
@@ -762,8 +678,7 @@ table.table a {
     color: var(--czvr-white);
 }
 
-.icon-no-cert,
-.content-warning {
+.icon-no-cert {
     color: #c83d20;
 }
 
@@ -791,16 +706,6 @@ table.table a {
     font-size: 1.5em;
 }
 
-.content-warning,
-.content-link,
-.content-paragraph {
-    font-size: 1.2em;
-}
-
-.content-link {
-    text-decoration: underline;
-}
-
 .staff_img_container {
     height: 125px;
     margin-bottom: 10px;
@@ -817,8 +722,7 @@ table.table a {
     width: 125px;
 }
 
-.staff_img_container img,
-.profile-img {
+.staff_img_container img {
     border-radius: 50%;
 }
 
@@ -1343,11 +1247,6 @@ table.table a {
     position: relative;
 }
 
-.mask {
-    inset: 0;
-    overflow: hidden;
-}
-
 .flex-left {
     display: flex;
     flex-wrap: wrap;
@@ -1384,7 +1283,6 @@ body {
 
 .form-control,
 .form-select,
-.input-group-text,
 .dropdown-menu,
 .list-group-item,
 .table,

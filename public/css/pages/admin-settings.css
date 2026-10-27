@@ -1,3 +1,7 @@
+.role-permission-group.access-individual { border-top: 0; }
+.role-permission-group.access-individual > summary { padding-top: 0; }
+.access-individual-count { color: var(--czvr-green); }
+.badge-muted { color: var(--czvr-white); background: var(--czvr-text-muted); }
 .settings-hub { max-width: 1040px; }
 .settings-back { display: inline-flex; align-items: center; gap: .45rem; margin-bottom: .5rem; }
 .settings-heading { padding-bottom: 1rem; border-bottom: 1px solid var(--czvr-border); }

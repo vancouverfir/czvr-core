@@ -1,6 +1,6 @@
 @once
     @push('styles')
-        <link href="{{ asset('css/pages/training-shell.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/pages/training.css') }}" rel="stylesheet">
     @endpush
 @endonce
 

@@ -98,3 +98,174 @@
         flex-wrap: wrap;
     }
 }
+
+.leaflet-tooltip.sector-label {
+    text-align: center;
+    white-space: pre-line;
+    line-height: 1.2;
+    font-size: 12px;
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--czvr-text);
+    text-shadow: 0 1px 2px #fff;
+}
+
+.event-schedule {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #f4f7f4;
+    color: #202a23;
+    border-collapse: collapse;
+}
+
+.event-schedule th, .event-schedule td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #dce5dc;
+}
+
+.event-schedule thead {
+    background-color: #eaf5e7;
+    color: #202a23;
+}
+
+.event-schedule tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.event-schedule tbody tr:nth-child(odd) {
+    background-color: #f4f7f4;
+}
+
+@media (max-width: 768px) {
+    .event-schedule th, .event-schedule td {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+}
+.wcm-page .switch {
+position: relative;
+display: inline-block;
+width: 40px;
+height: 20px;
+}
+
+.wcm-page .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.wcm-page .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px;
+}
+
+.wcm-page .slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.wcm-page input:checked + .slider {
+    background-color: #4caf50;
+}
+
+.wcm-page input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+.wcm-page .sector-label {
+background: transparent !important;
+border: none !important;
+box-shadow: none !important;
+color: #202a23 !important;
+text-shadow: 0 1px 2px #fff !important;
+font-size: 11px !important;
+text-align: center !important;
+}
+
+.wcm-page .card-body {
+display: flex;
+flex-direction: column;
+height: 100%;
+}
+
+.wcm-page #controlPanel {
+    margin-top: 15px;
+}
+
+.wcm-page .card.mt-4 {
+height: 800px;
+resize: both;
+overflow: hidden;
+}
+
+.roster-table th, .roster-table td {
+  border: 1px solid var(--czvr-border) !important;
+  vertical-align: middle;
+}
+.roster-table tbody tr:hover {
+  background: var(--czvr-green-soft);
+}
+
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background: var(--czvr-surface);
+  color: var(--czvr-text);
+  z-index: 5;
+  border-right: 2px solid var(--czvr-border) !important;
+}
+.left-col {
+  min-width: 160px;
+}
+
+.controller-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 6px;
+  font-weight: 600;
+  font-size: .9rem;
+  color: #fff;
+  position: relative;
+  transition: all .2s ease-in-out;
+}
+.controller-block:hover {
+  box-shadow: inset 0 0 0 2px #fff3;
+  z-index: 2;
+}
+
+.position-name {
+  font-size: var(--czvr-font-size-base);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.controller-delete {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  display: none;
+}
+.controller-block:hover .controller-delete {
+  display: block;
+}

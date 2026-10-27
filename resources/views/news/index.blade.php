@@ -4,7 +4,7 @@
 @section('description', 'News from Vancouver FIR')
 
 @push('styles')
-    <link href="{{ asset('css/pages/public-listings.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/pages/public.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')

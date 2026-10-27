@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@push('styles')<link href="{{ asset('css/pages/network-data.css') }}" rel="stylesheet">@endpush
+@push('styles')<link href="{{ asset('css/pages/dashboard.css') }}" rel="stylesheet">@endpush
 @section('content')
 <main class="container py-4 network-page">
     <a class="network-back" href="{{ route('network.index', ['tab' => 'positions']) }}"><i class="fas fa-arrow-left"></i> Monitored Positions</a>

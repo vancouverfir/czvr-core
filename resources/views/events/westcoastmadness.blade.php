@@ -1,8 +1,12 @@
 @extends('layouts.master')
 @section('title', 'West Coast Madness - Vancouver FIR')
+@push('styles')
+    <link href="{{ asset('css/pages/events.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
 
-<div class="container" style="margin-top: 20px; margin-bottom: 30px;">
+<div class="container wcm-page" style="margin-top: 20px; margin-bottom: 30px;">
     <div class="card">
         <div class="container" style="max-width: 1070px; padding-top: 30px; margin: 0 auto;">
             <img src="https://czvr.ca/storage/files/uploads/1731845844.gif" alt="West Coast Madness" class="card-img-top img-fluid" style="height: auto;">
@@ -159,118 +163,6 @@
     </div>
 </div>
 
-<style>
-    .event-schedule {
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        background-color: #f4f7f4;
-        color: #202a23;
-        border-collapse: collapse;
-    }
-
-    .event-schedule th, .event-schedule td {
-        padding: 12px;
-        text-align: center;
-        border: 1px solid #dce5dc;
-    }
-
-    .event-schedule thead {
-        background-color: #eaf5e7;
-        color: #202a23;
-    }
-
-    .event-schedule tbody tr:nth-child(even) {
-        background-color: #ffffff;
-    }
-
-    .event-schedule tbody tr:nth-child(odd) {
-        background-color: #f4f7f4;
-    }
-
-    @media (max-width: 768px) {
-        .event-schedule th, .event-schedule td {
-            padding: 8px;
-            font-size: 0.9em;
-        }
-
-        div[style="overflow-x: auto;"] {
-            overflow-x: auto;
-            display: block;
-        }
-    }
-    .switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-    }
-
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: .4s;
-        border-radius: 20px;
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 14px;
-        width: 14px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
-        transition: .4s;
-        border-radius: 50%;
-    }
-
-    input:checked + .slider {
-        background-color: #4caf50;
-    }
-
-    input:checked + .slider:before {
-        transform: translateX(20px);
-    }
-
-    .sector-label {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    color: #202a23 !important;
-    text-shadow: 0 1px 2px #fff !important;
-    font-size: 11px !important;
-    text-align: center !important;
-    }
-
-    .card-body {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    }
-
-    #controlPanel {
-        margin-top: 15px;
-    }
-
-    .card.mt-4 {
-    height: 800px;
-    resize: both;
-    overflow: hidden;
-    }
-
-</style>
 
 <!-- Include Leaflet.js -->
 <link rel="stylesheet" href="{{ asset('vendor/leaflet/leaflet.css') }}" />

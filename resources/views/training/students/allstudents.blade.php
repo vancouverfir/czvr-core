@@ -7,62 +7,6 @@
 @section('content')
 @include('includes.trainingMenu')
 
-<style>
-    .rounded-card {
-        border-radius: 0.7rem !important;
-        overflow: hidden;
-    }
-    .swirly-background {
-        background: transparent;
-        color: var(--czvr-text);
-    }
-    .list-group-item {
-        border: 0;
-        border-radius: 0.45rem !important;
-        margin: 2px 0;
-        padding: 0.65rem 0.7rem;
-    }
-    .select2-container--default .select2-selection--single {
-        background-color: var(--czvr-white) !important;
-        color: var(--czvr-text) !important;
-        border: 1px solid var(--czvr-border) !important;
-    }
-    .select2-dropdown {
-        background-color: var(--czvr-white) !important;
-        color: var(--czvr-text) !important;
-    }
-    .select2-search__field {
-        background-color: var(--czvr-white) !important;
-        color: var(--czvr-text) !important;
-    }
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: var(--czvr-text) !important;
-    }
-    .select2-container--default .select2-selection__clear {
-        color: red !important;
-        font-size: 16px;
-    }
-    #studentSearch::placeholder {
-        color: var(--czvr-text-muted);
-    }
-    .student-list-card {
-        background: var(--czvr-surface);
-        border: 1px solid var(--czvr-border) !important;
-        min-height: 160px;
-    }
-    .student-list-card h2 {
-        font-size: var(--czvr-font-size-base);
-        font-weight: 600;
-    }
-    .student-list-name {
-        font-size: var(--czvr-font-size-base);
-        font-weight: 500;
-    }
-    .student-list-number {
-        background: var(--czvr-green-soft) !important;
-        color: var(--czvr-green-dark) !important;
-    }
-</style>
 
 <main class="container training-page swirly-background">
     <div class="content">

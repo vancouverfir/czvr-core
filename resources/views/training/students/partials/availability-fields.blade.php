@@ -20,9 +20,7 @@
 
 <div class="availability-editor" id="{{ $availabilityEditorId }}" data-availability-editor>
     <div class="availability-editor-heading">
-        <div>
-            <h4>Choose the days and times when you can normally train! All times are UTC!</h4>
-        </div>
+        <p>Choose the days and times when you can normally train! All times are UTC!</p>
     </div>
 
     @error('availability')
@@ -33,7 +31,6 @@
         @foreach ($availabilityRows as $index => $slot)
             <div class="availability-row" data-availability-row>
                 <fieldset class="availability-days">
-                    <legend class="form-label">Days</legend>
                     <div class="availability-day-presets" aria-label="Quick day selections">
                         <span>Quick select:</span>
                         <button type="button" data-days-preset="weekdays">Mon–Fri</button>
@@ -97,8 +94,8 @@
         </div>
     </template>
 
-    <button type="button" class="btn btn-sm btn-primary" data-add-availability>
-        <i class="fas fa-plus me-1" aria-hidden="true"></i>Add time
+    <button type="button" class="btn btn-sm btn-light" data-add-availability>
+        <i class="fas fa-plus me-1" aria-hidden="true"></i>Add another time
     </button>
     
     <div class="availability-comment">

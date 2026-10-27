@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Helpers\CreateNote;
 use App\Models\AtcTraining\Instructor;
+use App\Models\AtcTraining\RosterMember;
 use App\Models\AtcTraining\Student;
 use App\Models\Teacher;
 use App\Models\Users\Role;
@@ -211,6 +212,7 @@ class SyncStudents extends Command
         $isInstructor = filter_var($member['is_instructor'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $isMentor = filter_var($member['is_mentor'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $profile = Instructor::firstOrNew(['user_id' => $cid]);
+        $this->syncRosterInstructorStatus($cid, $isInstructor);
 
         if (! $isInstructor && ! $isMentor) {
             if ($profile->exists) {
@@ -248,6 +250,13 @@ class SyncStudents extends Command
         if ($roleIds[$role]) {
             $user->roles()->syncWithoutDetaching([$roleIds[$role]]);
         }
+    }
+
+    private function syncRosterInstructorStatus(int $cid, bool $isInstructor): void
+    {
+        RosterMember::where('cid', $cid)
+            ->where('status', $isInstructor ? 'home' : 'instructor')
+            ->update(['status' => $isInstructor ? 'instructor' : 'home']);
     }
 
     private function syncStudentInstructor(array $member): void

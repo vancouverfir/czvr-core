@@ -6,12 +6,6 @@
 
 @stop
 
-@push('styles')
-<link href="{{ asset('css/pages/training-availability.css') }}" rel="stylesheet">
-<link href="{{ asset('css/pages/training-student-dashboard.css') }}" rel="stylesheet">
-<link href="{{ asset('css/pages/training-instructor-dashboard.css') }}" rel="stylesheet">
-@endpush
-
 @section('content')
     <!-- Instructors -->
     @if (! $preview && auth()->check() && (auth()->user()->activeInstructorProfile !== null || auth()->user()->can('training.manage')))
@@ -20,7 +14,7 @@
         <header class="training-portal-header">
             <div>
                 <h1 class="blue-text">Training Centre</h1>
-                <p>Your students and upcoming sessions are together in one place!</p>
+                <p>{{ auth()->user()->can('instructing-sessions.manage') ? 'Your students and upcoming sessions are together in one place!' : 'Your students are all in one place!' }}</p>
             </div>
             @can('instructing-sessions.manage')
                 <a href="{{ route('training.instructingsessions.index', ['action' => 'new']) }}" class="btn btn-primary btn-sm flex-shrink-0">
@@ -29,7 +23,7 @@
             @endcan
         </header>
 
-        <div class="training-portal-grid">
+        <div @class(['training-portal-grid', 'is-single' => ! auth()->user()->can('instructing-sessions.manage')])>
             <section class="training-panel" aria-labelledby="assigned-students-heading">
                 <div class="training-panel-header">
                     <h2 id="assigned-students-heading">Your Students</h2>
@@ -107,7 +101,7 @@
     <main class="container training-page training-student-dashboard">
         @if ($preview)
             <div class="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2">
-                <span><i class="far fa-eye me-1" aria-hidden="true"></i>You are previewing what <strong>{{ $student->user->fullName('FLC') }}</strong> sees! Nothing on this page can be changed.</span>
+                <span><i class="far fa-eye me-1" aria-hidden="true"></i>You are previewing what <strong>{{ $student->user->fullName('FLC') }}</strong> sees! Nothing on this page can be changed!</span>
                 <a href="{{ route('training.students.view', $student->id) }}" class="btn btn-sm btn-light">Back to student</a>
             </div>
         @endif
