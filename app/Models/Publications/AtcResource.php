@@ -14,6 +14,11 @@ class AtcResource extends Model
         'user_id', 'title', 'font_awesome', 'description', 'url',
     ];
 
+    public static function bcVfrTerminalProcedures(): ?self
+    {
+        return static::where('url', 'like', '%BC\_VFR\_TERMINAL\_PROCEDURES\_%')->latest('id')->first();
+    }
+
     public function resolvedUrl(): string
     {
         return BcVfrTerminalProcedures::resolveUrl($this->url);

@@ -32,13 +32,15 @@
                                 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
                             </a>
                         </li>
-                        <li>
-                            <a href="{{ \App\Support\Publications\BcVfrTerminalProcedures::currentUrl() }}" target="_blank" rel="noopener noreferrer">
-                                <i class="far fa-file-lines" aria-hidden="true"></i>
-                                <span>Canadian Flight Supplement - BC VFR Terminal Procedures</span>
-                                <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
-                            </a>
-                        </li>
+                        @if ($bcVfr = \App\Models\Publications\AtcResource::bcVfrTerminalProcedures())
+                            <li>
+                                <a href="{{ $bcVfr->resolvedUrl() }}" target="_blank" rel="noopener noreferrer">
+                                    <i class="far fa-file-lines" aria-hidden="true"></i>
+                                    <span>Canadian Flight Supplement - BC VFR Terminal Procedures</span>
+                                    <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
 
                     <aside class="page-note vfr-note">
