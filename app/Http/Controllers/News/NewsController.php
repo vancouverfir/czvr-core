@@ -11,13 +11,13 @@ use App\Models\Users\StaffMember;
 use App\Models\Users\User;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class NewsController extends Controller
 {
