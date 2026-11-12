@@ -17,9 +17,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class NewsController extends Controller
 {
+    use ValidatesRequests;
+
     public function index(): View
     {
         $articles = News::where('certification', false)->get()->sortByDesc('id');
