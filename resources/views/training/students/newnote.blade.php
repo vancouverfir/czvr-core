@@ -7,35 +7,38 @@
 @stop
 
 @section('content')
+@include('partials.vendor.easymde')
     @include('includes.trainingMenu')
-    <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
-        <a href="{{route('training.students.view', $student->id)}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Student </a>
-        <div class="container" style="margin-top: 20px;">
-            <h1 class="blue-text font-weight-bold"> New Staff Comment for {{$student->user->fullName('FLC')}} </h1>
-            <hr>
+    <main class="container training-page">
+        <header class="training-page-header">
+            <div>
+                <a href="{{route('training.students.view', $student->id)}}" class="small"><i class="fas fa-arrow-left me-1"></i>Student</a>
+                <h1 class="blue-text mt-2">New Staff Comment</h1>
+                <p>{{ $student->user->fullName('FLC') }}</p>
+            </div>
+        </header>
+        <div class="training-surface training-form-shell">
             <form method="POST" action="{{ route('add.trainingnote', $student->id) }}" class="form-group">
                 @csrf
 
                 <label for="title">Title</label>
-                <input type="text" name="title" id="title" class="form-control" required>
+                <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}" maxlength="255" required>
 
                 <label for="content">Content</label>
-                <textarea id="content" name="content" class="form-control" required></textarea><br>
-
-                <script>
-                    tinymce.init({
-                        selector: '#content',
-                        menubar: false,
-                        setup: function (ed) {
-                            ed.on('blur', function (e) {
-                                showSaveButton();
-                            });
-                        },
-                    });
-                </script>
+                <textarea id="content" name="content" class="form-control">{{ old('content') }}</textarea><br>
 
                 <input type="submit" class="btn btn-success" value="Add Staff Comment">
             </form>
         </div>
-    </div>
+    </main>
 @stop
+
+@push('scripts')
+<script>
+    const staffCommentEditor = document.getElementById('content');
+
+    if (staffCommentEditor && typeof EasyMDE !== 'undefined') {
+        new EasyMDE({ spellChecker: false, element: staffCommentEditor, forceSync: true });
+    }
+</script>
+@endpush

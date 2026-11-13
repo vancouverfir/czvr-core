@@ -10,12 +10,11 @@ use App\Models\Events\EventConfirm;
 use App\Models\Tickets\Ticket;
 use Auth;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request): View
+    public function index(): View
     {
         $user = Auth::user();
 
@@ -43,23 +42,18 @@ class DashboardController extends Controller
         $status = $statusBadges[$certification] ?? ['dark', 'fa-question', 'Unknown'];
         $activeStatus = $activeBadges[$active] ?? ['dark', 'fa-question', 'Unknown'];
 
-        $requiredHours = ($profile && in_array($profile->status, ['instructor', 'home']) && $profile->staff === 'exec') ? 5 : 3;
+        $requiredHours = config('currency.'.$profile?->status, 3);
 
-        $confirmedEvents = Event::where('start_timestamp', '>=', Carbon::now())
-            ->where('start_timestamp', '<=', Carbon::now()->addMonths(2))
-            ->orderBy('start_timestamp', 'asc')
-            ->get();
+        $confirmedEvents = Event::all()->filter(fn ($e) => Carbon::now()->lt($e->end_timestamp))->sortBy('start_timestamp');
 
         $confirmedApp = EventConfirm::where('user_id', $user->id)->get()->sortBy('start_timestamp');
 
         $unconfirmedApp = ControllerApplication::where('user_id', $user->id)->get();
 
         $openTickets = Ticket::where('user_id', $user->id)->where('status', 0)->get();
-        $staffTickets = Ticket::where('staff_member_cid', $user->id)->where('status', 0)->get();
-
-        if ($user->permissions == 0) {
-            return view('dashboard.index2', ['openTickets' => $openTickets, 'confirmedevent' => $confirmedEvents]);
-        }
+        $staffTickets = $user->can('tickets.manage')
+            ? Ticket::where('staff_member_cid', $user->id)->where('status', 0)->get()
+            : collect();
 
         return view('dashboard.index', ['user' => $user, 'yourinstructor' => $student, 'openTickets' => $openTickets, 'staffTickets' => $staffTickets, 'certification' => $certification, 'active' => $active, 'profile' => $profile, 'status' => $status, 'activeStatus' => $activeStatus, 'requiredHours' => $requiredHours, 'unconfirmedapp' => $unconfirmedApp, 'confirmedapp' => $confirmedApp, 'confirmedevent' => $confirmedEvents]);
     }

@@ -3,12 +3,18 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class RenewalNotification extends Notification
+class RenewalNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+
+    public int $tries = 5;
+
+    /** @var list<int> */
+    public array $backoff = [60, 300, 900, 3600];
 
     public $student;
 

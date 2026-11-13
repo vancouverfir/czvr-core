@@ -17,10 +17,10 @@ return new class extends Migration
             $table->text('message');
             $table->integer('status')->default(0);
             $table->dateTime('submission_time');
+            $table->timestamps();
             $table->integer('staff_member_id')->unsigned();
             $table->foreign('staff_member_id')->references('id')->on('staff_member');
             $table->integer('staff_member_cid');
-            $table->timestamps();
         });
     }
 

@@ -7,11 +7,17 @@
 @stop
 
 @section('content')
+@include('partials.vendor.datatables')
     @include('includes.trainingMenu')
 
-    <div class="container" style="margin-top: 20px;">
-    <a href="{{route('training.students.students')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Students</a>
-        <hr>
+    <main class="container training-page">
+        <header class="training-page-header">
+            <div>
+                <a href="{{route('training.students.students')}}" class="small"><i class="fas fa-arrow-left me-1"></i>Students</a>
+                <h1 class="blue-text">Completed Students</h1>
+            </div>
+        </header>
+        <div class="training-surface p-3 table-responsive">
         <table id="dataTable" class="table table-hover">
             <thead>
                 <tr>
@@ -23,7 +29,7 @@
             <tbody>
                 @if (count($students) < 1)
                     <tr>
-                        <td colspan="3" class="font-weight-bold text-center">
+                        <td colspan="3" class="fw-bold text-center">
                             There are no students in this category!
                         </td>
                     </tr>
@@ -44,5 +50,6 @@
                 @endif
             </tbody>
         </table>
-    </div>
+        </div>
+    </main>
 @stop

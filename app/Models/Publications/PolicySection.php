@@ -2,6 +2,7 @@
 
 namespace App\Models\Publications;
 
+use App\Support\Authorization\PermissionCatalog;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +16,7 @@ class PolicySection extends Model
 
     public function policies()
     {
-        if (Auth::check() && Auth::user()->permissions >= 4) {
+        if (Auth::check() && Auth::user()->hasPermissionTo(PermissionCatalog::POLICIES_MANAGE)) {
             return $this->hasMany(Policy::class, 'section_id');
         } else {
             return $this->hasMany(Policy::class, 'section_id')->where('staff_only', '0');

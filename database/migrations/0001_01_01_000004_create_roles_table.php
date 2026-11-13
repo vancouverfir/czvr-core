@@ -12,8 +12,8 @@ return new class extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('slug');
-            $table->integer('secure')->nullable();
             $table->timestamps();
+            $table->integer('secure')->nullable();
         });
     }
 

@@ -1,31 +1,28 @@
 @extends('layouts.master')
 
+@section('title', 'Homepage Image Preview')
+
+@push('styles')
+    <link href="{{ asset('css/pages/homepage.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
-    <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}" />
-
-    <div class="winnipeg-blue">
-        <div data-jarallax data-speed="0.2" class="jarallax" style="height: min(calc(100vh - 59px), 1080px)">
-        <div class="mask"
-                style="z-index: -1; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; background: url({{$image->url}}); background-size: cover; background-position: center; animation: heroZoom 10s ease-in-out infinite alternate;">
-            </div>
-
-            <style>
-                @keyframes heroZoom {0% { transform: scale(1); }100% { transform: scale(1.03); }}
-            </style>
-
-            <div class="container" style="text-align: center; padding-top: 30px; padding-bottom: 30px;">
-                <div style="display: inline-block; position: relative; z-index: 1; padding: 30px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
-                    <h1 class="vancouver-text display-3" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); color: #fff;">
-                        <span class="corner">From Sea to Sky!</span>
-                    </h1>
-                    <h4 class="vancouver-text mt-2" style="text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);">
-                        <a href="#mid" id="discoverMore" class="blue-text" style="color: #fff; text-decoration: none;">Come explore Canada's West Coast<i class="fas fa-arrow-down ml-2"></i></a>
-                    </h4>
-                    <small style="color: #fff; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">
-                        <i>Screenshot by {{$image->credit}}</i>
-                    </small>
+    <main>
+        <div class="home-landing">
+            <section class="home-hero">
+                <img class="homepage-background is-active" src="{{ $image->browserUrl() }}" alt="" fetchpriority="high" draggable="false">
+                <div class="container homepage-hero-inner">
+                    <div class="homepage-hero-copy">
+                        <span class="homepage-hero-leaf" aria-hidden="true"><i class="fab fa-canadian-maple-leaf"></i></span>
+                        <h1>From Sea to Sky!</h1>
+                        <p>Discover virtual aviation across Canada’s spectacular West Coast!</p>
+                        <a class="home-explore-link" href="{{ route('settings.images') }}">
+                            Back to homepage images <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        </a>
+                    </div>
                 </div>
-            </div>
-    </div>
+                <span class="home-inline-credit">Screenshot by {{ $image->credit }}</span>
+            </section>
         </div>
+    </main>
 @stop

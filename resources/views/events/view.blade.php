@@ -9,10 +9,11 @@
 @endif
 
 @section('content')
-    <div class="text-white text-left py-1 px-4" style="background-color:#2E2F2F">
+@include('partials.vendor.flatpickr')
+    <div class="text-start py-1 px-4" style="background-color: #eaf5e7; color: #202a23;">
         <div class="container">
             <div align="center" class="py-5">
-                <h1 align="center" class="h1" style="font-size: 4em;">{{$event->name}}</h1>
+                <h1 align="center" class="blue-text h1" style="font-size: 4em;">{{$event->name}}</h1>
                 <h4>{{$event->start_timestamp_pretty()}} - {{$event->end_timestamp_pretty()}}</h4>
                 @if ($event->departure_icao && $event->arrival_icao)
                 <h3>{{$event->departure_icao}}&nbsp;&nbsp;<i class="fas fa-plane"></i>&nbsp;&nbsp;{{$event->arrival_icao}}</h3>
@@ -70,11 +71,11 @@
             <div class="col-md-9">
                 {{$event->toHtml('description')}}
                 @if($event->start_timestamp > $timeNow)
-                @if (auth()->check() && $event->controller_applications_open && auth()->user()->rosterProfile)
+                @if (auth()->check() && $event->controller_applications_open && auth()->user()->canApplyForEvents())
                 <hr>
                 <h3>Apply to Control</h3>
                 @if (auth()->check() && $event->userHasApplied())
-                    <h5 class="font-weight-bold">You have already applied for this event. Check your <a href="{{route('dashboard.index')}}">dashboard</a> for more info regarding your application!</h5>
+                    <h5 class="fw-bold">You have already applied for this event! Check your <a href="{{route('dashboard.index')}}">dashboard</a> for more info regarding your application!</h5>
                 @endif
                 @if(auth()->check() && !$event->userHasApplied())
                 <br>
@@ -118,12 +119,12 @@
                 <hr>
                 @if (count($updates) == 0)
                 @elseif (count($updates) >0 )
-                    <h4 class="font-weight-bold blue-text">Updates</h4>
+                    <h4 class="fw-bold blue-text">Updates</h4>
                         @foreach($updates as $u)
                             <div class="card p-3">
                                 <a href="{{Request::url()}}#{{$u->slug}}" name={{$u->slug}}> <h4>{{$u->title}}</h4></a>
                                     <div class="d-flex flex-row align-items-center">
-                                        <i class="far fa-clock"></i>&nbsp;&nbsp;Posted {{$u->created_pretty()}}</span>&nbsp;&nbsp;•&nbsp;&nbsp;<i class="far fa-user-circle"></i>&nbsp;&nbsp;{{$u->author_pretty()}}
+                                        <i class="far fa-clock"></i>&nbsp;&nbsp;Posted {{$u->created_pretty()}}&nbsp;&nbsp;•&nbsp;&nbsp;<i class="far fa-user-circle"></i>&nbsp;&nbsp;{{$u->author_pretty()}}
                                     </div>
                                 <hr>
                                 {{$u->toHtml('content')}}

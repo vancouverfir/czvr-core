@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\AtcTraining\Student;
+use App\Support\Authorization\PermissionCatalog;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,19 +18,21 @@ class CheckStudent
         $user = Auth::user();
 
         if (! $user) {
-            session(['url.intended' => url()->full()]);
+            $request->session()->put('url.intended', $request->fullUrl());
 
             return redirect()->route('auth.connect.login');
         }
 
-        if ($user->permissions >= 1 || $user->instructorProfile !== null) {
+        if ($user->hasPermissionTo(PermissionCatalog::TRAINING_MANAGE)) {
             return $next($request);
         }
 
-        $studentId = $request->route('id') ?? $request->input('student_id');
+        $routeStudent = $request->route('student') ?? $request->route('id');
+        $student = $routeStudent instanceof Student
+            ? $routeStudent
+            : ($routeStudent ? Student::find($routeStudent) : $user->studentProfile);
 
-        $student = Student::find($studentId);
-        if ($student && $student->user_id === $user->id) {
+        if ($student && (int) $student->user_id === (int) $user->id) {
             return $next($request);
         }
 

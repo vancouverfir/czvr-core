@@ -8,9 +8,13 @@
 
 @section('content')
 
+@include('partials.vendor.datatables')
     <div class="container py-4">
         <a href="{{route('dashboard.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Dashboard</a>
-        <h1 class="blue-text font-weight-bold mt-2">Users</h1>
+        <h1 class="blue-text fw-bold mt-2">Users</h1>
+        @if ($individualCount > 0)
+            <p class="text-info">{{ $individualCount === 1 ? '1 user has' : $individualCount.' users have' }} individual permissions! Search for "Individual" to list them.</p>
+        @endif
 
         @if (empty($users))
             <div class="alert alert-danger">No users found</div>
@@ -34,7 +38,10 @@
                         <td>{{$user->fullName('FL')}}</td>
                         <td>{{$user->rating_short}}</td>
                         <td>
-                            {{$user->permissions()}}
+                            {{ $user->accessLabel() }}
+                            @if ($user->direct_permissions_count > 0)
+                                <span class="badge text-bg-info rounded shadow-none ms-1">Individual</span>
+                            @endif
                         </td>
                         <td>
                             <a class="blue-text" href="{{route('users.viewprofile', $user->id)}}"><i class="fa fa-eye"></i> View User</a>
@@ -48,11 +55,9 @@
     </div>
     <script>
         $(document).ready(function() {
-            $.fn.dataTable.enum(['C1', 'C3', 'I1', 'I3', 'SUP', 'ADM'])
             $('#dataTable').DataTable( {
                 "order": [[ 0, "asc" ]]
             } );
         } );
     </script>
-    <script src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/enum.js"></script>
 @stop

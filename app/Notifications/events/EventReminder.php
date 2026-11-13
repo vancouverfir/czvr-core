@@ -2,13 +2,18 @@
 
 namespace App\Notifications\events;
 
+use App\Notifications\Concerns\HasUnsubscribeLink;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class EventReminder extends Notification
 {
-    use Queueable;
+    use HasUnsubscribeLink, Queueable;
+
+    protected mixed $event;
+
+    protected mixed $positions;
 
     /**
      * Create a new notification instance.
@@ -40,8 +45,8 @@ class EventReminder extends Notification
      */
     public function toMail(object $notifiable)
     {
-        return (new MailMessage)->view('emails.event.reminder', ['event' => $this->event, 'positions' => $this->positions->sortBy('start_timestamp')])
-            ->subject('24 Hour Reminder for '.$this->event->name);
+        return $this->withUnsubscribeLink((new MailMessage)->view('emails.event.reminder', ['event' => $this->event, 'positions' => $this->positions->sortBy('start_timestamp')])
+            ->subject('24 Hour Reminder for '.$this->event->name), $notifiable);
     }
 
     /**

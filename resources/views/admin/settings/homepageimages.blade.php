@@ -2,7 +2,7 @@
 @section('content')
     <div class="container py-4">
         <a href="{{route('settings.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Settings</a>
-        <h1 class="blue-text font-weight-bold mt-2">Homepage Images</h1>
+        <h1 class="blue-text fw-bold mt-2">Homepage Images</h1>
         <hr>
         <h2 class="blue-text">Current Images</h2>
         <div class="row">
@@ -10,15 +10,21 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <a href="{{$i->url}}" target="_blank"><img src="{{$i->url}}" style="width:100%; text-align: center;"></a>
+                            <a href="{{ $i->browserUrl() }}" target="_blank"><img src="{{ $i->browserUrl() }}" style="width:100%; text-align: center;"></a>
                             <div class="mt-2 d-flex flex-row justify-content-between align-items-center">
                                 <div>
                                     By: {{$i->credit}}
                                 </div>
                                 <div class="text-center">
                                     <a href="{{route('settings.images.test', $i->id)}}" class="btn btn-sm btn-dark">Test View</a>
-                                    <a href="#" data-toggle="modal" data-target="#editImageModal{{$i->id}}" role="button" class="btn btn-sm btn-primary">Edit</a>
-                                    <a href="{{route('settings.images.delete', $i->id)}}" class="btn btn-sm btn-danger">Delete</a>
+                                    @can('site-settings.manage')
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#editImageModal{{$i->id}}" role="button" class="btn btn-sm btn-primary">Edit</a>
+                                    <form method="POST" action="{{route('settings.images.delete', $i->id)}}" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                    @endcan
                                 </div>
                             </div>
                         </div>
@@ -28,10 +34,11 @@
             @endforeach
         </div>
         <hr>
-        <a href="#" data-toggle="modal" data-target="#uploadImageModal" role="button" class="btn btn-primary" style="padding-bottom: .5%"><h5>Upload New Image</h5></a>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#uploadImageModal" role="button" class="btn btn-primary" style="padding-bottom: .5%"><h5>Upload New Image</h5></a>
     </div>
 
     <!-- Start Upload Image Modal -->
+    @can('site-settings.manage')
     <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -41,16 +48,16 @@
                 <form method="POST" action="{{ route('settings.images.upload') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
-                        <p class="font-weight-bold">Upload Image</p>
+                        <p class="fw-bold">Upload Image</p>
                         <input type="file" name="file" class="form-control" accept=".jpeg,.jpg" required>
                         <small class="form-text text-muted">Only JPEG and JPG formats are accepted. Max file size: 1MB.</small>
                         <hr>
-                        <p class="font-weight-bold">Credit for Picture</p>
+                        <p class="fw-bold">Credit for Picture</p>
                         <input name="nameCredit" class="form-control" placeholder="Vancouver FIR" required>
                     </div>
                     <div class="modal-footer">
                         <input role="button" type="submit" class="btn btn-success" value="Upload">
-                        <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                     </div>
                 </form>
             </div>
@@ -69,17 +76,18 @@
                     <form method="POST" action="{{route('settings.images.edit', $i->id)}}">
                         @csrf
                         <div class="modal-body">
-                            <p class="font-weight-bold">Credit for Picture</p>
+                            <p class="fw-bold">Credit for Picture</p>
                             <input name="nameCredit" class="form-control" value="{{$i->credit}}" placeholder="CZVR One">
                         </div>
                         <div class="modal-footer">
                             <input role="button" type="submit" class="btn btn-primary" value="Edit">
-                            <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     @endforeach
+    @endcan
     <!-- End Edit Image Modal -->
 @stop

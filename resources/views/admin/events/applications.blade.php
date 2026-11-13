@@ -1,11 +1,12 @@
 @extends('layouts.master')
 
 @section('content')
+@include('partials.vendor.flatpickr')
     <div class="container" style="margin-top: 20px;">
         <a href="{{route('events.admin.view', $event->slug)}}" class="blue-text" style="font-size: 1.2em;"> <i
                 class="fas fa-arrow-left"></i> {{$event->name}}</a>
         <br>
-        <h4 class="font-weight-bold blue-text mt-3">Event Applications for "{{$event->name}}"</h4>
+        <h4 class="fw-bold blue-text mt-3">Event Applications for "{{$event->name}}"</h4>
         <hr>
         @if (count($applications) == 0)
             None yet!
@@ -34,10 +35,13 @@
                         @endif
                     </div>
                     <div class="card-footer">
-                        <a href="" data-toggle="modal" class="btn btn-sm btn-success"
-                            data-target="#confirmApp{{$a->id}}">Confirm Controller</a>
-                        <a href="{{route('events.admin.controllerapps.delete', [$event->slug, $a->user_id])}}"
-                            class="btn btn-sm btn-danger">Delete</a>
+                        <a href="" data-bs-toggle="modal" class="btn btn-sm btn-success"
+                            data-bs-target="#confirmApp{{$a->id}}">Confirm Controller</a>
+                        <form method="POST" action="{{route('events.admin.controllerapps.delete', [$event->slug, $a->user_id])}}" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -51,7 +55,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Confirm Controller - {{$a->user->fullName('FL')}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -104,7 +108,7 @@
 
                 <div align="center" class="modal-footer">
                     <button type="submit" class="btn btn-success">Confirm Controller</button>
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Dismiss</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                     </form>
                 </div>
             </div>
@@ -116,4 +120,5 @@
     @endforeach
     </div>
     @endif
+    </div>
 @endsection

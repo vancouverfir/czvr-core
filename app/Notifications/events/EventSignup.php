@@ -11,6 +11,10 @@ class EventSignup extends Notification
 {
     use Queueable;
 
+    protected mixed $application;
+
+    protected mixed $event_id;
+
     /**
      * Create a new notification instance.
      *

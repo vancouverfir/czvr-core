@@ -15,6 +15,10 @@ class LabelController extends Controller
         $student = Student::with('labels.label')->findOrFail($student_id);
         $label = StudentLabel::findOrFail($request->get('student_label_id'));
 
+        if (! StudentLabel::assignableTo($student)->whereKey($label->id)->exists()) {
+            return back()->with('error', "Label {$label->name} cannot be assigned to this student!");
+        }
+
         if ($label->exclusive) {
             $existingExclusive = $student->labels
                 ->filter(fn ($link) => $link->label->exclusive)
@@ -29,9 +33,7 @@ class LabelController extends Controller
             return back()->with('error', "Label {$label->name} already assigned!");
         }
 
-        $student->labels()->create([
-            'student_label_id' => $label->id,
-        ]);
+        $student->addLabel($label);
 
         $this->updateStatus($student->refresh());
 
@@ -50,10 +52,9 @@ class LabelController extends Controller
 
             if (
                 $student->status !== $originalStatus &&
-                in_array($student->status, [0, 3])
+                $student->isWaitlisted()
             ) {
-                $lastPosition = Student::where('status', $student->status)->max('position') ?? 0;
-                $student->position = $lastPosition + 1;
+                $student->position = Student::nextQueuePosition((int) $student->status);
                 $student->checklistItems()->delete();
             }
 
@@ -74,6 +75,10 @@ class LabelController extends Controller
 
         if (! $labelToRemove) {
             return back()->with('error', 'Label does not exist!');
+        }
+
+        if (! $student->isVisitor() && in_array($labelToRemove->name, Student::MANAGED_TRAINING_LABELS, true)) {
+            return back()->with('error', 'This training label is managed by the training workflow!');
         }
 
         $currentExclusiveLabels = $student->labels->filter(fn ($link) => $link->label->exclusive);

@@ -19,8 +19,8 @@ return new class extends Migration
             $table->integer('author')->unsigned();
             $table->foreign('author')->references('id')->on('users');
             $table->date('releaseDate');
-            $table->integer('staff_only')->default(0);
             $table->timestamps();
+            $table->integer('staff_only')->default(0);
         });
     }
 

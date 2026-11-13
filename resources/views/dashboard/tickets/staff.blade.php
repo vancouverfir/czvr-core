@@ -4,22 +4,22 @@
     <div class="container" style="margin-top: 20px;">
         <div class="container" style="margin-top: 20px;">
             <a href="{{route('dashboard.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Dashboard</a>
-        <h1 class="blue-text font-weight-bold mt-2">Ticket Inbox</h1>
+        <h1 class="blue-text fw-bold mt-2">Ticket Inbox</h1>
         <hr>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
+                <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
                     Open Tickets
                     @if (count($openTickets) >= 1)
-                        <span class="badge-pill badge-primary">{{count($openTickets)}}</span>
+                        <span class="badge rounded-pill text-bg-primary">{{count($openTickets)}}</span>
                     @endif
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Closed Tickets</a>
+                <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Closed Tickets</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">On Hold Tickets</a>
+                <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">On Hold Tickets</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -28,7 +28,7 @@
                     <br>No open tickets.<br></br>
                 @else
                     <p><br>Returned {{count($openTickets) }} tickets</p>
-                    <table id="dataTable" class="table table-hover">
+                    <table id="openTicketsTable" class="table table-hover">
                         <thead>
                         <tr>
                             <th scope="col">ID</th>
@@ -61,7 +61,7 @@
                     <br>No closed tickets.<br></br>
                 @else
                     <p><br>Returned {{count($closedTickets) }} tickets</p>
-                    <table id="dataTable" class="table table-hover">
+                    <table id="closedTicketsTable" class="table table-hover">
                         <thead>
                         <tr>
                             <th scope="col">ID</th>
@@ -94,7 +94,7 @@
                     <br>No on hold tickets.<br></br>
                 @else
                     <p><br>Returned {{count($onHoldTickets) }} tickets</p>
-                    <table id="dataTable" class="table table-hover">
+                    <table id="onHoldTicketsTable" class="table table-hover">
                         <thead>
                         <tr>
                             <th scope="col">ID</th>

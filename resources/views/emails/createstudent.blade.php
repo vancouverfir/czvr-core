@@ -6,7 +6,7 @@
 @section('message-content')
     <h1>You have been added as a Student!</h1><br/>
     <p>Welcome to Vancouver FIR!</p><br/>
-    <p>We’re excited to let you know that you’ve been added as a student in our Training Portal!</p><br/>
+    <p>We’re excited to let you know that you’ve been added as a student in our Training Centre!</p><br/>
     <p>Whether you’re just starting out or applied to visit, our portal is your hub for all the information you’ll need for your training at Vancouver FIR!</p><br/>
     <p>To help us pair you with the right instructor, please share your general availability. Make sure your times are in UTC!</p><br/>
     <a href="https://training.czvr.ca" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:#fff; text-decoration:none; border-radius:4px; margin-bottom: 30px;">Submit Availability</a><br/>

@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class CacheWeather extends Command
 {
@@ -26,34 +28,56 @@ class CacheWeather extends Command
      */
     public function handle(): int
     {
-        try {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://api.checkwx.com/metar/CYVR,CYYJ,CYLW,CYXS,CYXX,CYQQ/decoded?pretty=1');
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-API-Key: '.env('AIRPORT_API_KEY')]);
+        $apiKey = config('services.checkwx.key');
+        if (! is_string($apiKey) || $apiKey === '') {
+            $this->error('AIRPORT_API_KEY is not configured!');
 
-            $resp = json_decode(curl_exec($ch));
-            curl_close($ch);
+            return self::FAILURE;
+        }
+
+        try {
+            $response = Http::acceptJson()
+                ->withHeaders(['X-API-Key' => $apiKey])
+                ->connectTimeout(5)
+                ->timeout(20)
+                ->retry(2, 250, throw: false)
+                ->get('https://api.checkwx.com/metar/CYVR,CYYJ,CYLW,CYXS,CYXX,CYQQ/decoded');
+
+            if (! $response->successful()) {
+                Log::warning('CheckWX weather cache request failed!', ['status' => $response->status()]);
+
+                return self::FAILURE;
+            }
+
+            $weatherData = $response->json('data', []);
 
             $weatherArray = [];
 
-            if (! empty($resp->data)) {
-                foreach ($resp->data as $w) {
-                    $icao = $w->icao ?? 'UNKNOWN';
-                    $w->flight_category = $w->flight_category ?? 'N/A';
-                    $w->temperature = $w->temperature ?? null;
-                    $w->wind = $w->wind ?? null;
+            if (is_array($weatherData)) {
+                foreach ($weatherData as $weather) {
+                    if (! is_array($weather)) {
+                        continue;
+                    }
 
-                    $weatherArray[$icao] = $w;
+                    $icao = $weather['icao'] ?? 'UNKNOWN';
+                    $weather['flight_category'] ??= 'N/A';
+                    $weather['temperature'] ??= null;
+                    $weather['wind'] ??= null;
+
+                    $weatherArray[$icao] = $weather;
                 }
             }
 
-            Cache::put('weather.data', $weatherArray, 900); // 15 min
+            // The scheduler refreshes this every 15 minutes. Keeping the last
+            // successful payload avoids blocking web requests during outages
+            Cache::forever('weather.data', $weatherArray);
             $this->info('Weather cached successfully.');
-        } catch (\Exception $e) {
-            \Log::error('Failed to cache weather: '.$e->getMessage());
+        } catch (\Throwable $e) {
+            Log::error('Failed to cache weather!', ['message' => $e->getMessage()]);
+
+            return self::FAILURE;
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 }

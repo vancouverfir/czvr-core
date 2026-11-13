@@ -9,7 +9,7 @@
 
 @section('from-line')
 @if ($news->show_author)
-Sent by <b>{{$news->user->fullName('FLC')}} ({{$news->user->staffProfile->position}})</b>
+Sent by <b>{{ $news->user->fullName('FLC') }}@if ($news->user->staffProfile) ({{ $news->user->staffProfile->position }})@endif</b>
 @else
 Sent by the Vancouver FIR Staff Team
 @endif
@@ -18,11 +18,5 @@ Sent by the Vancouver FIR Staff Team
 @section('footer-to-line', $user->fullName('FLC').' ('.$user->email.')')
 
 @section('footer-reason-line')
-@if ($news->email_level == 1)
-they are a controller on the Vancouver FIR controller roster.
-@elseif ($news->email_level == 2)
-they hold an account on the Vancouver FIR website and have subscribed to emails.
-@elseif ($news->email_level == 3)
-they hold an account on the Vancouver FIR website.
-@endif
+you hold an account on the Vancouver FIR website and have subscribed to emails.
 @endsection

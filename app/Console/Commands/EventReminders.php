@@ -3,10 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Models\Events\Event;
-use App\Models\Events\EventConfirm;
 use App\Notifications\events\EventReminder;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
+use Throwable;
 
 class EventReminders extends Command
 {
@@ -34,16 +35,31 @@ class EventReminders extends Command
             ->get();
 
         foreach ($events as $e) {
-            $confirms = EventConfirm::where('event_id', $e->id)->get();
+            $positionsByUser = $e->eventconfirm()
+                ->with('user')
+                ->get()
+                ->groupBy('user_id');
 
-            foreach ($confirms as $c) {
-                if ($c->email_sent != 0 && $c->user()->gdpr_subscribed_emails != 1) {
+            foreach ($positionsByUser as $userId => $positions) {
+                $user = $positions->first()->user;
+
+                if (! $user || $user->gdpr_subscribed_emails != 1) {
                     continue;
                 }
 
-                $positions = EventConfirm::where(['user_id' => $c->user_id, 'event_id' => $e->id])->update(['email_sent' => 1])->get();
+                $cacheKey = "event-reminder:{$e->id}:{$userId}";
 
-                $c->user()->notify(new EventReminder($e, $positions));
+                if (! Cache::add($cacheKey, true, Carbon::parse($e->start_timestamp)->addDay())) {
+                    continue;
+                }
+
+                try {
+                    $user->notify(new EventReminder($e, $positions));
+                } catch (Throwable $exception) {
+                    Cache::forget($cacheKey);
+
+                    throw $exception;
+                }
             }
         }
 

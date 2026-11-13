@@ -18,14 +18,14 @@ class StaffListController extends Controller
         $groups = StaffGroup::with(['members.user'])->get();
 
         // Instructor list
-        $instructors_temp = Instructor::with('user')->get();
+        $instructors_temp = Instructor::with('user')->where('active', true)->get();
 
         // Sort assessors to top of array
         $instructors = $instructors_temp->sortByDesc(fn ($i) => $i->qualification === 'Assessor')->values();
 
         $staff = StaffMember::with('user')->get();
 
-        return view('staff', compact('staff', 'instructors', 'groups'));
+        return view('staff.index', compact('staff', 'instructors', 'groups'));
     }
 
     public function editIndex(): View

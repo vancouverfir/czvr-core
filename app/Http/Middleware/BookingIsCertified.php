@@ -24,7 +24,7 @@ class BookingIsCertified
 
         $callsign = $request->input('callsign');
 
-        if (! $callsign) {
+        if (! is_string($callsign) || $callsign === '' || strlen($callsign) > 32) {
             return redirect()->back()
                 ->withErrors(['certification' => 'Invalid or missing callsign!'])
                 ->withInput();
@@ -49,7 +49,12 @@ class BookingIsCertified
 
     protected function userHasCertification(Roster $roster, string $callsign): bool
     {
-        [$icao, $position] = explode('_', $callsign, 2);
+        $parts = explode('_', $callsign, 2);
+        if (count($parts) !== 2) {
+            return false;
+        }
+
+        [$icao, $position] = $parts;
 
         $airportMap = config('bookingairports.certifiedairports');
         $mapping = $airportMap[$icao] ?? null;

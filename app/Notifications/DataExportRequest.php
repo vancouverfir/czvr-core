@@ -10,6 +10,10 @@ class DataExportRequest extends Notification
 {
     use Queueable;
 
+    protected mixed $user;
+
+    protected mixed $json;
+
     /**
      * Create a new notification instance.
      *

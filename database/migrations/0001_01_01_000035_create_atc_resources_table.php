@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('font_awesome');
             $table->text('description')->nullable();
             $table->string('url');
-            $table->boolean('atc_only');
             $table->timestamps();
         });
     }

@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use App\News;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -16,9 +15,9 @@ class EmailAnnouncementEmail extends Mailable
      *
      * @return void
      */
-    public $news;
+    public array $news;
 
-    public function __construct(News $news)
+    public function __construct(array $news)
     {
         $this->news = $news;
     }
@@ -32,7 +31,7 @@ class EmailAnnouncementEmail extends Mailable
     {
         return $this
             ->to(config('mail.from.address'))
-            ->subject('Vancouver FIR News: '.$this->news->title)
+            ->subject('Vancouver FIR News: '.$this->news['title'])
             ->view('emails.announcement');
     }
 }

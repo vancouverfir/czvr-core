@@ -14,7 +14,6 @@ return new class extends Migration
             $table->dateTime('start_timestamp');
             $table->dateTime('end_timestamp');
             $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users');
             $table->longText('description');
             $table->string('image_url')->nullable();
             $table->tinyInteger('controller_applications_open')->default(0);

@@ -1,0 +1,411 @@
+.airport-panel {
+    padding-top: 2rem;
+}
+
+.airport-heading {
+    align-items: flex-start;
+    display: flex;
+    gap: 0.9rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.airport-heading h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.airport-code {
+    background: var(--czvr-green-soft);
+    border: 1px solid #cfe4ca;
+    border-radius: 0.4rem;
+    color: var(--czvr-green-dark);
+    flex: 0 0 auto;
+    font-size: var(--czvr-font-size-base);
+    letter-spacing: 0.05em;
+    padding: 0.35rem 0.55rem;
+}
+
+.airport-weather {
+    background: var(--czvr-surface-muted);
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.7rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+}
+
+.airport-weather:not(.has-atis) {
+    grid-template-columns: 1fr;
+}
+
+.airport-atis-letter {
+    align-items: center;
+    background: var(--czvr-green);
+    color: var(--czvr-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 105px;
+    padding: 1rem;
+}
+
+.airport-atis-letter span {
+    font-size: var(--czvr-font-size-base);
+}
+
+.airport-atis-letter strong {
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+.airport-weather-copy {
+    padding: 1rem 1.1rem;
+}
+
+.airport-weather-copy h3,
+.airport-section-title {
+    color: var(--czvr-green-dark);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.55rem;
+}
+
+.airport-weather-copy p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: var(--czvr-font-size-base) !important;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.airport-description {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base) !important;
+    line-height: 1.7;
+    max-width: 900px;
+}
+
+.airport-scenery-card {
+    background: var(--czvr-white);
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.65rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem;
+}
+
+.airport-scenery-card h3 {
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.45;
+    margin: 0.65rem 0 1rem;
+}
+
+.airport-scenery-type {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+}
+
+.airport-scenery-card a {
+    align-self: flex-start;
+    margin-top: auto;
+    text-decoration: none;
+}
+
+@media (max-width: 576px) {
+    .airport-weather {
+        grid-template-columns: 1fr;
+    }
+
+    .airport-atis-letter {
+        align-items: baseline;
+        flex-direction: row;
+        gap: 0.6rem;
+        min-width: 0;
+    }
+}
+
+.pdc-example {
+    background: var(--czvr-surface-muted);
+    border-left: 0.25rem solid var(--czvr-green);
+    border-radius: 0 0.4rem 0.4rem 0;
+    font-size: var(--czvr-font-size-base);
+    margin: 0 0 1rem;
+    padding: 0.6rem 1rem;
+}
+
+.pdc-example-message {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.airac-note {
+    margin: 0 0 1.5rem;
+}
+
+.routing-panel {
+    padding-top: 1.5rem;
+}
+
+.route-card {
+    background: var(--czvr-white);
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.route-card-heading {
+    align-items: center;
+    border-bottom: 1px solid var(--czvr-border);
+    display: flex;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+}
+
+.route-card-heading h2 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.route-card-heading span {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+}
+
+.route-column {
+    padding: 1rem;
+}
+
+.route-column + .route-column {
+    border-left: 1px solid var(--czvr-border);
+}
+
+.route-column h3 {
+    color: var(--czvr-green-dark);
+    font-size: var(--czvr-font-size-base);
+    font-weight: 500;
+    margin: 0 0 0.65rem;
+}
+
+.route-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.route-list li {
+    border-top: 1px solid var(--czvr-border);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: var(--czvr-font-size-base);
+    line-height: 1.55;
+    padding: 0.58rem 0;
+}
+
+.route-list li:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.route-icao {
+    color: var(--czvr-green-dark);
+    font-weight: 600;
+}
+
+.route-number {
+    color: var(--czvr-green-dark);
+    font-weight: 600;
+}
+
+.runway-picker {
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.55rem;
+    margin-bottom: 0.65rem;
+    overflow: hidden;
+}
+
+.runway-picker .card-header {
+    background: var(--czvr-surface-muted);
+    border: 0;
+    padding: 0;
+}
+
+.runway-picker .btn-link {
+    color: var(--czvr-green-dark);
+    display: flex;
+    font-size: var(--czvr-font-size-base);
+    font-weight: 500;
+    justify-content: space-between;
+    padding: 0.65rem 0.75rem;
+    text-align: left;
+    text-decoration: none;
+    width: 100%;
+}
+
+.runway-picker .btn-link::after {
+    content: '+';
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1;
+}
+
+.runway-picker .btn-link[aria-expanded="true"]::after {
+    content: '−';
+}
+
+.runway-picker .card-body {
+    padding: 0.8rem 0.75rem 0.2rem;
+}
+
+@media (max-width: 767.98px) {
+    .route-column + .route-column {
+        border-left: 0;
+        border-top: 1px solid var(--czvr-border);
+    }
+}
+
+/* pilots/vfr.blade.php */
+.vfr-page-header p {
+    max-width: 760px;
+}
+
+.vfr-page-header h1 {
+    font-size: 1.65rem;
+    font-weight: 500;
+}
+
+.vfr-page-header p,
+.vfr-copy {
+    color: var(--czvr-text);
+    line-height: 1.7;
+}
+
+.vfr-card {
+    background: var(--czvr-white);
+    border: 1px solid var(--czvr-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.vfr-card-heading {
+    align-items: center;
+    border-bottom: 1px solid var(--czvr-border);
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+}
+
+.vfr-card-heading h2 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.vfr-card-heading span {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+}
+
+.vfr-card-body {
+    padding: 1rem;
+}
+
+.vfr-card-body > p {
+    margin-bottom: 0.85rem;
+}
+
+.vfr-resource-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.vfr-resource-list li + li {
+    border-top: 1px solid var(--czvr-border);
+}
+
+.vfr-resource-list a {
+    align-items: center;
+    color: var(--czvr-text);
+    display: flex;
+    font-size: var(--czvr-font-size-base);
+    gap: 0.65rem;
+    padding: 0.7rem 0;
+    text-decoration: none;
+}
+
+.vfr-resource-list li:first-child a {
+    padding-top: 0;
+}
+
+.vfr-resource-list li:last-child a {
+    padding-bottom: 0;
+}
+
+.vfr-resource-list a:hover,
+.vfr-resource-list a:focus {
+    color: var(--czvr-green-dark);
+}
+
+.vfr-resource-list a > i:first-child {
+    color: var(--czvr-green-dark);
+    text-align: center;
+    width: 1rem;
+}
+
+.vfr-resource-list .fa-arrow-up-right-from-square {
+    color: var(--czvr-text-muted);
+    font-size: var(--czvr-font-size-base);
+    margin-left: auto;
+}
+
+.vfr-note {
+    align-items: flex-start;
+    display: flex;
+    font-size: var(--czvr-font-size-base);
+    gap: 0.7rem;
+    line-height: 1.65;
+    margin-top: 1rem;
+}
+
+.vfr-note p {
+    font-size: inherit !important;
+    margin: 0;
+}
+
+.vfr-note p + p {
+    margin-top: 0.35rem;
+}
+
+.vfr-tower-column {
+    padding: 1rem;
+}
+
+.vfr-tower-column + .vfr-tower-column {
+    border-left: 1px solid var(--czvr-border);
+}
+
+.vfr-tower-column h3 {
+    color: var(--czvr-green-dark);
+    font-size: var(--czvr-font-size-base);
+    font-weight: 500;
+    margin: 0 0 0.55rem;
+}
+
+.vfr-tower-column p {
+    color: var(--czvr-text);
+    font-size: var(--czvr-font-size-base) !important;
+    line-height: 1.65;
+    margin: 0;
+}
+
+@media (max-width: 767.98px) {
+    .vfr-tower-column + .vfr-tower-column {
+        border-left: 0;
+        border-top: 1px solid var(--czvr-border);
+    }
+}

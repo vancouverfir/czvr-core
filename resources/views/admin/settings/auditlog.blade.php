@@ -1,8 +1,9 @@
 @extends('layouts.master')
 @section('content')
+@include('partials.vendor.datatables')
     <div class="container py-4">
         <a href="{{route('settings.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Settings</a>
-        <h1 class="blue-text font-weight-bold mt-2">Audit Log</h1>
+        <h1 class="blue-text fw-bold mt-2">Audit Log</h1>
         <hr>
         <p>NOTE: This log is strictly confidential!</p>
         @if (count($entries) < 1)
@@ -30,6 +31,7 @@
                             @else
                             {{$entry->affectedUser->fullName("FLC")}}
                             @endif
+                        </td>
                         <td>
                             {{$entry->action}}
                             &nbsp;

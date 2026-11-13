@@ -8,9 +8,10 @@
 
 @section('content')
 
+@include('partials.vendor.easymde')
     <div class="container" style="margin-top: 20px;">
         <a href="{{route('tickets.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Back</a>
-        <h1 class="blue-text font-weight-bold mt-2">Ticket #{{ $ticket->ticket_id }}</h1>
+        <h1 class="blue-text fw-bold mt-2">Ticket #{{ $ticket->ticket_id }}</h1>
         <hr>
         <h2>{{$ticket->title}}</h2>
         <p>
@@ -55,22 +56,70 @@
                 @csrf
                 <textarea name="message" class="form-control" id="addReplyMessage"></textarea>
                 <script>
-                    var simplemde = new SimpleMDE({ element: document.getElementById("addReplyMessage"), toolbar: false, height: auto });
+                    var easymde = new EasyMDE({ spellChecker: false, element: document.getElementById("addReplyMessage"), toolbar: false });
                 </script>
                 <br/>
                 <div class="row">
                     <button type="submit" class="btn btn-success">Reply</button>
-                    @if(auth()->user()->permissions >= 4)
-                        <a role="button" data-toggle="modal" data-target="#closeTicket" class="btn btn-outline-danger">Close Ticket</a>
-                    @endif
+                    @can('tickets.manage')
+                        @if ($ticket->status == 0)
+                            <a role="button" data-bs-toggle="modal" data-bs-target="#holdTicket" class="btn btn-outline-warning">Put on Hold</a>
+                        @else
+                            <a role="button" data-bs-toggle="modal" data-bs-target="#reopenTicket" class="btn btn-outline-success">Reopen Ticket</a>
+                        @endif
+                        <a role="button" data-bs-toggle="modal" data-bs-target="#closeTicket" class="btn btn-outline-danger">Close Ticket</a>
+                    @endcan
                 </div>
             </form>
+        @else
+            @can('tickets.manage')
+                <a role="button" data-bs-toggle="modal" data-bs-target="#reopenTicket" class="btn btn-outline-success">Reopen Ticket</a>
+            @endcan
         @endif
+        @can('tickets.manage')
+            <form id="ticketStatusForm" action="{{ route($ticket->status == 0 ? 'tickets.onholdticket' : 'tickets.openticket', $ticket->ticket_id) }}" method="POST" class="d-none">
+                @csrf
+                @method('PATCH')
+            </form>
+        @endcan
         <br>
     </div>
-@stop
 
-@if(auth()->user()->permissions >= 4)
+@can('tickets.manage')
+<div class="modal fade" id="holdTicket" tabindex="-1" aria-labelledby="holdTicketTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="holdTicketTitle">Put Ticket on Hold?</h5>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">Ticket #{{ $ticket->ticket_id }} will move to On Hold Tickets, and a note saying you placed it on hold is added to the ticket!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="ticketStatusForm" class="btn btn-outline-warning">Put on Hold</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reopenTicket" tabindex="-1" aria-labelledby="reopenTicketTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reopenTicketTitle">Reopen Ticket?</h5>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">Ticket #{{ $ticket->ticket_id }} will move back to Open Tickets, and a note saying you reopened it is added to the ticket!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="ticketStatusForm" class="btn btn-outline-success">Reopen Ticket</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- Start Close Ticket Modal --}}
 <div class="modal fade" id="closeTicket" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -78,21 +127,22 @@
             <div class="modal-header">
                 <h5 class="modal-title">Close Ticket?</h5>
             </div>
-            <div class="modal-body">
-                <p class="font-weight-bold">If you'd like, leave a comment below:</p>
-                <hr>
-                <form action="{{route('tickets.closeticket', $ticket->ticket_id)}}" method="POST">
+            <form action="{{route('tickets.closeticket', $ticket->ticket_id)}}" method="POST">
+                <div class="modal-body">
+                    <p class="fw-bold">If you'd like, leave a comment below:</p>
+                    <hr>
                     @csrf
                     <textarea name="message" class="form-control"></textarea>
-                    <hr>
-                    <div class="container py-0 row">
-                        <button type="submit" class="btn btn-outline-danger">Close er up</button>
-                    </form>
-                    <button class="btn btn-light" data-dismiss="modal">Dismiss</button>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-outline-danger">Close Ticket</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 {{-- End Close Ticket Modal --}}
-@endif
+@endcan
+
+@stop

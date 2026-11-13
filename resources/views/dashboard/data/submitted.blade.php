@@ -8,6 +8,6 @@
 
 @section('content')
 <div class="container" style="margin-top: 30px;">
-    <h1>Your request has been submitted.</h1>
+    <h1 class="blue-text">Your request has been submitted.</h1>
 </div>
 @stop

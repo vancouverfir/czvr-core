@@ -12,8 +12,9 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('student_id')->unsigned();
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
-            $table->integer('author_id')->unsigned();
-            $table->foreign('author_id')->references('id')->on('instructors');
+            // The user who wrote the note; NULL is a System note
+            $table->unsignedInteger('author_cid')->nullable();
+            $table->foreign('author_cid')->references('id')->on('users')->nullOnDelete();
             $table->text('title');
             $table->text('content');
             $table->timestamps();

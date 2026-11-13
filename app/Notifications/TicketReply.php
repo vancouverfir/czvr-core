@@ -10,6 +10,12 @@ class TicketReply extends Notification
 {
     use Queueable;
 
+    protected mixed $user;
+
+    protected mixed $ticket;
+
+    protected mixed $reply;
+
     /**
      * Create a new notification instance.
      *

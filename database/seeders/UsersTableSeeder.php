@@ -12,16 +12,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('student_label')->insert([
-            'id' => 1,
-            'name' => 'Example',
-            'fa_icon' => 'fas fa-check',
-            'color' => '#00FF00',
-            'visible_home' => 1,
-            'exclusive' => 1,
-            'visitor' => 1,
-            'new_status' => 1,
-        ]);
+        $this->call(StudentLabelSeeder::class);
 
         DB::table('checklists')->insert([
             'id' => 1,

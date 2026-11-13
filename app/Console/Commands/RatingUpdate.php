@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Classes\HttpHelper;
 use App\Classes\VatsimHelper;
 use App\Models\Users\User;
+use App\Services\TrainingProgressionService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -27,17 +28,36 @@ class RatingUpdate extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): int
+    public function handle(TrainingProgressionService $progression): int
     {
         $ratings = [];
 
-        $response = HttpHelper::getClient()->get(VatsimHelper::getDatafeedUrl());
-        $vatsimRatings = $response->object();
+        $response = HttpHelper::getClient()
+            ->retry(2, 250, throw: false)
+            ->get(VatsimHelper::getDatafeedUrl());
+
+        if (! $response->successful()) {
+            Log::warning('VATSIM ratings datafeed request failed!', ['status' => $response->status()]);
+
+            return self::FAILURE;
+        }
+
+        $vatsimRatings = $response->json('ratings');
+
+        if (! is_array($vatsimRatings)) {
+            Log::warning('VATSIM ratings datafeed did not contain a ratings array!');
+
+            return self::FAILURE;
+        }
 
         foreach ($vatsimRatings as $r) {
-            $ratings[$r->id] = [
-                'short' => $r->short,
-                'long' => $r->long,
+            if (! is_array($r) || ! isset($r['id'], $r['short'], $r['long'])) {
+                continue;
+            }
+
+            $ratings[$r['id']] = [
+                'short' => $r['short'],
+                'long' => $r['long'],
             ];
         }
 
@@ -45,35 +65,44 @@ class RatingUpdate extends Command
 
         // Check each user to see if their rating has changed
         foreach ($users as $u) {
-            $getRating = json_decode(file_get_contents('https://api.vatsim.net/api/ratings/'.$u->id.'/'));
-            $ratingID = $getRating->rating;
+            $ratingResponse = HttpHelper::getClient()
+                ->retry(2, 250, throw: false)
+                ->get('https://api.vatsim.net/api/ratings/'.$u->id.'/');
+
+            if (! $ratingResponse->successful()) {
+                Log::warning('VATSIM user rating request failed!', [
+                    'cid' => $u->id,
+                    'status' => $ratingResponse->status(),
+                ]);
+
+                continue;
+            }
+
+            $ratingID = $ratingResponse->json('rating');
+
+            if ((! is_int($ratingID) && ! (is_string($ratingID) && ctype_digit($ratingID))) || ! isset($ratings[(int) $ratingID])) {
+                Log::warning('VATSIM user rating response was invalid!', [
+                    'cid' => $u->id,
+                ]);
+
+                continue;
+            }
+
+            $ratingID = (int) $ratingID;
 
             if ($u->rating_id != $ratingID) {
                 // Log it for when it breaks
-                Log::info('User: '.$u->fname.' '.$u->lname.' updated from '.$u->rating_short.' to '.$ratings[$ratingID]['short'].'.');
+                Log::info('User: '.$u->fname.' '.$u->lname.' updated from '.$u->rating_short.' to '.$ratings[$ratingID]['short'].'!');
 
-                $u->rating_id = $ratingID;
-                $u->rating_short = $ratings[$ratingID]['short'];
-                $u->rating_long = $ratings[$ratingID]['long'];
-                $u->rating_grp = $ratings[$ratingID]['long'];
-                $u->save();
-
-                $rosterMember = $u->rosterProfile()->first();
-
-                if ($rosterMember) {
-                    Log::info('--> Setting rating hours to 0');
-
-                    $rosterMember->rating_hours = 0;
-                    $rosterMember->save();
-                }
+                $progression->synchronizeRating($u, $ratingID, $ratings[$ratingID]);
 
                 Log::info('--> Completed!');
             } else {
                 // Log it for when it breaks
-                Log::info('User: '.$u->fname.' '.$u->lname.' rating is unchanged. Skipping.');
+                Log::info('User: '.$u->fname.' '.$u->lname.' rating is unchanged! Skipping!');
             }
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 }

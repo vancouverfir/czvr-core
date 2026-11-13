@@ -9,16 +9,16 @@
 @section('content')
     <div class="container" style="margin-top: 20px;">
         <a href="{{route('dashboard.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Dashboard</a>
-        <h1 class="blue-text font-weight-bold mt-2">Email Preferences</h1>
+        <h1 class="blue-text fw-bold mt-2">Email Preferences</h1>
         <hr>
         <h5>Current subscription status:</h5>
         @if (auth()->user()->gdpr_subscribed_emails == 0)
             <h3>
-                <span class="badge badge-danger">Not subscribed</span>
+                <span class="badge text-bg-danger">Not subscribed</span>
             </h3>
         @else
             <h3>
-                <span class="badge badge-success">Subscribed</span>
+                <span class="badge text-bg-success">Subscribed</span>
             </h3>
         @endif
         <br/>
@@ -38,7 +38,15 @@
         </p><br/>
         <h4>Subscribe</h4>
         <br/>
-        <a role="button" class="btn btn-success" href="{{url('/dashboard/emailpref/subscribe')}}">Subscribe to emails</a>
-        <a role="button" class="btn btn-danger" href="{{url('/dashboard/emailpref/unsubscribe')}}">Unsubscribe from emails</a>
+        <form method="POST" action="{{url('/dashboard/emailpref/subscribe')}}" class="d-inline">
+            @csrf
+            @method('PATCH')
+            <button type="submit" class="btn btn-success">Subscribe to emails</button>
+        </form>
+        <form method="POST" action="{{url('/dashboard/emailpref/unsubscribe')}}" class="d-inline">
+            @csrf
+            @method('PATCH')
+            <button type="submit" class="btn btn-danger">Unsubscribe from emails</button>
+        </form>
     </div>
 @stop

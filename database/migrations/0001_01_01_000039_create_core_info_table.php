@@ -14,6 +14,7 @@ return new class extends Migration
             $table->text('release');
             $table->text('sys_build');
             $table->text('copyright_year');
+            $table->timestamps();
             $table->text('banner')->nullable();
             $table->text('bannerMode')->nullable();
             $table->text('bannerLink')->nullable();
@@ -23,7 +24,6 @@ return new class extends Migration
             $table->text('emaileventc');
             $table->text('emailfacilitye');
             $table->text('emailwebmaster');
-            $table->timestamps();
         });
     }
 

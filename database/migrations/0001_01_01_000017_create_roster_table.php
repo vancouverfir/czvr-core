@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('roster', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('cid')->unsigned();
+            $table->integer('cid')->unsigned()->unique('cid');
             $table->foreign('cid')->references('id')->on('users');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
@@ -19,7 +19,6 @@ return new class extends Migration
             $table->tinyInteger('active')->default(1);
             $table->double('currency')->nullable();
             $table->double('rating_hours')->nullable();
-            $table->integer('fss')->default(0);
             $table->integer('delgnd')->default(0);
             $table->integer('delgnd_t2')->default(0);
             $table->integer('twr')->default(0);
@@ -28,9 +27,9 @@ return new class extends Migration
             $table->integer('app')->default(0);
             $table->integer('app_t2')->default(0);
             $table->integer('ctr')->default(0);
+            $table->integer('fss')->default(0);
             $table->text('remarks')->nullable();
             $table->integer('visit');
-            $table->string('staff')->nullable();
             $table->timestamps();
         });
     }

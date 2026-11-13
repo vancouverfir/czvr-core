@@ -2,10 +2,8 @@
 
 namespace App\Models\Events;
 
-use App\Models\AtcTraining\RosterMember;
 use App\Models\Users\User;
 use App\Traits\HasMarkdownFields;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,6 +16,15 @@ class Event extends Model
     protected $fillable = [
         'id', 'name', 'start_timestamp', 'end_timestamp', 'user_id', 'description', 'image_url', 'controller_applications_open', 'departure_icao', 'arrival_icao', 'slug',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'start_timestamp' => 'datetime',
+            'end_timestamp' => 'datetime',
+            'controller_applications_open' => 'boolean',
+        ];
+    }
 
     /**
      * Retrieve the list of fields that should be processed as Markdown.
@@ -37,9 +44,9 @@ class Event extends Model
 
     public function getConfirmedAttribute()
     {
-        $check = RosterMember::where('user_id', Auth::id())->first();
-
-        return EventConfirm::where('event_id', $this->id)->where('roster_id', $check->id)->first();
+        return $this->eventconfirm()
+            ->where('user_id', Auth::id())
+            ->first();
     }
 
     public function updates(): HasMany
@@ -54,22 +61,20 @@ class Event extends Model
 
     public function starts_in_pretty()
     {
-        $t = Carbon::create($this->start_timestamp);
-
-        return $t->diffForHumans();
+        return $this->start_timestamp->diffForHumans();
     }
 
     public function start_timestamp_pretty()
     {
-        $t = Carbon::create($this->start_timestamp);
+        $t = $this->start_timestamp;
 
         return $t->monthName.' '.$t->day.', '.$t->year.' '.$t->format('H:i').'z';
     }
 
     public function flatpickr_limits()
     {
-        $start = Carbon::create($this->start_timestamp);
-        $end = Carbon::create($this->end_timestamp);
+        $start = $this->start_timestamp;
+        $end = $this->end_timestamp;
 
         return [
             $start->format('H:i'),
@@ -79,19 +84,14 @@ class Event extends Model
 
     public function end_timestamp_pretty()
     {
-        $t = Carbon::create($this->end_timestamp);
+        $t = $this->end_timestamp;
 
         return $t->monthName.' '.$t->day.', '.$t->year.' '.$t->format('H:i').'z';
     }
 
     public function event_in_past()
     {
-        $end = Carbon::create($this->end_timestamp);
-        if (! $end->isPast()) {
-            return false;
-        }
-
-        return true;
+        return $this->end_timestamp->isPast();
     }
 
     public function userHasApplied()
