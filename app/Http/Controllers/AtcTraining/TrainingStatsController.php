@@ -18,7 +18,7 @@ class TrainingStatsController extends Controller
     public function index(): View
     {
         $now = now();
-        $students = Student::with(['user', 'labels.label', 'instructor.user', 'latestWaitlistContactEvent', 'user.rosterProfile'])
+        $students = Student::with(['user', 'labels.label', 'instructor.user', 'user.rosterProfile'])
             ->whereIn('status', [
                 Student::STATUS_WAITLIST,
                 Student::STATUS_ACTIVE,
@@ -63,7 +63,7 @@ class TrainingStatsController extends Controller
         ]);
     }
 
-    /** @return array{count: int, longest: ?int, average: ?int, availability: ?int, contacted: ?int} */
+    /** @return array{count: int, longest: ?int, average: ?int, availability: ?int} */
     private function waitlistSummary(Collection $students, Carbon $now): array
     {
         $days = $students->map(fn (Student $student): int => (int) $student->created_at?->diffInDays($now));
@@ -74,7 +74,6 @@ class TrainingStatsController extends Controller
             'longest' => $days->max(),
             'average' => $days->isEmpty() ? null : (int) round($days->avg()),
             'availability' => $percent(fn (Student $student): bool => filled($student->availability)),
-            'contacted' => $percent(fn (Student $student): bool => $student->latestWaitlistContactEvent?->title === 'Waitlist Contacted'),
         ];
     }
 

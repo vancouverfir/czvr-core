@@ -33,7 +33,7 @@
                 <section class="card p-3 shadow-none mb-3 rounded-card prechecks-card student-list-card">
                     <h2>
                         <i class="fa fa-circle fa-fw" style="color: {{$list->color}};"></i>&nbsp;
-                        {{$list->name}} [{{count($list->students)}}]
+                        {{$list->name}} [<span class="student-list-count">{{count($list->students)}}</span>]
                     </h2>
                     <div id="list-group-{{$index}}" class="list-group mt-3" style="max-height: 350px; overflow-y: auto;">
                         @if(count($list->students) == 0)
@@ -118,11 +118,15 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('studentSearch');
-        searchInput.addEventListener('keyup', function () {
+        searchInput.addEventListener('input', function () {
             const query = this.value.toLowerCase();
             document.querySelectorAll('.list-group-item').forEach(function (item) {
                 const text = item.textContent.toLowerCase();
                 item.style.display = text.includes(query) ? '' : 'none';
+            });
+            document.querySelectorAll('.student-list-card').forEach(function (card) {
+                const visible = [...card.querySelectorAll('.list-group-item')].filter((item) => item.style.display !== 'none').length;
+                card.querySelector('.student-list-count').textContent = visible;
             });
         });
     });

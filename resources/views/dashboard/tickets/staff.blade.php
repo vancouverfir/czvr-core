@@ -25,7 +25,7 @@
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 @if (count($openTickets) < 1)
-                    <br>No open tickets.<br></br>
+                    <br>No open tickets!<br></br>
                 @else
                     <p><br>Returned {{count($openTickets) }} tickets</p>
                     <table id="openTicketsTable" class="table table-hover">
@@ -58,7 +58,7 @@
             </div>
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 @if (count($closedTickets) < 1)
-                    <br>No closed tickets.<br></br>
+                    <br>No closed tickets!<br></br>
                 @else
                     <p><br>Returned {{count($closedTickets) }} tickets</p>
                     <table id="closedTicketsTable" class="table table-hover">
@@ -91,7 +91,7 @@
             </div>
             <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                 @if (count($onHoldTickets) < 1)
-                    <br>No on hold tickets.<br></br>
+                    <br>No on hold tickets!<br></br>
                 @else
                     <p><br>Returned {{count($onHoldTickets) }} tickets</p>
                     <table id="onHoldTicketsTable" class="table table-hover">

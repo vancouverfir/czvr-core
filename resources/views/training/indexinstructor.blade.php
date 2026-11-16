@@ -16,11 +16,6 @@
                 <h1 class="blue-text">Training Centre</h1>
                 <p>{{ auth()->user()->can('instructing-sessions.manage') ? 'Your students and upcoming sessions are together in one place!' : 'Your students are all in one place!' }}</p>
             </div>
-            @can('instructing-sessions.manage')
-                <a href="{{ route('training.instructingsessions.index', ['action' => 'new']) }}" class="btn btn-primary btn-sm flex-shrink-0">
-                    New session
-                </a>
-            @endcan
         </header>
 
         <div @class(['training-portal-grid', 'is-single' => ! auth()->user()->can('instructing-sessions.manage')])>
@@ -172,9 +167,25 @@
         @endif
 
         @if ($student->consolidationIsPending())
+            @php
+                $consolidationPositions = \App\Services\TrainingProgressionService::CONSOLIDATION_POSITIONS[$student->consolidation_rating] ?? [];
+                $positionList = count($consolidationPositions) > 1
+                    ? implode(', ', array_slice($consolidationPositions, 0, -1)).' or '.end($consolidationPositions)
+                    : ($consolidationPositions[0] ?? 'your newly certified');
+                $nextStage = ['S2' => 'S3 Training', 'S3' => 'C1 Training'][$student->consolidation_rating] ?? 'your next training stage';
+                $requiredHours = number_format(\App\Services\TrainingProgressionService::CONSOLIDATION_HOURS, 0);
+                $loggedHours = number_format($student->consolidationHours(), 1);
+                $remainingHours = $student->consolidationRemainingHours();
+            @endphp
             <div class="student-dashboard-notice">
                 <i class="far fa-hourglass-half" aria-hidden="true"></i>
-                <span><strong>{{ number_format($student->consolidationHours(), 1) }} / {{ number_format(\App\Services\TrainingProgressionService::CONSOLIDATION_HOURS, 0) }} hours</strong> logged at {{ $student->consolidation_rating }}. Training unlocks automatically when consolidation is complete.</span>
+                <span>
+                    @if ($remainingHours > 0)
+                        You're consolidating your new {{ $student->consolidation_rating }} rating! Log {{ $requiredHours }} hours on {{ $positionList }} to unlock {{ $nextStage }}, <strong>{{ $loggedHours }} / {{ $requiredHours }} hours</strong> so far!
+                    @else
+                        You've finished consolidating your {{ $student->consolidation_rating }} rating with <strong>{{ $loggedHours }} / {{ $requiredHours }} hours</strong>, {{ $nextStage }} unlocks shortly!
+                    @endif
+                </span>
             </div>
         @endif
 
@@ -194,12 +205,19 @@
                         @foreach ($studentChecklistGroups as $checklistName => $items)
                             <div class="student-checklist-group">
                                 <h3>{{ $checklistName }}</h3>
-                                @foreach ($items as $item)
-                                    <div class="student-checklist-item {{ $item->completed ? 'completed-row' : '' }}">
-                                        <i class="{{ $item->completed ? 'fas fa-check-circle' : 'far fa-circle' }}" aria-hidden="true"></i>
-                                        <span>{{ $item->checklistItem->item }}</span>
+                                @if ($items->isNotEmpty() && $items->every(fn ($item) => $item->completed))
+                                    <div class="student-checklist-item student-checklist-done">
+                                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                        <span>Checklist completed</span>
                                     </div>
-                                @endforeach
+                                @else
+                                    @foreach ($items as $item)
+                                        <div class="student-checklist-item {{ $item->completed ? 'completed-row' : '' }}">
+                                            <i class="{{ $item->completed ? 'fas fa-check-circle' : 'far fa-circle' }}" aria-hidden="true"></i>
+                                            <span>{{ $item->checklistItem->item }}</span>
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
                         @endforeach
                     </div>

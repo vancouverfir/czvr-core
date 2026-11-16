@@ -109,9 +109,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <p>This will only soft delete the event, so it still exists in the database but cannot be viewed.</p>
@@ -135,9 +132,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Edit {{$event->name}}</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <form method="POST" action="{{route('events.admin.edit.post', $event->slug)}}" enctype="multipart/form-data">
                 @csrf
@@ -269,9 +263,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Create event update</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <form method="POST" action="{{route('events.admin.update.post', $event->slug)}}" enctype="multipart/form-data">
                 @csrf

@@ -155,6 +155,10 @@ class TrainingController extends Controller
         $student->loadMissing('labels.label', 'user');
         $isRecertification = $student->isRecertification();
 
+        if ($lockReasons = $student->completionLockReasons()) {
+            return back()->withError(implode(' ', $lockReasons));
+        }
+
         if ($isRecertification && (int) $student->user->rating_id < 5) {
             $nextStage = $progression->completeRecertification($student, Auth::user());
 

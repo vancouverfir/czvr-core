@@ -25,7 +25,7 @@
                             @foreach($e->controllers as $c)
                                 <div style="margin-left: 15px; margin-bottom: 5px;">
                                     <span class="fw-bold">{{ $c->user->fullName('FLC') }}</span>
-                                    is on <span style="color:#007bff;">{{ $c->airport ?? ' ' }}</span>
+                                    is on <span class="blue-text">{{ $c->airport ?? ' ' }}</span>
                                     from {{ ($c->start_timestamp)->format('H:i') }}z
                                     to {{ ($c->end_timestamp)->format('H:i') }}z
                                 </div>

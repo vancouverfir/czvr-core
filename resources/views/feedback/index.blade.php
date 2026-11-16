@@ -164,9 +164,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">What do the icons mean?</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body">
                     <p>If feedback is approved, it will be live on the 'Your Feedback' page.</p>
@@ -175,6 +172,9 @@
                     <p><i class="fa fa-check"></i>&nbsp;<i class="fa fa-check text-success"></i> - Click this to approve the feedback. If it's green, it's already approved.</p>
                     <p><i class="fa fa-times"></i>&nbsp;<i class="fa fa-times text-danger"></i> - Click this to deny the feedback. If it's red, it's already denied.</p>
                     <p><i class="fa fa-trash-alt"></i> - Delete the feedback.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                 </div>
             </div>
         </div>

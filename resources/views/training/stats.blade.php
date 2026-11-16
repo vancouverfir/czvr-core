@@ -54,7 +54,6 @@
                             <div class="stats-tile"><strong>{{ $summary['average'] ?? '–' }}</strong><span>average days waiting</span></div>
                             <div class="stats-tile"><strong>{{ $summary['longest'] ?? '–' }}</strong><span>longest days waiting</span></div>
                             <div class="stats-tile"><strong>{{ $summary['availability'] === null ? '–' : $summary['availability'].'%' }}</strong><span>availability submitted</span></div>
-                            <div class="stats-tile"><strong>{{ $summary['contacted'] === null ? '–' : $summary['contacted'].'%' }}</strong><span>marked contacted</span></div>
                         </div>
                     @endforeach
                 </div>
@@ -106,7 +105,7 @@
                 <div class="training-panel-header"><h2 id="statsWorkload" class="blue-text">Instructor Workload</h2><span class="training-panel-count">{{ $unassigned->count() }} unassigned {{ Str::plural('student', $unassigned->count()) }}</span></div>
                 <div class="training-stats-body">
                     @if ($instructors->isEmpty())
-                        <div class="training-empty">There are no active instructors or mentors!</div>
+                        <div class="training-empty">There are no active instructors!</div>
                     @else
                         <div class="stats-bars">
                             @php $workloadMax = max(1, $instructors->max('active_students_count')); @endphp
@@ -115,11 +114,10 @@
                                 <div class="stats-bar" title="{{ $name }}: {{ $instructor->active_students_count }} active {{ Str::plural('student', $instructor->active_students_count) }}, {{ $instructor->upcoming_sessions_count }} upcoming {{ Str::plural('session', $instructor->upcoming_sessions_count) }}">
                                     <span class="stats-bar-label">{{ $name }}</span>
                                     <span class="stats-bar-track"><span @class(['stats-bar-fill', 'd-block', 'is-empty' => $instructor->active_students_count === 0]) style="width: {{ round($instructor->active_students_count / $workloadMax * 100, 1) }}%"></span></span>
-                                    <span class="stats-bar-value">{{ $instructor->active_students_count }} · <i class="far fa-calendar" aria-hidden="true"></i> {{ $instructor->upcoming_sessions_count }}</span>
+                                    <span class="stats-bar-value">{{ $instructor->active_students_count }} · <i class="fas fa-chalkboard-user" aria-hidden="true"></i> {{ $instructor->upcoming_sessions_count }}</span>
                                 </div>
                             @endforeach
                         </div>
-                        <p class="small text-muted mt-3 mb-0">Bars show active students; <i class="far fa-calendar" aria-hidden="true"></i> is upcoming sessions.</p>
                     @endif
                 </div>
             </section>

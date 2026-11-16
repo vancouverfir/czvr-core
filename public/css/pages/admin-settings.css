@@ -57,6 +57,12 @@
 .role-permission-group[open] > summary::after { transform: rotate(180deg); }
 .role-permission-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4rem 1rem; padding-bottom: .75rem; }
 .role-permission-grid .form-check { min-width: 0; margin: 0; }
+.staff-card { overflow: hidden; border: 1px solid var(--czvr-border); border-radius: .65rem; box-shadow: 0 2px 8px rgba(28, 49, 31, .06); }
+.staff-card-header { display: flex; align-items: center; justify-content: space-between; gap: .5rem; color: var(--czvr-green-dark); font-weight: 500; background: var(--czvr-green-soft); border-bottom: 1px solid #cfe4ca; }
+.staff-card-number { flex: 0 0 auto; padding: .05rem .45rem; color: var(--czvr-green-dark); font-size: var(--czvr-font-size-base); font-weight: 500; white-space: nowrap; background: var(--czvr-white); border: 1px solid #cfe4ca; border-radius: .35rem; }
+.staff-card-name { margin-bottom: .5rem; font-size: 1.05rem; font-weight: 600; }
+.staff-card label { display: block; margin-bottom: .15rem; color: var(--czvr-text-muted); font-size: var(--czvr-font-size-base); }
+.staff-card-avatar { width: 64px; height: 64px; object-fit: cover; border: 2px solid var(--czvr-green-soft); border-radius: 50%; }
 @media (max-width: 767.98px) {
     .role-editor-sidebar { border-right: 0; border-bottom: 1px solid var(--czvr-border); }
     .role-permission-grid { grid-template-columns: 1fr; }

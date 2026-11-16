@@ -104,9 +104,9 @@
                             @if ($studentChecklistGroups->count() > 0)
                             <div class="d-flex align-items-center gap-2">
                                 <form method="POST" action="{{ route('training.students.checklist.completeMultiple', $student->id) }}" class="mb-0 d-flex align-items-center gap-2">
-                                    @csrf <button type="submit" class="btn btn-primary btn-sm" id="header-apply-selected" disabled>Apply</button>
+                                    @csrf <button type="submit" class="btn btn-sm btn-success" id="header-apply-selected" disabled>Apply</button>
                                 </form>
-                                <button id="toggle-completed" class="btn btn-sm btn-outline-secondary">Hide completed</button>
+                                <button id="toggle-completed" class="btn btn-sm btn-outline-success">Hide completed</button>
                             </div>
                             @endif
                         </div>
@@ -121,7 +121,7 @@
                                 <form method="POST" action="{{ route('training.students.checklist.completeMultiple', $student->id) }}">@csrf
                                     <table class="table table-sm table-hover mb-0"><tbody>
                                         @foreach ($items as $item)
-                                        <tr class="{{ $item->completed ? 'completed-row' : '' }}"><td><span class="toggle-select-item" data-item-id="{{ $item->id }}" data-completed="{{ $item->completed }}" style="cursor:pointer; {{ $item->completed ? 'text-decoration: line-through; color: grey;' : '' }}">{{ $item->checklistItem->item }}</span></td></tr>
+                                        <tr class="{{ $item->completed ? 'completed-row' : '' }}" style="cursor:pointer;"><td><span class="toggle-select-item" data-item-id="{{ $item->id }}" data-completed="{{ $item->completed }}" style="cursor:pointer; {{ $item->completed ? 'text-decoration: line-through; color: grey;' : '' }}">{{ $item->checklistItem->item }}</span></td></tr>
                                         @endforeach
                                     </tbody></table>
                                 </form>
@@ -178,6 +178,11 @@
                                 @if ($nextStep)
                                 <div class="student-automation-note"><i class="fas fa-rotate"></i><span>{{ $nextStep }}</span></div>
                                 @endif
+                                @elseif ($student->completionLockReasons())
+                                @foreach ($student->completionLockReasons() as $lockReason)
+                                <div class="student-automation-note"><i class="fas fa-rotate"></i><span>{{ $lockReason }}</span></div>
+                                @endforeach
+                                <button type="button" class="student-action" disabled><i class="fas fa-graduation-cap"></i>Complete Training</button>
                                 @else <button type="button" class="student-action" data-bs-toggle="modal" data-bs-target="#completeTrainingModal"><i class="fas fa-graduation-cap"></i>Complete Training</button> @endif
                             <form method="POST" action="{{ route('training.students.assignT2', $student->id) }}">@csrf <button type="submit" class="student-action"><i class="fas fa-list-check"></i>Add Tier 2 Checklists</button></form>
                             @can('roster.manage') <a href="{{ url('/dashboard/roster/edit/' . $student->user->id) }}" class="student-action"><i class="fas fa-certificate"></i>Edit Certifications</a> @endcan
@@ -206,7 +211,7 @@
                         <div class="student-panel-body">
                             @if (empty($vatcanNotes)) <p class="text-muted mb-0">No training notes yet! Check back later to view your latest 3!</p>
                             @else
-                            @php($editableVatcanNotes = true)
+                            @php $editableVatcanNotes = true; @endphp
                             @foreach (array_slice($vatcanNotes, 0, 3) as $note)
                                 @include('training.students.partials.vatcan-note', ['note' => $note])
                             @endforeach
@@ -281,7 +286,7 @@
 
 @foreach (['editTimes' => ['title' => 'Edit Availability', 'route' => 'training.students.editTimes'], 'completeTraining' => null, 'assignLabel' => null, 'confirmRemoveInstructor' => null] as $modal => $config)
 @if ($modal === 'editTimes')
-<div class="modal fade" id="{{$modal}}Modal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content"><form method="POST" action="{{ route($config['route'], $student->id) }}">@csrf <div class="modal-header"><h5 class="modal-title">{{$config['title']}}</h5><button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button></div><div class="modal-body">@include('training.students.partials.availability-fields', ['availabilityEditorId' => 'staffAvailability'])</div><div class="modal-footer"><button type="submit" class="btn btn-primary">Save</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div></form></div></div></div>
+<div class="modal fade" id="{{$modal}}Modal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content"><form method="POST" action="{{ route($config['route'], $student->id) }}">@csrf <div class="modal-header"><h5 class="modal-title">{{$config['title']}}</h5></div><div class="modal-body">@include('training.students.partials.availability-fields', ['availabilityEditorId' => 'staffAvailability'])</div><div class="modal-footer"><button type="submit" class="btn btn-primary">Save</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div></form></div></div></div>
 @elseif ($modal === 'completeTraining')
 <div class="modal fade" id="completeTrainingModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -308,7 +313,7 @@
     </div>
 </div>
 @elseif ($modal === 'assignLabel')
-@php($editableVatcanNotes = true)
+@php $editableVatcanNotes = true; @endphp
 @include('training.students.partials.vatcan-notes-modal')
 @include('training.students.partials.vatcan-note-form')
 
@@ -372,7 +377,7 @@
     </div>
 </div>
 @else
-<div class="modal fade" id="confirmRemoveInstructorModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">VATCAN Instructor</h5><button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button></div><form action="{{ route('training.students.assigninstructor', $student->id) }}" method="POST" id="instructorForm">@csrf <div class="modal-body"><p class="small text-muted">Changes are written to VATCAN and synchronized back to the portal.</p><div class="form-group"><label for="instructorSelect" class="form-label">Assigned instructor</label><select name="instructor" class="form-select" id="instructorSelect" data-searchable><option value="">— No Change —</option>@foreach ($instructors as $instructor)@if ($instructor->id != 1)<option value="{{ $instructor->id }}">{{ $instructor->user->fullName('FLC') }}</option>@endif @endforeach</select></div><div class="form-group mt-3"><button type="button" class="btn btn-outline-danger" id="unassignBtn"><i class="fas fa-user-slash"></i> Unassign current instructor</button><input type="hidden" name="remove_instructor" id="removeInstructor" value="0"></div></div><div class="modal-footer"><button type="submit" class="btn btn-outline-success" id="confirmBtn" disabled>Save in VATCAN</button><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button></div></form></div></div></div>
+<div class="modal fade" id="confirmRemoveInstructorModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">VATCAN Instructor</h5></div><form action="{{ route('training.students.assigninstructor', $student->id) }}" method="POST" id="instructorForm">@csrf <div class="modal-body"><p class="small text-muted">Changes are written to VATCAN and synchronized back to the portal.</p><div class="form-group"><label for="instructorSelect" class="form-label">Assigned instructor</label><select name="instructor" class="form-select" id="instructorSelect" data-searchable><option value="">— No Change —</option>@foreach ($instructors as $instructor)@if ($instructor->id != 1)<option value="{{ $instructor->id }}">{{ $instructor->user->fullName('FLC') }}</option>@endif @endforeach</select></div><div class="form-group mt-3"><button type="button" class="btn btn-outline-danger" id="unassignBtn"><i class="fas fa-user-slash"></i> Unassign current instructor</button><input type="hidden" name="remove_instructor" id="removeInstructor" value="0"></div></div><div class="modal-footer"><button type="submit" class="btn btn-outline-success" id="confirmBtn" disabled>Save in VATCAN</button><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button></div></form></div></div></div>
 @endif
 @endforeach
 
@@ -410,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmBtn = document.getElementById('confirmBtn'), instructorSelect = document.getElementById('instructorSelect'), removeInstructorInput = document.getElementById('removeInstructor'), unassignBtn = document.getElementById('unassignBtn');
     function updateConfirmButtonState() { const hasSelectedInstructor = instructorSelect?.value, isUnassign = removeInstructorInput?.value === '1'; if (confirmBtn) { confirmBtn.disabled = !(hasSelectedInstructor || isUnassign); confirmBtn.classList.toggle('btn-success', hasSelectedInstructor || isUnassign); confirmBtn.classList.toggle('btn-outline-success', !(hasSelectedInstructor || isUnassign)); } if (unassignBtn) { unassignBtn.classList.toggle('btn-danger', isUnassign); unassignBtn.classList.toggle('btn-outline-danger', !isUnassign); } }
     instructorSelect?.addEventListener('change', function () { removeInstructorInput.value = '0'; unassignBtn?.classList.remove('active'); updateConfirmButtonState(); }); unassignBtn?.addEventListener('click', function () { const isActive = removeInstructorInput.value === '1'; removeInstructorInput.value = isActive ? '0' : '1'; instructorSelect.value = ''; updateConfirmButtonState(); }); updateConfirmButtonState();
-    const globalButton = document.getElementById('header-apply-selected'); if (globalButton) { const globalForm = globalButton.closest('form'), selectedItems = new Set(); document.querySelectorAll('.toggle-select-item').forEach(item => { const isCompleted = item.dataset.completed === '1'; if (isCompleted) { item.style.textDecoration = 'line-through'; item.style.color = 'grey'; } item.addEventListener('click', function () { const itemId = this.dataset.itemId; if (selectedItems.has(itemId)) { selectedItems.delete(itemId); if (isCompleted) { this.style.textDecoration = 'line-through'; this.style.color = 'grey'; } else { this.style.textDecoration = 'none'; this.style.color = ''; } } else { selectedItems.add(itemId); if (isCompleted) { this.style.textDecoration = 'none'; this.style.color = ''; } else { this.style.textDecoration = 'line-through'; this.style.color = 'grey'; } } globalButton.disabled = selectedItems.size === 0; }); }); globalForm?.addEventListener('submit', function (e) { globalForm.querySelectorAll('input[name="checklist_items[]"]').forEach(el => el.remove()); selectedItems.forEach(itemId => { const input = document.createElement('input'); input.type = 'hidden'; input.name = 'checklist_items[]'; input.value = itemId; globalForm.appendChild(input); }); if (selectedItems.size === 0) e.preventDefault(); }); }
+    const globalButton = document.getElementById('header-apply-selected'); if (globalButton) { const globalForm = globalButton.closest('form'), selectedItems = new Set(); document.querySelectorAll('.toggle-select-item').forEach(item => { const isCompleted = item.dataset.completed === '1'; if (isCompleted) { item.style.textDecoration = 'line-through'; item.style.color = 'grey'; } (item.closest('tr') ?? item).addEventListener('click', function () { const itemId = item.dataset.itemId; if (selectedItems.has(itemId)) { selectedItems.delete(itemId); if (isCompleted) { item.style.textDecoration = 'line-through'; item.style.color = 'grey'; } else { item.style.textDecoration = 'none'; item.style.color = ''; } } else { selectedItems.add(itemId); if (isCompleted) { item.style.textDecoration = 'none'; item.style.color = ''; } else { item.style.textDecoration = 'line-through'; item.style.color = 'grey'; } } globalButton.disabled = selectedItems.size === 0; }); }); globalForm?.addEventListener('submit', function (e) { globalForm.querySelectorAll('input[name="checklist_items[]"]').forEach(el => el.remove()); selectedItems.forEach(itemId => { const input = document.createElement('input'); input.type = 'hidden'; input.name = 'checklist_items[]'; input.value = itemId; globalForm.appendChild(input); }); if (selectedItems.size === 0) e.preventDefault(); }); }
 });
 </script>
 <script src="{{ asset('js/training-availability.js') }}"></script>

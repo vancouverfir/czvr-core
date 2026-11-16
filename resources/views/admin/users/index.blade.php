@@ -44,7 +44,7 @@
                             @endif
                         </td>
                         <td>
-                            <a class="blue-text" href="{{route('users.viewprofile', $user->id)}}"><i class="fa fa-eye"></i> View User</a>
+                            <a class="blue-text" href="{{route('users.viewprofile', $user->id)}}">View User</a>
                         </td>
                     </tr>
                     @endif

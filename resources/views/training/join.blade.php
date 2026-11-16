@@ -34,7 +34,7 @@
             </div>
 
             <div class="join-step">
-                <h2>Step 2 – Join VATCAN &amp; Complete your S1 Exam</h2>
+                <h2>Step 2 – Join VATCAN &amp; Complete your Entrance Exam</h2>
                 <ol>
                     <li>You will need to join the VATCAN division. If you have not already joined, or skipped some steps from Step 1, click the following link to set your region: <a href="https://cert.vatsim.net/vatsimnet/regch.php" target="_blank" rel="noopener noreferrer">https://cert.vatsim.net/vatsimnet/regch.php</a>. You may proceed to step 5 if you are already a part of VATCAN.</li>
                     <li>You will now get your choice to select a region and division to join. To join VATCAN select <strong>Americas</strong> as your region.</li>

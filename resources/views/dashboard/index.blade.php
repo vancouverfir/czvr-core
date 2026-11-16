@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                             <div class="col" data-step="3" data-intro="Here is an overview of your profile, including your CZVR roles! You can change the way your name is displayed by clicking on the 'Change display name' button [CoC A4(b)]!">
-                                <h3 class="h4 fw-bold mb-1">{{ auth()->user()->fullName('FLC') }}</h3>
+                                <h3 class="h4 fw-bold mb-1 dashboard-profile-name">{{ auth()->user()->fullName('FLC') }}</h3>
                                 <div class="dashboard-meta">
                                     <span>{{ auth()->user()->rating_GRP }} ({{ auth()->user()->rating_short }})</span>
                                     <span>{{ auth()->user()->accessLabel() }}</span>
@@ -169,21 +169,20 @@
                         <h2 class="h3 fw-bold dashboard-card-title">Controller status</h2>
 
                         <div class="dashboard-statuses">
-                            <span class="badge text-bg-{{ $status[0] }} rounded shadow-none"
-                                @if(isset($status[3])) style="background-color: {{ $status[3] }}" @endif>
+                            <span class="badge {{ $status[0] }} rounded shadow-none">
                                 <i class="fa {{ $status[1] }}"></i>&nbsp;{{ $status[2] }}
                             </span>
-                            <span class="badge text-bg-{{ $activeStatus[0] }} rounded shadow-none">
+                            <span class="badge {{ $activeStatus[0] }} rounded shadow-none">
                                 <i class="fa {{ $activeStatus[1] }}"></i>&nbsp;{{ $activeStatus[2] }}
                             </span>
                         </div>
 
                         <div class="text-danger">
                             @if ($certification === 'not_certified')
-                                <p class="small mb-1">You are currently not certified to control. If you think this is a mistake, please contact us.</p>
+                                <p class="small mb-1">You are currently not certified to control! If you think this is a mistake, please contact us!</p>
                             @endif
                             @if ($active === 0)
-                                <p class="small mb-1">You are inactive. Please contact the FIR Chief and do not control on the network.</p>
+                                <p class="small mb-1">You are inactive! Please contact a member of the <a href="{{ route('staff') }}" class="text-danger text-decoration-underline">FIR Executive Team</a> and do not control on the network!</p>
                             @endif
                         </div>
 
@@ -193,7 +192,7 @@
                             <h3>Quarterly activity</h3>
 
                             @if ($profile->currency < 0.1)
-                                <div><span class="badge red rounded shadow-none">No hours recorded</span></div>
+                                <div><span class="badge text-bg-danger rounded shadow-none">No hours recorded</span></div>
                             @else
                                 <div>
                                     <span class="badge {{ $profile->currency >= $requiredHours ? 'green' : 'purple' }} rounded shadow-none">
@@ -236,7 +235,14 @@
         <div class="dashboard-workspace">
             <div class="card" data-step="8" data-intro="Here you can view upcoming events and your signups for them!">
                 <div class="card-body {{ count($confirmedevent) < 1 ? 'dashboard-inline-section' : '' }}">
-                <h2 class="h3 fw-bold dashboard-card-title">Upcoming events</h2>
+                @if (count($confirmedevent) < 1)
+                    <h2 class="h3 fw-bold dashboard-card-title">Upcoming events</h2>
+                @else
+                    <div class="d-flex align-items-center justify-content-between gap-2 dashboard-card-title">
+                        <h2 class="h3 fw-bold mb-0">Upcoming events</h2>
+                        <a href="{{ route('events.index') }}" class="btn btn-sm btn-outline-primary">View all</a>
+                    </div>
+                @endif
                 <div>
                     @if (count($confirmedevent) < 1)
                         <div class="dashboard-event-empty">
@@ -250,7 +256,7 @@
                             @endif
                         </div>
                     @else
-                        @foreach ($confirmedevent as $cevent)
+                        @foreach ($confirmedevent->take(5) as $cevent)
                             <div class="dashboard-event">
                                 <div class="dashboard-event-date">
                                     {{ $cevent->start_timestamp->format('d') }}
@@ -259,15 +265,19 @@
                                 <div class="flex-grow-1">
                                     <a href="{{ route('events.view', $cevent->slug) }}" class="fw-bold">{{ $cevent->name }}</a>
                                     <div class="small text-muted mt-1">{{ $cevent->start_timestamp_pretty() }}</div>
-                                    @foreach ($confirmedapp as $capp)
-                                        @if ($cevent->id == $capp->event->id)
-                                            <div class="small mt-2">
-                                                <span class="badge text-bg-success me-1">Confirmed</span>
-                                                {{ $capp->airport }} · {{ ($capp->start_timestamp)->format('H:i') }}z–{{ ($capp->end_timestamp)->format('H:i') }}z
-                                            </div>
-                                        @endif
-                                    @endforeach
                                 </div>
+                                @php($myShifts = $confirmedapp->filter(fn ($capp) => $capp->event_id == $cevent->id))
+                                @if ($myShifts->isNotEmpty())
+                                    {{-- The user's confirmed shifts for this event, on the right of the row --}}
+                                    <div class="dashboard-event-shifts" title="Your confirmed {{ \Illuminate\Support\Str::plural('shift', $myShifts->count()) }}">
+                                        @foreach ($myShifts as $capp)
+                                            <div class="dashboard-event-shift">
+                                                <span class="dashboard-event-shift-position">{{ $capp->airport }}</span>
+                                                <span class="dashboard-event-shift-time">{{ ($capp->start_timestamp)->format('H:i') }}z–{{ ($capp->end_timestamp)->format('H:i') }}z</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                         <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between mt-3">
@@ -347,9 +357,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Change avatar</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <form id="discord-avatar-form" method="POST" action="{{ route('users.changeavatar.discord') }}" class="d-none">
                 @csrf
@@ -408,9 +415,6 @@
             @if (!auth()->user()->hasDiscord())
                 <div class="modal-header">
                     <h5 class="modal-title" id="discordModalTitle">Join the Vancouver FIR Discord</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
 
                 <div class="modal-body text-center">
@@ -426,9 +430,6 @@
             @else
                 <div class="modal-header">
                     <h5 class="modal-title">Unlink your Discord account</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
 
                 <div class="modal-body text-center">
@@ -455,20 +456,17 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Events You've Applied For</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 @foreach ($confirmedevent as $cevent)
+                    @php($applications = $unconfirmedapp->where('event_id', $cevent->id))
+                    @continue($applications->isEmpty())
                     <h5><span class="fw-bold blue-text">{{ $cevent->name }}</span> on
                         {{ $cevent->start_timestamp_pretty() }}</h5>
-                    @foreach ($unconfirmedapp as $uapp)
-                        @if ($cevent->name == $uapp->event->name)
-                            <li>
-                                <span class="fw-bold"> Position Requested:</span> {{ $uapp->position }} from {{ $uapp->start_availability_timestamp }}z - {{ $uapp->end_availability_timestamp }}z
-                            </li> <br />
-                        @endif
+                    @foreach ($applications as $uapp)
+                        <li>
+                            <span class="fw-bold"> Position Requested:</span> {{ $uapp->airport }} from {{ \Illuminate\Support\Carbon::parse($uapp->start_availability_timestamp)->format('H:i') }}z - {{ \Illuminate\Support\Carbon::parse($uapp->end_availability_timestamp)->format('H:i') }}z
+                        </li> <br />
                     @endforeach
                 @endforeach
             </div>

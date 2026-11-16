@@ -431,6 +431,15 @@
     color: var(--czvr-green);
 }
 
+.student-checklist-item.student-checklist-done {
+    color: var(--czvr-green-dark);
+    font-weight: 500;
+}
+
+.student-checklist-item.student-checklist-done i {
+    color: var(--czvr-green);
+}
+
 .student-availability-schedule {
     border: 1px solid var(--czvr-border);
     border-radius: .6rem;
@@ -1032,15 +1041,19 @@
     transform: translateX(2px);
 }
 
-.join-page { max-width: 1040px; }
-.join-panel { overflow: hidden; border: 1px solid var(--czvr-border); border-top: 0; border-radius: 0 0 .5rem .5rem; background: var(--czvr-surface); }
-.join-step { padding: 1.25rem 1.4rem; }
+.join-page .page-heading h1 { font-size: 2rem; font-weight: 500; }
+.join-page .page-heading p { max-width: 760px; color: var(--czvr-text); font-size: 1rem !important; line-height: 1.7; }
+.join-panel { overflow: hidden; border: 1px solid var(--czvr-border); border-top: 0; border-radius: 0 0 .75rem .75rem; background: var(--czvr-surface); }
+.join-step { padding: 1rem; }
 .join-step + .join-step { border-top: 1px solid var(--czvr-border); }
-.join-step h2 { margin: 0 0 .65rem; color: var(--czvr-green-dark); font-size: 1.1rem; font-weight: 500; }
-.join-step ol { margin: 0; padding-left: 1.3rem; line-height: 1.65; }
-.join-step li + li { margin-top: .35rem; }
-.join-note { margin: 1.25rem 1.4rem 0; border-color: #b9e3f4; border-left-color: #33b5e5; color: #0c4a63; background: #e6f6fc; }
-.join-step p { line-height: 1.65; }
+.join-step h2 { margin: 0 0 .6rem; color: var(--czvr-green-dark); font-size: 1.2rem; font-weight: 500; }
+.join-step ol { margin: 0; padding-left: 1.3rem; color: var(--czvr-text); font-size: 1rem; line-height: 1.7; }
+.join-step li + li { margin-top: .4rem; }
+.join-step p { color: var(--czvr-text); font-size: 1rem !important; line-height: 1.7; }
+.join-note { margin: 1rem 1rem 0; font-size: 1rem !important; line-height: 1.65; }
+.join-page .page-section h2 { font-size: 1.2rem; }
+.join-page .page-list-item strong { font-size: 1rem; }
+.join-page .page-list-item small { font-size: .9rem; }
 
 .resource-manager-row {
     align-items: center;

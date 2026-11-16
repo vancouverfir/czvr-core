@@ -26,21 +26,21 @@ class DashboardController extends Controller
         $profile = $rosterMember;
 
         $statusBadges = [
-            'certified' => ['success', 'fa-check', 'CZVR Certified'],
-            'not_certified' => ['danger', 'fa-times', 'Not Certified to Control'],
-            'training' => ['warning', 'fa-book-open', 'In Training'],
-            'home' => ['info', 'fa-user-check', 'CZVR Controller', '#2E2F2F'],
-            'visit' => ['info', 'fa-plane', 'CZVR Visiting Controller'],
-            'instructor' => ['info', 'fa-chalkboard-teacher', 'CZVR Instructor'],
+            'certified' => ['text-bg-success', 'fa-check', 'CZVR Certified'],
+            'not_certified' => ['text-bg-danger', 'fa-times', 'Not Certified to Control'],
+            'training' => ['text-bg-warning', 'fa-book-open', 'In Training'],
+            'home' => ['badge-member', 'fa-user-check', 'CZVR Controller'],
+            'visit' => ['badge-member', 'fa-plane', 'CZVR Visiting Controller'],
+            'instructor' => ['badge-member', 'fa-chalkboard-teacher', 'CZVR Instructor'],
         ];
 
         $activeBadges = [
-            0 => ['danger', 'fa-times', 'Inactive'],
-            1 => ['success', 'fa-check', 'Active'],
+            0 => ['text-bg-danger', 'fa-times', 'Inactive'],
+            1 => ['text-bg-success', 'fa-check', 'Active'],
         ];
 
-        $status = $statusBadges[$certification] ?? ['dark', 'fa-question', 'Unknown'];
-        $activeStatus = $activeBadges[$active] ?? ['dark', 'fa-question', 'Unknown'];
+        $status = $statusBadges[$certification] ?? ['text-bg-dark', 'fa-question', 'Unknown'];
+        $activeStatus = $activeBadges[$active] ?? ['text-bg-dark', 'fa-question', 'Unknown'];
 
         $requiredHours = config('currency.'.$profile?->status, 3);
 

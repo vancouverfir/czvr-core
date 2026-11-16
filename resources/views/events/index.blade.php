@@ -13,12 +13,17 @@
                 return;
             }
 
-            const coverage = document.getElementById('eventCoverage');
+            const coverage = document.getElementById('eventCoveragePanel');
 
-            if (coverage && window.bootstrap) {
-                bootstrap.Collapse.getOrCreateInstance(coverage, { toggle: false }).show();
-                coverage.scrollIntoView({ block: 'start' });
+            if (!coverage || !window.bootstrap) {
+                return;
             }
+
+            if (window.scrollY > 0) {
+                window.scrollTo({ top: 0, behavior: 'instant' });
+            }
+
+            bootstrap.Collapse.getOrCreateInstance(coverage, { toggle: false }).show();
         }
 
         document.addEventListener('DOMContentLoaded', openCoverageFromHash);
@@ -30,13 +35,13 @@
     <div class="container py-4">
         <div class="d-flex flex-row justify-content-between align-items-center mb-1">
             <h1 class="blue-text fw-bold">Events</h1>
-            <a href="#eventCoverage" class="event-coverage-toggle" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="eventCoverage">
+            <a href="#eventCoveragePanel" class="event-coverage-toggle" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="eventCoveragePanel">
                 Need ATC Coverage? <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </a>
         </div>
         <hr>
 
-        <section class="collapse event-coverage-panel" id="eventCoverage">
+        <section class="collapse event-coverage-panel" id="eventCoveragePanel">
             <div class="event-coverage-content">
                 <div class="event-coverage-copy">
                     <h2>Bring your event through Vancouver!</h2>

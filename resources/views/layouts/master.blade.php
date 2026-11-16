@@ -290,9 +290,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="contactUsModalTitle">Contact Vancouver FIR</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body">
                     To contact us, please do one of the following:
@@ -302,6 +299,9 @@
                         <li>Join our Discord server and ask in the #general channel.</li>
                     </ol>
                     <b>If your query is related to ATC coverage for your event, please visit <a href="{{route('events.index')}}">this page.</a></b>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                 </div>
             </div>
         </div>
@@ -314,15 +314,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                 <h5 class="modal-title" id="errorModalTitle"><span class="fw-bold red-text"><i class="fas fa-exclamation-circle"></i> An error occurred...</span></h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body">
                     <span>{{\Session::get('error-modal')}}</span>
                     <div class="alert alert-light mt-4">
                         <small>If you believe this is a mistake, please create a <a target="_blank" href="{{route('tickets.index')}}">support ticket.</a></small>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                 </div>
             </div>
         </div>
@@ -338,13 +338,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="discordTopModalTitle">Join the Vancouver FIR Discord!</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body">
                     <p>To join our Discord community, please head to your <a href="{{route('dashboard.index')}}">dashboard.</a></p>
                     <p>VATCAN has a Discord too! You can join the VATCAN Discord by clicking <a href="https://vatcan.ca/my/integrations" rel="noopener noreferrer" target="_blank">here!</a></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
                 </div>
             </div>
         </div>

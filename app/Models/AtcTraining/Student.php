@@ -178,6 +178,25 @@ class Student extends Model
         return collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames, true));
     }
 
+    public function completionLockReasons(): array
+    {
+        $this->loadMissing('labels.label', 'user');
+
+        if ($this->isRecertification() || $this->currentTrainingLabel(self::RATING_TRAINING_LABELS) !== 'C1 Training') {
+            return [];
+        }
+
+        $reasons = [];
+        if ((int) $this->user?->rating_id < 5) {
+            $reasons[] = 'Student must have earned their C1 rating before you can complete training!';
+        }
+        if ($this->checklistItems()->where('completed', false)->exists()) {
+            $reasons[] = 'Student must have completed every checklist item before you can complete training!';
+        }
+
+        return $reasons;
+    }
+
     /** The package after the student's current one, or null when there is none */
     public function nextTrainingLabel(array $trainingOrder): ?string
     {

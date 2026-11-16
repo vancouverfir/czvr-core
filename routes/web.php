@@ -366,9 +366,7 @@ Route::middleware('auth')->group(function () {
 
         // Staff directory
         Route::get('/staff', [StaffListController::class, 'editIndex'])->middleware('can:staff.manage')->name('settings.staff');
-        Route::post('/staff/{id}', [StaffListController::class, 'editStaffMember'])->middleware('can:staff.manage')->name('settings.staff.editmember');
-        Route::post('/staff/a/add', [StaffListController::class, 'addStaffMember'])->middleware('can:staff.manage')->name('settings.staff.addmember');
-        Route::post('/staff/{id}/delete', [StaffListController::class, 'deleteStaffMember'])->middleware('can:staff.manage')->name('settings.staff.deletemember');
+        Route::post('/staff', [StaffListController::class, 'save'])->middleware('can:staff.manage')->name('settings.staff.save');
 
         // Banner and homepage images
         Route::get('/banner', [SettingsController::class, 'banner'])->middleware('can:site-settings.manage')->name('settings.banner');

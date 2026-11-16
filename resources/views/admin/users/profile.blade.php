@@ -6,9 +6,9 @@
 
 @php
     $statusBadges = [
-        'home' => ['text-bg-info', 'fa-user-check', 'CZVR Controller'],
-        'visit' => ['text-bg-info', 'fa-plane', 'CZVR Visiting Controller'],
-        'instructor' => ['text-bg-info', 'fa-chalkboard-teacher', 'CZVR Instructor'],
+        'home' => ['badge-member', 'fa-user-check', 'CZVR Controller'],
+        'visit' => ['badge-member', 'fa-plane', 'CZVR Visiting Controller'],
+        'instructor' => ['badge-member', 'fa-chalkboard-teacher', 'CZVR Instructor'],
     ];
     [$statusColour, $statusIcon, $statusLabel] = $certification === null
         ? ['badge-muted', 'fa-user', 'Not a CZVR Controller']

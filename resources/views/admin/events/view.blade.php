@@ -205,9 +205,6 @@
                 @method('DELETE')
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteEventTitle">Are you sure?</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <p>This will soft delete the event, so it still exists in the database but cannot be viewed!</p>
@@ -232,9 +229,6 @@
                 @csrf
             <div class="modal-header">
                 <h5 class="modal-title" id="editEventTitle">Edit {{$event->name}}</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
                 <div class="modal-body">
                     @if($errors->editEventErrors->any())
@@ -346,9 +340,6 @@
                 @csrf
             <div class="modal-header">
                 <h5 class="modal-title" id="createUpdateTitle">Create Event Update</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
                 <div class="modal-body">
                     @if($errors->createUpdateErrors->any())
@@ -389,9 +380,6 @@
                 @csrf
             <div class="modal-header">
                 <h5 class="modal-title" id="confirmControllerTitle">Add Controller to Event {{$event->name}}</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
 
             <div class="modal-body">

@@ -225,12 +225,16 @@ class SyncStudents extends Command
             return;
         }
 
-        $profile->qualification = $isInstructor ? 'Instructor' : 'Mentor';
-        if (blank($profile->email)) {
-            $profile->email = (string) ($member['email'] ?? $user->email ?? '');
+        if ($isInstructor) {
+            $profile->qualification = 'Instructor';
+            if (blank($profile->email)) {
+                $profile->email = (string) ($member['email'] ?? $user->email ?? '');
+            }
+            $profile->active = true;
+            $profile->save();
+        } elseif ($profile->exists) {
+            $profile->update(['active' => false]);
         }
-        $profile->active = true;
-        $profile->save();
 
         // Mentor badges follow the VATCAN rating, instructors already cover every position so they get none
         $rating = (int) ($member['rating'] ?? 0);
