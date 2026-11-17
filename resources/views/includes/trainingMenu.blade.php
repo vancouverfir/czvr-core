@@ -44,7 +44,7 @@
 
                 @if ($isTrainingStaff)
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('training.students.students', 'training.students.view', 'training.students.completed') ? 'active' : '' }}" href="{{ route('training.students.students') }}">Students</a>
+                        <a class="nav-link {{ request()->routeIs('training.students.students', 'training.students.view', 'training.students.completed', 'training.checklists.*') ? 'active' : '' }}" href="{{ route('training.students.students') }}">Students</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('training.students.waitlist') ? 'active' : '' }}" href="{{ route('training.students.waitlist') }}">Waitlist</a>

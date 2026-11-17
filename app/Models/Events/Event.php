@@ -23,6 +23,7 @@ class Event extends Model
             'start_timestamp' => 'datetime',
             'end_timestamp' => 'datetime',
             'controller_applications_open' => 'boolean',
+            'subscribers_notified_at' => 'datetime',
         ];
     }
 

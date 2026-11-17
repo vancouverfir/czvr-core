@@ -184,7 +184,7 @@
                                 @endforeach
                                 <button type="button" class="student-action" disabled><i class="fas fa-graduation-cap"></i>Complete Training</button>
                                 @else <button type="button" class="student-action" data-bs-toggle="modal" data-bs-target="#completeTrainingModal"><i class="fas fa-graduation-cap"></i>Complete Training</button> @endif
-                            <form method="POST" action="{{ route('training.students.assignT2', $student->id) }}">@csrf <button type="submit" class="student-action"><i class="fas fa-list-check"></i>Add Tier 2 Checklists</button></form>
+                            <button type="button" class="student-action" data-bs-toggle="modal" data-bs-target="#manualChecklistsModal"><i class="fas fa-list-check"></i>Manual Checklists</button>
                             @can('roster.manage') <a href="{{ url('/dashboard/roster/edit/' . $student->user->id) }}" class="student-action"><i class="fas fa-certificate"></i>Edit Certifications</a> @endcan
                             @elseif ($student->status === \App\Models\AtcTraining\Student::STATUS_COMPLETED)
                             <div class="student-action text-success"><i class="fas fa-check-circle"></i>Training completed {{ $student->updated_at?->format('F j, Y') }}</div>
@@ -380,6 +380,50 @@
 <div class="modal fade" id="confirmRemoveInstructorModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">VATCAN Instructor</h5></div><form action="{{ route('training.students.assigninstructor', $student->id) }}" method="POST" id="instructorForm">@csrf <div class="modal-body"><p class="small text-muted">Changes are written to VATCAN and synchronized back to the portal.</p><div class="form-group"><label for="instructorSelect" class="form-label">Assigned instructor</label><select name="instructor" class="form-select" id="instructorSelect" data-searchable><option value="">— No Change —</option>@foreach ($instructors as $instructor)@if ($instructor->id != 1)<option value="{{ $instructor->id }}">{{ $instructor->user->fullName('FLC') }}</option>@endif @endforeach</select></div><div class="form-group mt-3"><button type="button" class="btn btn-outline-danger" id="unassignBtn"><i class="fas fa-user-slash"></i> Unassign current instructor</button><input type="hidden" name="remove_instructor" id="removeInstructor" value="0"></div></div><div class="modal-footer"><button type="submit" class="btn btn-outline-success" id="confirmBtn" disabled>Save in VATCAN</button><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button></div></form></div></div></div>
 @endif
 @endforeach
+
+@php
+    $manualOptions = $student->manualChecklistOptions();
+    $assignedChecklistIds = $student->checklistItems->pluck('checklistItem.checklist_id')->unique()->all();
+    $manualGroups = array_filter([
+        ($manualOptions['label'] ? 'Tier 2 – '.$manualOptions['label'] : 'Tier 2') => $manualOptions['tier2'],
+        'Optional' => $manualOptions['optional'],
+    ], fn ($checklists) => $checklists->isNotEmpty());
+@endphp
+<div class="modal fade" id="manualChecklistsModal" tabindex="-1" aria-labelledby="manualChecklistsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="{{ route('training.students.checklists.manual', $student->id) }}">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manualChecklistsTitle">Manual Checklists</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @forelse ($manualGroups as $groupName => $checklists)
+                        <h6 class="fw-bold {{ $loop->first ? '' : 'mt-3' }}">{{ $groupName }}</h6>
+                        @foreach ($checklists as $checklist)
+                            @php $isAssigned = in_array($checklist->id, $assignedChecklistIds); @endphp
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="checklist_ids[]" value="{{ $checklist->id }}" id="manualChecklist{{ $checklist->id }}"
+                                    @checked($isAssigned || $groupName !== 'Optional') @disabled($isAssigned)>
+                                <label class="form-check-label" for="manualChecklist{{ $checklist->id }}">
+                                    {{ $checklist->name }}
+                                    @if ($isAssigned)<span class="text-muted small">· Assigned</span>@endif
+                                </label>
+                            </div>
+                        @endforeach
+                    @empty
+                        <p class="text-muted mb-0">No checklists can be added for this student right now.</p>
+                    @endforelse
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-primary" @disabled(empty($manualGroups))>Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @if ($canStartRecertification && $recertificationPackages->isNotEmpty())
 <div class="modal fade" id="startRecertificationModal" tabindex="-1" aria-labelledby="startRecertificationTitle" aria-hidden="true">

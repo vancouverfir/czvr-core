@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title', 'News - Vancouver FIR')
-@section('description', 'News from Vancouver FIR')
+@section('description', 'The latest news and announcements from the Vancouver FIR!')
 
 @push('styles')
     <link href="{{ asset('css/pages/public.css') }}" rel="stylesheet">

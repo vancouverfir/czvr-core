@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Publications;
 
 use App\Http\Controllers\Controller;
 use App\Models\Publications\AtcResource;
+use App\Models\Settings\AuditLogEntry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -34,7 +35,8 @@ class AtcResourcesController extends Controller
 
     public function uploadResource(Request $request): RedirectResponse
     {
-        AtcResource::create($this->validatedResource($request));
+        $resource = AtcResource::create($this->validatedResource($request));
+        AuditLogEntry::staff('Added ATC resource '.$resource->title);
 
         return redirect()->route('atcresources.index')->withSuccess('Resource added!');
     }
@@ -42,6 +44,7 @@ class AtcResourcesController extends Controller
     public function updateResource(Request $request, AtcResource $resource): RedirectResponse
     {
         $resource->update($this->validatedResource($request));
+        AuditLogEntry::staff('Edited ATC resource '.$resource->title);
 
         return back()->withSuccess('Resource updated!');
     }
@@ -51,6 +54,7 @@ class AtcResourcesController extends Controller
         $resource = AtcResource::whereId($id)->firstOrFail();
 
         $resource->delete();
+        AuditLogEntry::staff('Deleted ATC resource '.$resource->title);
 
         return redirect()->back()->with('info', 'Resource deleted!');
     }

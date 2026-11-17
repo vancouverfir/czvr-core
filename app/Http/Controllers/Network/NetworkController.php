@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Network\MonitoredPosition;
 use App\Models\Network\SessionLog;
+use App\Models\Settings\AuditLogEntry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -124,6 +125,7 @@ class NetworkController extends Controller
     {
         $data = $this->validatePosition($request);
         $position = MonitoredPosition::query()->create($data);
+        AuditLogEntry::staff('Added monitored position '.$position->identifier);
 
         return redirect()
             ->route('network.monitoredpositions.view', strtolower($position->identifier))
@@ -132,7 +134,12 @@ class NetworkController extends Controller
 
     public function updateMonitoredPosition(Request $request, MonitoredPosition $position): RedirectResponse
     {
+        $old = $position->identifier;
         $position->update($this->validatePosition($request, $position));
+
+        if ($old !== $position->identifier) {
+            AuditLogEntry::staff('Renamed monitored position '.$old.' to '.$position->identifier);
+        }
 
         return redirect()
             ->route('network.monitoredpositions.view', strtolower($position->identifier))
@@ -147,6 +154,7 @@ class NetworkController extends Controller
 
         $identifier = $position->identifier;
         $position->delete();
+        AuditLogEntry::staff('Removed monitored position '.$identifier);
 
         return redirect()->route('network.index', ['tab' => 'positions'])->withSuccess($identifier.' was removed!');
     }

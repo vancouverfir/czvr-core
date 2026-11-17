@@ -114,6 +114,7 @@ class NewsController extends Controller
 
         // Create and publish if needed
         $article->save();
+        AuditLogEntry::staff(($article->visible ? 'Published' : 'Created draft') .' news article \''.$article->title.'\''.($article->email_level === News::EMAIL_SUBSCRIBERS ? ' (emailed to subscribers)' : ''));
         if ($article->visible) {
             ProcessArticlePublishing::dispatch($article);
             $request->session()->flash('articleCreated', 'Article created and published!');
@@ -195,8 +196,11 @@ class NewsController extends Controller
             $article->visible = false;
         }
 
+        $visibilityChanged = $article->isDirty('visible');
+
         // Create and publish if needed
         $article->save();
+        AuditLogEntry::staff('Edited news article \''.$article->title.'\''.($visibilityChanged ? ($article->visible ? ' (now published)' : ' (now hidden)') : ''));
 
         return redirect()->Back()->withSuccess('Successfully Edited Article!');
     }
@@ -204,7 +208,7 @@ class NewsController extends Controller
     public function deleteArticle($id): RedirectResponse
     {
         $article = News::whereId($id)->firstOrFail();
-        AuditLogEntry::insert(Auth::user(), 'Deleted News Article '.$article->id, User::find(1), 0);
+        AuditLogEntry::staff('Deleted news article \''.$article->title.'\' ('.$article->id.')');
         $article->delete();
 
         return redirect('/admin/news')->withSuccess('Article Deleted!');

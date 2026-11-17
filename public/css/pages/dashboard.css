@@ -478,3 +478,13 @@
     .network-metrics div:nth-child(2) { border-right: 0; }
     .network-form-row { align-items: stretch; flex-direction: column; }
 }
+@media (max-width: 575.98px) {
+    .network-metrics div { padding: .55rem .7rem; }
+    .network-metrics strong { font-size: 1.1rem; }
+    .network-filter { flex-wrap: wrap; }
+    .network-table { font-size: .8rem; }
+    .network-table > :not(caption) > * > * { padding: .45rem .45rem; }
+    .network-table thead th { white-space: normal; line-height: 1.2; }
+    .network-table td small { font-size: .72rem; }
+    .network-progress { width: 3.5rem; }
+}

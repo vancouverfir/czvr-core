@@ -1,5 +1,6 @@
 @extends('layouts.master')
 @section('title', 'PDC - Vancouver FIR')
+@section('description', 'How to request and read a pre-departure clearance at Vancouver FIR airports.')
 
 @push('styles')
     <link href="{{ asset('css/pages/pilots.css') }}" rel="stylesheet">

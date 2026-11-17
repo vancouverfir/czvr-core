@@ -120,7 +120,7 @@
                                         </form>
                                     </div>
                                 </div>
-                                <button type="button" class="accordion" aria-expanded="false" aria-controls="preferencesPanel">Your Preferences</button>
+                                <button type="button" class="accordion" id="preferencesToggle" aria-expanded="false" aria-controls="preferencesPanel">Your Preferences</button>
                                 <div class="panel" id="preferencesPanel">
                                     <div class="card-body">
                                         <h5 class="fw-bold blue-text">Current Subscription Status</h5>
@@ -131,15 +131,19 @@
                                         @endif
                                         <hr>
                                         <h5 class="fw-bold">What Does This Mean?</h5>
-                                        <p> When you subscribe to our email service, you allow the Vancouver FIR to send you 'promotional' emails as defined by the European Union GDPR. These emails are typically not necessary to your continued participation in the FIR or holding an account with us on our system.<br /> Some examples would include:
-                                        </p>
+                                        <p class="mb-1">When you're subscribed, we'll email you about:</p>
                                         <ul style="list-style: square">
-                                            <li>Controller certifications for the quarter</li>
-                                            <li>News from the FIR Chief about non-critical matters</li>
-                                            <li>Updates from other staff members</li>
-                                            <li>Event notifications</li>
+                                            <li>News articles from the Vancouver FIR</li>
+                                            <li>New events</li>
                                         </ul>
-                                        <p>To learn more about how we manage your data, please read our <a href="{{ url('/privacy') }}">privacy policy!</a></p>
+                                        <p class="mb-1">Emails about your account are always sent, whether or not you're subscribed:</p>
+                                        <ul style="list-style: square">
+                                            <li>Training requests, renewals and sessions</li>
+                                            <li>Event applications and shift reminders</li>
+                                            <li>Support ticket replies</li>
+                                            <li>Changes to your roster status</li>
+                                        </ul>
+                                        <p>To learn more about how we manage your data, please read our <a href="{{ route('privacy') }}">Privacy Policy</a>.</p>
                                         @if (auth()->user()->gdpr_subscribed_emails == 0)
                                             <form method="POST" action="{{ url('/dashboard/emailpref/subscribe') }}" class="d-inline">
                                                 @csrf
@@ -346,6 +350,15 @@
             } else {
                 panel.style.maxHeight = panel.scrollHeight + "px";
             }
+        });
+    }
+
+    if (location.hash === "#preferences") {
+        var prefs = document.getElementById("preferencesToggle");
+        prefs.closest("details").open = true;
+        prefs.click();
+        window.addEventListener("load", function () {
+            window.scrollTo({ top: prefs.getBoundingClientRect().top + window.scrollY - 15 });
         });
     }
 </script>

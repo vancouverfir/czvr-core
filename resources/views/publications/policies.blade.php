@@ -6,8 +6,8 @@
 
 @stop
 
-@section('title', 'Policies')
-@section('description', 'Policies and Guidelines from the Vancouver FIR')
+@section('title', 'Policies - Vancouver FIR')
+@section('description', 'Vancouver FIR policies and guidelines for controllers and users.')
 
 @section('content')
 @include('partials.vendor.flatpickr')

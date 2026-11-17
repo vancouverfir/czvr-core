@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title', 'Instructing Staff - Vancouver FIR')
-@section('description', 'The Vancouver Instructors and Mentors!')
+@section('description', 'The instructors and mentors who train Vancouver FIR controllers.')
 
 @section('content')
     <div class="container" style="margin-top: 20px;">
@@ -11,10 +11,10 @@
             <h2 class="blue-text fw-bold">Instructors</h2>
             <div class="row">
                 @foreach (\App\Models\Teacher::where('is_instructor', 1)->get() as $instructor)
-                    <div class="col col-6 mb-3">
+                    <div class="col-12 col-md-6 mb-3">
                         <div class="card card-body">
                             <div class="d-flex flex-row">
-                                <img src="{{$instructor->user->avatar()}}" style="border-radius: 50%; width: 100px; height: 100px; margin-right: 4%;">
+                                <img src="{{$instructor->user->avatar()}}" style="border-radius: 50%; width: 100px; height: 100px; margin-right: 4%; flex-shrink: 0; object-fit: cover;">
                                 <div class="d-flex flex-column">
                                     <h3 class="mb-1 fw-bold blue-text">{{$instructor->user->fullName('FL')}}</h3>
                                     <div class="d-flex flex-wrap gap-2 mt-2">
@@ -39,10 +39,10 @@
             <h2 class="blue-text fw-bold">Mentors</h2>
             <div class="row">
                 @foreach (\App\Models\Teacher::where('is_instructor', 0)->get() as $instructor)
-                    <div class="col col-6 mb-3">
+                    <div class="col-12 col-md-6 mb-3">
                         <div class="card card-body">
                             <div class="d-flex flex-row">
-                                <img src="{{$instructor->user->avatar()}}" style="border-radius: 50%; width: 100px; height: 100px; margin-right: 4%;">
+                                <img src="{{$instructor->user->avatar()}}" style="border-radius: 50%; width: 100px; height: 100px; margin-right: 4%; flex-shrink: 0; object-fit: cover;">
                                 <div class="d-flex flex-column">
                                     <h3 class="mb-1 fw-bold blue-text">{{$instructor->user->fullName('FL')}}</h3>
                                     <div class="d-flex flex-wrap gap-2 mt-2">

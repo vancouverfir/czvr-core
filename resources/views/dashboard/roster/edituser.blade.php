@@ -69,7 +69,7 @@
                         ['name' => 'active', 'label' => 'Roster status', 'current' => (string) (int) old('active', $roster->active), 'options' => ['1' => 'Active', '0' => 'Not Active']],
                         ['name' => 'rating_hours', 'label' => 'Reset rating hours', 'current' => old('rating_hours', 'false'), 'options' => ['false' => 'No', 'true' => 'Yes'], 'disabled' => ! $roster->canResetRatingHours()],
                     ];
-                    $loggedTime = decimal_to_hm(max(0, (float) $roster->rating_hours));
+                    $loggedTime = decimal_to_hm($roster->rating_hours);
                 @endphp
                 <div class="alert roster-vatcan-note mb-3" role="note">
                     Tier 2 endorsements are updated on VATCAN automatically when you save! Solo Certifications must still be updated on VATCAN!
@@ -81,12 +81,12 @@
                             <tr>
                                 <th scope="col" rowspan="2"></th>
                                 @foreach ($columns->groupBy('position') as $position => $tiers)
-                                    <th scope="colgroup" colspan="{{ $tiers->count() }}" class="text-center roster-cert-position"><span>{{ $position }}</span></th>
+                                    <th scope="colgroup" colspan="{{ $tiers->count() }}" class="text-center roster-cert-position"><span data-short="{{ ['Delivery / Ground' => 'DEL/GND', 'Tower' => 'TWR', 'Departure' => 'DEP', 'Arrival' => 'APP', 'Centre' => 'CTR'][$position] ?? $position }}">{{ $position }}</span></th>
                                 @endforeach
                             </tr>
                             <tr>
                                 @foreach ($columns as $column)
-                                    <th scope="col" class="text-center text-muted fw-normal small">{{ $column['tier'] }}</th>
+                                    <th scope="col" class="text-center text-muted fw-normal small"><span data-short="{{ ['Unrestricted' => 'Unr.', 'Tier 2' => 'T2'][$column['tier']] ?? $column['tier'] }}">{{ $column['tier'] }}</span></th>
                                 @endforeach
                             </tr>
                         </thead>
@@ -124,15 +124,26 @@
                             @if ($disabled)
                                 <input type="hidden" name="{{ $toggle['name'] }}" value="false">
                             @endif
+                            @if ($toggle['name'] === 'rating_hours')
+                                @unless ($disabled)
+                                    <input type="hidden" name="rating_hours" value="false">
+                                @endunless
+                                <div aria-labelledby="rating_hours-label">
+                                    <input type="checkbox" class="btn-check" name="rating_hours" id="rating_hours-true" value="true" @checked(! $disabled && $toggle['current'] === 'true') @disabled($disabled)>
+                                    <label class="btn roster-toggle-option" for="rating_hours-true">Reset</label>
+                                </div>
+                            @else
                             <div class="btn-group" role="group" aria-labelledby="{{ $toggle['name'] }}-label">
                                 @foreach ($toggle['options'] as $value => $text)
                                     <input type="radio" class="btn-check" name="{{ $toggle['name'] }}" id="{{ $toggle['name'] }}-{{ $value }}" value="{{ $value }}" @checked($disabled ? $value === 'false' : $toggle['current'] === (string) $value) @disabled($disabled) required>
                                     <label class="btn roster-toggle-option" for="{{ $toggle['name'] }}-{{ $value }}">{{ $text }}</label>
                                 @endforeach
                             </div>
+                            @endif
                             @if ($toggle['name'] === 'active' && (int) $roster->active === 1)
-                                {{-- Only an active controller being deactivated is emailed (RosterController::editController). --}}
                                 <div class="small text-danger mt-1 roster-inactive-warning">Saving will mark this controller inactive and email them!</div>
+                            @elseif ($toggle['name'] === 'active')
+                                <div class="small text-success mt-1 roster-active-warning">Saving will mark this controller active and email them!</div>
                             @endif
                             @if ($toggle['name'] === 'rating_hours' && $disabled)
                                 <div class="small text-muted mt-1">This controller is not currently under consolidation!</div>

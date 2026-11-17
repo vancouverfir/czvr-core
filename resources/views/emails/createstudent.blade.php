@@ -1,18 +1,17 @@
 @extends('layouts.email')
 
-@section('to-line', 'Hi '. $student->user->fullName('FLC') . ',')
+@section('headline', 'Welcome to the Training Centre')
 
+@section('to-line', 'Hi '.$student->user->display_fname.',')
 
 @section('message-content')
-    <h1>You have been added as a Student!</h1><br/>
-    <p>Welcome to Vancouver FIR!</p><br/>
-    <p>We’re excited to let you know that you’ve been added as a student in our Training Centre!</p><br/>
-    <p>Whether you’re just starting out or applied to visit, our portal is your hub for all the information you’ll need for your training at Vancouver FIR!</p><br/>
-    <p>To help us pair you with the right instructor, please share your general availability. Make sure your times are in UTC!</p><br/>
-    <a href="https://training.czvr.ca" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:#fff; text-decoration:none; border-radius:4px; margin-bottom: 30px;">Submit Availability</a><br/>
-    <p>If you believe there is an error, or have any questions, please do not hesitate to open up a support ticket.</p>
+    <p>You've been added as a student in the Vancouver FIR Training Centre!</p>
+    <p>Whether you're starting out or joining us as a visitor, the Training Centre is where you'll find everything you need for your training.</p>
+    <p>To help us pair you with the right instructor, please share your general availability. All times should be in UTC.</p>
+    <p style="margin:8px 0 24px 0;"><a href="{{ 'https://training.czvr.ca' }}" target="_blank" rel="noopener" style="display:inline-block; padding:8px 16px; background-color:#007bff; color:#ffffff; font-size:14px; font-weight:600; text-decoration:none; border-radius:4px;">Submit Availability</a></p>
+    <p>If you think this is a mistake or have any questions, please open a support ticket.</p>
 @stop
 
-@section('footer-to-line', $student->user->fullName('FLC').' ('.$student->user->email.')')
+@section('footer-to-line', $student->user->email)
 
-@section('footer-reason-line') you've been added to the waitlist for CZVR FIR @endsection
+@section('footer-reason-line', 'you were added as a student in the Vancouver FIR Training Centre.')

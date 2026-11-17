@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title', 'Preferred Routing - Vancouver FIR')
-@section('description', 'Vancouver FIR preferred routing')
+@section('description', 'Preferred IFR routes for flights to, from and through the Vancouver FIR.')
 @push('styles')
     <link href="{{ asset('css/pages/pilots.css') }}" rel="stylesheet">
 @endpush

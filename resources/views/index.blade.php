@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title', 'Vancouver FIR')
-@section('description', 'Welcome to Vancouver - located in the left of Canada on the VATSIM network!')
+@section('description', 'Welcome to Vancouver - Come explore Canada’s West Coast!')
 
 @push('styles')
     <link href="{{ asset('css/pages/homepage.css') }}" rel="stylesheet">

@@ -582,9 +582,4 @@ class UserController extends Controller
 
         return redirect()->route('dashboard.index')->with('info', 'Account successfully unlinked!');
     }
-
-    public function preferences(): View
-    {
-        return view('dashboard.me.preferences');
-    }
 }

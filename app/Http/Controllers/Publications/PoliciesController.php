@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\News\News;
 use App\Models\Publications\Policy;
 use App\Models\Publications\PolicySection;
+use App\Models\Settings\AuditLogEntry;
 use App\Models\Users\User;
 use App\Support\Authorization\PermissionCatalog;
 use Auth;
@@ -122,14 +123,7 @@ class PoliciesController extends Controller
                 }
             }
         }
-        // $entry = new AuditLogEntry([
-        //    'user_id' => Auth::user()->id,
-        //    'affected_id' => 1,
-        //    'action' => 'CREATE POLICY '.'('.$policy->id.')',
-        //    'time' => date('Y-m-d H:i:s'),
-        //    'private' => 0,
-        // ]);
-        // $entry->save();
+        AuditLogEntry::staff('Added policy '.$policy->name.' ('.$policy->id.')'.($policy->staff_only ? ', staff only' : '').($emailOption !== 'none' ? ', released with news ('.$emailOption.')' : ''));
 
         return redirect()->route('policies')->with('success', 'Policy '.$policy->name.' added!');
     }
@@ -178,16 +172,8 @@ class PoliciesController extends Controller
         $policy->author = Auth::user()->id;
         $policy->releaseDate = $request->get('date') ?: date('Y-m-d');
 
-        // $entry = new AuditLogEntry([
-        //    'user_id' => Auth::user()->id,
-        //    'affected_id' => 1,
-        //    'action' => 'EDIT POLICY '.'('.$id.')',
-        //    'time' => date('Y-m-d H:i:s'),
-        //    'private' => 0,
-        // ]);
-        // $entry->save();
-
         $policy->save();
+        AuditLogEntry::staff('Edited policy '.$policy->name.' ('.$policy->id.')'.($request->hasFile('file') ? ', replaced the file' : ''));
 
         return redirect()->route('policies')->with('success', 'Policy <text class="font-weight-bold">'.$request->get('name').'</text> edited!');
     }
@@ -201,15 +187,8 @@ class PoliciesController extends Controller
         if ($filePath && Storage::disk('public')->exists($filePath)) {
             Storage::disk('public')->delete($filePath);
         }
-        // $entry = new AuditLogEntry([
-        //   'user_id' => Auth::user()->id,
-        //   'affected_id' => 1,
-        //   'action' => 'DELETE POLICY '.$policy->name.'('.$policy->id.')',
-        //   'time' => date('Y-m-d H:i:s'),
-        //   'private' => 0,
-        // ]);
-        // $entry->save();
         $policy->delete();
+        AuditLogEntry::staff('Deleted policy '.$policy->name.' ('.$policy->id.')');
 
         return redirect()->route('policies')->with('success', 'Policy deleted!');
     }
@@ -242,6 +221,7 @@ class PoliciesController extends Controller
         ]);
 
         $policySection->save();
+        AuditLogEntry::staff('Added policy section '.$policySection->section_name);
 
         return redirect()
             ->route('policies')
@@ -260,15 +240,8 @@ class PoliciesController extends Controller
             }
         }
 
-        // $entry = new AuditLogEntry([
-        //     'user_id' => Auth::user()->id,
-        //     'affected_id' => 1,
-        //     'action' => 'DELETE POLICY SECTION '.$section->section_name.'('.$section->id.')',
-        //     'time' => date('Y-m-d H:i:s'),
-        //     'private' => 0,
-        // ]);
-        // $entry->save();
         $section->delete();
+        AuditLogEntry::staff('Deleted policy section '.$section->section_name.' (its policies were moved to no section, staff only)');
 
         return redirect()->route('policies')->with('success', 'Policy section '.$section->section_name.' deleted!');
     }

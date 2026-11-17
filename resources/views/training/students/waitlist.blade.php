@@ -181,7 +181,7 @@
                             @endforeach
                         </select>
 
-                        <label class="form-label mt-3" for="is_visitor">Controller type</label>
+                        <label class="form-label mt-3" for="is_visitor">Visitor?</label>
                         <select name="is_visitor" id="is_visitor" class="form-select" required>
                             <option value="0" selected>No</option>
                             <option value="1">Yes</option>

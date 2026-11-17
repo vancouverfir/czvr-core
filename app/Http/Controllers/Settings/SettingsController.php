@@ -48,7 +48,7 @@ class SettingsController extends Controller
             'copyright_year' => ['required', 'integer', 'min:2000', 'max:'.(now()->year + 1)],
         ]);
 
-        CoreSettings::query()->findOrFail(1)->update($data);
+        $this->updateCoreSettings($data, 'Updated site information');
 
         return redirect()->route('settings.siteinformation')->withSuccess('Site information saved successfully.');
     }
@@ -79,7 +79,7 @@ class SettingsController extends Controller
             'emailwebmaster' => ['required', 'email:rfc', 'max:255'],
         ]);
 
-        CoreSettings::query()->findOrFail(1)->update($data);
+        $this->updateCoreSettings($data, 'Updated staff email addresses');
 
         return redirect()->route('settings.emails')->withSuccess('Staff email addresses saved successfully.');
     }
@@ -111,11 +111,11 @@ class SettingsController extends Controller
         ]);
 
         $mode = $data['bannerMode'] === 'hidden' ? '' : $data['bannerMode'];
-        CoreSettings::query()->findOrFail(1)->update([
+        $this->updateCoreSettings([
             'banner' => $mode === '' ? '' : ($data['bannerMessage'] ?? ''),
             'bannerMode' => $mode,
             'bannerLink' => $mode === '' ? '' : ($data['bannerLink'] ?? ''),
-        ]);
+        ], $mode === '' ? 'Hid the site banner' : 'Updated the site banner ('.$mode.'): '.Str::limit($data['bannerMessage'] ?? '', 120));
 
         return back()->withSuccess('The banner has been updated!');
     }
@@ -150,6 +150,7 @@ class SettingsController extends Controller
         $image->CSS = 'background-size: cover; background-repeat: no-repeat; background-position: center;';
         $image->save();
         Cache::forget('home.background');
+        AuditLogEntry::staff('Uploaded homepage image '.$image->id.' (credit: '.$image->credit.')');
 
         return back()->with('success', 'File uploaded to: <a href="'.$url.'">'.$url.'</a>');
     }
@@ -166,6 +167,7 @@ class SettingsController extends Controller
         $image->CSS = $request->CSS;
         $image->save();
         Cache::forget('home.background');
+        AuditLogEntry::staff('Edited homepage image '.$image->id);
 
         return back()->withSuccess('Image edited successfully!');
     }
@@ -215,6 +217,7 @@ class SettingsController extends Controller
 
         $image->delete();
         Cache::forget('home.background');
+        AuditLogEntry::staff('Deleted homepage image '.$image->id.' (credit: '.$image->credit.')');
 
         return back()->withSuccess('Image and file deleted successfully!');
     }
@@ -254,6 +257,7 @@ class SettingsController extends Controller
             $data['permissions'] ?? [],
             fn (string $slug) => $request->user()->canGrantPermission($slug),
         )));
+        AuditLogEntry::staff('Added role '.$role->name.' with permissions: '.($role->permissions()->pluck('slug')->implode(', ') ?: 'none'));
 
         return redirect()
             ->route('roles.view', ['role' => $role->id])
@@ -281,6 +285,16 @@ class SettingsController extends Controller
 
         $this->syncRolePermissions($role, $slugs);
 
+        $after = $role->permissions()->pluck('slug')->all();
+        $added = array_diff($after, $current);
+        $removed = array_diff($current, $after);
+
+        if ($added || $removed) {
+            AuditLogEntry::staff('Updated role '.$role->name.' permissions'
+                .($added ? ', added: '.implode(', ', $added) : '')
+                .($removed ? ', removed: '.implode(', ', $removed) : ''));
+        }
+
         return back()->withSuccess('Updated the '.$role->name.' permissions!');
     }
 
@@ -290,8 +304,21 @@ class SettingsController extends Controller
         abort_if(in_array($role->slug, SystemRoleCatalog::protectedSlugs(), true), 403, 'Built-in roles cannot be deleted.');
         $message = $role->name;
         $role->delete();
+        AuditLogEntry::staff('Deleted role '.$message);
 
         return back()->withSuccess('Deleted the '.$message.' Role!');
+    }
+
+    private function updateCoreSettings(array $data, string $message): void
+    {
+        $settings = CoreSettings::query()->findOrFail(1);
+        $settings->fill($data);
+        $changed = array_keys($settings->getDirty());
+        $settings->save();
+
+        if ($changed) {
+            AuditLogEntry::staff($message.' ('.implode(', ', $changed).')');
+        }
     }
 
     /** @param list<string> $slugs */

@@ -104,6 +104,19 @@
                                 <label class="" for="">Open controller applications</label>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="">Email Options</label>
+                            <div class="d-flex flex-col">
+                            <div class="me-2">
+                                <input type="radio" value="no" checked="true" class="" id="emailOptionNone" name="emailOption">
+                                <label class="" for="emailOptionNone">No email</label>
+                            </div>
+                            <div class="">
+                                <input type="radio" value="subscribers" class="" id="emailOptionSubscribers" name="emailOption">
+                                <label class="" for="emailOptionSubscribers">Email subscribers</label>
+                            </div>
+                            </div>
+                        </div>
                     </div>
                 </li>
             </ul>

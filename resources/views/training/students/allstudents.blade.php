@@ -15,7 +15,10 @@
                 <h1 class="blue-text">Students</h1>
                 <p>VATCAN-synced training stages, consolidation, and assigned instructors!</p>
             </div>
-            <button type="button" id="toggleLabels" class="btn btn-sm btn-outline-primary">Expand labels</button>
+            <div class="d-flex gap-2">
+                <a href="{{ route('training.checklists.index') }}" class="btn btn-sm btn-outline-primary">Manage checklists</a>
+                <button type="button" id="toggleLabels" class="btn btn-sm btn-outline-primary">Expand labels</button>
+            </div>
         </header>
 
         <div class="form-group mb-2">

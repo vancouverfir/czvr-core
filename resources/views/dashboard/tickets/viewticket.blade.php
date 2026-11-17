@@ -24,10 +24,9 @@
                 On Hold
             @endif
             <br/>
-            Staff Member: {{$ticket->staff_member->user->fullName('FLC')}} ({{$ticket->staff_member->position}})
+            Staff Member: {{$ticket->staff_member->user->fullName('FL')}} ({{$ticket->staff_member->position}})
             <br/>
-            Submitted by {{$ticket->user->fullName('FLC')}} on <span title="{{$ticket->submission_time}}">{{$ticket->submission_time_pretty()}}</span><br/>
-            Last updated <span title="{{$ticket->updated_at}}">{{$ticket->updated_at_pretty()}}</span>
+            Opened by {{$ticket->user->fullName('FL')}} · <span title="{{$ticket->submission_time}}">{{ \Illuminate\Support\Carbon::parse($ticket->submission_time)->format('j M Y, H:i') }}z</span>
         </p>
         <h3>Message</h3>
         <div class="markdown border p-3">
@@ -40,12 +39,26 @@
         @else
             <div class="list-group">
                 @foreach ($replies as $reply)
-                    <div class="list-group-item" @if ($reply->user_id == 1) style="background-color: #bfe0fb;" @endif">
-                    <h6>{{$reply->user->fullName('FLC')}} on <span title="{{$reply->submission_time}}">{{$reply->submission_time_pretty()}}</span></h6>
-                        <div id="replyContent{{$reply->id}}" class="text markdown">
-                            {{$reply->toHtml('message')}}
+                    @php
+                        $event = $reply->statusEvent();
+                        $replyTime = \Illuminate\Support\Carbon::parse($reply->submission_time);
+                        $replyTimeText = $replyTime->isToday() ? $replyTime->format('H:i').'z' : $replyTime->format('j M Y, H:i').'z';
+                    @endphp
+                    @if ($event)
+                        <div class="list-group-item text-muted small">
+                            {{ $reply->user->fullName('FL') }} {{ $event['action'] }} · <span title="{{ $reply->submission_time }}">{{ $replyTimeText }}</span>
+                            @if ($event['comment'])
+                                <div class="text-body mt-1">{{ $event['comment'] }}</div>
+                            @endif
                         </div>
-                    </div>
+                    @else
+                        <div class="list-group-item" @if ($reply->user_id == 1) style="background-color: #bfe0fb;" @endif>
+                            <h6>{{ $reply->user->fullName('FL') }} <span class="text-muted fw-normal small">· <span title="{{ $reply->submission_time }}">{{ $replyTimeText }}</span></span></h6>
+                            <div id="replyContent{{$reply->id}}" class="text markdown">
+                                {{$reply->toHtml('message')}}
+                            </div>
+                        </div>
+                    @endif
                 @endforeach
             </div>
         @endif
@@ -73,7 +86,7 @@
             </form>
         @else
             @can('tickets.manage')
-                <a role="button" data-bs-toggle="modal" data-bs-target="#reopenTicket" class="btn btn-outline-success">Reopen Ticket</a>
+                <a role="button" data-bs-toggle="modal" data-bs-target="#reopenTicket" class="btn btn-success">Reopen Ticket</a>
             @endcan
         @endif
         @can('tickets.manage')
@@ -113,7 +126,7 @@
                 <p class="mb-0">Ticket #{{ $ticket->ticket_id }} will move back to Open Tickets, and a note saying you reopened it is added to the ticket!</p>
             </div>
             <div class="modal-footer">
-                <button type="submit" form="ticketStatusForm" class="btn btn-outline-success">Reopen Ticket</button>
+                <button type="submit" form="ticketStatusForm" class="btn {{ $ticket->status == 2 ? 'btn-outline-success' : 'btn-success' }}">Reopen Ticket</button>
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Dismiss</button>
             </div>
         </div>

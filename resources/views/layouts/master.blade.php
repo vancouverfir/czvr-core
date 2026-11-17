@@ -29,9 +29,25 @@
         <meta name="theme-color" content="#ffffff">
         <title>@yield('title', 'Vancouver FIR')</title>
         <meta name="description" content="@yield('description', '')">
+        <link rel="canonical" href="{{ url()->current() }}">
+        <meta property="og:site_name" content="Vancouver FIR">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:title" content="@yield('title', 'Vancouver FIR')">
         <meta property="og:description" content="@yield('description', '')">
-        <meta property="og:image" content="@yield('image','https://cdn.discordapp.com/attachments/800588233570123776/1051930179821391912/Wordmark_Colour.png')">
+        <meta property="og:image" content="{{ trim($__env->yieldContent('image')) ?: 'https://czvr.ca/storage/files/branding/czvr-long-wordmark.png' }}">
+        <meta name="twitter:card" content="summary_large_image">
+        @if (request()->is('/'))
+            <script type="application/ld+json">
+                {!! json_encode([
+                    '@context' => 'https://schema.org',
+                    '@graph' => [
+                        ['@type' => 'WebSite', 'name' => 'Vancouver FIR', 'alternateName' => 'CZVR', 'url' => url('/')],
+                        ['@type' => 'Organization', 'name' => 'Vancouver FIR', 'alternateName' => 'CZVR', 'url' => url('/'), 'logo' => 'https://czvr.ca/storage/files/branding/czvr-long-wordmark.png'],
+                    ],
+                ], JSON_UNESCAPED_SLASHES) !!}
+            </script>
+        @endif
         <!-- Package-managed vendor styles -->
         <link href="{{ asset('vendor/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('vendor/fontawesome/all.min.css') }}" rel="stylesheet">

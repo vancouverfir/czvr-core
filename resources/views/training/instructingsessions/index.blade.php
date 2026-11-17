@@ -5,9 +5,6 @@
 @stop
 
 @section('content')
-@push('vendor-styles')
-    <link href="{{ asset('vendor/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
-@endpush
 @include('includes.trainingMenu')
 
 @php
@@ -30,21 +27,81 @@
         'end_time' => old('end_time'),
         'instructor_comment' => old('instructor_comment'),
     ] : null;
+
+    $now = now('UTC');
+    $onNow = $upcomingSessions->filter(fn ($session) => $session->start_time->lte($now))->values();
+    $nextSession = $upcomingSessions->first(fn ($session) => $session->start_time->gt($now));
+    $sessionsByDay = $upcomingSessions->groupBy(fn ($session) => $session->start_time->copy()->utc()->max($now)->format('Y-m-d'));
+    $dayName = function ($date) use ($now) {
+        $day = \Carbon\Carbon::parse($date, 'UTC');
+
+        return $day->isSameDay($now) ? 'Today' : ($day->isSameDay($now->copy()->addDay()) ? 'Tomorrow' : $day->format('D j M'));
+    };
 @endphp
 
-<main class="container training-page">
+<main class="container training-page booking-page">
     <header class="training-page-header">
         <div>
             <h1 class="blue-text">Instructing Sessions</h1>
-            <p>Plan and review training sessions! All times are shown in UTC!</p>
+            <p>All times are UTC!</p>
         </div>
-        <div class="d-flex align-items-center gap-3">
-            <span id="utcClock" class="small text-muted">--:--:-- UTC</span>
-            <button type="button" id="newSessionButton" class="btn btn-sm btn-primary">New session</button>
+        <div class="booking-header-side">
+            <span class="booking-clock" aria-label="Current time in UTC"><span id="utcClock">--:--:--</span> <small>UTC</small></span>
+            <button type="button" id="newSessionButton" class="btn btn-sm btn-primary flex-shrink-0"><i class="fas fa-plus me-1"></i>New session</button>
         </div>
     </header>
 
-    <div id="calendar"></div>
+    <div class="booking-strip">
+        <span class="booking-strip-part">
+            <span class="booking-strip-label">Happening now</span>
+            @forelse ($onNow as $session)
+                <span><strong>{{ $session->title }}</strong> · {{ $session->student?->user?->fullName('FL') }} · until {{ $session->end_time->copy()->utc()->format('H:i') }} UTC</span>
+            @empty
+                <span>No sessions right now</span>
+            @endforelse
+        </span>
+        @if ($nextSession)
+            <span class="booking-strip-part">
+                <span class="booking-strip-label">Next</span>
+                <span><strong>{{ $nextSession->title }}</strong> · {{ $nextSession->start_time->copy()->utc()->isSameDay($now) ? '' : $nextSession->start_time->copy()->utc()->format('D j M').', ' }}{{ $nextSession->start_time->copy()->utc()->format('H:i') }} UTC</span>
+            </span>
+        @endif
+    </div>
+
+    <section class="training-panel" aria-labelledby="upcoming-sessions-heading">
+        <div class="training-panel-header">
+            <h2 id="upcoming-sessions-heading">Upcoming Sessions</h2>
+        </div>
+
+        @forelse ($sessionsByDay as $date => $sessions)
+            <div class="booking-day-label">{{ $dayName($date) }}</div>
+            @foreach ($sessions as $session)
+                @php
+                    $sessionStart = $session->start_time->copy()->utc();
+                    $sessionEnd = $session->end_time->copy()->utc();
+                    $isMine = $session->instructorUser()?->id === auth()->id();
+                @endphp
+                <button type="button" class="training-session-row booking-row-button" data-session-id="{{ $session->id }}">
+                    <span class="training-session-date">
+                        <span>{{ $sessionStart->format('M') }}</span>
+                        <strong>{{ $sessionStart->format('d') }}</strong>
+                    </span>
+                    <span class="training-row-copy">
+                        <span class="training-row-title">{{ $session->title }}</span>
+                        <span class="training-row-meta">{{ $sessionStart->format('H:i') }}–{{ $sessionEnd->format('H:i') }} UTC · {{ $session->student?->user?->fullName('FL') }} with {{ $session->instructorUser()?->fullName('FL') }}</span>
+                    </span>
+                    @if ($sessionStart->lte($now))
+                        <span class="training-status training-status-open">Happening now</span>
+                    @elseif ($isMine)
+                        <span class="training-status booking-status-mine">Yours</span>
+                    @endif
+                    <i class="fas fa-chevron-right booking-row-chevron" aria-hidden="true"></i>
+                </button>
+            @endforeach
+        @empty
+            <div class="training-empty">No upcoming sessions!</div>
+        @endforelse
+    </section>
 </main>
 
 <div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalTitle" aria-hidden="true">
@@ -143,7 +200,6 @@
 @stop
 
 @push('scripts')
-<script src="{{ asset('vendor/fullcalendar/fullcalendar.global.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const sessions = @json($sessionPayload);
@@ -229,44 +285,12 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('newSessionButton').addEventListener('click', () => showEditor());
     editButton.addEventListener('click', () => showEditor(currentSession));
 
-    const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
-        timeZone: 'UTC',
-        initialView: 'dayGridMonth',
-        toolbarClass: 'calendar-toolbar',
-        toolbarSectionClass: 'calendar-toolbar-section',
-        toolbarTitleClass: 'calendar-toolbar-title',
-        buttonGroupClass: 'calendar-button-group',
-        buttonClass: (button) => `calendar-button calendar-${button.name}-button`,
-        height: 'auto',
-        dayMaxEvents: true,
-        eventDisplay: 'block',
-        headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
-        events: sessions,
-        eventClass: 'session-event',
-        eventContent(info) {
-            const fmt = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
-            const timeText = info.event.start && info.event.end
-                ? `${fmt.format(info.event.start)} – ${fmt.format(info.event.end)} UTC`
-                : '';
-            const wrapper = document.createElement('div');
-            wrapper.className = 'session-calendar-event';
-            const eventTitle = document.createElement('strong');
-            eventTitle.textContent = info.event.title;
-            const details = document.createElement('small');
-            details.textContent = [timeText, info.event.extendedProps.instructor].filter(Boolean).join(' · ');
-            wrapper.append(eventTitle, details);
-            return { domNodes: [wrapper] };
-        },
-        eventClick(info) {
-            showDetails(sessionsById.get(String(info.event.id)));
-        },
+    document.querySelectorAll('[data-session-id]').forEach((row) => {
+        row.addEventListener('click', () => showDetails(sessionsById.get(row.dataset.sessionId)));
     });
 
-    calendar.render();
-    requestAnimationFrame(() => calendar.updateSize());
-
     const updateClock = () => {
-        document.getElementById('utcClock').textContent = new Date().toISOString().slice(11, 19) + ' UTC';
+        document.getElementById('utcClock').textContent = new Date().toISOString().slice(11, 19);
     };
 
     updateClock();

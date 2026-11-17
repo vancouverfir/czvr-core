@@ -6,8 +6,12 @@
 
 @stop
 
-@section('title', 'Roster - Vancouver FIR')
-@section('description', "Vancouver FIR's Controller Roster")
+@section('title', 'Controller Roster - Vancouver FIR')
+@section('description', 'The Vancouver FIR controller roster and each controller\'s certifications.')
+
+@push('styles')
+    <link href="{{ asset('css/pages/roster.css') }}" rel="stylesheet">
+@endpush
 
 @php
     $rosterTabs = [

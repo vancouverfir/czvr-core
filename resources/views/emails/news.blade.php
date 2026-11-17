@@ -1,22 +1,20 @@
 @extends('layouts.email')
 
-@section('to-line', 'Hi '. $user->fullName('FLC') . ',')
+@section('headline', 'News: '.$news->title)
+
+@section('to-line', 'Hi '.$user->display_fname.',')
 
 @section('message-content')
-<h2>{{$news->title}}</h2>
-{{$news->toHtml('content')}}
+    {{ $news->toHtml('content') }}
+    <p style="margin:8px 0 24px 0;"><a href="{{ url('/news/'.$news->slug) }}" target="_blank" rel="noopener" style="display:inline-block; padding:8px 16px; background-color:#007bff; color:#ffffff; font-size:14px; font-weight:600; text-decoration:none; border-radius:4px;">Read on the website</a></p>
 @endsection
 
-@section('from-line')
 @if ($news->show_author)
-Sent by <b>{{ $news->user->fullName('FLC') }}@if ($news->user->staffProfile) ({{ $news->user->staffProfile->position }})@endif</b>
-@else
-Sent by the Vancouver FIR Staff Team
+    @section('from-line')
+        {{ $news->user->fullName('FL') }}@if ($news->user->staffProfile)<br><span style="color:#6e6e73;">{{ $news->user->staffProfile->position }}</span>@endif
+    @endsection
 @endif
-@endsection
 
-@section('footer-to-line', $user->fullName('FLC').' ('.$user->email.')')
+@section('footer-to-line', $user->email)
 
-@section('footer-reason-line')
-you hold an account on the Vancouver FIR website and have subscribed to emails.
-@endsection
+@section('footer-reason-line', 'you are subscribed to Vancouver FIR news emails.')

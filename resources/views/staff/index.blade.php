@@ -6,8 +6,8 @@
 
 @stop
 
-@section('title', 'Vancouver FIR Staff')
-@section('description', 'View the Vancouver FIR Staff team')
+@section('title', 'Staff - Vancouver FIR')
+@section('description', 'Meet the Vancouver FIR staff team and find out who to contact.')
 
 @section('content')
 <div class="container" style="margin-top: 20px;">
@@ -15,7 +15,7 @@
     <hr>
     <div class="row">
         <div class="col-md-3">
-            <div class="list-group" style="position: sticky; top: 20px">
+            <div class="list-group mb-4 mb-md-0" style="position: sticky; top: 20px">
                 @foreach($groups as $g)
                 <a href="#{{$g->slug}}" class="list-group-item list-group-item-action">
                     {{$g->name}}
@@ -30,7 +30,7 @@
             <p style="margin-top: 5px; margin-bottom: 10px;">{{$g->description}}</p>
             <div class="row justify-content-center mb-2">
                 @foreach ($g->members as $member)
-                    <div class="col-sm-4">
+                    <div class="col-sm-6 col-lg-4">
                         <div style="text-align: center;">
                             @if ($member->user_id == 1)
                                 <img src="https://www.drupal.org/files/profile_default.png" style="width: 125px; margin-bottom: 10px; border-radius: 50%;">

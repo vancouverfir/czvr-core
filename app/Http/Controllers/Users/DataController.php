@@ -13,11 +13,6 @@ use Illuminate\View\View;
 
 class DataController extends Controller
 {
-    public function emailPref(): View
-    {
-        return view('dashboard.emailpref');
-    }
-
     public function subscribeEmails(): RedirectResponse
     {
         $user = Auth::user();

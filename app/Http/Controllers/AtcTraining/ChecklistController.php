@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AtcTraining;
 use App\Helpers\CreateNote;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Checklist;
+use App\Models\AtcTraining\ChecklistItem;
 use App\Models\AtcTraining\LabelChecklistMap;
 use App\Models\AtcTraining\LabelChecklistVisitorMap;
 use App\Models\AtcTraining\Student;
@@ -14,6 +15,8 @@ use App\Services\TrainingProgressionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class ChecklistController extends Controller
 {
@@ -75,26 +78,22 @@ class ChecklistController extends Controller
         }
     }
 
-    public function assignT2Checklist(Request $request, Student $student): RedirectResponse
+    public function assignManualChecklists(Request $request, Student $student): RedirectResponse
     {
-        $isVisitor = $student->user->visitor;
-        $currentLabel = $student->currentTrainingLabel(Student::trainingOrder($isVisitor));
+        $request->validate([
+            'checklist_ids' => 'required|array',
+            'checklist_ids.*' => 'integer',
+        ], ['checklist_ids.required' => 'Select at least one checklist!']);
 
-        if (! $currentLabel) {
-            return back()->with('error', 'No valid label found for T2 checklist assignment!');
+        $options = $student->manualChecklistOptions();
+        $checklists = $options['tier2']->merge($options['optional'])
+            ->whereIn('id', array_map('intval', $request->checklist_ids));
+
+        foreach ($checklists as $checklist) {
+            $this->assignChecklistItemsToStudent($student, $checklist->items);
         }
 
-        $checklistIds = $this->getChecklistIdsByLabelName($currentLabel, 'T2', $isVisitor);
-
-        if (empty($checklistIds)) {
-            return back()->with('error', "No T2 checklists found for {$currentLabel}!");
-        }
-
-        foreach ($checklistIds as $checklistId) {
-            $this->assignChecklistItemsToStudent($student, Checklist::findOrFail($checklistId)->items);
-        }
-
-        return back()->with('success', "T2 checklists assigned for {$currentLabel}!");
+        return back()->with('success', $checklists->count() === 1 ? "{$checklists->first()->name} assigned!" : 'Checklists assigned!');
     }
 
     public function startRecertification(
@@ -170,5 +169,79 @@ class ChecklistController extends Controller
         CreateNote::newNote($student->id, 'Promoted Student', '<u>'.Auth::user()->fullName('FLC').'</u> promoted student to '.$nextLabelName);
 
         return back()->with('success', "Student promoted to {$nextLabelName} and checklists assigned!");
+    }
+
+    public function manage(): View
+    {
+        $checklists = Checklist::with('items')->orderBy('name')->get();
+        $homeMaps = LabelChecklistMap::with('label')->get()->groupBy('checklist_id');
+        $visitorMaps = LabelChecklistVisitorMap::with('label')->get()->groupBy('checklist_id');
+
+        return view('training.checklists', compact('checklists', 'homeMaps', 'visitorMaps'));
+    }
+
+    public function storeChecklist(Request $request): RedirectResponse
+    {
+        Checklist::create($request->validate(['name' => 'required|string|max:255']));
+
+        return back()->with('success', 'Checklist created!');
+    }
+
+    public function updateChecklist(Request $request, Checklist $checklist): RedirectResponse
+    {
+        $checklist->update($request->validate(['name' => 'required|string|max:255']));
+
+        return back()->with('success', 'Checklist renamed!');
+    }
+
+    public function destroyChecklist(Checklist $checklist): RedirectResponse
+    {
+        $isMapped = LabelChecklistMap::where('checklist_id', $checklist->id)->exists()
+            || LabelChecklistVisitorMap::where('checklist_id', $checklist->id)->exists();
+
+        if ($isMapped) {
+            return back()->with('error', 'This checklist is assigned by a label and can\'t be deleted!');
+        }
+
+        $checklist->delete();
+
+        return back()->with('success', 'Checklist deleted!');
+    }
+
+    public function storeItem(Request $request, Checklist $checklist): RedirectResponse
+    {
+        $data = $request->validate(['item' => 'required|string|max:1000']);
+
+        DB::transaction(function () use ($checklist, $data): void {
+            $studentIds = StudentChecklistItem::whereIn('checklist_item_id', $checklist->items()->select('id'))
+                ->distinct()
+                ->pluck('student_id');
+
+            $item = $checklist->items()->create($data);
+
+            StudentChecklistItem::insert($studentIds->map(fn ($studentId) => [
+                'student_id' => $studentId,
+                'checklist_item_id' => $item->id,
+                'completed' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ])->all());
+        });
+
+        return back()->with('success', 'Item added!');
+    }
+
+    public function updateItem(Request $request, ChecklistItem $item): RedirectResponse
+    {
+        $item->update($request->validate(['item' => 'required|string|max:1000']));
+
+        return back()->with('success', 'Item updated!');
+    }
+
+    public function destroyItem(ChecklistItem $item): RedirectResponse
+    {
+        $item->delete();
+
+        return back()->with('success', 'Item deleted!');
     }
 }

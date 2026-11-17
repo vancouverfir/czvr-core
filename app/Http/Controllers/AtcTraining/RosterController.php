@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\RosterStatusMail;
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Network\SessionLog;
+use App\Models\Settings\AuditLogEntry;
 use App\Models\Users\Role;
 use App\Models\Users\User;
 use App\Services\VatcanClient;
@@ -62,6 +63,8 @@ class RosterController extends Controller
         $roster->delete();
         $user->removeRole($controllerRole);
 
+        AuditLogEntry::staff('Removed '.$user->fullName('FLC').' from the '.($roster->visit ? 'visiting' : 'home').' roster', $user);
+
         return redirect()->route('roster.public')->withSuccess('Successfully deleted from roster!');
     }
 
@@ -83,6 +86,8 @@ class RosterController extends Controller
                 ]);
                 $users->assignRole($controllerRole);
             });
+
+            AuditLogEntry::staff('Added '.$users->fullName('FLC').' to the home roster', $users);
         } else {
             return redirect()->back()->withErrors('Member: '.$users->fullName('FL').' CID: '.$users->id.' is already on the roster!');
         }
@@ -109,6 +114,8 @@ class RosterController extends Controller
                 ]);
                 $users->assignRole($controllerRole);
             });
+
+            AuditLogEntry::staff('Added '.$users->fullName('FLC').' to the visiting roster', $users);
         } else {
             return redirect()->back()->withErrors('Member: '.$users->fullName('FL').' CID: '.$users->id.' is already on the roster!');
         }
@@ -146,6 +153,7 @@ class RosterController extends Controller
         ]);
 
         $oldTier2 = $roster->tier2EndorsementLevel();
+        $before = $roster->only(['fss', 'delgnd', 'delgnd_t2', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr', 'remarks', 'active']);
 
         foreach (['fss', 'delgnd', 'delgnd_t2', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr'] as $field) {
             $roster->{$field} = $validated[$field];
@@ -177,14 +185,45 @@ class RosterController extends Controller
             $roster->rating_hours = 0;
         }
 
+        $ratingHoursReset = $roster->isDirty('rating_hours');
         $roster->save();
 
-        // Only a change from active to inactive notifies the controller; a mail failure must not undo the saved edit
-        if ($wasActive && (int) $roster->active === 0 && $roster->user?->email) {
+        $this->logRosterEdit($roster, $before, $ratingHoursReset);
+
+        if ($wasActive !== ((int) $roster->active === 1) && $roster->user?->email) {
             rescue(fn () => Mail::to($roster->user->email)->queue(new RosterStatusMail($roster, $roster->user)));
         }
 
         return redirect()->route('roster.public')->withSuccess('Successfully edited!');
+    }
+
+    private function logRosterEdit(RosterMember $roster, array $before, bool $ratingHoursReset): void
+    {
+        $labels = ['fss' => 'FSS', 'delgnd' => 'DEL/GND', 'delgnd_t2' => 'DEL/GND T2', 'twr' => 'TWR', 'twr_t2' => 'TWR T2', 'dep' => 'DEP', 'app' => 'APP', 'app_t2' => 'APP T2', 'ctr' => 'CTR'];
+        $levels = ['Not Authorised', 'With Supervision', 'Solo', 'Certified'];
+        $changes = [];
+
+        foreach ($labels as $field => $label) {
+            if ((int) $before[$field] !== (int) $roster->{$field}) {
+                $changes[] = $label.': '.($levels[(int) $before[$field]] ?? $before[$field]).' → '.($levels[(int) $roster->{$field}] ?? $roster->{$field});
+            }
+        }
+
+        if ((int) $before['active'] !== (int) $roster->active) {
+            $changes[] = 'status: '.($before['active'] ? 'Active → Not Active' : 'Not Active → Active');
+        }
+
+        if ((string) $before['remarks'] !== (string) $roster->remarks) {
+            $changes[] = 'remarks updated';
+        }
+
+        if ($ratingHoursReset) {
+            $changes[] = 'rating hours reset';
+        }
+
+        if ($changes) {
+            AuditLogEntry::staff('Edited roster entry for '.$roster->full_name.' ('.$roster->cid.'): '.implode(', ', $changes), $roster->user);
+        }
     }
 
     private function syncTier2Endorsement(VatcanClient $vatcan, RosterMember $roster, ?string $old, ?string $new): void

@@ -40,12 +40,17 @@ class NewWebsiteFeedback extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->greeting('Hello,')
-            ->line('A user has submitted feedback on the Website!')
-            ->line('User: '.$this->feedback->user->fullName('FLC'))
-            ->line('Email: '.$this->feedback->user->email)
-            ->line('Subject: '.$this->feedback->subject)
-            ->line('Content: '.$this->feedback->content);
+            ->subject('New Website Feedback')
+            ->view('emails.feedback.new', [
+                'kind' => 'website',
+                'intro' => 'A USER has submitted feedback on the Website!',
+                'details' => [
+                    'Submitted by' => $this->feedback->user->fullName('FLC').' ('.$this->feedback->user->email.')',
+                    'Subject' => $this->feedback->subject,
+                ],
+                'content' => $this->feedback->content,
+                'url' => route('staff.feedback.website', $this->feedback->id),
+            ]);
     }
 
     /**

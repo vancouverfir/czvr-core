@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title', 'Join - Vancouver FIR')
-@section('description', 'Join the Vancouver FIR!')
+@section('description', 'How to become a home or visiting controller in the Vancouver FIR.')
 
 @push('styles')
     <link href="{{ asset('css/pages/training.css') }}" rel="stylesheet">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tickets;
 
 use App\Http\Controllers\Controller;
+use App\Models\Settings\AuditLogEntry;
 use App\Models\Tickets\Ticket;
 use App\Models\Tickets\TicketReply;
 use App\Models\Users\StaffGroup;
@@ -11,7 +12,6 @@ use App\Models\Users\User;
 use App\Notifications\NewTicket;
 use App\Notifications\TicketReply as NotificationsTicketReply;
 use App\Support\Authorization\PermissionCatalog;
-use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -113,13 +113,14 @@ class TicketsController extends Controller
             $ticketReply = new TicketReply([
                 'user_id' => Auth::user()->id,
                 'ticket_id' => $ticket->ticket_id,
-                'message' => 'Ticket has been reopened by '.Auth::user()->fullName('FLC').' at '.Carbon::now()->toDayDateTimeString().' Zulu.',
+                'message' => 'Reopened this ticket.',
                 'submission_time' => date('Y-m-d H:i:s'),
             ]);
             $ticketReply->save();
             $ticket->status = 0;
             $ticket->updated_at = date('Y-m-d H:i:s');
             $ticket->save();
+            $this->logStaffTicketAction('Reopened', $ticket);
 
             return redirect()->route('tickets.viewticket', $ticket->ticket_id)->with('success', 'Ticket has been reopened!');
         } else {
@@ -139,18 +140,28 @@ class TicketsController extends Controller
             $ticketReply = new TicketReply([
                 'user_id' => Auth::user()->id,
                 'ticket_id' => $ticket->ticket_id,
-                'message' => 'Ticket has been placed on hold by '.Auth::user()->fullName('FLC').' at '.Carbon::now()->toDayDateTimeString().' Zulu. If you require further assistance immediately, please open a new ticket.',
+                'message' => 'Placed this ticket on hold.',
                 'submission_time' => date('Y-m-d H:i:s'),
             ]);
             $ticketReply->save();
             $ticket->status = 2;
             $ticket->updated_at = date('Y-m-d H:i:s');
             $ticket->save();
+            $this->logStaffTicketAction('Put on hold', $ticket);
 
             return redirect()->route('tickets.viewticket', $ticket->ticket_id)->with('success', 'Ticket has been placed on hold!');
         } else {
             return redirect()->route('tickets.viewticket', $ticket->ticket_id)->with('error-modal', 'Ticket #'.$ticket->ticket_id.' is already placed on hold.');
         }
+    }
+
+    private function logStaffTicketAction(string $verb, Ticket $ticket): void
+    {
+        if ((int) $ticket->user_id === (int) Auth::id()) {
+            return;
+        }
+
+        AuditLogEntry::staff($verb.' ticket #'.$ticket->ticket_id.' ('.Str::limit((string) $ticket->title, 80).')', User::find($ticket->user_id));
     }
 
     public function closeTicket(Request $request, $id): RedirectResponse
@@ -162,22 +173,19 @@ class TicketsController extends Controller
         }
 
         if ($ticket->status != 1) {
-            if ($request->get('message')) {
-                $message = ' with comment: '.$request->get('message');
-            } else {
-                $message = null;
-            }
+            $comment = trim((string) $request->get('message'));
 
             $ticketReply = new TicketReply([
                 'user_id' => Auth::user()->id,
                 'ticket_id' => $ticket->ticket_id,
-                'message' => 'Ticket closed by '.Auth::user()->fullName('FLC').$message.'. Closed at '.Carbon::now()->toDayDateTimeString().' Zulu. If you require further assistance please open a new ticket.',
+                'message' => 'Closed this ticket.'.($comment !== '' ? "\n\n".$comment : ''),
                 'submission_time' => date('Y-m-d H:i:s'),
             ]);
             $ticketReply->save();
             $ticket->status = 1;
             $ticket->updated_at = date('Y-m-d H:i:s');
             $ticket->save();
+            $this->logStaffTicketAction('Closed', $ticket);
 
             return redirect()->route('tickets.viewticket', $ticket->ticket_id)->with('success', 'Ticket closed!');
         } else {

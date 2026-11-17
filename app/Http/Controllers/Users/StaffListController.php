@@ -37,6 +37,7 @@ class StaffListController extends Controller
     public function editIndex(): View
     {
         $groups = StaffGroup::with(['members' => fn ($query) => $query->orderBy('id'), 'members.user'])->orderBy('id')->get();
+        $ticketCounts = Ticket::selectRaw('staff_member_id, COUNT(*) AS total')->groupBy('staff_member_id')->pluck('total', 'staff_member_id');
         $staff = StaffMember::all();
         $users = User::all();
 

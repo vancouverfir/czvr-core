@@ -43,7 +43,7 @@ class EventReminders extends Command
             foreach ($positionsByUser as $userId => $positions) {
                 $user = $positions->first()->user;
 
-                if (! $user || $user->gdpr_subscribed_emails != 1) {
+                if (! $user) {
                     continue;
                 }
 

@@ -23,6 +23,7 @@ use App\Http\Controllers\Settings\SettingsController;
 use App\Http\Controllers\Tickets\TicketsController;
 use App\Http\Controllers\Users\DataController;
 use App\Http\Controllers\Users\StaffListController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\Users\UserController;
 use App\Models\Users\User;
 use Illuminate\Support\Facades\Route;
@@ -112,8 +113,17 @@ Route::domain('training.czvr.ca')->group(function () {
         Route::post('/students/{student}/checklist/complete-multiple', [ChecklistController::class, 'completeMultiple'])->name('training.students.checklist.completeMultiple');
         Route::post('/students/{student}/promote', [ChecklistController::class, 'promoteStudent'])->name('training.students.promote');
         Route::post('/students/{student}/promote-visitor', [ChecklistController::class, 'promoteVisitor'])->name('training.students.promoteVisitor');
-        Route::post('/students/{student}/assign-t2', [ChecklistController::class, 'assignT2Checklist'])->name('training.students.assignT2');
+        Route::post('/students/{student}/manual-checklists', [ChecklistController::class, 'assignManualChecklists'])->name('training.students.checklists.manual');
         Route::post('/students/{student}/recertification', [ChecklistController::class, 'startRecertification'])->name('training.students.recertification.start');
+
+        // Checklist editor
+        Route::get('/checklists', [ChecklistController::class, 'manage'])->name('training.checklists.index');
+        Route::post('/checklists', [ChecklistController::class, 'storeChecklist'])->name('training.checklists.store');
+        Route::patch('/checklists/{checklist}', [ChecklistController::class, 'updateChecklist'])->name('training.checklists.update');
+        Route::delete('/checklists/{checklist}', [ChecklistController::class, 'destroyChecklist'])->name('training.checklists.destroy');
+        Route::post('/checklists/{checklist}/items', [ChecklistController::class, 'storeItem'])->name('training.checklists.items.store');
+        Route::patch('/checklists/items/{item}', [ChecklistController::class, 'updateItem'])->name('training.checklists.items.update');
+        Route::delete('/checklists/items/{item}', [ChecklistController::class, 'destroyItem'])->name('training.checklists.items.destroy');
     });
 
     Route::delete('/students/delete/{id}', [TrainingController::class, 'removeStudent'])->middleware(['auth', 'can:training.students.delete'])->name('training.students.destroy');
@@ -158,9 +168,8 @@ Route::view('/pdc', 'pilots.pdc')->name('pdc');
 Route::view('/vfr', 'pilots.vfr')->name('vfr');
 Route::get('/livemap/data', [LiveMapController::class, 'data'])->name('livemap.data');
 Route::view('/editmap', 'events.editmap')->middleware(['auth', 'can:events.manage'])->name('editmap');
-Route::get('sitemap.xml', function () {
-    return response()->file(public_path('sitemap.xml'), ['Content-Type' => 'application/xml']);
-});
+Route::get('sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
+Route::get('robots.txt', [SeoController::class, 'robots'])->name('robots');
 Route::view('/instructors', 'training.public-instructors')->name('instructors');
 
 // Redirects
@@ -276,7 +285,6 @@ Route::middleware('auth')->group(function () {
         });
 
         // Email preferences
-        Route::get('/emailpref', [DataController::class, 'emailPref'])->name('dashboard.emailpref');
         Route::patch('/emailpref/subscribe', [DataController::class, 'subscribeEmails']);
         Route::patch('/emailpref/unsubscribe', [DataController::class, 'unsubscribeEmails']);
     });
@@ -291,8 +299,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/discord/link/redirect', [UserController::class, 'linkDiscordRedirect'])->name('me.discord.link.redirect');
         Route::get('/discord/server/join', [UserController::class, 'joinDiscordServerRedirect'])->name('me.discord.join');
         Route::get('/discord/server/join/redirect', [UserController::class, 'joinDiscordServer']);
-
-        Route::get('/preferences', [UserController::class, 'preferences'])->name('me.preferences');
 
         // Your data (GDPR)
         Route::get('/data', [DataController::class, 'index'])->name('me.data');

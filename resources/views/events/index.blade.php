@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title', 'Events - Vancouver FIR')
-@section('description', 'Check out the Vancouver FIR events!')
+@section('description', 'Upcoming events in the Vancouver FIR!')
 
 @push('styles')
     <link href="{{ asset('css/pages/events.css') }}" rel="stylesheet">

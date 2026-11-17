@@ -178,6 +178,25 @@ class Student extends Model
         return collect($trainingOrder)->first(fn ($label) => in_array($label, $labelNames, true));
     }
 
+    public function manualChecklistOptions(): array
+    {
+        $visitor = $this->isVisitor();
+        $mapClass = $visitor ? LabelChecklistVisitorMap::class : LabelChecklistMap::class;
+        $label = $this->currentTrainingLabel(self::trainingOrder($visitor));
+
+        $tier2Ids = $label
+            ? $mapClass::whereHas('label', fn ($q) => $q->where('name', $label))->where('tier_type', 'T2')->pluck('checklist_id')
+            : collect();
+
+        $mappedIds = LabelChecklistMap::pluck('checklist_id')->merge(LabelChecklistVisitorMap::pluck('checklist_id'));
+
+        return [
+            'label' => $label,
+            'tier2' => Checklist::whereIn('id', $tier2Ids)->orderBy('name')->get(),
+            'optional' => Checklist::whereNotIn('id', $mappedIds)->orderBy('name')->get(),
+        ];
+    }
+
     public function completionLockReasons(): array
     {
         $this->loadMissing('labels.label', 'user');

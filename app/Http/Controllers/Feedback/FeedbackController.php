@@ -58,6 +58,7 @@ class FeedbackController extends Controller
 
         $feedback->approval = 2;
         $feedback->save();
+        AuditLogEntry::staff('Approved controller feedback ID#'.$id, User::find($feedback->controller_cid));
 
         return redirect()->back()->withSuccess('Feedback ID#'.$id.' has been approved!');
     }
@@ -72,6 +73,7 @@ class FeedbackController extends Controller
 
         $feedback->approval = 1;
         $feedback->save();
+        AuditLogEntry::staff('Denied controller feedback ID#'.$id, User::find($feedback->controller_cid));
 
         return redirect()->back()->withSuccess('Controller Feedback ID#'.$id.' has been denied!');
     }
@@ -83,13 +85,7 @@ class FeedbackController extends Controller
         $feedback->content = $validated['content'];
         $feedback->save();
 
-        $log = new AuditLogEntry;
-        $log->user_id = Auth::user()->id;
-        $log->affected_id = $feedback->controller_cid;
-        $log->action = 'Edited Controller Feedback ID#'.$id;
-        $log->time = date('Y-m-d H:i:s');
-        $log->private = 0;
-        $log->save();
+        AuditLogEntry::staff('Edited controller feedback ID#'.$id, User::find($feedback->controller_cid));
 
         return redirect()->back()->withSuccess('Controller Feedback ID#'.$feedback->id.' has been edited!');
     }
@@ -98,6 +94,7 @@ class FeedbackController extends Controller
     {
         $feedback = ControllerFeedback::where('id', $id)->firstOrFail();
         $feedback->delete();
+        AuditLogEntry::staff('Deleted controller feedback ID#'.$id, User::find($feedback->controller_cid));
 
         return redirect()->to(route('staff.feedback.index'))->withSuccess('Controller Feedback ID#'.$id.' has been deleted!');
     }
@@ -114,6 +111,7 @@ class FeedbackController extends Controller
     {
         $feedback = EventFeedback::where('id', $id)->firstOrFail();
         $feedback->delete();
+        AuditLogEntry::staff('Deleted event feedback ID#'.$id);
 
         return redirect()->to(route('staff.feedback.index'))->withSuccess('Event Feedback ID#'.$id.' has been deleted!');
     }
@@ -130,6 +128,7 @@ class FeedbackController extends Controller
     {
         $feedback = WebsiteFeedback::where('id', $id)->firstOrFail();
         $feedback->delete();
+        AuditLogEntry::staff('Deleted website feedback ID#'.$id);
 
         return redirect()->to(route('staff.feedback.index'))->withSuccess('Website Feedback ID#'.$id.' has been deleted!');
     }

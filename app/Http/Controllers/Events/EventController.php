@@ -94,9 +94,7 @@ class EventController extends Controller
         ]);
         $application->save();
 
-        if (Auth::user()->gdpr_subscribed_emails == 1) {
-            $application->user->notify(new EventSignup($application, $event_id = $request->get('event_id')));
-        }
+        $application->user->notify(new EventSignup($application, $request->get('event_id')));
 
         return redirect()->back()->with('success', 'Thanks for applying! If you need to make any adjustments to your application, please <a href='.config('app.url').'/staff>contact the Events Coordinator.');
     }
@@ -127,6 +125,7 @@ class EventController extends Controller
         ]);
         $applications = ControllerApplication::where('user_id', $request->input('user_cid'))->firstorFail();
         $applications->delete();
+        $this->logEventController('Confirmed', $event, $controllerconfirm);
 
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Controller Confirmed for Event!');
     }
@@ -147,8 +146,17 @@ class EventController extends Controller
             'end_timestamp' => $request->input('end_timestamp'),
             'airport' => $request->input('airport'),
         ]);
+        $this->logEventController('Added', $event, $controllerconfirm);
 
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Controller Confirmed for Event!');
+    }
+
+    private function logEventController(string $verb, Event $event, EventConfirm $confirm): void
+    {
+        $controller = User::find($confirm->user_id);
+
+        AuditLogEntry::staff($verb.' '.($controller?->fullName('FLC') ?? 'CID '.$confirm->user_id).' for event '.$event->name
+            .' ('.$confirm->airport.', '.$confirm->start_timestamp.' - '.$confirm->end_timestamp.')', $controller);
     }
 
     public function deleteController(Request $request, $cid): RedirectResponse
@@ -158,6 +166,9 @@ class EventController extends Controller
             ['event_id', $request->input('id')],
         ])->firstorFail();
         $controller->delete();
+
+        $user = User::find($cid);
+        AuditLogEntry::staff('Removed '.($user?->fullName('FLC') ?? 'CID '.$cid).' from event '.(Event::find($request->input('id'))?->name ?? $request->input('id')), $user);
 
         return redirect()->back()->with('success', 'Controller has been removed from the event!');
     }
@@ -243,8 +254,12 @@ class EventController extends Controller
         if ($request->has('openControllerApps')) {
             $event->controller_applications_open = true;
         }
+        if ($request->get('emailOption') !== 'subscribers') {
+            $event->subscribers_notified_at = now();
+        }
         // Save it
         $event->save();
+        AuditLogEntry::staff('Created event '.$event->name);
 
         // Redirect
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Event created!');
@@ -260,6 +275,7 @@ class EventController extends Controller
         $confirmed_controllers->delete();
         $updates->delete();
         $event->delete();
+        AuditLogEntry::staff('Deleted event '.$event->name);
 
         return redirect()->route('events.admin.index')->with('info', 'Event deleted.');
     }
@@ -329,7 +345,7 @@ class EventController extends Controller
         $event->save();
 
         // Audit it
-        /* AuditLogEntry::insert(Auth::user(), 'Edited event '.$event->name, User::find(1), 0); */
+        AuditLogEntry::staff('Edited event '.$event->name);
 
         // Redirect
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Event edited!');
@@ -367,6 +383,7 @@ class EventController extends Controller
 
         // Save it
         $update->save();
+        AuditLogEntry::staff('Posted update \''.$update->title.'\' on event '.Event::find($update->event_id)?->name);
 
         // Redirect
         return redirect()->route('events.admin.view', $event_slug)->with('success', 'Update created!');
@@ -379,6 +396,8 @@ class EventController extends Controller
 
         // Delete it? Delete it!
         $app->delete();
+        $applicant = User::find($app->user_id);
+        AuditLogEntry::staff('Deleted event application from '.($applicant?->fullName('FLC') ?? 'CID '.$app->user_id).' for event '.Event::find($app->event_id)?->name, $applicant);
 
         // Redirect
         return redirect()->route('event.viewapplications', Event::where('slug', $event_slug)->firstOrFail()->id)->with('info', 'Controller application '.User::where('id', $app->user_id)->first()->fullName('FLC').' has been deleted!');
@@ -391,6 +410,7 @@ class EventController extends Controller
 
         // Delete it? Delete it!
         $update->delete();
+        AuditLogEntry::staff('Deleted update \''.$update->title.'\' from event '.Event::find($update->event_id)?->name);
 
         // Redirect
         return redirect()->route('events.admin.view', $event_slug)->with('info', 'Update \''.$update->title.'\' has been deleted!');

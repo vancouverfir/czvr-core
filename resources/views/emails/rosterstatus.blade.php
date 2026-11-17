@@ -1,38 +1,19 @@
 @extends('layouts.email')
 
-@section('to-line', 'Hi '. $user->fullName('FLC') . ',')
+@section('headline', $controller->active == 1 ? "You're active on the roster again" : "You've been marked inactive on the roster")
 
+@section('to-line', 'Hi '.$user->display_fname.',')
 
 @section('message-content')
-    The Vancouver FIR Staff have changed your status on the controller roster to:<br/>
-    @switch ($controller->status)
-        @case ('training')
-            <b>Certification:</b>&nbsp;In Training
-        @break
-        @case ('home')
-        <b>Certification:</b>&nbsp;CZVR Home Controller
-        @break
-        @case ('visit')
-        <b>Certification:</b>&nbsp;CZVR Visiting Controller
-        @break
-        @case ('instructor')
-            <b>Certification:</b>&nbsp;CZVR Instructor
-        @break
-    @endswitch
-    <br/>
     @if ($controller->active == 1)
-        <b>Activity:</b>&nbsp;Active
+        <p>A member of staff has marked you as active again on the Vancouver FIR controller roster, so your certifications are back in effect.</p>
+        <p>If you have any questions, please open a support ticket.</p>
     @else
-        <b>Activity:</b>&nbsp;Inactive
+        <p>A member of staff has marked you as inactive on the Vancouver FIR controller roster.</p>
+        <p>If you'd like to become active again, or think this is a mistake, please open a support ticket.</p>
     @endif
-    <br/>
-    <p>
-        If you believe there is an error, or have any questions, please do not hesitate to open up a support ticket.
-    </p>
 @stop
 
-@section('footer-to-line', $user->fullName('FLC').' ('.$user->email.')')
+@section('footer-to-line', $user->email)
 
-@section('footer-reason-line')
-your status with the Vancouver FIR has been changed.
-@endsection
+@section('footer-reason-line', 'your activity status on the Vancouver FIR controller roster changed.')

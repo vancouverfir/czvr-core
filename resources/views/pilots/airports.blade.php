@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title', 'Airports - Vancouver FIR')
-@section('description', 'Vancouver FIR\'s weather and airports')
+@section('description', 'Live weather, charts and information for airports in the Vancouver FIR')
 @push('styles')
     <link href="{{ asset('css/pages/pilots.css') }}" rel="stylesheet">
 @endpush

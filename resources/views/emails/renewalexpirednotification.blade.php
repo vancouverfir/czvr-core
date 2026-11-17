@@ -1,17 +1,16 @@
 @extends('layouts.email')
 
-@section('to-line', 'Hello '. $student->user->fullName('FLC') . ',')
+@section('headline', 'Your training request has expired')
 
+@section('to-line', 'Hi '.$student->user->display_fname.',')
 
 @section('message-content')
-    <h1>You have failed to renew your training within 14 days and you have been marked for removal.</h1><br/>
-    <p>To ensure our students and visitors on the waitlist are still interested in continuing their training, we periodically ask you to renew your training request.</p><br/>
-    <p><a href="{{ url('/staff') }}" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:#fff; text-decoration:none; border-radius:4px; margin-bottom: 30px;">Contact Support</a></p>
-    <p>If you believe there is an error, or have any questions, please do not hesitate to open up a support ticket!</p>
+    <p>Your training request wasn't renewed within 14 days and you have been marked for removal from the Vancouver FIR waitlist.</p>
+    <p>We ask students to renew their training request each month to make sure everyone on the waitlist is still interested in continuing their training.</p>
+    <p style="margin:8px 0 24px 0;"><a href="{{ url('/staff') }}" target="_blank" rel="noopener" style="display:inline-block; padding:8px 16px; background-color:#007bff; color:#ffffff; font-size:14px; font-weight:600; text-decoration:none; border-radius:4px;">Contact Us</a></p>
+    <p>If you think this is a mistake, please open a support ticket.</p>
 @stop
 
-@section('footer-to-line', $student->user->fullName('FLC').' ('.$student->user->email.')')
+@section('footer-to-line', $student->user->email)
 
-@section('footer-reason-line')
-you applied for training at the Vancouver FIR
-@endsection
+@section('footer-reason-line', 'you have a training request with the Vancouver FIR.')
