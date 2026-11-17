@@ -63,12 +63,6 @@
                 </div>
 
             <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
-                <img style="background-color: #ffffff; height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-logo-square.png" class="img-fluid" alt="">
-                <br/>
-                <a href="https://czvr.ca/storage/files/branding/czvr-logo-square.png">Color Logo Square</a>
-            </div>
-
-            <div class="col-md-3 d-flex flex-column align-items-center justify-content-center">
                     <img style="height: 10rem;" src="https://czvr.ca/storage/files/branding/czvr-bw-logomark.png" class="img-fluid" alt="">
                     <br/>
                     <a href="https://czvr.ca/storage/files/branding/czvr-bw-logomark.png">Gray Logo</a>

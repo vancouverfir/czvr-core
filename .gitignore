@@ -15,6 +15,7 @@
 /storage/*.key
 /storage/pail
 /vendor
+/resources/lang/vendor/
 /UserEventFetcher/pyapiconf.ini
 _ide_helper.php
 Homestead.json

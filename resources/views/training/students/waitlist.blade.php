@@ -105,7 +105,7 @@
                                                             <li><a class="dropdown-item" href="mailto:{{ $student->user->email }}"><i class="far fa-envelope me-2"></i>Send email</a></li>
                                                             @php($discordUsername = $student->user->discord_user_id ? $student->user->getDiscordUser()?->username : null)
                                                             @if ($discordUsername)
-                                                                <li><span class="dropdown-item-text user-select-all"><i class="fab fa-discord social-outline-icon me-2"></i>{{ $discordUsername }}</span></li>
+                                                                <li><button type="button" class="dropdown-item waitlist-copy" data-copy="{{ $discordUsername }}" title="Click to copy"><i class="fab fa-discord social-outline-icon me-2"></i>{{ $discordUsername }}</button></li>
                                                             @else
                                                                 <li><span class="dropdown-item disabled text-muted"><i class="fab fa-discord social-outline-icon me-2"></i>{{ $student->user->discord_user_id ? 'Discord username unavailable' : 'Discord not linked' }}</span></li>
                                                             @endif
@@ -228,6 +228,19 @@
                 $('#visitor_type_group').hide();
                 $('#visitor_type').val('');
             }
+        });
+
+        document.querySelectorAll('.waitlist-copy').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                navigator.clipboard.writeText(btn.dataset.copy).then(function () {
+                    const tip = bootstrap.Tooltip.getOrCreateInstance(btn, { title: 'Copied!', trigger: 'manual', placement: 'top' });
+                    tip.show();
+                    clearTimeout(btn._copyTimer);
+                    btn._copyTimer = setTimeout(function () { tip.hide(); }, 1200);
+                });
+            });
         });
 
     @can('training.waitlist.manage')

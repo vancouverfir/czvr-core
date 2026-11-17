@@ -467,7 +467,7 @@ window.LIVE_MAP_AIRPORTS = Object.freeze({
             this.standLayer = L.featureGroup().addTo(this.map);
             this.aircraftLayer = L.featureGroup().addTo(this.map);
 
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
                 maxZoom: 20,
                 minZoom: 0,
             }).addTo(this.map);

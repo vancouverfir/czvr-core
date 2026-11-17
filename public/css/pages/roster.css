@@ -151,4 +151,14 @@
     :is(#rosterTable, #visitRosterTable) tbody tr > :nth-child(11).bg-danger { background: #e51c23 !important; }
     :is(#rosterTable, #visitRosterTable) tbody tr > :nth-child(12) { order: 5; }
     :is(#rosterTable, #visitRosterTable) tbody tr > td[colspan] { flex-basis: 100%; }
+    :is(#rosterTable, #visitRosterTable) tbody tr > td[colspan] { flex-basis: 100%; }
+
+    .roster-legend { padding: .5rem; }
+    #rosterLegend { table-layout: fixed; width: 100%; margin-bottom: 0; font-size: .75rem; }
+    #rosterLegend th, #rosterLegend td { padding: .45rem .15rem; }
+    #rosterLegend thead th { font-size: .68rem; line-height: 1.2; vertical-align: bottom; }
+    #rosterLegend thead th:first-child, #rosterLegend tbody th { width: 30%; padding-left: .35rem; }
+    #rosterLegend thead [data-short] { font-size: 0; }
+    #rosterLegend thead [data-short]::after { content: attr(data-short); font-size: .68rem; font-weight: 700; }
+    #rosterLegend td i { font-size: 1.1rem; }
 }
