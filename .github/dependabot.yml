@@ -13,15 +13,6 @@ updates:
     labels:
       - "dependencies"
 
-  # Maintain dependencies for npm
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-    labels:
-      - "npm"
-      - "dependencies"
-
   # Maintain dependencies for Composer
   - package-ecosystem: "composer"
     directory: "/"
