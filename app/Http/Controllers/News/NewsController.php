@@ -114,7 +114,7 @@ class NewsController extends Controller
 
         // Create and publish if needed
         $article->save();
-        AuditLogEntry::staff(($article->visible ? 'Published' : 'Created draft') .' news article \''.$article->title.'\''.($article->email_level === News::EMAIL_SUBSCRIBERS ? ' (emailed to subscribers)' : ''));
+        AuditLogEntry::staff(($article->visible ? 'Published' : 'Created draft').' news article \''.$article->title.'\''.($article->email_level === News::EMAIL_SUBSCRIBERS ? ' (emailed to subscribers)' : ''));
         if ($article->visible) {
             ProcessArticlePublishing::dispatch($article);
             $request->session()->flash('articleCreated', 'Article created and published!');
