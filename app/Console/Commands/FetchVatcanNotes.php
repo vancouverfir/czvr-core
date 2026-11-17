@@ -22,7 +22,7 @@ class FetchVatcanNotes extends Command
             return self::FAILURE;
         }
 
-        $students = Student::query()->orderBy('id')->get();
+        $students = Student::query()->where('status', '!=', Student::STATUS_COMPLETED)->whereHas('user.rosterProfile')->orderBy('id')->get();
         $updated = 0;
         $unchanged = 0;
         $failed = 0;
