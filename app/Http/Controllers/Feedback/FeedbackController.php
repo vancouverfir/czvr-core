@@ -24,9 +24,9 @@ class FeedbackController extends Controller
 {
     public function index(): View
     {
-        $controller_feedback = ControllerFeedback::all()->sortByDesc('created_at');
-        $event_feedback = EventFeedback::all()->sortByDesc('created_at');
-        $website_feedback = WebsiteFeedback::all()->sortByDesc('created_at');
+        $controller_feedback = ControllerFeedback::with(['user', 'controller'])->get()->sortByDesc('created_at');
+        $event_feedback = EventFeedback::with('user')->get()->sortByDesc('created_at');
+        $website_feedback = WebsiteFeedback::with('user')->get()->sortByDesc('created_at');
         $controller_feedback_attention = ControllerFeedback::where('approval', 0)->get();
 
         return view('feedback.index', compact('controller_feedback', 'event_feedback', 'website_feedback', 'controller_feedback_attention'));
@@ -34,7 +34,7 @@ class FeedbackController extends Controller
 
     public function yourFeedback(): View
     {
-        $feedback = ControllerFeedback::where('approval', 2)->orderByDesc('updated_at')->get();
+        $feedback = ControllerFeedback::with('controller')->where('approval', 2)->orderByDesc('updated_at')->get();
 
         return view('feedback.yourfeedback', compact('feedback'));
     }
@@ -58,6 +58,7 @@ class FeedbackController extends Controller
 
         $feedback->approval = 2;
         $feedback->save();
+        AuditLogEntry::staff('Approved controller feedback ID#'.$id, User::find($feedback->controller_cid));
 
         return redirect()->back()->withSuccess('Feedback ID#'.$id.' has been approved!');
     }
@@ -72,23 +73,19 @@ class FeedbackController extends Controller
 
         $feedback->approval = 1;
         $feedback->save();
+        AuditLogEntry::staff('Denied controller feedback ID#'.$id, User::find($feedback->controller_cid));
 
         return redirect()->back()->withSuccess('Controller Feedback ID#'.$id.' has been denied!');
     }
 
     public function editControllerFeedback(Request $request, $id): RedirectResponse
     {
+        $validated = $request->validate(['content' => ['required', 'string', 'max:20000']]);
         $feedback = ControllerFeedback::where('id', $id)->firstOrFail();
-        $feedback->content = $request->get('content');
+        $feedback->content = $validated['content'];
         $feedback->save();
 
-        $log = new AuditLogEntry;
-        $log->user_id = Auth::user()->id;
-        $log->affected_id = $feedback->controller_cid;
-        $log->action = 'Edited Controller Feedback ID#'.$id;
-        $log->time = date('Y-m-d H:i:s');
-        $log->private = 0;
-        $log->save();
+        AuditLogEntry::staff('Edited controller feedback ID#'.$id, User::find($feedback->controller_cid));
 
         return redirect()->back()->withSuccess('Controller Feedback ID#'.$feedback->id.' has been edited!');
     }
@@ -97,6 +94,7 @@ class FeedbackController extends Controller
     {
         $feedback = ControllerFeedback::where('id', $id)->firstOrFail();
         $feedback->delete();
+        AuditLogEntry::staff('Deleted controller feedback ID#'.$id, User::find($feedback->controller_cid));
 
         return redirect()->to(route('staff.feedback.index'))->withSuccess('Controller Feedback ID#'.$id.' has been deleted!');
     }
@@ -113,6 +111,7 @@ class FeedbackController extends Controller
     {
         $feedback = EventFeedback::where('id', $id)->firstOrFail();
         $feedback->delete();
+        AuditLogEntry::staff('Deleted event feedback ID#'.$id);
 
         return redirect()->to(route('staff.feedback.index'))->withSuccess('Event Feedback ID#'.$id.' has been deleted!');
     }
@@ -129,6 +128,7 @@ class FeedbackController extends Controller
     {
         $feedback = WebsiteFeedback::where('id', $id)->firstOrFail();
         $feedback->delete();
+        AuditLogEntry::staff('Deleted website feedback ID#'.$id);
 
         return redirect()->to(route('staff.feedback.index'))->withSuccess('Website Feedback ID#'.$id.' has been deleted!');
     }
@@ -142,49 +142,20 @@ class FeedbackController extends Controller
 
     public function createPost(Request $request): View|RedirectResponse
     {
-        // dd($request->all());
-        // Define validator messages
-        $messages = [
-            'feedbackType.required' => 'You need to select a type of feedback.',
-        ];
-
-        // Validate
         $validator = Validator::make($request->all(), [
-            'feedbackType' => 'required',
-            'content' => 'required',
-        ], $messages);
+            'feedbackType' => ['required', 'in:controller,event,website'],
+            'content' => ['required', 'string', 'max:20000'],
+            'subject' => ['nullable', 'required_unless:feedbackType,controller', 'string', 'max:255'],
+            'controllerCid' => ['nullable', 'required_if:feedbackType,controller', 'integer', 'exists:roster,cid'],
+            'position' => ['nullable', 'required_if:feedbackType,controller', 'string', 'max:100'],
+        ], [
+            'feedbackType.required' => 'You need to select a type of feedback!',
+        ]);
 
-        if ($request->get('feedbackType') == '0') {
-            $validator->errors()->add('type', 'You need to select a feedback type.');
-        }
-        // If it's controller feedback then...
-        elseif ($request->get('feedbackType') == 'controller') {
-            // If they dont have the controller CID
-            if ($request->get('controllerCid') == '0') {
-                $validator->after(function ($validator) {
-                    $validator->errors()->add('controllerCid', 'You need to provide the Controller\'s Name/CID.');
-                });
-            }
-            if ($request->get('position') == null) {
-                $validator->after(function ($validator) {
-                    $validator->errors()->add('position', 'You need to specify the Controller\'s position.');
-                });
-            }
-        } else { /* Otherwise */
-            // No subject
-            if ($request->get('subject') == null) {
-                $validator->after(function ($validator) {
-                    $validator->errors()->add('subject', 'You need to fill in the subject field.');
-                });
-            }
-        }
-        // dd($validator->errors());
-        // Redirect if fails
         if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator, 'createFeedbackErrors');
+            return back()->withInput()->withErrors($validator, 'createFeedbackErrors');
         }
 
-        // Otherwise...
         switch ($request->get('feedbackType')) {
             case 'website':
                 $feedback = new WebsiteFeedback([

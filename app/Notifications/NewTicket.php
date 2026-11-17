@@ -10,6 +10,10 @@ class NewTicket extends Notification
 {
     use Queueable;
 
+    protected mixed $staff_member;
+
+    protected mixed $ticket;
+
     /**
      * Create a new notification instance.
      *

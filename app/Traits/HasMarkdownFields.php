@@ -2,8 +2,9 @@
 
 namespace App\Traits;
 
-use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
+use League\CommonMark\Extension\Table\TableExtension;
 
 /**
  * Trait for models with markdown fields that need HTML conversion.
@@ -35,7 +36,10 @@ trait HasMarkdownFields
             return new HtmlString('');
         }
 
-        return new HtmlString(Markdown::convert($markdown)->getContent());
+        return new HtmlString(Str::markdown($markdown, [
+            'html_input' => 'strip',
+            'allow_unsafe_links' => true,
+        ], [new TableExtension]));
     }
 
     /**

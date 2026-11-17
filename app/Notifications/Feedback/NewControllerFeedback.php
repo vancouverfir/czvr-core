@@ -2,6 +2,7 @@
 
 namespace App\Notifications\Feedback;
 
+use App\Models\Users\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -9,6 +10,8 @@ use Illuminate\Notifications\Notification;
 class NewControllerFeedback extends Notification
 {
     use Queueable;
+
+    protected mixed $feedback;
 
     /**
      * Create a new notification instance.
@@ -37,13 +40,21 @@ class NewControllerFeedback extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $controller = User::find($this->feedback->controller_cid);
+
         return (new MailMessage)
-            ->greeting('Hello,')
-            ->line('A user has submitted feedback on a Controller!')
-            ->line('User: '.$this->feedback->user->fullName('FLC'))
-            ->line('Email: '.$this->feedback->user->email)
-            ->line('Controller CID: '.$this->feedback->controller_cid)
-            ->line('Content: '.$this->feedback->content);
+            ->subject('New Controller Feedback')
+            ->view('emails.feedback.new', [
+                'kind' => 'controller',
+                'intro' => 'A user has submitted feedback on a Controller!',
+                'details' => array_filter([
+                    'Submitted by' => $this->feedback->user->fullName('FLC').' ('.$this->feedback->user->email.')',
+                    'Controller' => $controller?->fullName('FLC') ?? $this->feedback->controller_cid,
+                    'Position' => $this->feedback->position,
+                ]),
+                'content' => $this->feedback->content,
+                'url' => route('staff.feedback.controller', $this->feedback->id),
+            ]);
     }
 
     /**

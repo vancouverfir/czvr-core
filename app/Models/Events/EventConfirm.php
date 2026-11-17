@@ -4,9 +4,9 @@ namespace App\Models\Events;
 
 use App\Models\AtcTraining\RosterMember;
 use App\Models\Users\User;
-use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
 
 class EventConfirm extends Model
 {
@@ -29,16 +29,14 @@ class EventConfirm extends Model
 
     public function userHasApplied()
     {
-        if (EventConfirm::where('event_id', $this->id)->where('user_id', Auth::id())->first()) {
-            return true;
-        }
-
-        return false;
+        return EventConfirm::where('event_id', $this->event_id)
+            ->where('user_id', Auth::id())
+            ->exists();
     }
 
     public function rostermember(): BelongsTo
     {
-        return $this->belongsTo(RosterMember::class);
+        return $this->belongsTo(RosterMember::class, 'user_id', 'user_id');
     }
 
     public function event(): BelongsTo

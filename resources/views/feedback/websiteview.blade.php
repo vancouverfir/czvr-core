@@ -10,7 +10,7 @@
 
     <div class="container" style="margin-top: 20px;">
         <a href="{{route('staff.feedback.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Feedback</a>
-        <h1 class="blue-text font-weight-bold mt-2">{{$feedback->subject}} - Feedback ID: #{{ $id }}</h1>
+        <h1 class="blue-text fw-bold mt-2">{{$feedback->subject}} - Feedback ID: #{{ $id }}</h1>
         <hr>
         <div class="row">
             <div class="col-10">
@@ -19,7 +19,11 @@
             <div class="col-2" style="text-align: center">
                 Actions:
                 <br>
-                <a href="{{url('/admin/feedback/website/'.$id.'/delete')}}"><i class="fa fa-trash-alt"></i></a>
+                <form method="POST" action="{{url('/admin/feedback/website/'.$id.'/delete')}}" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="border-0 bg-transparent p-0 blue-text"><i class="fa fa-trash-alt"></i></button>
+                </form>
             </div>
         </div>
         <h6 style="white-space: pre-line;">Feedback: {{$feedback->content}}</h6>

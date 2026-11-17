@@ -10,6 +10,8 @@ class NewEventFeedback extends Notification
 {
     use Queueable;
 
+    protected mixed $feedback;
+
     /**
      * Create a new notification instance.
      *
@@ -38,12 +40,17 @@ class NewEventFeedback extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->greeting('Hello,')
-            ->line('A user has submitted feedback on a Vancouver event!')
-            ->line('User: '.$this->feedback->user->fullName('FLC'))
-            ->line('Email: '.$this->feedback->user->email)
-            ->line('Subject: '.$this->feedback->subject)
-            ->line('Content: '.$this->feedback->content);
+            ->subject('New Event Feedback')
+            ->view('emails.feedback.new', [
+                'kind' => 'event',
+                'intro' => 'A user has submitted feedback on a Vancouver event!',
+                'details' => [
+                    'Submitted by' => $this->feedback->user->fullName('FLC').' ('.$this->feedback->user->email.')',
+                    'Subject' => $this->feedback->subject,
+                ],
+                'content' => $this->feedback->content,
+                'url' => route('staff.feedback.event', $this->feedback->id),
+            ]);
     }
 
     /**

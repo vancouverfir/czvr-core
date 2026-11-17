@@ -12,6 +12,10 @@ class News extends Model
 {
     use HasMarkdownFields;
 
+    public const EMAIL_NONE = 0;
+
+    public const EMAIL_SUBSCRIBERS = 2;
+
     protected $fillable = [
         'id', 'title', 'user_id', 'show_author', 'image', 'content', 'summary', 'published', 'edited', 'visible', 'email_level', 'certification', 'slug',
     ];

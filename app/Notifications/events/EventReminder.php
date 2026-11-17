@@ -10,6 +10,10 @@ class EventReminder extends Notification
 {
     use Queueable;
 
+    protected mixed $event;
+
+    protected mixed $positions;
+
     /**
      * Create a new notification instance.
      *

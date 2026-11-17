@@ -1,71 +1,14 @@
 @extends('layouts.master')
-
+@push('styles')<link href="{{ asset('css/pages/admin-settings.css') }}" rel="stylesheet">@endpush
 @section('content')
-    <div class="container py-4">
-        <a href="{{route('settings.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Settings</a>
-        <h1 class="blue-text font-weight-bold mt-2">Emails</h1>
-        <hr>
-        <form method="POST" action="{{route('settings.emails.post')}}">
-            @csrf
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th style="width: 25%;" scope="col">Position / Department</th>
-                        <th scope="col">Address</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                    <th scope="row">
-                        FIR Chief
-                    </th>
-                    <td>
-                        <input required type="text" value="{{$coreSettings->emailfirchief}}" name="emailfirchief" id="" class="form-control form-control-sm border">
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">
-                        Deputy FIR Chief
-                    </th>
-                    <td>
-                        <input required type="text" value="{{$coreSettings->emaildepfirchief}}" name="emaildepfirchief" id="" class="form-control form-control-sm border">
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">
-                        Chief Instructor
-                    </th>
-                    <td>
-                        <input required type="text" value="{{$coreSettings->emailcinstructor}}" name="emailcinstructor" id="" class="form-control form-control-sm border">
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">
-                        Events Coordinator
-                    </th>
-                    <td>
-                        <input required type="text" value="{{$coreSettings->emaileventc}}" name="emaileventc" id="" class="form-control form-control-sm border">
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">
-                        Facility Engineer
-                    </th>
-                    <td>
-                        <input required type="text" value="{{$coreSettings->emailfacilitye}}" name="emailfacilitye" id="" class="form-control form-control-sm border">
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">
-                        Webmaster
-                    </th>
-                    <td>
-                        <input required type="text" value="{{$coreSettings->emailwebmaster}}" name="emailwebmaster" id="" class="form-control form-control-sm border">
-                    </td>
-                    </tr>
-                </tbody>
-            </table>
-            <input type="submit" value="Save" class="btn btn-sm btn-primary">
-        </form>
-    </div>
-@stop
+<main class="container py-4 settings-hub settings-editor">
+    <a href="{{ route('settings.index') }}" class="settings-back"><i class="fas fa-arrow-left"></i> Settings</a>
+    <div class="settings-heading"><div><h1 class="blue-text">Staff Emails</h1><p>Addresses used for contact links and automated website messages.</p></div></div>
+    <form method="POST" action="{{ route('settings.emails.post') }}" class="settings-form">@csrf
+        @foreach(['emailfirchief' => 'FIR Chief', 'emaildepfirchief' => 'Deputy FIR Chief', 'emailcinstructor' => 'Chief Instructor', 'emaileventc' => 'Events Coordinator', 'emailfacilitye' => 'Facility Engineer', 'emailwebmaster' => 'Webmaster'] as $field => $label)
+            <div class="settings-field"><label for="{{ $field }}">{{ $label }}</label><div><input id="{{ $field }}" required type="email" value="{{ old($field, $coreSettings->{$field}) }}" name="{{ $field }}" class="form-control"></div></div>
+        @endforeach
+        <div class="settings-actions"><button type="submit" class="btn btn-success">Save changes</button></div>
+    </form>
+</main>
+@endsection

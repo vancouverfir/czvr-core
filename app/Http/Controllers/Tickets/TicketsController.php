@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tickets;
 
 use App\Http\Controllers\Controller;
+use App\Models\Settings\AuditLogEntry;
 use App\Models\Tickets\Ticket;
 use App\Models\Tickets\TicketReply;
 use App\Models\Users\StaffGroup;
@@ -10,7 +11,7 @@ use App\Models\Users\StaffMember;
 use App\Models\Users\User;
 use App\Notifications\NewTicket;
 use App\Notifications\TicketReply as NotificationsTicketReply;
-use Carbon\Carbon;
+use App\Support\Authorization\PermissionCatalog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,8 +26,8 @@ class TicketsController extends Controller
         $openTickets = Ticket::where('user_id', Auth::user()->id)->where('status', 0)->get()->sortByDesc('id');
         $closedTickets = Ticket::where('user_id', Auth::user()->id)->where('status', 1)->get()->sortByDesc('id');
         $onHoldTickets = Ticket::where('user_id', Auth::user()->id)->where('status', 2)->get()->sortByDesc('id');
-        $staff_members = StaffMember::where('user_id', '!=', 1)->whereIn('group_id', [1, 3])->get();
         $groups = StaffGroup::where('can_receive_tickets', true)->get();
+        $staff_members = StaffMember::where('user_id', '!=', 1)->whereIn('group_id', $groups->pluck('id'))->get();
 
         return view('dashboard.tickets.index', compact('openTickets', 'closedTickets', 'onHoldTickets', 'staff_members', 'groups'));
     }
@@ -43,7 +44,7 @@ class TicketsController extends Controller
 
     public function viewTicket($id): View
     {
-        if (Auth::user()->permissions < 2) {
+        if (! $this->canViewStaffTickets()) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
         } else {
             $ticket = Ticket::where('ticket_id', $id)->firstOrFail();
@@ -65,24 +66,32 @@ class TicketsController extends Controller
         ];
 
         $validator = Validator::make($request->all(), [
-            'title' => 'required|max:50',
-            'message' => 'required|min:25',
-            'staff_member' => 'required',
+            'title' => ['required', 'string', 'max:50'],
+            'message' => ['required', 'string', 'min:25', 'max:20000'],
+            'staff_member' => ['required', 'string', 'max:255'],
         ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator->errors()->all());
         }
 
+        $recipient = StaffMember::where('shortform', $request->get('staff_member'))
+            ->whereIn('group_id', StaffGroup::where('can_receive_tickets', true)->pluck('id'))
+            ->firstOrFail();
+
+        do {
+            $ticketId = Str::upper(Str::random(6));
+        } while (Ticket::where('ticket_id', $ticketId)->exists());
+
         $ticket = new Ticket([
-            'user_id' => Auth::user()->id,
-            'ticket_id' => Str::random(6),
-            'staff_member_id' => StaffMember::where('shortform', $request->get('staff_member'))->first()->id,
+            'user_id' => Auth::id(),
+            'ticket_id' => $ticketId,
+            'staff_member_id' => $recipient->id,
             'title' => $request->get('title'),
             'message' => $request->get('message'),
             'status' => 0,
-            'staff_member_cid' => StaffMember::where('shortform', $request->get('staff_member'))->first()->user_id,
-            'submission_time' => date('Y-m-d H:i:s'),
+            'staff_member_cid' => $recipient->user_id,
+            'submission_time' => now(),
         ]);
 
         $ticket->save();
@@ -94,7 +103,7 @@ class TicketsController extends Controller
 
     public function openTicket($id): RedirectResponse
     {
-        if (Auth::user()->permissions < 2) {
+        if (! $this->canViewStaffTickets()) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
         } else {
             $ticket = Ticket::where('ticket_id', $id)->firstOrFail();
@@ -104,13 +113,14 @@ class TicketsController extends Controller
             $ticketReply = new TicketReply([
                 'user_id' => Auth::user()->id,
                 'ticket_id' => $ticket->ticket_id,
-                'message' => 'Ticket has been reopened by '.Auth::user()->fullName('FLC').' at '.Carbon::now()->toDayDateTimeString().' Zulu.',
+                'message' => 'Reopened this ticket.',
                 'submission_time' => date('Y-m-d H:i:s'),
             ]);
             $ticketReply->save();
             $ticket->status = 0;
             $ticket->updated_at = date('Y-m-d H:i:s');
             $ticket->save();
+            $this->logStaffTicketAction('Reopened', $ticket);
 
             return redirect()->route('tickets.viewticket', $ticket->ticket_id)->with('success', 'Ticket has been reopened!');
         } else {
@@ -120,7 +130,7 @@ class TicketsController extends Controller
 
     public function onholdTicket($id): RedirectResponse
     {
-        if (Auth::user()->permissions < 2) {
+        if (! $this->canViewStaffTickets()) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
         } else {
             $ticket = Ticket::where('ticket_id', $id)->firstOrFail();
@@ -130,13 +140,14 @@ class TicketsController extends Controller
             $ticketReply = new TicketReply([
                 'user_id' => Auth::user()->id,
                 'ticket_id' => $ticket->ticket_id,
-                'message' => 'Ticket has been placed on hold by '.Auth::user()->fullName('FLC').' at '.Carbon::now()->toDayDateTimeString().' Zulu. If you require further assistance immediately, please open a new ticket.',
+                'message' => 'Placed this ticket on hold.',
                 'submission_time' => date('Y-m-d H:i:s'),
             ]);
             $ticketReply->save();
             $ticket->status = 2;
             $ticket->updated_at = date('Y-m-d H:i:s');
             $ticket->save();
+            $this->logStaffTicketAction('Put on hold', $ticket);
 
             return redirect()->route('tickets.viewticket', $ticket->ticket_id)->with('success', 'Ticket has been placed on hold!');
         } else {
@@ -144,31 +155,37 @@ class TicketsController extends Controller
         }
     }
 
+    private function logStaffTicketAction(string $verb, Ticket $ticket): void
+    {
+        if ((int) $ticket->user_id === (int) Auth::id()) {
+            return;
+        }
+
+        AuditLogEntry::staff($verb.' ticket #'.$ticket->ticket_id.' ('.Str::limit((string) $ticket->title, 80).')', User::find($ticket->user_id));
+    }
+
     public function closeTicket(Request $request, $id): RedirectResponse
     {
-        if (Auth::user()->permissions < 2) {
+        if (! $this->canViewStaffTickets()) {
             $ticket = Ticket::where('ticket_id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
         } else {
             $ticket = Ticket::where('ticket_id', $id)->firstOrFail();
         }
 
         if ($ticket->status != 1) {
-            if ($request->get('message')) {
-                $message = ' with comment: '.$request->get('message');
-            } else {
-                $message = null;
-            }
+            $comment = trim((string) $request->get('message'));
 
             $ticketReply = new TicketReply([
                 'user_id' => Auth::user()->id,
                 'ticket_id' => $ticket->ticket_id,
-                'message' => 'Ticket closed by '.Auth::user()->fullName('FLC').$message.'. Closed at '.Carbon::now()->toDayDateTimeString().' Zulu. If you require further assistance please open a new ticket.',
+                'message' => 'Closed this ticket.'.($comment !== '' ? "\n\n".$comment : ''),
                 'submission_time' => date('Y-m-d H:i:s'),
             ]);
             $ticketReply->save();
             $ticket->status = 1;
             $ticket->updated_at = date('Y-m-d H:i:s');
             $ticket->save();
+            $this->logStaffTicketAction('Closed', $ticket);
 
             return redirect()->route('tickets.viewticket', $ticket->ticket_id)->with('success', 'Ticket closed!');
         } else {
@@ -178,14 +195,14 @@ class TicketsController extends Controller
 
     public function addReplyToTicket(Request $request, $ticket_id): RedirectResponse
     {
-        if (Auth::user()->permissions < 2) {
+        if (! $this->canViewStaffTickets()) {
             $ticket = Ticket::where('ticket_id', $ticket_id)->where('user_id', Auth::user()->id)->firstOrFail();
         } else {
             $ticket = Ticket::where('ticket_id', $ticket_id)->firstOrFail();
         }
 
-        $validatedData = $request->validate([
-            'message' => 'required',
+        $request->validate([
+            'message' => ['required', 'string', 'max:20000'],
         ]);
 
         $ticketReply = new TicketReply([
@@ -199,12 +216,17 @@ class TicketsController extends Controller
         $ticket->updated_at = date('Y-m-d H:i:s');
         $ticket->save();
 
-        if ($ticketReply->user == $ticket->user) {
+        if ((int) $ticketReply->user_id === (int) $ticket->user_id) {
             $ticket->staff_member->user->notify(new NotificationsTicketReply($ticket->staff_member->user, $ticket, $ticketReply));
         } else {
             $ticket->user->notify(new NotificationsTicketReply($ticket->user, $ticket, $ticketReply));
         }
 
         return redirect()->route('tickets.viewticket', $ticket->ticket_id)->with('success', 'Reply sent.');
+    }
+
+    private function canViewStaffTickets(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionCatalog::TICKETS_MANAGE);
     }
 }

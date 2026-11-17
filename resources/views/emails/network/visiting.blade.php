@@ -1,86 +1,40 @@
 @extends('layouts.email')
 
+@section('headline', count($members) ? 'Quarterly visiting controller report' : 'Quarterly visiting controller report: all clear')
+
 @section('message-content')
-    <style>
-        .border {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-
-        .warning {
-            color: #b45309;
-            font-weight: bold;
-        }
-    </style>
-
-    @if(count($members) > 0)
-        <h2>Visiting Violations!</h2>
-
-        <p>
-            Here is a list of controllers who have committed less than 50% of their controlling
-            at Vancouver in the past quarter:
-        </p>
-
-        <table style="width: 100%">
-            <thead>
+    @if (count($members))
+        <p>These visiting controllers did less than 50% of their controlling on Vancouver positions in the past quarter.</p>
+        <table cellpadding="0" cellspacing="0" role="presentation" style="min-width:60%; margin:0 0 24px 0; font-size:14px;">
             <tr>
-                <th class="border">Name</th>
-                <th class="border">% on Vancouver Positions</th>
+                <td style="padding:5px 12px 5px 0; color:#6e6e73;">Controller</td>
+                <td style="padding:5px 0; color:#6e6e73; text-align:left; padding-left:24px;">On Vancouver positions</td>
             </tr>
-            </thead>
-            <tbody>
-            @foreach($members as $m)
+            @foreach ($members as $m)
                 <tr>
-                    <td class="border" style="text-align: left">{{ $m['name'] }}</td>
-                    <td class="border" style="text-align: center">
-                        {{ round($m['percentage'] * 100, 1) }}%
-                    </td>
+                    <td style="padding:5px 12px 5px 0;">{{ $m['name'] }}</td>
+                    <td style="padding:5px 0; text-align:left; padding-left:24px;">{{ round($m['percentage'] * 100, 1) }}%</td>
                 </tr>
             @endforeach
-            </tbody>
         </table>
     @else
-        <h2>No Visiting Violations</h2>
-
-        <p>
-            No controllers were found below the 50% Vancouver controlling requirement
-            for the past quarter.
-        </p>
+        <p>No visiting controllers fell below the 50% Vancouver controlling requirement in the past quarter.</p>
     @endif
 
-    @if(isset($unknown) && count($unknown) > 0)
-        <br>
-
-        <h2 class="warning">Unable to Check Some Controllers</h2>
-
-        <p>
-            The following controllers could not be checked because the VATSIM API did not return
-            usable data after repeated attempts:
-        </p>
-
-        <table style="width: 100%">
-            <thead>
-            <tr>
-                <th class="border">Name</th>
-                <th class="border">CID</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($unknown as $controller)
+    @if (isset($unknown) && count($unknown))
+        <h2 style="font-size:16px; font-weight:600; margin:24px 0 8px 0; color:#b45309;">Some controllers couldn't be checked</h2>
+        <p>The VATSIM API didn't return usable data for these controllers after repeated attempts, please check them manually!</p>
+        <table cellpadding="0" cellspacing="0" role="presentation" style="min-width:60%; margin:0 0 24px 0; font-size:14px;">
+            @foreach ($unknown as $controller)
                 <tr>
-                    <td class="border" style="text-align: left">{{ $controller['name'] }}</td>
-                    <td class="border" style="text-align: center">{{ $controller['cid'] }}</td>
+                    <td style="padding:5px 12px 5px 0;">{{ $controller['name'] }}</td>
+                    <td style="padding:5px 0; text-align:left; padding-left:24px; color:#6e6e73;">{{ $controller['cid'] }}</td>
                 </tr>
             @endforeach
-            </tbody>
         </table>
-
-        <p>
-            These controllers were not counted as compliant or non-compliant in this report.
-        </p>
     @endif
 @endsection
 
-@section('footer-reason-line')
-    you are a staff member.
-@endsection
+@section('from-line', 'Sent automatically by ActivityBot')
+
+@section('footer-reason-line', 'you are a Vancouver FIR staff member.')

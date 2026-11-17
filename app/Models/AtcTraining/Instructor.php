@@ -10,8 +10,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Instructor extends Model
 {
     protected $fillable = [
-        'user_id', 'qualification', 'email',
+        'user_id', 'qualification', 'email', 'active',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'active' => 'boolean',
+        ];
+    }
 
     /*
      * * Return who posted the article
@@ -26,11 +33,6 @@ class Instructor extends Model
     public function students(): HasMany
     {
         return $this->hasMany(Student::class);
-    }
-
-    public function studentnotes(): HasMany
-    {
-        return $this->hasMany(StudentNote::class);
     }
 
     public function sessions(): HasMany

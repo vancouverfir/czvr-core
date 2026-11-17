@@ -2,9 +2,9 @@
 
 namespace App\Classes;
 
-use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
  */
 class DiscordClient
 {
-    private Client $http;
+    private PendingRequest $http;
 
     private string $token;
 
@@ -25,28 +25,32 @@ class DiscordClient
     public function __construct(string $token)
     {
         $this->token = $token;
-        $this->http = new Client([
-            'base_uri' => 'https://discord.com/api/v10/',
-            'headers' => [
-                'Authorization' => 'Bot '.$this->token,
-                'User-Agent' => 'DiscordBot (czvr.ca, v1.0.0)',
-                'Accept' => 'application/json',
-            ],
-        ]);
+        $this->http = Http::baseUrl('https://discord.com/api/v10')
+            ->withToken($this->token, 'Bot')
+            ->acceptJson()
+            ->withHeaders(['User-Agent' => 'DiscordBot (czvr.ca, v1.1.1)'])
+            ->connectTimeout(5)
+            ->timeout(15);
     }
 
-    public function AddGuildMember(int $user_id, string $access_token, string $nickname, array $roles): void
+    public function AddGuildMember(int $user_id, string $access_token, string $nickname, array $roles): bool
     {
         try {
-            $this->http->put('guilds/'.self::VANCOUVER_GUILD."/members/$user_id", [
-                'json' => [
-                    'access_token' => $access_token,
-                    'nick' => $nickname,
-                    'roles' => null,
-                ],
+            $response = $this->http->put('guilds/'.self::VANCOUVER_GUILD."/members/$user_id", [
+                'access_token' => $access_token,
+                'nick' => $nickname,
+                'roles' => $roles,
             ]);
-        } catch (GuzzleException $e) {
-            Log::error($e->getMessage());
+
+            if (! $response->successful()) {
+                Log::warning('Discord guild member add failed.', ['status' => $response->status()]);
+            }
+
+            return $response->successful();
+        } catch (ConnectionException $e) {
+            Log::warning('Discord guild member add could not connect!', ['message' => $e->getMessage()]);
+
+            return false;
         }
     }
 
@@ -54,13 +58,13 @@ class DiscordClient
     {
         try {
             $response = $this->http->get('guilds/'.self::VANCOUVER_GUILD."/members/$user_id");
-            if ($response->getStatusCode() != 200) {
+            if (! $response->successful()) {
                 return null;
             }
 
-            return json_decode($response->getBody());
-        } catch (GuzzleException $e) {
-            Log::error($e->getMessage());
+            return $response->object();
+        } catch (ConnectionException $e) {
+            Log::warning('Discord guild member lookup could not connect!', ['message' => $e->getMessage()]);
         }
 
         return null;
@@ -69,13 +73,15 @@ class DiscordClient
     public function RemoveGuildMember(int $user_id): void
     {
         try {
-            $this->http->delete('guilds/'.self::VANCOUVER_GUILD."/members/$user_id", [
-                'headers' => [
-                    'X-Audit-Log-Reason' => 'User disconnected via website.',
-                ],
-            ]);
-        } catch (GuzzleException $e) {
-            Log::error($e->getMessage());
+            $response = $this->http
+                ->withHeaders(['X-Audit-Log-Reason' => 'User disconnected via website!'])
+                ->delete('guilds/'.self::VANCOUVER_GUILD."/members/$user_id");
+
+            if (! $response->successful()) {
+                Log::warning('Discord guild member removal failed!', ['status' => $response->status()]);
+            }
+        } catch (ConnectionException $e) {
+            Log::warning('Discord guild member removal could not connect!', ['message' => $e->getMessage()]);
         }
     }
 
@@ -83,13 +89,13 @@ class DiscordClient
     {
         try {
             $response = $this->http->get("users/$user_id");
-            if ($response->getStatusCode() !== 200) {
-                throw new Exception("Couldn't get user $user_id.");
+            if (! $response->successful()) {
+                return null;
             }
 
-            return json_decode($response->getBody()->getContents());
-        } catch (Exception|GuzzleException $e) {
-            Log::error($e->getMessage());
+            return $response->object();
+        } catch (ConnectionException $e) {
+            Log::warning('Discord user lookup could not connect!', ['message' => $e->getMessage()]);
         }
 
         // No user found
@@ -99,11 +105,15 @@ class DiscordClient
     public function SendAuditMessage(string $content): void
     {
         try {
-            $this->http->post('channels/'.self::AUDIT_CHANNEL.'/messages', [
-                'json' => ['content' => $content],
+            $response = $this->http->post('channels/'.self::AUDIT_CHANNEL.'/messages', [
+                'content' => $content,
             ]);
-        } catch (GuzzleException $e) {
-            Log::error($e->getMessage());
+
+            if (! $response->successful()) {
+                Log::warning('Discord audit message failed!', ['status' => $response->status()]);
+            }
+        } catch (ConnectionException $e) {
+            Log::warning('Discord audit message could not connect!', ['message' => $e->getMessage()]);
         }
     }
 }

@@ -1,8 +1,10 @@
 @extends('layouts.master')
 @section('content')
+@include('partials.vendor.flatpickr')
+@include('partials.vendor.easymde')
 <div class="container py-4">
     <a href="{{route('events.admin.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> Events</a>
-    <h1 class="font-weight-bold blue-text">Create Event</h1>
+    <h1 class="fw-bold blue-text">Create Event</h1>
     <hr>
     @csrf
     <div class="row">
@@ -12,7 +14,7 @@
             @if($errors->createEventErrors->any())
             <div class="alert alert-danger">
                 <h4>There were errors creating the event</h4>
-                <ul class="pl-0 ml-0 list-unstyled">
+                <ul class="ps-0 ms-0 list-unstyled">
                     @foreach ($errors->createEventErrors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -72,7 +74,7 @@
                             <label for="">Use Markdown</label>
                             <textarea id="contentMD" name="description" class="w-75"></textarea>
                             <script>
-                                var simplemde = new SimpleMDE({ element: document.getElementById("contentMD"), toolbar: false });
+                                var easymde = new EasyMDE({ spellChecker: false, element: document.getElementById("contentMD"), toolbar: false });
                             </script>
                         </div>
                     </div>
@@ -85,13 +87,13 @@
                     <div class="step-content w-75 pt-0">
                         <p>An image can be displayed for the event. Please ensure we have the right to use the image, and that it is of an acceptable resolution. Make sure the image has no text or logos on it.</p>
                         <div class="input-group pb-3">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" name="image">
-                                <label class="custom-file-label">Choose image</label>
+                            <div class="mb-3">
+                                <input type="file" class="form-control" name="image">
+
                             </div>
                         </div>
                         <p>Alternatively, pick an already uploaded image.</p>
-                        <button class="btn" type="button" data-toggle="collapse" data-target="#collapseExample">
+                        <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample">
                             Pick uploaded image
                         </button>
                         <div class="collapse" id="collapseExample">
@@ -102,9 +104,6 @@
                                     <option data-img-src="{{$img->path}}" data-img-class="img-fluid" data-img-alt="{{$img->id}}" value="{{$img->id}}">  {{$img->id}}  </option>
                                     @endforeach
                                   </select>
-                                  <script>
-                                    $("select.image-picker").imagepicker()
-                                  </script>
                             </div>
                         </div>
                     </div>
@@ -116,7 +115,7 @@
                     </a>
                     <div class="step-content w-75 pt-0">
                         <div class="form-group">
-                            <div class="mr-2">
+                            <div class="me-2">
                                 <input type="checkbox" class="" name="openControllerApps" id="openControllerApps">
                                 <label class="" for="">Open controller applications</label>
                             </div>

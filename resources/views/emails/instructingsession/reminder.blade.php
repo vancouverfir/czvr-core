@@ -1,29 +1,29 @@
 @extends('layouts.email')
 
+@section('headline', 'Your training session starts in 3 hours')
+
+@section('to-line', 'Hi '.$recipient->display_fname.',')
+
 @section('message-content')
-
-
-<h1>Reminder: Upcoming Instructing Session</h1>
-
-<p>Hello {{ $recipient->fullName('FLC') }},</p>
-
-<p>Your instructing session starts in 3 hours! Here are the details:</p>
-
-<ul>
-    <li><strong>Title:</strong> {{ $session->title }}</li>
-    <li><strong>Start Time:</strong> {{ $session->start_time->format('Y-m-d H:i') }} UTC</li>
-    <li><strong>End Time:</strong> {{ $session->end_time->format('Y-m-d H:i') }} UTC</li>
-    <li><strong>Instructor:</strong> {{ $session->instructorUser()->fullName('FLC') }}</li>
-    <li><strong>Student:</strong> {{ $session->student->user->fullName('FLC') }}</li>
-    @if($session->instructor_comment)
-        <li><strong>Instructor Comment:</strong> {{ $session->instructor_comment }}</li>
-    @endif
-</ul>
-
-<p>Please make sure to be ready on time!</p>
-
+    <p>This is a reminder about your upcoming training session.</p>
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin:4px 0 24px 0;">
+        @foreach (array_filter([
+            'Session' => $session->title,
+            'Date' => $session->start_time->format('D j M Y'),
+            'Time' => $session->start_time->format('H:i').' – '.$session->end_time->format('H:i').' UTC',
+            'Instructor' => $session->instructorUser()->fullName('FL'),
+            'Student' => $session->student->user->fullName('FL'),
+            'Instructor comment' => $session->instructor_comment,
+        ], fn ($value) => filled($value)) as $label => $value)
+            <tr>
+                <td width="140" style="padding:4px 16px 4px 0; color:#6e6e73; width:140px; vertical-align:top;">{{ $label }}</td>
+                <td style="padding:4px 0; color:#1d1d1f; vertical-align:top;">{{ $value }}</td>
+            </tr>
+        @endforeach
+    </table>
+    <p>Please make sure you're ready on time.</p>
 @endsection
 
-@section('footer-reason-line')
-you have an upcoming instructing session
-@endsection
+@section('footer-to-line', $recipient->email)
+
+@section('footer-reason-line', 'you have an upcoming Vancouver FIR training session.')

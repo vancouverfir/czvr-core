@@ -1,8 +1,9 @@
 @extends('layouts.master')
 @section('content')
+@include('partials.vendor.easymde')
 <div class="container py-4">
     <a href="{{route('news.index')}}" class="blue-text" style="font-size: 1.2em;"> <i class="fas fa-arrow-left"></i> News</a>
-    <h1 class="font-weight-bold blue-text">Create Article</h1>
+    <h1 class="fw-bold blue-text">Create Article</h1>
     @csrf
     <div class="row">
         <div class="col-md-12">
@@ -11,7 +12,7 @@
             @if($errors->createArticleErrors->any())
             <div class="alert alert-danger">
                 <h4>There were errors submitting the article</h4>
-                <ul class="pl-0 ml-0 list-unstyled">
+                <ul class="ps-0 ms-0 list-unstyled">
                     @foreach ($errors->createArticleErrors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -32,15 +33,15 @@
                         <div class="form-group">
                             <label for="">Author</label>
                             <div class="d-flex flex-row justify-content-between">
-                                <select class="custom-select" name="author">
+                                <select class="form-select" name="author" data-searchable>
                                     <option value="{{auth()->id()}}" selected>You</option>
                                     @foreach ($staff as $s)
                                         <option value="{{$s->user->id}}">{{$s->user->fullName('FLC')}} ({{$s->position}})</option>
                                     @endforeach
                                 </select>
-                                <div class="ml-3">
-                                    <input type="checkbox" name="showAuthor" class="" id="defaultUnchecked">
-                                    <label class="" for="defaultUnchecked">Show author publicly</label>
+                                <div class="ms-3">
+                                    <input type="checkbox" name="showAuthor" class="" id="showAuthor">
+                                    <label class="" for="showAuthor">Show author publicly</label>
                                 </div>
                             </div>
                         </div>
@@ -58,13 +59,13 @@
                     <div class="step-content w-75 pt-0">
                         <p>This image will be the thumbnail, as well as the photo at the top of the story.</p>
                         <div class="input-group pb-3">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" name="image">
-                                <label class="custom-file-label">Choose image</label>
+                            <div class="mb-3">
+                                <input type="file" class="form-control" name="image">
+
                             </div>
                         </div>
                         {{-- <p>Alternatively, pick an already uploaded image.</p>
-                        <button class="btn" type="button" data-toggle="collapse" data-target="#collapseExample">
+                        <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample">
                             Pick uploaded image
                         </button>
                         <div class="collapse" id="collapseExample">
@@ -75,9 +76,6 @@
                                     <option data-img-src="{{$img->path}}" data-img-class="img-fluid" data-img-alt="{{$img->id}}" value="{{$img->id}}">  {{$img->id}}  </option>
                                     @endforeach
                                   </select>
-                                  <script>
-                                    $("select.image-picker").imagepicker()
-                                  </script>
                             </div>
                         </div>--}}
                     </div>
@@ -91,7 +89,7 @@
                         <label for="">Use Markdown</label>
                         <textarea id="contentMD" name="content" class="w-75"></textarea>
                         <script>
-                            var simplemde = new SimpleMDE({ element: document.getElementById("contentMD"), toolbar: false });
+                            var easymde = new EasyMDE({ spellChecker: false, element: document.getElementById("contentMD"), toolbar: false });
                         </script>
                     </div>
                 </li>
@@ -102,34 +100,26 @@
                     </a>
                     <div class="step-content w-75 pt-0">
                         <div class="form-group">
-                            <div class="mr-2">
+                            <div class="me-2">
                                 <input type="checkbox" checked="true"  class="" name="articleVisible" id="articleVisible">
-                                <label class="" for="">Publicly visible (published)</label>
+                                <label class="" for="articleVisible">Publicly visible (published)</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="">Email Options <span onclick="showExplanationEmail()">(click for explanation)</span></label>
                             <script>
                                 function showExplanationEmail() {
-                                    alert("No email: no email is sent\nEmail controllers: all rostered controllers are emailed.\nEmail all: all subscribed users are emailed\nEmail all, important: ALL users are emailed. Use for important news only in line with the privacy policy.\n\nOnly use emails once for one item of news, unless a reminder is required.");
+                                    alert("No email: No email is sent!\n\nEmail subscribers: Everyone who has subscribed to emails is emailed when the article is published!");
                                 }
                             </script>
                             <div class="d-flex flex-col">
-                            <div class="mr-2">
-                                <input type="radio" value="no" checked="true" class="" id="defaultUnchecked" name="emailOption">
-                                <label class="" for="defaultUnchecked">No email</label>
-                            </div>
-                            <div class="mr-2">
-                                <input type="radio" value="controllers" class="" id="defaultUnchecked" name="emailOption">
-                                <label class="" for="defaultUnchecked">Email controllers</label>
-                            </div>
-                            <div class="mr-2">
-                                <input type="radio" value="all" class="" id="defaultUnchecked" name="emailOption">
-                                <label class="" for="defaultUnchecked">Email all</label>
+                            <div class="me-2">
+                                <input type="radio" value="no" checked="true" class="" id="emailOptionNone" name="emailOption">
+                                <label class="" for="emailOptionNone">No email</label>
                             </div>
                             <div class="">
-                                <input type="radio" value="allimportant" class="" id="defaultUnchecked" name="emailOption">
-                                <label class="" for="defaultUnchecked">Email all, important</label>
+                                <input type="radio" value="subscribers" class="" id="emailOptionSubscribers" name="emailOption">
+                                <label class="" for="emailOptionSubscribers">Email subscribers</label>
                             </div>
                             </div>
                         </div>

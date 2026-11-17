@@ -36,7 +36,8 @@
     <tr><td>Region</td><td>{{auth()->user()->region_name}} ({{auth()->user()->region_code}})</td></tr>
     <tr><td>Division</td><td>{{auth()->user()->division_name}} ({{auth()->user()->division_code}})</td></tr>
     <tr><td>Subdivision</td><td>{{auth()->user()->subdivision_name}} ({{auth()->user()->subdivision_code}})</td></tr>
-    <tr><td>Permissions</td><td>{{auth()->user()->permissions}}</td></tr>
+    <tr><td>Roles</td><td>{{ auth()->user()->roles()->pluck('name')->join(', ') ?: 'None' }}</td></tr>
+    <tr><td>Individual permissions</td><td>{{ auth()->user()->directPermissions()->pluck('slug')->join(', ') ?: 'None' }}</td></tr>
     <tr><td>Accepted privacy policy</td><td>{{auth()->user()->init}}</td></tr>
     <tr><td>Subscribed to emails</td><td>{{auth()->user()->gdpr_subscribed_emails}}</td></tr>
     <tr><td>Avatar</td><td>{{auth()->user()->avatar}}</td></tr>
