@@ -2,6 +2,7 @@
 
 namespace App\Notifications\Feedback;
 
+use App\Models\Users\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -39,7 +40,7 @@ class NewControllerFeedback extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $controller = \App\Models\Users\User::find($this->feedback->controller_cid);
+        $controller = User::find($this->feedback->controller_cid);
 
         return (new MailMessage)
             ->subject('New Controller Feedback')

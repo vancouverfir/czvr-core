@@ -15,9 +15,7 @@ class ProcessArticlePublishing implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(protected News $article)
-    {
-    }
+    public function __construct(protected News $article) {}
 
     public function handle(): void
     {

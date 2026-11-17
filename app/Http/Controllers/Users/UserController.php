@@ -323,9 +323,7 @@ class UserController extends Controller
         abort(404, 'Not implemented');
     }
 
-    public function emailStore(Request $request): void
-    {
-    }
+    public function emailStore(Request $request): void {}
 
     public function changeAvatar(Request $request): RedirectResponse
     {
