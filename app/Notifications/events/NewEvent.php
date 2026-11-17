@@ -13,7 +13,9 @@ class NewEvent extends Notification implements ShouldQueue
 {
     use HasUnsubscribeLink, Queueable;
 
-    public function __construct(protected Event $event) {}
+    public function __construct(protected Event $event)
+    {
+    }
 
     public function via(object $notifiable): array
     {
