@@ -230,7 +230,6 @@ class ActivityLog extends Command
                 } else {
                     error_log('Something went wrong adding currency!');
                 }
-
             }
         }
 
