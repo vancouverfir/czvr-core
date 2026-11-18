@@ -115,7 +115,7 @@ class VatcanClient
         for ($attempt = 1; $attempt <= 3; $attempt++) {
             $response = $this->request()
                 ->withHeaders($etag ? ['If-None-Match' => $etag] : [])
-                ->timeout(15)
+                ->timeout(35)
                 ->get(self::url("user/{$cid}/notes"));
 
             if ($response->status() !== 429 || ! $waitOnRateLimit || $attempt === 3) {
