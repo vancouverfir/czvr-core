@@ -6,6 +6,7 @@ use App\Classes\HttpHelper;
 use App\Classes\VatsimHelper;
 use App\Mail\ActivityBot\UnauthorisedConnection;
 use App\Models\AtcTraining\RosterMember;
+use App\Models\AtcTraining\Student;
 use App\Models\Network\MonitoredPosition;
 use App\Models\Network\SessionLog;
 use App\Models\Settings\CoreSettings;
@@ -183,7 +184,7 @@ class ActivityLog extends Command
             foreach ($onlineControllers as $oc) {
                 if ($oc->cid == $log->cid &&
                     $log->monitoredPosition?->identifier == $oc->callsign &&
-                    Carbon::make($oc->logon_time) == $log->session_start) {
+                    Carbon::make($oc->logon_time)->getTimestamp() === $log->session_start?->getTimestamp()) {
                     $stillOnline = true;
                 }
             }
@@ -215,19 +216,21 @@ class ActivityLog extends Command
                     // Add hours
                     $roster_member->currency += $difference;
 
-                    if (in_array($roster_member->user?->rating_short, ['S1', 'S2', 'S3', 'C1'], true)) {
-                        if ($progression->sessionCountsTowardRatingHours($roster_member, $log->callsign)) {
-                            $roster_member->rating_hours += $difference;
-                        }
-                    } else {
-                        error_log('Something went wrong adding rating hours (Students)');
+                    // Rating hours only count while the student is consolidating
+                    $student = Student::where('user_id', $roster_member->user_id ?: $roster_member->cid)->first();
+
+                    if ($student?->consolidationIsPending() &&
+                        $progression->sessionCountsTowardRatingHours($roster_member, $log->callsign)) {
+                        $roster_member->rating_hours += $difference;
                     }
+
                     // Save roster member
                     $roster_member->save();
                     $progression->completeConsolidationIfEligible($roster_member);
                 } else {
                     error_log('Something went wrong adding currency!');
                 }
+
             }
         }
 
