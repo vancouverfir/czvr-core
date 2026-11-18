@@ -32,6 +32,14 @@ class News extends Notification implements ShouldQueue
      *
      * @param  mixed  $notifiable
      */
+    public function shouldSend(object $notifiable, string $channel): bool
+    {
+        return (bool) $notifiable->gdpr_subscribed_emails
+            && ! $notifiable->deleted
+            && filled($notifiable->email)
+            && ! str_ends_with(strtolower($notifiable->email), '@invalid.local');
+    }
+
     public function via(object $notifiable): array
     {
         return ['mail'];

@@ -44,8 +44,6 @@ print("|" + DBServer + "|")
 
 print("Connecting to MySQL Sevrer...")
 
-CIDSTOR = []
-# VISITCIDSTOR = []
 
 WEBHOOK_URL = config.get("Webhook", "Webhook")
 
@@ -97,7 +95,6 @@ def trim_events(data):
     """
     print("Trimming Events")
 
-    rm_deleted_events(data)
 
     for i in data["data"]:
         print("End time ", i["end"])
@@ -249,24 +246,6 @@ async def stow_event(data):
     connectSQL.commit()
     print("Event stowing complete!")
 
-def rm_deleted_events(data):
-    """
-    Removing deleted events from the server
-    """
-    print("Removing deleted events")
-    cur = connectSQL.cursor()
-
-    now = datetime.now(UTC).strftime("%Y-%m-%d %H:%M")
-    cur.execute("SELECT id FROM events WHERE end_timestamp < ?", (now,))
-    expired = cur.fetchall()
-
-    for id in expired:
-        cur.execute("DELETE FROM event_confirms WHERE event_id = ?", id)
-        cur.execute("DELETE FROM event_controller_applications WHERE event_id = ?", id)
-        cur.execute("DELETE FROM event_positions WHERE event_id = ?", id)
-        cur.execute("DELETE FROM event_updates WHERE event_id = ?", id)
-        cur.execute("DELETE FROM events WHERE id = ?", id)
-
 def fetch_roster():
     """
     # Using the vatsium API to fetch the user roster
@@ -301,7 +280,6 @@ def fetch_roster():
                 rating_short,
             )
         )
-        CIDSTOR.append(i["cid"])
 
 
 def fetch_visit_roster():
@@ -345,9 +323,7 @@ def fetch_visit_roster():
                 rating_short,
             )
         )
-        CIDSTOR.append(i["cid"])
 
-    trim_roster()
 
 
 def conv_rating(rating):
@@ -387,28 +363,6 @@ def give_controller_role(cur, cid):
     cur.execute("INSERT IGNORE INTO users_roles (user_id, role_id) VALUES (?, ?)", (cid, row[0]))
 
 
-def trim_roster():
-    """
-    Cleans up the roster and returns a list of players
-    """
-    print("Cleaning up roster!")
-    cur = connectSQL.cursor()
-    bye = connectSQL.cursor()
-    cur.execute("SELECT user_id FROM roster")
-    for i in cur:
-        str_cid = str(i)[1:-2]
-        db_cid = int(str_cid)
-        if db_cid not in CIDSTOR:
-            print("invalid CID:", db_cid)
-            bye.execute("DELETE FROM session_logs WHERE roster_member_id=?", (db_cid,))
-            bye.execute("DELETE FROM roster WHERE user_id=?", (db_cid,))
-            print("Invalid CID Removed from DB... BUH BYE")
-
-    placeholders = ", ".join("?" * len(CIDSTOR))
-    bye.execute(f"DELETE FROM users_roles WHERE user_id NOT IN ({placeholders})", CIDSTOR)
-    bye.execute(f"DELETE FROM users_permissions WHERE user_id NOT IN ({placeholders})", CIDSTOR)
-    print("Removed roles from users not on the VATCAN roster!")
-
 async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_short):
     """
     Stores new users in the roster or updates existing ones
@@ -418,15 +372,17 @@ async def stow_roster(cid, fname, lname, rating_id, email, fullname, rating_shor
     try:
         cur = connectSQL.cursor()
 
-        cur.execute("SELECT id FROM users WHERE id = ?", (cid,))
-
-        if cur.fetchone() is not None:
+        cur.execute("SELECT deleted FROM users WHERE id = ?", (cid,))
+        existing_user = cur.fetchone()
+        if existing_user and existing_user[0]:
+            return
+        if existing_user is not None:
             print(f"User {cid} exists, updating")
             cur.execute("""
                 UPDATE users 
-                SET email=?, lname=?, rating_id=?, rating_short=?, visitor='0'
+                SET email=?, lname=?, visitor='0'
                 WHERE id=?
-            """, (email, lname, rating_id, rating_short, cid))
+            """, (email, lname, cid))
 
         else:
             print(f"User {cid} not in DB. Inserting new user!")
@@ -478,15 +434,17 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, ratin
     try:
         cur = connectSQL.cursor()
 
-        cur.execute("SELECT id FROM users WHERE id=?", (cid,))
-
-        if cur.fetchone() is not None:
+        cur.execute("SELECT deleted FROM users WHERE id=?", (cid,))
+        existing_user = cur.fetchone()
+        if existing_user and existing_user[0]:
+            return
+        if existing_user is not None:
             print(f"User {cid} exists, updating")
             cur.execute("""
                 UPDATE users 
-                SET email=?, lname=?, rating_id=?, rating_short=?, visitor='1'
+                SET email=?, lname=?, visitor='1'
                 WHERE id=?
-            """, (email, lname, rating_id, rating_short, cid))
+            """, (email, lname, cid))
 
         else:
             print(f"User {cid} not in DB. Inserting new visitor.")
@@ -528,15 +486,6 @@ async def stow_visit_roster(cid, fname, lname, rating_id, email, fullname, ratin
         print(f"Finished processing visiting user {cid}!")
 
 
-def reset_activity():
-    """
-    Monthly Currency Reset
-    """
-    cur = connectSQL.cursor()
-    cur.execute("UPDATE roster SET currency = NULL WHERE cid IS NOT NULL")
-    print("Monthly Currency Reset")
-
-
 try:
     if ISMODE == "events" or ISMODE == "event":
         fetch_event()
@@ -549,7 +498,7 @@ try:
         fetch_roster()
         fetch_visit_roster()
     elif ISMODE == "activityreset":
-        reset_activity()
+        print("Currency reset is handled by the Laravel scheduler.")
     else:
         print("You need to state either Events or Roster")
 except Exception as e:

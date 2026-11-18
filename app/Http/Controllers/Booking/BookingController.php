@@ -12,12 +12,10 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class BookingController extends Controller
@@ -117,31 +115,9 @@ class BookingController extends Controller
 
     protected function userCertifiedForCallsign(string $callsign, ?int $cid = null): bool
     {
-        [$icao, $position] = array_pad(explode('_', $callsign, 2), 2, null);
-        if (! $icao || ! $position) {
-            return false;
-        }
-
-        $mapping = config("bookingairports.certifiedairports.{$icao}");
         $roster = RosterMember::where('cid', $cid ?? auth()->id())->first();
 
-        if (! is_array($mapping) || ! $roster) {
-            return false;
-        }
-
-        foreach ($mapping['positions'] ?? [] as $certifiedPosition) {
-            if (! Str::contains($position, $certifiedPosition)) {
-                continue;
-            }
-
-            foreach ($mapping['columns'] ?? [] as $column) {
-                if ((int) $roster->{$column} > 0) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return $roster?->canBookCallsign($callsign) ?? false;
     }
 
     protected function validateBookingRules(CarbonImmutable $start, CarbonImmutable $end): ?array
@@ -241,7 +217,7 @@ class BookingController extends Controller
         return redirect()->route('booking')->with('success', 'Booking created successfully!');
     }
 
-    public function edit($id, Request $request): Response|JsonResponse|View
+    public function edit($id, Request $request): RedirectResponse|JsonResponse
     {
         $booking = $this->remoteBooking($id);
         abort_if(! $booking, 404);
@@ -252,7 +228,7 @@ class BookingController extends Controller
             return response()->json($booking);
         }
 
-        return view('booking.edit', compact('booking'));
+        return redirect()->route('booking');
     }
 
     public function update(Request $request, $id): RedirectResponse
@@ -280,7 +256,7 @@ class BookingController extends Controller
 
         $this->assertCanModify($booking);
 
-        $user = User::find($booking['cid']) ?? auth()->user();
+        $user = User::findOrFail($booking['cid']);
 
         if (! $this->userCertifiedForCallsign($data['callsign'], $user->id)) {
             return back()->withErrors(['certification' => 'The controller is not certified for this position!'])->withInput();

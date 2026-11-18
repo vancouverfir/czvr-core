@@ -5,12 +5,14 @@ namespace App\Http\Controllers\AtcTraining;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentLabel;
+use App\Services\TrainingProgressionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LabelController extends Controller
 {
-    public function assignLabel(Request $request, $student_id): RedirectResponse
+    public function assignLabel(Request $request, $student_id, TrainingProgressionService $progression): RedirectResponse
     {
         $student = Student::with('labels.label')->findOrFail($student_id);
         $label = StudentLabel::findOrFail($request->get('student_label_id'));
@@ -19,23 +21,31 @@ class LabelController extends Controller
             return back()->with('error', "Label {$label->name} cannot be assigned to this student!");
         }
 
-        if ($label->exclusive) {
-            $existingExclusive = $student->labels
-                ->filter(fn ($link) => $link->label->exclusive)
-                ->first();
+        if (! $student->isVisitor() && in_array($label->name, Student::RATING_TRAINING_LABELS, true)) {
+            $progression->assignTrainingPackage($student, $label, preserveChecklist: true);
 
-            if ($existingExclusive && $existingExclusive->label->id !== $label->id) {
-                $existingExclusive->delete();
-            }
+            return back()->with('success', "Restored {$label->name}. Remove the pause label to resume training.");
         }
 
         if ($student->labels->contains('student_label_id', $label->id)) {
             return back()->with('error', "Label {$label->name} already assigned!");
         }
 
-        $student->addLabel($label);
+        DB::transaction(function () use ($student, $label): void {
+            if ($label->exclusive) {
+                $student->labels()->whereHas('label', fn ($query) => $query->where('exclusive', true))->delete();
+            }
 
-        $this->updateStatus($student->refresh());
+            if ((int) $student->status === Student::STATUS_MARKED_FOR_REMOVAL
+                && in_array($label->new_status, Student::WAITLIST_STATUSES, true)) {
+                $student->labels()->whereHas('label', fn ($query) => $query
+                    ->where('new_status', Student::STATUS_MARKED_FOR_REMOVAL)
+                    ->orWhereIn('name', ['No Response', 'Renewal Expired']))->delete();
+            }
+
+            $student->addLabel($label);
+            $this->updateStatus($student->refresh());
+        });
 
         return back()->with('success', 'Label added!');
     }
@@ -54,6 +64,7 @@ class LabelController extends Controller
                 $student->status !== $originalStatus &&
                 $student->isWaitlisted()
             ) {
+                $student->renewed_at = now();
                 $student->position = Student::nextQueuePosition((int) $student->status);
                 $student->checklistItems()->delete();
             }
@@ -83,7 +94,8 @@ class LabelController extends Controller
 
         $currentExclusiveLabels = $student->labels->filter(fn ($link) => $link->label->exclusive);
 
-        if ($labelToRemove->exclusive && $currentExclusiveLabels->count() <= 1) {
+        if (($labelToRemove->exclusive && $currentExclusiveLabels->count() <= 1)
+            || ($labelToRemove->name === Student::PAUSED_LABEL && $currentExclusiveLabels->isEmpty())) {
             return back()->with('error', 'Each student must have at least one exclusive label!');
         }
 

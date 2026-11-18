@@ -16,6 +16,7 @@ use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -39,13 +40,11 @@ class EventController extends Controller
         $event = Event::where('slug', $slug)->firstOrFail();
         $timeNow = Carbon::now();
         $updates = $event->updates;
-        if (Auth::check() && ControllerApplication::where('user_id', Auth::id())->where('event_id', $event->id)) {
-            $app = ControllerApplication::where('user_id', Auth::id())->where('event_id', $event->id)->first();
+        $app = Auth::check()
+            ? ControllerApplication::where('user_id', Auth::id())->where('event_id', $event->id)->first()
+            : null;
 
-            return view('events.view', compact('event', 'updates', 'app', 'timeNow'));
-        }
-
-        return view('events.view', compact('event', 'updates', 'timeNow'));
+        return view('events.view', compact('event', 'updates', 'app', 'timeNow'));
     }
 
     public function viewControllers(): View
@@ -96,7 +95,9 @@ class EventController extends Controller
 
         $application->user->notify(new EventSignup($application, $request->get('event_id')));
 
-        return redirect()->back()->with('success', 'Thanks for applying! If you need to make any adjustments to your application, please <a href='.config('app.url').'/staff>contact the Events Coordinator.');
+        return redirect()->back()
+            ->with('success', 'Thanks for applying! If you need to make any adjustments, contact the Events Coordinator.')
+            ->with('success_action', ['url' => route('staff'), 'label' => 'View staff contacts']);
     }
 
     public function viewApplications($id): View
@@ -115,17 +116,24 @@ class EventController extends Controller
             'airport' => 'required',
         ]);
 
-        $event = Event::where('id', $id)->firstorFail();
-        $controllerconfirm = EventConfirm::create([
-            'event_id' => $event->id,
-            'user_id' => $request->input('user_cid'),
-            'start_timestamp' => $request->input('start_timestamp'),
-            'end_timestamp' => $request->input('end_timestamp'),
-            'airport' => $request->input('airport'),
-        ]);
-        $applications = ControllerApplication::where('user_id', $request->input('user_cid'))->firstorFail();
-        $applications->delete();
-        $this->logEventController('Confirmed', $event, $controllerconfirm);
+        $event = Event::findOrFail($id);
+
+        DB::transaction(function () use ($event, $request): void {
+            $application = ControllerApplication::where('event_id', $event->id)
+                ->where('user_id', $request->input('user_cid'))
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $confirmation = EventConfirm::create([
+                'event_id' => $event->id,
+                'user_id' => $application->user_id,
+                'start_timestamp' => $request->input('start_timestamp'),
+                'end_timestamp' => $request->input('end_timestamp'),
+                'airport' => $request->input('airport'),
+            ]);
+            $application->delete();
+            $this->logEventController('Confirmed', $event, $confirmation);
+        });
 
         return redirect()->route('events.admin.view', $event->slug)->with('success', 'Controller Confirmed for Event!');
     }

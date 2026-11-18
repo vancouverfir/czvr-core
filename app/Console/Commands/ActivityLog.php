@@ -2,26 +2,28 @@
 
 namespace App\Console\Commands;
 
-use App\Classes\HttpHelper;
 use App\Classes\VatsimHelper;
 use App\Mail\ActivityBot\UnauthorisedConnection;
 use App\Models\AtcTraining\RosterMember;
-use App\Models\AtcTraining\Student;
 use App\Models\Network\MonitoredPosition;
 use App\Models\Network\SessionLog;
 use App\Models\Settings\CoreSettings;
 use App\Services\TrainingProgressionService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class ActivityLog extends Command
 {
+    private const LOCAL_PREFIXES = [
+        'CZVR_', 'ZVR_', 'CYVR_', 'CYYJ_', 'CYXS_', 'CYLW_', 'CYXX_', 'CZBB_', 'CYCD_', 'CYAZ_',
+        'CYQQ_', 'CYZT_', 'CYXC_', 'CYCG_', 'CYHC_', 'CYNJ_', 'CYPK_', 'CYKA_', 'CYZP_', 'CYYD_',
+        'CYXT_', 'CYWL_', 'CYDC_', 'CYBL_', 'CYWH_', 'CYQZ_',
+    ];
+
     /**
      * The name and signature of the console command.
      *
@@ -41,198 +43,102 @@ class ActivityLog extends Command
      */
     public function handle(TrainingProgressionService $progression): int
     {
-        // Because OOMs
-        DB::connection()->disableQueryLog();
-
-        // Active lists
-        $onlineControllers = [];
-
-        // Getters
-        $positions = MonitoredPosition::all();
-
-        try {
-            $response = HttpHelper::getClient()
-                ->timeout(90)
-                ->connectTimeout(10)
-                ->retry(3, 5000, throw: false)
-                ->acceptJson()
-                ->get(VatsimHelper::getDatafeedUrl());
-        } catch (ConnectionException $e) {
-            Log::warning('VATSIM datafeed connection failed or timed out. Skipping activity run.', [
-                'message' => $e->getMessage(),
-            ]);
-
-            return Command::SUCCESS;
-        } catch (\Throwable $e) {
-            Log::error('Unexpected error while fetching VATSIM datafeed.', [
-                'exception' => $e::class,
-            ]);
-
-            return Command::FAILURE;
-        }
-
-        if (! $response->successful()) {
-            Log::warning('VATSIM datafeed returned an unsuccessful response. Skipping activity run.', [
-                'status' => $response->status(),
-            ]);
-
+        $payload = VatsimHelper::getDatafeed();
+        if ($payload === null) {
             return Command::SUCCESS;
         }
 
-        $payload = $response->object();
+        $positions = MonitoredPosition::all()->keyBy('identifier');
+        $online = collect($payload['controllers'])
+            ->filter(fn ($controller) => is_array($controller)
+                && isset($controller['callsign'], $controller['cid'], $controller['logon_time'], $controller['facility']))
+            ->filter(fn (array $controller) => $positions->has($controller['callsign'])
+                || ((int) $controller['facility'] !== 0
+                    && ! Str::endsWith($controller['callsign'], ['ATIS', 'OBS'])
+                    && Str::startsWith($controller['callsign'], self::LOCAL_PREFIXES)))
+            ->keyBy(fn (array $controller) => $this->sessionKey(
+                (int) $controller['cid'], $controller['callsign'], Carbon::parse($controller['logon_time']),
+            ));
 
-        if (! is_object($payload) || ! isset($payload->controllers) || ! is_array($payload->controllers)) {
-            Log::warning('VATSIM datafeed response did not contain a valid controllers array. Skipping activity run.');
+        $openSessions = SessionLog::whereNull('session_end')->get();
+        $roster = RosterMember::whereIntegerInRaw('cid', $online->pluck('cid')->merge($openSessions->pluck('cid')))
+            ->get()
+            ->keyBy('cid');
+        $openKeys = $openSessions->keyBy(fn (SessionLog $log) => $this->sessionKey(
+            (int) $log->cid, $log->callsign ?? '', $log->session_start,
+        ));
 
-            return Command::SUCCESS;
-        }
+        foreach ($online as $key => $controller) {
+            $callsign = $controller['callsign'];
+            $cid = (int) $controller['cid'];
+            $position = $positions->get($callsign) ?? MonitoredPosition::firstOrCreate(['identifier' => $callsign]);
+            $positions->put($callsign, $position);
+            $rosterMember = $roster->get($cid);
 
-        $controllers = $payload->controllers;
-
-        foreach ($controllers as $controller) {
-            // Set our flag
-            $identFound = false;
-
-            foreach ($positions as $position) {
-                if ($controller->callsign == $position->identifier) {
-                    $identFound = true; // set flag
-                    array_push($onlineControllers, $controller); // Add if the callsign is the same as the position identifier
-                }
+            if (! $rosterMember) {
+                $this->notifyUnauthorized($cid, $callsign);
             }
 
-            // Check unauthorized login
-            $rosterMember = RosterMember::where('cid', $controller->cid)->first();
-            if ($identFound && ! $rosterMember) {
-                // Create a unique cache key for this controller + callsign
-                $cacheKey = 'unauth_email_sent_'.$controller->cid.'_'.$controller->callsign;
-
-                // Only send if not sent in the last 15 minutes
-                if (! Cache::has($cacheKey)) {
-                    $core = CoreSettings::find(1);
-                    $emails = $core ? array_filter([
-                        $core->emailfirchief,
-                        $core->emaildepfirchief,
-                        $core->emailcinstructor,
-                    ]) : [];
-
-                    foreach ($emails as $email) {
-                        Mail::to($email)->send(new UnauthorisedConnection([
-                            'callsign' => $controller->callsign,
-                            'cid' => $controller->cid,
-                        ]));
-                    }
-
-                    // Set cache for 15 minutes to prevent spam
-                    Cache::put($cacheKey, true, now()->addMinutes(15));
-                }
-            }
-
-            if (! $identFound) {
-                // Check to see if we need to make a new position, also check to make sure it isn't an ATIS, or an observer
-                if (Str::contains($controller->callsign, ['CZVR', 'CYVR', 'CYYJ', 'CYXS', 'CYLW', 'CYXX', 'CZBB', 'CYCD', 'CYAZ', 'CYQQ', 'CYZT', 'CYXC', 'CYCG', 'CYHC', 'CYNJ', 'CYPK', 'CYKA', 'CYZP', 'CYYD', 'CYXT', 'CYWL', 'CYDC', 'CYBL', 'CYWH', 'CYQZ']) &&
-                    ! Str::endsWith($controller->callsign, ['ATIS', 'OBS']) &&
-                    $controller->facility != 0) {
-                    // Add position to table if so
-                    $monPos = new MonitoredPosition;
-                    $monPos->identifier = $controller->callsign;
-                    $monPos->save();
-
-                    // They CLEARLY are on one of our positions, push them to the array please!
-                    array_push($onlineControllers, $controller);
-                }
+            if (! $openKeys->has($key)) {
+                SessionLog::create([
+                    'callsign' => $callsign,
+                    'cid' => $cid,
+                    'roster_member_id' => $rosterMember?->id,
+                    'session_start' => Carbon::parse($controller['logon_time']),
+                    'monitored_position_id' => $position->id,
+                    'emails_sent' => 0,
+                ]);
             }
         }
 
-        // Grab our open sessions
-        $sessionLogs = SessionLog::where('session_end', null)->get();
-
-        foreach ($onlineControllers as $oc) {
-            // Set our flag like a fish, FISH ON!
-            $logFound = false;
-
-            // Let's see if they have an open session
-            foreach ($sessionLogs as $log) {
-                if ($log->cid == $oc->cid) {
-                    $logFound = true;
-                }
+        foreach ($openSessions as $log) {
+            if ($online->has($this->sessionKey((int) $log->cid, $log->callsign ?? '', $log->session_start))) {
+                continue;
             }
 
-            if (! $logFound) {
-                // We have no log yet, let's create one!
-                $roster = RosterMember::where('cid', $oc->cid)->first();
+            DB::transaction(function () use ($log, $progression): void {
+                $end = now();
+                $hours = max(0, $log->session_start->diffInMinutes($end) / 60);
 
-                // Creation time!
-                $log = new SessionLog;
-                $log->callsign = $oc->callsign;
-                if ($roster) {
-                    $log->roster_member_id = $roster->id;
+                if (! SessionLog::whereKey($log->id)->whereNull('session_end')
+                    ->update(['session_end' => $end, 'duration' => $hours])) {
+                    return;
                 }
-                $log->cid = $oc->cid;
-                $log->session_start = Carbon::make($oc->logon_time);
-                $log->monitored_position_id = MonitoredPosition::where('identifier', $oc->callsign)->first()->id;
-                $log->emails_sent = 0;
-                $log->save();
 
-                Log::info('Session Log for '.$oc->cid.' on '.$oc->callsign.' has been created. Started at '.Carbon::now()->toDateTimeString());
-            }
-        }
-
-        foreach ($sessionLogs as $log) {
-            // We really like setting flags here at the Vancouver FIR™
-            $stillOnline = false;
-
-            foreach ($onlineControllers as $oc) {
-                if ($oc->cid == $log->cid &&
-                    $log->monitoredPosition?->identifier == $oc->callsign &&
-                    Carbon::make($oc->logon_time)->getTimestamp() === $log->session_start?->getTimestamp()) {
-                    $stillOnline = true;
+                $member = RosterMember::where('cid', $log->cid)->lockForUpdate()->first();
+                if (! $member?->active || ! in_array($member->status, ['home', 'instructor', 'visit', 'training'], true)) {
+                    return;
                 }
-            }
 
-            if (! $stillOnline) {
-                // Start and end values parsed so Carbon can understand them
-                $start = Carbon::create($log->session_start);
-                $end = Carbon::now();
-
-                // Calculate decimal difference (difference is the total hours gained) ie. 30 minutes = 0.5
-                $difference = $start->floatDiffInMinutes($end) / 60;
-
-                // Populate remaining columns
-                $log->session_end = $end;
-                $log->duration = $difference;
-
-                // Save the log
-                $log->save();
-
-                Log::info('Session Log for '.$log->cid.' on '.$log->callsign.' has ended. Ended at '.$end);
-
-                // Add hours
-                $roster_member = RosterMember::where('cid', $log->cid)->first();
-
-                // check it exists
-                if ($roster_member &&
-                    ($roster_member->status == 'home' || $roster_member->status == 'instructor' || $roster_member->status == 'visit' || $roster_member->status == 'training') &&
-                    $roster_member->active) {
-                    // Add hours
-                    $roster_member->currency += $difference;
-
-                    // Rating hours only count while the student is consolidating
-                    $student = Student::where('user_id', $roster_member->user_id ?: $roster_member->cid)->first();
-
-                    if ($student?->consolidationIsPending() &&
-                        $progression->sessionCountsTowardRatingHours($roster_member, $log->callsign)) {
-                        $roster_member->rating_hours += $difference;
-                    }
-
-                    // Save roster member
-                    $roster_member->save();
-                    $progression->completeConsolidationIfEligible($roster_member);
-                } else {
-                    error_log('Something went wrong adding currency!');
+                $member->currency += $hours;
+                if ($progression->sessionCountsTowardRatingHours($member, $log->callsign ?? '')) {
+                    $member->rating_hours += $hours;
                 }
-            }
+                $member->save();
+                $progression->completeConsolidationIfEligible($member);
+            });
         }
 
         return Command::SUCCESS;
+    }
+
+    private function sessionKey(int $cid, string $callsign, \DateTimeInterface $start): string
+    {
+        return $cid.'|'.$callsign.'|'.$start->getTimestamp();
+    }
+
+    private function notifyUnauthorized(int $cid, string $callsign): void
+    {
+        if (! Cache::add('unauth_email_sent_'.$cid.'_'.$callsign, true, now()->addMinutes(15))) {
+            return;
+        }
+
+        $settings = CoreSettings::find(1);
+        foreach (array_filter([$settings?->emailfirchief, $settings?->emaildepfirchief, $settings?->emailcinstructor]) as $email) {
+            Mail::to($email)->send(new UnauthorisedConnection([
+                'callsign' => $callsign,
+                'cid' => $cid,
+            ]));
+        }
     }
 }

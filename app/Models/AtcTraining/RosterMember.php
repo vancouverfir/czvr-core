@@ -39,6 +39,23 @@ class RosterMember extends Model
         return false;
     }
 
+    public function canBookCallsign(string $callsign): bool
+    {
+        [$airport, $position] = array_pad(explode('_', $callsign, 2), 2, '');
+        $airports = config('bookingairports.airports');
+
+        if (! $this->active || ! in_array($position, $airports[$airport] ?? [], true)) {
+            return false;
+        }
+
+        $suffix = str_contains($position, '_') ? substr($position, strrpos($position, '_') + 1) : $position;
+        $field = str_starts_with($position, 'F_')
+            ? 'fss'
+            : (config('bookingairports.certifiedairports')[$airport][$suffix] ?? null);
+
+        return $field !== null && (int) $this->{$field} >= 2;
+    }
+
     public function tier2EndorsementLevel(): ?string
     {
         return match (true) {

@@ -9,7 +9,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "aws/aws-sdk-php": "^3.401",
         "intervention/image": "^4.2",
         "laravel-notification-channels/discord": "^1.8",

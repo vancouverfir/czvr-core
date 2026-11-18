@@ -38,7 +38,7 @@ trait HasMarkdownFields
 
         return new HtmlString(Str::markdown($markdown, [
             'html_input' => 'strip',
-            'allow_unsafe_links' => true,
+            'allow_unsafe_links' => false,
         ], [new TableExtension]));
     }
 

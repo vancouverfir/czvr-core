@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\AtcTraining\RosterMember;
-use App\Models\Network\SessionLog;
 use App\Models\Settings\CoreSettings;
 use App\Notifications\network\MonthlyInactivity;
 use Illuminate\Console\Command;
@@ -36,7 +35,7 @@ class CurrencyCheck extends Command
 
         $fields = ['delgnd', 'delgnd_t2', 'twr', 'twr_t2', 'dep', 'app', 'app_t2', 'ctr', 'fss'];
 
-        foreach (RosterMember::all()->sortBy('currency') as $rosterMember) {
+        foreach (RosterMember::where('active', true)->with('user')->orderBy('currency')->orderBy('id')->lazy() as $rosterMember) {
             if ($rosterMember->currency >= config(sprintf('currency.%s', $rosterMember->status))) {
                 continue;
             }
@@ -54,7 +53,7 @@ class CurrencyCheck extends Command
             }
 
             $memberName = $rosterMember->full_name.' '.$rosterMember->cid;
-            $memberEmail = $rosterMember->user()->first()->email;
+            $memberEmail = $rosterMember->user?->email;
             $memberActivity = $rosterMember->currency;
             $requiredActivity = decimal_to_hm(config(sprintf('currency.%s', $rosterMember->status)));
 
@@ -93,9 +92,6 @@ class CurrencyCheck extends Command
 
         // Reset the hours for every member
         DB::table('roster')->update(['currency' => 0]);
-
-        // Remove our session logs because we don't need them anymore
-        SessionLog::query()->truncate();
 
         return 0;
     }

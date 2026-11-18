@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AtcTraining;
 
 use App\Console\Commands\RenewNotification;
 use App\Helpers\CreateNote;
+use App\Jobs\UnassignCompletedStudent;
 use App\Http\Controllers\Controller;
 use App\Models\AtcTraining\Instructor;
 use App\Models\AtcTraining\Student;
@@ -152,45 +153,47 @@ class TrainingController extends Controller
         Student $student,
         TrainingProgressionService $progression,
     ): RedirectResponse {
-        $student->loadMissing('labels.label', 'user');
-        $isRecertification = $student->isRecertification();
-
-        if ($lockReasons = $student->completionLockReasons()) {
-            return back()->withError(implode(' ', $lockReasons));
-        }
-
-        if ($isRecertification && (int) $student->user->rating_id < 5) {
-            $nextStage = $progression->completeRecertification($student, Auth::user());
-
-            if ($nextStage === false) {
-                return back()->withError('Recertification could not be completed because the next normal training package is missing!');
+        $result = DB::transaction(function () use ($student, $progression): array {
+            $student = Student::with('labels.label', 'user')->lockForUpdate()->findOrFail($student->id);
+            if ($reasons = $student->completionLockReasons()) {
+                return ['error' => implode(' ', $reasons)];
             }
 
+            $wasAssigned = (bool) $student->instructor_id;
+            $recertifying = $student->isRecertification();
+            $nextStage = null;
+
+            if ($recertifying) {
+                $nextStage = $progression->completeRecertification($student, Auth::user());
+                if ($nextStage === false) {
+                    return ['error' => 'Recertification could not be completed. Check the required training packages.'];
+                }
+            } else {
+                $student->markTrainingCompleted();
+                CreateNote::newNote(
+                    $student->id,
+                    'Completed Training',
+                    e(Auth::user()->fullName('FLC')).' marked training as completed',
+                );
+            }
+
+            if ($wasAssigned && $nextStage === null) {
+                UnassignCompletedStudent::dispatch($student->id)->afterCommit();
+            }
+
+            return ['student' => $student, 'recertifying' => $recertifying, 'nextStage' => $nextStage];
+        });
+
+        if (isset($result['error'])) {
+            return back()->withError($result['error']);
+        }
+
+        $student = $result['student'];
+        $isRecertification = $result['recertifying'];
+        if ($result['nextStage'] !== null) {
             return redirect()->route('training.students.view', ['id' => $student->id])->with(
                 'success',
-                'Recertification completed for '.$student->user->fullName('FLC').'. '.$nextStage.' is now active as normal training!',
-            );
-        }
-
-        if ($student->instructor_id) {
-            try {
-                $this->vatcan->unassign((int) $student->user_id);
-            } catch (Throwable $exception) {
-                return $this->vatcanFailure($exception, (int) $student->user_id, 'complete training');
-            }
-        }
-
-        $student->instructor_id = null;
-
-        if ($isRecertification) {
-            $progression->completeRecertification($student, Auth::user());
-        } else {
-            $student->markTrainingCompleted();
-
-            CreateNote::newNote(
-                $student->id,
-                'Completed Training',
-                Auth::user()->fullName('FLC').' marked training as completed',
+                'Recertification completed for '.$student->user->fullName('FLC').'. '.$result['nextStage'].' is now active as normal training!',
             );
         }
 
@@ -303,10 +306,19 @@ class TrainingController extends Controller
             ->orderBy('position')
             ->get();
 
-        $potentialstudent = User::all();
+        $potentialstudent = User::where('deleted', false)->whereNotIn('id', [1, 2])
+            ->whereDoesntHave('studentProfile')
+            ->orderBy('id')->get(['id', 'fname', 'lname', 'display_fname', 'display_cid_only', 'display_last_name']);
         $instructors = Instructor::where('active', true)->get();
 
         return view('training.students.waitlist', compact('waitlistStudents', 'visitorWaitlist', 'potentialstudent', 'instructors'));
+    }
+
+    public function waitlistDiscordContact(Student $student): JsonResponse
+    {
+        abort_unless($student->isWaitlisted() && $student->user && ! $student->user->deleted, 404);
+
+        return response()->json(['username' => $student->user->getDiscordUser()?->username]);
     }
 
     public function updateWaitlistContact(Request $request, Student $student): RedirectResponse

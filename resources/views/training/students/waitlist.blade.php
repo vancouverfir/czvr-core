@@ -103,11 +103,14 @@
                                                         </button>
                                                         <ul class="dropdown-menu dropdown-menu-end text-start">
                                                             <li><a class="dropdown-item" href="mailto:{{ $student->user->email }}"><i class="far fa-envelope me-2"></i>Send email</a></li>
-                                                            @php($discordUsername = $student->user->discord_user_id ? $student->user->getDiscordUser()?->username : null)
-                                                            @if ($discordUsername)
-                                                                <li><button type="button" class="dropdown-item waitlist-copy" data-copy="{{ $discordUsername }}" title="Click to copy"><i class="fab fa-discord social-outline-icon me-2"></i>{{ $discordUsername }}</button></li>
+                                                            @if ($student->user->discord_user_id)
+                                                                <li>
+                                                                    <button type="button" class="dropdown-item waitlist-copy" data-discord-url="{{ route('training.students.waitlist.discord', $student) }}" disabled>
+                                                                        <i class="fab fa-discord social-outline-icon me-2"></i><span>Loading Discord username…</span>
+                                                                    </button>
+                                                                </li>
                                                             @else
-                                                                <li><span class="dropdown-item disabled text-muted"><i class="fab fa-discord social-outline-icon me-2"></i>{{ $student->user->discord_user_id ? 'Discord username unavailable' : 'Discord not linked' }}</span></li>
+                                                                <li><span class="dropdown-item disabled text-muted"><i class="fab fa-discord social-outline-icon me-2"></i>Discord not linked</span></li>
                                                             @endif
                                                             <li><hr class="dropdown-divider"></li>
                                                             @if ($isContacted)
@@ -228,6 +231,31 @@
                 $('#visitor_type_group').hide();
                 $('#visitor_type').val('');
             }
+        });
+
+        document.querySelectorAll('.waitlist-email-toggle').forEach(function (toggle) {
+            toggle.addEventListener('show.bs.dropdown', async function () {
+                const button = toggle.parentElement.querySelector('[data-discord-url]');
+                if (!button || button.dataset.requested) return;
+
+                button.dataset.requested = 'true';
+                const label = button.querySelector('span');
+                try {
+                    const response = await fetch(button.dataset.discordUrl, { headers: { Accept: 'application/json' } });
+                    if (!response.ok) throw new Error('Discord lookup failed');
+                    const { username } = await response.json();
+                    if (username) {
+                        label.textContent = username;
+                        button.dataset.copy = username;
+                        button.title = 'Click to copy';
+                        button.disabled = false;
+                        return;
+                    }
+                } catch {
+                    delete button.dataset.requested;
+                }
+                label.textContent = 'Discord username unavailable';
+            });
         });
 
         document.querySelectorAll('.waitlist-copy').forEach(function (btn) {

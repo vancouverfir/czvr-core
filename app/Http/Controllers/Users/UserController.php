@@ -13,9 +13,11 @@ use App\Notifications\DiscordWelcome;
 use App\Notifications\WelcomeNewUser;
 use App\Support\Authorization\PermissionCatalog;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -47,10 +49,27 @@ class UserController extends Controller
         if ($user->init == 1) {
             return redirect()->route('index');
         }
+        abort_if($user->isSystemAccount(), 403);
         Auth::logout();
 
-        AuditLogEntry::insert(User::find(1), 'User '.$user->fullName('FLC').' denied privacy policy - account deleted', User::find(1), 0);
-        $user->delete();
+        try {
+            $user->delete();
+            $this->removeDiscordMembership($user->discord_user_id);
+        } catch (QueryException $exception) {
+            // Retain the anonymized CID when training or roster records reference it.
+            $foreignKeyViolation = in_array((string) ($exception->errorInfo[1] ?? ''), ['1451', '787'], true)
+                || str_contains($exception->getMessage(), 'FOREIGN KEY constraint failed');
+
+            if (! $foreignKeyViolation) {
+                throw $exception;
+            }
+
+            $this->anonymizeAccount($user);
+        }
+
+        if ($system = User::find(1)) {
+            AuditLogEntry::insert($system, 'An account was removed after declining the privacy policy', $system, 0);
+        }
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
@@ -67,57 +86,51 @@ class UserController extends Controller
 
     public function viewProfile($id): View
     {
-        $user = User::where('id', $id)->firstOrFail();
-        $rosterMember = RosterMember::where('user_id', $id)->first();
-        if ($rosterMember) {
-            $logs = SessionLog::where('cid', $id)->get();
-            $quarterlyHours = decimal_to_hm(RosterMember::where('cid', $id)->firstOrFail()->currency);
+        $rosterMember = $this->visibleRosterMember($id);
+        $user = $rosterMember->user;
 
-            // Start our array
-            $time = [
-                'del' => 0,
-                'gnd' => 0,
-                'twr' => 0,
-                'dep' => 0,
-                'app' => 0,
-                'ctr' => 0,
-            ];
+        $logs = SessionLog::where('cid', $id)->where('session_start', '>=', now()->startOfMonth())->get();
+        $quarterlyHours = decimal_to_hm($rosterMember->currency);
 
-            // Get our times per position for this month
-            foreach ($logs as $l) {
-                if (Str::endsWith($l->callsign, 'DEL')) {
-                    $time['del'] += $l->duration;
-                } elseif (Str::endsWith($l->callsign, 'GND')) {
-                    $time['gnd'] += $l->duration;
-                } elseif (Str::endsWith($l->callsign, 'TWR')) {
-                    $time['twr'] += $l->duration;
-                } elseif (Str::endsWith($l->callsign, 'DEP')) {
-                    $time['dep'] += $l->duration;
-                } elseif (Str::endsWith($l->callsign, 'APP')) {
-                    $time['app'] += $l->duration;
-                } elseif (Str::endsWith($l->callsign, 'CTR')) {
-                    $time['ctr'] += $l->duration;
-                }
+        // Start our array
+        $time = [
+            'del' => 0,
+            'gnd' => 0,
+            'twr' => 0,
+            'dep' => 0,
+            'app' => 0,
+            'ctr' => 0,
+        ];
+
+        // Get our times per position for this month
+        foreach ($logs as $l) {
+            if (Str::endsWith($l->callsign, 'DEL')) {
+                $time['del'] += $l->duration;
+            } elseif (Str::endsWith($l->callsign, 'GND')) {
+                $time['gnd'] += $l->duration;
+            } elseif (Str::endsWith($l->callsign, 'TWR')) {
+                $time['twr'] += $l->duration;
+            } elseif (Str::endsWith($l->callsign, 'DEP')) {
+                $time['dep'] += $l->duration;
+            } elseif (Str::endsWith($l->callsign, 'APP')) {
+                $time['app'] += $l->duration;
+            } elseif (Str::endsWith($l->callsign, 'CTR')) {
+                $time['ctr'] += $l->duration;
             }
+        }
 
-            // Make the time's readable
-            $time['del'] = decimal_to_hm($time['del']);
-            $time['gnd'] = decimal_to_hm($time['gnd']);
-            $time['twr'] = decimal_to_hm($time['twr']);
-            $time['dep'] = decimal_to_hm($time['dep']);
-            $time['app'] = decimal_to_hm($time['app']);
-            $time['ctr'] = decimal_to_hm($time['ctr']);
+        // Make the time's readable
+        $time['del'] = decimal_to_hm($time['del']);
+        $time['gnd'] = decimal_to_hm($time['gnd']);
+        $time['twr'] = decimal_to_hm($time['twr']);
+        $time['dep'] = decimal_to_hm($time['dep']);
+        $time['app'] = decimal_to_hm($time['app']);
+        $time['ctr'] = decimal_to_hm($time['ctr']);
 
-            $connections = SessionLog::where('cid', $id)->get()->sortByDesc('session_end');
+        $connections = $logs->sortByDesc('session_end')->take(3);
 
-            foreach ($connections as $c) {
-                $c['duration'] = decimal_to_hm($c['duration']);
-            }
-        } else {
-            $quarterlyHours = 'N/A';
-            $rosterMember = null;
-            $connections = [];
-            $time = [];
+        foreach ($connections as $c) {
+            $c['duration'] = decimal_to_hm($c['duration']);
         }
 
         return view('roster.profile', compact('id', 'user', 'quarterlyHours', 'rosterMember', 'time', 'connections'));
@@ -125,8 +138,8 @@ class UserController extends Controller
 
     public function viewConnections($id): View
     {
-        $connections = SessionLog::where('cid', $id)->get()->sortByDesc('session_start');
-        $user = User::where('id', $id)->firstOrFail();
+        $user = $this->visibleRosterMember($id)->user;
+        $connections = SessionLog::where('cid', $id)->where('session_start', '>=', now()->startOfMonth())->orderByDesc('session_start')->get();
 
         foreach ($connections as $c) {
             $c['date'] = substr($c['session_start'], 5, 2).'-'.substr($c['session_start'], 8, 2).'-'.substr($c['session_start'], 0, 4);
@@ -136,6 +149,15 @@ class UserController extends Controller
         }
 
         return view('roster.connections', compact('connections', 'user', 'id'));
+    }
+
+    private function visibleRosterMember($id): RosterMember
+    {
+        return RosterMember::with('user')
+            ->where('user_id', $id)
+            ->whereHas('user', fn ($query) => $query->where('deleted', false))
+            ->when(! Auth::user()?->can('roster.manage'), fn ($query) => $query->where('active', true))
+            ->firstOrFail();
     }
 
     public function adminViewUserProfile($id): View
@@ -169,11 +191,11 @@ class UserController extends Controller
 
         $user = User::with(['roles', 'directPermissions'])->findOrFail($id);
         $editor = Auth::user();
-        abort_if($user->isSystemAccount(), 403, 'System users cannot be modified!');
+        abort_if($user->isSystemAccount() || $user->deleted, 403, 'This account cannot be modified!');
 
         // Roles and permissions the editor may not hand out keep their current state
         $requestedRoles = collect($validated['roles'] ?? [])->map(fn ($roleId) => (int) $roleId);
-        $roleIds = Role::query()->get()
+        $roleIds = Role::query()->with('permissions')->get()
             ->filter(fn (Role $role) => $editor->canAssignRole($role)
                 ? $requestedRoles->contains($role->id)
                 : $user->roles->contains($role))
@@ -214,34 +236,57 @@ class UserController extends Controller
             'You cannot delete an access administrator!',
         );
 
-        AuditLogEntry::insert($actor, 'Deleted user account', $user, 0);
-
-        $user->forceFill([
-            'fname' => 'Deleted',
-            'lname' => 'User',
-            'email' => 'deleted-'.$user->id.'@invalid.local',
-            'rating_id' => null,
-            'rating_short' => null,
-            'rating_long' => null,
-            'rating_GRP' => null,
-            'region_code' => null,
-            'region_name' => null,
-            'division_code' => null,
-            'division_name' => null,
-            'subdivision_code' => null,
-            'subdivision_name' => null,
-            'display_fname' => 'Deleted',
-            'bio' => null,
-            'discord_user_id' => null,
-            'discord_dm_channel_id' => null,
-            'avatar' => '/img/default-profile-img.jpg',
-            'avatar_mode' => 0,
-            'deleted' => true,
-        ])->save();
-        $user->roles()->detach();
-        $user->directPermissions()->detach();
+        DB::transaction(function () use ($actor, $user): void {
+            AuditLogEntry::insert($actor, 'Deleted user account', $user, 0);
+            $this->anonymizeAccount($user);
+        });
 
         return redirect()->route('users.viewall')->with('info', 'User deleted!');
+    }
+
+    private function anonymizeAccount(User $user): void
+    {
+        $discordId = $user->discord_user_id;
+
+        DB::transaction(function () use ($user): void {
+            $user->forceFill([
+                'fname' => 'Deleted',
+                'lname' => 'User',
+                'email' => 'deleted-'.$user->id.'@invalid.local',
+                'rating_id' => null,
+                'rating_short' => null,
+                'rating_long' => null,
+                'rating_GRP' => null,
+                'region_code' => null,
+                'region_name' => null,
+                'division_code' => null,
+                'division_name' => null,
+                'subdivision_code' => null,
+                'subdivision_name' => null,
+                'display_fname' => 'Deleted',
+                'bio' => null,
+                'discord_user_id' => null,
+                'discord_dm_channel_id' => null,
+                'remember_token' => null,
+                'gdpr_subscribed_emails' => false,
+                'avatar' => '/img/default-profile-img.jpg',
+                'avatar_mode' => 0,
+                'deleted' => true,
+            ])->save();
+            $user->roles()->detach();
+            $user->directPermissions()->detach();
+            $user->rosterProfile()->update(['full_name' => 'Deleted User', 'active' => false]);
+        });
+
+        $user->forgetAvatarCache();
+        $this->removeDiscordMembership($discordId);
+    }
+
+    private function removeDiscordMembership(string|int|null $discordId): void
+    {
+        if ($discordId && filled($token = config('services.discord.token'))) {
+            DB::afterCommit(fn () => (new DiscordClient($token))->RemoveGuildMember((int) $discordId));
+        }
     }
 
     public function editUser($id): RedirectResponse
@@ -441,7 +486,9 @@ class UserController extends Controller
         // Run through profanity filter
         $check = new Check;
         if ($check->hasProfanity($request->get('display_fname'))) {
-            return redirect()->back()->withInput()->with('error', 'Profanity was detected in your display name! Please use a more appropriate name, if you believe this is in error, please contact our <a href="/dashboard/tickets?create=yes">Webmaster!</a>');
+            return redirect()->back()->withInput()
+                ->with('error', 'Profanity was detected in your display name. If you believe this is an error, contact the Webmaster.')
+                ->with('error_action', ['url' => route('tickets.index', ['create' => 'yes']), 'label' => 'Open a support ticket']);
         }
 
         // No swear words... give them the new name!

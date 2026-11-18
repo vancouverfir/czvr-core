@@ -35,11 +35,15 @@ class StudentLabel extends Model
         if ($student->isVisitor()) {
             return $query->where(fn (Builder $query) => $query
                 ->whereNull('new_status')
-                ->orWhere('new_status', '!=', Student::STATUS_WAITLIST));
+                ->orWhereIn('new_status', [Student::STATUS_VISITOR_WAITLIST, Student::STATUS_VISITOR_ACTIVE, Student::STATUS_MARKED_FOR_REMOVAL]));
         }
 
+        $student->loadMissing('labels.label');
+        $recoveringPausedStage = $student->labels->contains(fn ($link) => $link->label?->name === Student::PAUSED_LABEL)
+            && ! $student->labels->contains(fn ($link) => $link->label?->exclusive);
+
         return $query->where('visitor', false)
-            ->whereNotIn('name', Student::MANAGED_TRAINING_LABELS);
+            ->whereNotIn('name', $recoveringPausedStage ? [Student::RECERTIFICATION_LABEL] : Student::MANAGED_TRAINING_LABELS);
     }
 
     public function labelHtml()
@@ -47,16 +51,16 @@ class StudentLabel extends Model
         $html = "<span style='font-weight: 400' class='badge rounded shadow-none ";
 
         if ($this->color) {
-            $html .= $this->color." text-white'>";
+            $html .= e($this->color)." text-white'>";
         } else {
             $html .= "grey lighten-3 text-black'>";
         }
 
         if ($this->fa_icon) {
-            $html .= "<i class='".$this->fa_icon." fa-fw'></i>&nbsp;";
+            $html .= "<i class='".e($this->fa_icon)." fa-fw'></i>&nbsp;";
         }
 
-        $html .= $this->name.'</span>';
+        $html .= e($this->name).'</span>';
 
         return new HtmlString($html);
     }

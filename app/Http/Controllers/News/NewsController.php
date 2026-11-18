@@ -55,6 +55,7 @@ class NewsController extends Controller
             'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
             'content' => 'required',
             'emailOption' => 'required|in:no,subscribers',
+            'author' => ['required', 'integer', \Illuminate\Validation\Rule::exists('staff_member', 'user_id')->whereNot('user_id', 1)],
         ], $messages);
 
         // Redirect if fails

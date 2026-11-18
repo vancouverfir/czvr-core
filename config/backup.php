@@ -310,20 +310,20 @@ return [
              * of that day will be kept. Older backups within the same day will be removed.
              * If you create backups only once a day, no backups will be removed yet.
              */
-            'keep_daily_backups_for_days' => 0,
+            'keep_daily_backups_for_days' => (int) env('BACKUP_KEEP_DAILY_DAYS', 14),
 
             /*
              * After the "keep_daily_backups_for_days" period is over, the most recent backup
              * of that week will be kept. Older backups within the same week will be removed.
              * If you create backups only once a week, no backups will be removed yet.
              */
-            'keep_weekly_backups_for_weeks' => 0,
+            'keep_weekly_backups_for_weeks' => (int) env('BACKUP_KEEP_WEEKLY_WEEKS', 8),
 
             /*
              * After the "keep_weekly_backups_for_weeks" period is over, the most recent backup
              * of that month will be kept. Older backups within the same month will be removed.
              */
-            'keep_monthly_backups_for_months' => 0,
+            'keep_monthly_backups_for_months' => (int) env('BACKUP_KEEP_MONTHLY_MONTHS', 6),
 
             /*
              * After the "keep_monthly_backups_for_months" period is over, the most recent backup
@@ -336,7 +336,7 @@ return [
              * this amount of megabytes has been reached.
              * Set null for unlimited size.
              */
-            'delete_oldest_backups_when_using_more_megabytes_than' => 3000,
+            'delete_oldest_backups_when_using_more_megabytes_than' => (int) env('BACKUP_STORAGE_LIMIT_MB', 3000),
         ],
 
         /*

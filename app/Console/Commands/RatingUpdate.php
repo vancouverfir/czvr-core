@@ -61,7 +61,7 @@ class RatingUpdate extends Command
             ];
         }
 
-        $users = User::where('id', '!=', 1)->where('id', '!=', 2)->get();
+        $users = User::where('deleted', false)->whereNotIn('id', [1, 2])->cursor();
 
         // Check each user to see if their rating has changed
         foreach ($users as $u) {

@@ -30,6 +30,8 @@ return [
 
     'discord' => [
         'token' => env('DISCORD_BOT_TOKEN'),
+        'guild_id' => env('DISCORD_GUILD_ID', 589477926961938443),
+        'audit_channel_id' => env('DISCORD_AUDIT_CHANNEL_ID', 1219713888636108921),
         'client_id' => env('DISCORD_KEY'),
         'client_secret' => env('DISCORD_SECRET'),
         'redirect' => env('DISCORD_REDIRECT_URI'),

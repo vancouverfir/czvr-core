@@ -211,21 +211,27 @@
     @if (\Session::has('success'))
         <div class="alert alert-success" style="margin: 0; border-radius: 0; border: none;">
             <div class="container">
-                {!! \Session::get('success') !!}
+                {{ \Session::get('success') }}
+                @if ($action = session('success_action'))
+                    <a class="alert-link" href="{{ $action['url'] }}">{{ $action['label'] }}</a>
+                @endif
             </div>
         </div>
     @endif
     @if (\Session::has('error'))
         <div class="alert alert-danger" style="margin: 0; border-radius: 0; border: none;">
             <div class="container">
-                {!! \Session::get('error') !!}
+                {{ \Session::get('error') }}
+                @if ($action = session('error_action'))
+                    <a class="alert-link" href="{{ $action['url'] }}">{{ $action['label'] }}</a>
+                @endif
             </div>
         </div>
     @endif
     @if (\Session::has('info'))
         <div class="alert alert-info" style="margin: 0; border-radius: 0; border: none;">
             <div class="container">
-                {!! \Session::get('info') !!}
+                {{ \Session::get('info') }}
             </div>
         </div>
     @endif

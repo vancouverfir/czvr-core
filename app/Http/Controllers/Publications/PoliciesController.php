@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Publications;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessArticlePublishing;
 use App\Models\News\News;
 use App\Models\Publications\Policy;
 use App\Models\Publications\PolicySection;
 use App\Models\Settings\AuditLogEntry;
-use App\Models\Users\User;
 use App\Support\Authorization\PermissionCatalog;
 use Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -96,7 +95,7 @@ class PoliciesController extends Controller
                 'summary' => $content,
                 'published' => now(),
                 'visible' => true,
-                'email_level' => 0,
+                'email_level' => $emailOption === 'newsonly' ? News::EMAIL_NONE : News::EMAIL_SUBSCRIBERS,
                 'certification' => false,
                 'show_author' => false,
                 'user_id' => Auth::id(),
@@ -104,23 +103,7 @@ class PoliciesController extends Controller
             ]);
 
             if (in_array($emailOption, ['all', 'emailcert'], true)) {
-                $users = User::query()
-                    ->whereNotNull('email')
-                    ->when(
-                        $emailOption === 'emailcert',
-                        fn ($query) => $query->whereHas('roles', fn ($roleQuery) => $roleQuery->where('slug', 'controller'))
-                    )
-                    ->get();
-
-                $subject = $emailOption === 'emailcert'
-                    ? 'Vancouver Controller News: '.$news->title
-                    : 'Vancouver News: '.$news->title;
-
-                foreach ($users as $user) {
-                    Mail::raw($content, function ($message) use ($user, $subject) {
-                        $message->to($user->email)->subject($subject);
-                    });
-                }
+                ProcessArticlePublishing::dispatch($news, $emailOption === 'emailcert')->afterCommit();
             }
         }
         AuditLogEntry::staff('Added policy '.$policy->name.' ('.$policy->id.')'.($policy->staff_only ? ', staff only' : '').($emailOption !== 'none' ? ', released with news ('.$emailOption.')' : ''));
@@ -170,12 +153,12 @@ class PoliciesController extends Controller
         $policy->embed = $request->get('embed');
         $policy->staff_only = $request->get('staff_only');
         $policy->author = Auth::user()->id;
-        $policy->releaseDate = $request->get('date') ?: date('Y-m-d');
+        $policy->releaseDate = $request->input('date') ?: $policy->releaseDate;
 
         $policy->save();
         AuditLogEntry::staff('Edited policy '.$policy->name.' ('.$policy->id.')'.($request->hasFile('file') ? ', replaced the file' : ''));
 
-        return redirect()->route('policies')->with('success', 'Policy <text class="font-weight-bold">'.$request->get('name').'</text> edited!');
+        return redirect()->route('policies')->with('success', 'Policy '.$policy->name.' edited!');
     }
 
     public function deletePolicy($id): RedirectResponse

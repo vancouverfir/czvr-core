@@ -38,3 +38,11 @@ php artisan tinker --execute="App\Models\Users\User::findOrFail(10000001)->assig
 ```
 
 Lastly, fill in your `.env` file!
+
+### Deployment settings
+
+- Set `APP_URL` to the main site URL. Booking and training default to the `booking.` and `training.` subdomains of that URL's host. Use `BOOKING_DOMAIN` and `TRAINING_DOMAIN` to override them.
+- Set `DISCORD_GUILD_ID` and `DISCORD_AUDIT_CHANNEL_ID` for deployments using a different Discord server.
+- Set `BACKUP_ARCHIVE_PASSWORD` through your deployment secrets to encrypt new archives. Retention keeps daily, weekly, and monthly copies subject to `BACKUP_STORAGE_LIMIT_MB`. Size the limit for your archive sizes and verify a restore before relying on the retention schedule.
+- The legacy fetcher imports events and roster entries. Roster removals and event deletions require explicit review. Laravel handles ratings for existing users and quarterly currency.
+- Apply the migrations and restart queue workers with the release. Review existing role assignments and direct grants if the retired `admin` slug was used. The migration revokes permissions inherited from that slug. Existing students whose only stage label was Training Paused can have their previous stage restored before the pause label is removed.

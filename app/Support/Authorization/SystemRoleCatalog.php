@@ -14,6 +14,8 @@ final class SystemRoleCatalog
 
     public const ADMINISTRATOR = 'administrator';
 
+    public const LEGACY_ADMIN = 'admin';
+
     /** @return array<string, string> */
     public static function all(): array
     {
@@ -35,7 +37,7 @@ final class SystemRoleCatalog
     /** @return list<string> */
     public static function administratorOnlySlugs(): array
     {
-        return [self::STAFF, self::ADMINISTRATOR];
+        return [self::STAFF, self::ADMINISTRATOR, self::LEGACY_ADMIN];
     }
 
     /** @return list<string> */

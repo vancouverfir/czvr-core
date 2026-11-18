@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class SettingsController extends Controller
@@ -89,8 +90,15 @@ class SettingsController extends Controller
     */
     public function auditLog(): View
     {
-        $entriesall = AuditLogEntry::all();
-        $entries = $entriesall->sortByDesc('created_at');
+        $search = request()->string('q')->trim()->limit(100, '')->toString();
+        $entries = AuditLogEntry::with(['user', 'affectedUser'])
+            ->when($search !== '', fn ($query) => $query->where(function ($query) use ($search): void {
+                $query->where('action', 'like', '%'.$search.'%');
+                if (ctype_digit($search)) {
+                    $query->orWhere('user_id', $search)->orWhere('affected_id', $search);
+                }
+            }))
+            ->latest('id')->paginate(50)->withQueryString();
 
         return view('admin.settings.auditlog', compact('entries'));
     }
@@ -152,7 +160,8 @@ class SettingsController extends Controller
         Cache::forget('home.background');
         AuditLogEntry::staff('Uploaded homepage image '.$image->id.' (credit: '.$image->credit.')');
 
-        return back()->with('success', 'File uploaded to: <a href="'.$url.'">'.$url.'</a>');
+        return back()->with('success', 'File uploaded.')
+            ->with('success_action', ['url' => $url, 'label' => 'Open uploaded file']);
     }
 
     public function editImage(Request $request, $id): RedirectResponse
@@ -240,6 +249,10 @@ class SettingsController extends Controller
         ]);
 
         $slug = Str::slug($data['name']);
+        if (in_array($slug, [...SystemRoleCatalog::protectedSlugs(), SystemRoleCatalog::LEGACY_ADMIN], true)) {
+            throw ValidationException::withMessages(['name' => 'This name is reserved for a built-in role.']);
+        }
+
         $slug = $slug !== '' ? $slug : 'role';
         $baseSlug = $slug;
         $suffix = 2;
@@ -266,7 +279,7 @@ class SettingsController extends Controller
 
     public function updateRole(Request $request, Role $role): RedirectResponse
     {
-        abort_unless($request->user()->canAssignRole($role), 403, 'Only administrators can change the Staff and Administrator roles!');
+        abort_unless($request->user()->canAssignRole($role), 403, 'You do not have permission to change this role.');
 
         $data = $request->validate([
             'permissions' => ['sometimes', 'array'],
@@ -302,6 +315,8 @@ class SettingsController extends Controller
     {
         $role = Role::query()->where('id', $id)->orWhere('name', $id)->firstOrFail();
         abort_if(in_array($role->slug, SystemRoleCatalog::protectedSlugs(), true), 403, 'Built-in roles cannot be deleted.');
+        $actor = request()->user();
+        abort_unless($actor->isAdministrator() || $actor->canAssignRole($role), 403);
         $message = $role->name;
         $role->delete();
         AuditLogEntry::staff('Deleted role '.$message);
@@ -324,7 +339,7 @@ class SettingsController extends Controller
     /** @param list<string> $slugs */
     private function syncRolePermissions(Role $role, array $slugs): void
     {
-        if (in_array($role->slug, ['admin', 'administrator'], true)) {
+        if ($role->slug === SystemRoleCatalog::ADMINISTRATOR) {
             $slugs = PermissionCatalog::slugs();
         }
 

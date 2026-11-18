@@ -5,6 +5,7 @@ namespace App\Models\Users\Concerns;
 use App\Models\Users\Permission;
 use App\Models\Users\Role;
 use App\Support\Authorization\PermissionCatalog;
+use App\Support\Authorization\SystemRoleCatalog;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait HasRolesAndPermissions
@@ -21,32 +22,24 @@ trait HasRolesAndPermissions
 
     public function hasRole(Role|string $role): bool
     {
-        $name = $role instanceof Role ? $role->name : $role;
-
-        return $this->roles()->where(fn ($query) => $query
-            ->where('name', $name)
-            ->orWhere('slug', $name))->exists();
+        return $role instanceof Role
+            ? $this->roles()->whereKey($role->getKey())->exists()
+            : $this->roles()->where('slug', $role)->exists();
     }
 
     public function hasAnyRole(array|string $roles): bool
     {
         $roles = is_string($roles) ? preg_split('/[|,]/', $roles) : $roles;
-        $names = collect($roles)
-            ->map(fn (Role|string $role): string => $role instanceof Role ? $role->name : trim($role))
-            ->all();
-
-        return $this->roles()->whereIn('name', $names)->exists();
+        return collect($roles)->contains(
+            fn (Role|string $role): bool => $this->hasRole(is_string($role) ? trim($role) : $role),
+        );
     }
 
     public function isAdministrator(): bool
     {
         $this->loadMissing('roles');
 
-        return $this->roles->contains(fn (Role $role): bool => in_array(
-            $role->slug,
-            ['admin', 'administrator'],
-            true,
-        ));
+        return $this->roles->contains('slug', SystemRoleCatalog::ADMINISTRATOR);
     }
 
     public function assignRole(Role|string $role): void
@@ -76,7 +69,8 @@ trait HasRolesAndPermissions
         }
 
         return $this->roles->contains(
-            fn (Role $role): bool => $role->permissions->contains('slug', $slug),
+            fn (Role $role): bool => $role->slug !== SystemRoleCatalog::LEGACY_ADMIN
+                && $role->permissions->contains('slug', $slug),
         );
     }
 
@@ -120,7 +114,7 @@ trait HasRolesAndPermissions
             return $role;
         }
 
-        return Role::where('name', $role)->orWhere('slug', $role)->firstOrFail();
+        return Role::where('slug', $role)->firstOrFail();
     }
 
     private function resolvePermission(Permission|string $permission): Permission

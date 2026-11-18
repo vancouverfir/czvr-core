@@ -63,6 +63,10 @@ class TrainingProgressionService
      */
     public function synchronizeRating(User $user, int $newRatingId, ?array $definition = null): bool
     {
+        if ($user->deleted) {
+            return false;
+        }
+
         $definition ??= self::RATINGS[$newRatingId] ?? null;
 
         if (! $definition) {
@@ -74,19 +78,22 @@ class TrainingProgressionService
             return false;
         }
 
-        $oldRatingId = is_numeric($user->rating_id) ? (int) $user->rating_id : null;
-        $ratingChanged = $oldRatingId !== $newRatingId;
-
-        if (! $ratingChanged) {
-            $roster = $user->rosterProfile()->first();
-            if ($roster) {
-                $this->completeConsolidationIfEligible($roster);
+        return DB::transaction(function () use ($user, $newRatingId, $definition): bool {
+            $user = User::query()->lockForUpdate()->findOrFail($user->id);
+            if ($user->deleted) {
+                return false;
             }
 
-            return false;
-        }
+            $oldRatingId = is_numeric($user->rating_id) ? (int) $user->rating_id : null;
+            $roster = $user->rosterProfile()->lockForUpdate()->first();
+            if ($oldRatingId === $newRatingId) {
+                if ($roster) {
+                    $this->completeConsolidationIfEligible($roster);
+                }
 
-        DB::transaction(function () use ($user, $newRatingId, $definition, $oldRatingId): void {
+                return false;
+            }
+
             $user->forceFill([
                 'rating_id' => $newRatingId,
                 'rating_short' => $definition['short'],
@@ -94,41 +101,34 @@ class TrainingProgressionService
                 'rating_GRP' => $definition['long'],
             ])->save();
 
-            $roster = $user->rosterProfile()->lockForUpdate()->first();
-            if ($roster) {
-                $roster->update(['rating_hours' => 0]);
+            $roster?->update(['rating_hours' => 0]);
+
+            // A rating saved for the first time or a downgrade does not advance training.
+            if ($oldRatingId > 0 && $newRatingId > $oldRatingId) {
+                $student = Student::with(['labels.label', 'user.rosterProfile'])
+                    ->where('user_id', $user->id)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($student && ! $student->isVisitor() && in_array((int) $student->status, [
+                    Student::STATUS_WAITLIST, Student::STATUS_ACTIVE,
+                ], true)) {
+                    if (in_array($definition['short'], self::CONSOLIDATION_RATINGS, true)) {
+                        $this->beginConsolidation($student, $definition['short']);
+                    } else {
+                        $this->unlockNextTrainingStage($student, $definition['short'], false);
+                    }
+                }
             }
 
-            // Null/zero is an initial import, and a lower rating is not a promotion.
-            if ($oldRatingId === null || $oldRatingId <= 0 || $newRatingId <= $oldRatingId) {
-                return;
-            }
+            Log::info('User rating synchronized!', [
+                'cid' => $user->id,
+                'from' => $oldRatingId,
+                'to' => $newRatingId,
+            ]);
 
-            $student = Student::with(['labels.label', 'user.rosterProfile'])
-                ->where('user_id', $user->id)
-                ->lockForUpdate()
-                ->first();
-
-            if (! $student || in_array((int) $student->status, [Student::STATUS_VISITOR_WAITLIST, Student::STATUS_MARKED_FOR_REMOVAL, Student::STATUS_VISITOR_ACTIVE, Student::STATUS_COMPLETED], true)) {
-                return;
-            }
-
-            if (! in_array($definition['short'], self::CONSOLIDATION_RATINGS, true)) {
-                $this->unlockNextTrainingStage($student, $definition['short'], false);
-
-                return;
-            }
-
-            $this->beginConsolidation($student, $definition['short']);
+            return true;
         });
-
-        Log::info('User rating synchronized!', [
-            'cid' => $user->id,
-            'from' => $oldRatingId,
-            'to' => $newRatingId,
-        ]);
-
-        return true;
     }
 
     /** Whether a finished session on this callsign adds to the controller's rating hours */
@@ -352,7 +352,7 @@ class TrainingProgressionService
                     e($packageNames),
                     $itemCount,
                 ),
-                $actor->activeInstructorProfile?->id ?? 1,
+                $actor->id,
             );
 
             return true;
@@ -366,8 +366,8 @@ class TrainingProgressionService
                 ->lockForUpdate()
                 ->findOrFail($student->id);
 
-            if (! $student->isRecertification()) {
-                return null;
+            if (! $student->isRecertification() || $student->completionLockReasons()) {
+                return false;
             }
 
             $isVisitor = $student->isVisitor();
@@ -404,7 +404,7 @@ class TrainingProgressionService
                         e($nextPackage->name),
                         $itemCount,
                     ),
-                    $actor->activeInstructorProfile?->id ?? 1,
+                    $actor->id,
                 );
 
                 return $nextPackage->name;
@@ -420,7 +420,7 @@ class TrainingProgressionService
                     e($actor->fullName('FLC')),
                     e($student->user?->rating_short ?? 'their current rating'),
                 ),
-                $actor->activeInstructorProfile?->id ?? 1,
+                $actor->id,
             );
 
             return null;
@@ -526,6 +526,11 @@ class TrainingProgressionService
             return 'the next training stage';
         }
 
+        if ($student->currentTrainingLabel(Student::RATING_TRAINING_LABELS) === $labelName
+            || ($rating === 'S1' && $student->currentTrainingLabel(Student::RATING_TRAINING_LABELS) !== null)) {
+            return $labelName;
+        }
+
         $itemCount = $this->assignTrainingPackage($student, $label);
 
         CreateNote::newNote(
@@ -545,12 +550,15 @@ class TrainingProgressionService
         StudentLabel $label,
         bool $visitor = false,
         string $tierType = 'T1',
+        bool $preserveChecklist = false,
     ): int {
         $exclusiveLabelIds = StudentLabel::where('exclusive', true)->pluck('id');
         $student->labels()->whereIn('student_label_id', $exclusiveLabelIds)->delete();
         $student->addLabel($label);
 
-        $student->checklistItems()->delete();
+        if (! $preserveChecklist) {
+            $student->checklistItems()->delete();
+        }
 
         $mapClass = $visitor ? LabelChecklistVisitorMap::class : LabelChecklistMap::class;
         $checklistItemIds = $mapClass::where('label_id', $label->id)

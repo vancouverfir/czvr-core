@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\AtcTraining\RosterMember;
 use App\Models\Users\User;
+use App\Services\TrainingProgressionService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -44,7 +45,7 @@ class LoginController extends Controller
         return redirect()->route('index')->with('success', 'Logged out!');
     }
 
-    public function validateAuthLogin(Request $request): RedirectResponse
+    public function validateAuthLogin(Request $request, TrainingProgressionService $progression): RedirectResponse
     {
         $expectedState = (string) $request->session()->get('connect_state', '');
         $providedState = (string) $request->query('state', '');
@@ -112,46 +113,52 @@ class LoginController extends Controller
             return redirect()->route('index')->with('error-modal', 'There was an error processing data from Connect (No CID)!');
         }
 
-        if (! $rating) {
+        if (! is_numeric($rating?->id ?? null) || ! isset($rating->short, $rating->long)) {
             return redirect()->route('index')->with('error-modal', 'We cannot create an account without VATSIM details!');
-        }
-
-        $rosterMember = RosterMember::where('cid', $cid)->first();
-        $previousRating = User::whereKey($cid)->value('rating_short');
-        if ($rosterMember && $previousRating !== null && $previousRating !== $rating->short) {
-            $rosterMember->rating_hours = 0;
-            $rosterMember->save();
         }
 
         $firstName = data_get($profile, 'data.personal.name_first') ?: (string) $cid;
         $lastName = data_get($profile, 'data.personal.name_last') ?: (string) $cid;
 
-        $user = User::updateOrCreate(['id' => $cid], [
+        $profileAttributes = [
             'email' => data_get($profile, 'data.personal.email') ?: "no-reply+{$cid}@invalid.local",
             'fname' => $firstName,
             'lname' => $lastName,
-            'rating_id' => $rating->id,
-            'rating_short' => $rating->short,
-            'rating_long' => $rating->long,
-            'rating_GRP' => $rating->long,
             'reg_date' => null,
             'region_code' => data_get($profile, 'data.vatsim.region.id'),
             'region_name' => data_get($profile, 'data.vatsim.region.name'),
             'division_code' => data_get($profile, 'data.vatsim.division.id'),
             'division_name' => data_get($profile, 'data.vatsim.division.name'),
             'used_connect' => true,
-        ]);
+        ];
 
-        if ($user->display_fname === null) {
-            $user->display_fname = $firstName;
+        $user = DB::transaction(function () use ($cid, $firstName, $profile, $profileAttributes, $progression, $rating): ?User {
+            $user = User::query()->lockForUpdate()->find($cid) ?? new User(['id' => $cid]);
+
+            if ($user->deleted) {
+                return null;
+            }
+
+            $user->fill($profileAttributes);
+            $user->display_fname ??= $firstName;
+            if (! data_get($profile, 'data.personal.name_first')) {
+                $user->display_cid_only = true;
+            }
+
+            $user->save();
+            $progression->synchronizeRating($user, (int) $rating->id, [
+                'short' => $rating->short,
+                'long' => $rating->long,
+            ]);
+
+            return $user->refresh();
+        });
+
+        if (! $user) {
+            return redirect()->route('index')->with('error-modal', 'This account has been deleted.');
         }
 
-        if (! data_get($profile, 'data.personal.name_first')) {
-            $user->display_cid_only = true;
-        }
-
-        $user->save();
-        Auth::login($user, true);
+        Auth::login($user, (bool) $user->init);
         $request->session()->regenerate();
 
         return redirect()->intended('/')->with('success', 'Logged in!');

@@ -40,15 +40,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Booking subdomain
-Route::domain('booking.czvr.ca')->group(function () {
+Route::domain(config('app.booking_domain'))->group(function () {
     Route::get('/', [BookingController::class, 'indexPublic'])->name('booking');
-
-    Route::middleware(['auth', 'booking_certified'])->group(function () {
-        Route::post('/', [BookingController::class, 'create'])->name('booking.create');
-    });
 
     // Own bookings (and anyone's with bookings.manage) are checked in the controller
     Route::middleware('auth')->group(function () {
+        Route::post('/', [BookingController::class, 'create'])->name('booking.create');
         Route::get('/{id}/edit', [BookingController::class, 'edit'])->name('booking.edit');
         Route::put('/{id}', [BookingController::class, 'update'])->name('booking.update');
         Route::delete('/{id}', [BookingController::class, 'delete'])->name('booking.delete');
@@ -56,7 +53,7 @@ Route::domain('booking.czvr.ca')->group(function () {
 });
 
 // Training subdomain
-Route::domain('training.czvr.ca')->group(function () {
+Route::domain(config('app.training_domain'))->group(function () {
     Route::get('/', [TrainingController::class, 'index'])->name('training.index');
     Route::get('/stats', [TrainingStatsController::class, 'index'])->middleware(['auth', 'can:training.stats'])->name('training.stats');
     Route::post('/trainingtimes', [TrainingController::class, 'editTrainingTime'])->middleware(['auth', 'can:training.administer'])->name('waittime.edit');
@@ -106,6 +103,8 @@ Route::domain('training.czvr.ca')->group(function () {
         // Waitlist order and contact
         Route::post('/waitlist/sort', [TrainingController::class, 'sort'])->middleware('can:training.waitlist.manage')->name('waitlist.sort');
         Route::post('/visitor-waitlist/sort', [TrainingController::class, 'sortVisitor'])->middleware('can:training.waitlist.manage')->name('visitor.sort');
+        Route::get('/students/{student}/waitlist-discord', [TrainingController::class, 'waitlistDiscordContact'])
+            ->middleware(['can:training.waitlist.manage', 'throttle:30,1'])->name('training.students.waitlist.discord');
         Route::patch('/students/{student}/waitlist-contact', [TrainingController::class, 'updateWaitlistContact'])->middleware('can:training.waitlist.manage')->name('training.students.waitlist.contact');
 
         // Checklists, promotions and recertification
@@ -117,13 +116,13 @@ Route::domain('training.czvr.ca')->group(function () {
         Route::post('/students/{student}/recertification', [ChecklistController::class, 'startRecertification'])->name('training.students.recertification.start');
 
         // Checklist editor
-        Route::get('/checklists', [ChecklistController::class, 'manage'])->name('training.checklists.index');
-        Route::post('/checklists', [ChecklistController::class, 'storeChecklist'])->name('training.checklists.store');
-        Route::patch('/checklists/{checklist}', [ChecklistController::class, 'updateChecklist'])->name('training.checklists.update');
-        Route::delete('/checklists/{checklist}', [ChecklistController::class, 'destroyChecklist'])->name('training.checklists.destroy');
-        Route::post('/checklists/{checklist}/items', [ChecklistController::class, 'storeItem'])->name('training.checklists.items.store');
-        Route::patch('/checklists/items/{item}', [ChecklistController::class, 'updateItem'])->name('training.checklists.items.update');
-        Route::delete('/checklists/items/{item}', [ChecklistController::class, 'destroyItem'])->name('training.checklists.items.destroy');
+        Route::get('/checklists', [ChecklistController::class, 'manage'])->middleware('can:training.administer')->name('training.checklists.index');
+        Route::post('/checklists', [ChecklistController::class, 'storeChecklist'])->middleware('can:training.administer')->name('training.checklists.store');
+        Route::patch('/checklists/{checklist}', [ChecklistController::class, 'updateChecklist'])->middleware('can:training.administer')->name('training.checklists.update');
+        Route::delete('/checklists/{checklist}', [ChecklistController::class, 'destroyChecklist'])->middleware('can:training.administer')->name('training.checklists.destroy');
+        Route::post('/checklists/{checklist}/items', [ChecklistController::class, 'storeItem'])->middleware('can:training.administer')->name('training.checklists.items.store');
+        Route::patch('/checklists/items/{item}', [ChecklistController::class, 'updateItem'])->middleware('can:training.administer')->name('training.checklists.items.update');
+        Route::delete('/checklists/items/{item}', [ChecklistController::class, 'destroyItem'])->middleware('can:training.administer')->name('training.checklists.items.destroy');
     });
 
     Route::delete('/students/delete/{id}', [TrainingController::class, 'removeStudent'])->middleware(['auth', 'can:training.students.delete'])->name('training.students.destroy');
@@ -191,8 +190,8 @@ Route::middleware('auth')->group(function () {
 // Everything below needs a login; each page adds its own permission
 Route::middleware('auth')->group(function () {
     // Privacy policy accept / deny
-    Route::patch('/privacyaccept', [UserController::class, 'privacyAccept']);
-    Route::delete('/privacydeny', [UserController::class, 'privacyDeny']);
+    Route::patch('/privacyaccept', [UserController::class, 'privacyAccept'])->name('privacy.accept');
+    Route::delete('/privacydeny', [UserController::class, 'privacyDeny'])->name('privacy.deny');
 
     // Your tickets
     Route::get('/dashboard/tickets', [TicketsController::class, 'index'])->name('tickets.index');

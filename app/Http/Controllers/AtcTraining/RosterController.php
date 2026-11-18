@@ -27,6 +27,7 @@ class RosterController extends Controller
 
         // Members set as ATC inactive and the user picker are management-only data, so they are never loaded for other visitors
         $members = RosterMember::with('user')
+            ->whereHas('user', fn ($query) => $query->where('deleted', false))
             ->when(! $canManage, fn ($query) => $query->where('active', 1))
             ->get()
             ->sortBy('cid');
@@ -59,9 +60,11 @@ class RosterController extends Controller
         $user = User::findOrFail($roster->user_id);
         $controllerRole = Role::where('slug', SystemRoleCatalog::CONTROLLER)->firstOrFail();
 
-        SessionLog::where('roster_member_id', $roster->id)->delete();
-        $roster->delete();
-        $user->removeRole($controllerRole);
+        DB::transaction(function () use ($roster, $user, $controllerRole): void {
+            SessionLog::where('roster_member_id', $roster->id)->update(['roster_member_id' => null]);
+            $roster->delete();
+            $user->removeRole($controllerRole);
+        });
 
         AuditLogEntry::staff('Removed '.$user->fullName('FLC').' from the '.($roster->visit ? 'visiting' : 'home').' roster', $user);
 

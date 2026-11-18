@@ -33,6 +33,8 @@ class Student extends Model
 
     public const RECERTIFICATION_LABEL = 'Recertification';
 
+    public const PAUSED_LABEL = 'Training Paused';
+
     public const RATING_TRAINING_LABELS = ['S1 Training', 'S2 Training', 'S3 Training', 'C1 Training'];
 
     public const MANAGED_TRAINING_LABELS = [...self::RATING_TRAINING_LABELS, self::RECERTIFICATION_LABEL];
@@ -79,7 +81,7 @@ class Student extends Model
 
         static::created(function (Student $student): void {
             if (filled($student->user?->email)) {
-                $student->user->notify(new CreateStudent($student));
+                $student->user->notify((new CreateStudent($student))->afterCommit());
             } else {
                 Log::warning('New student notification skipped! Missing User or Email!!!', ['student_id' => $student->id]);
             }
@@ -131,7 +133,13 @@ class Student extends Model
 
     public function isVisitor(): bool
     {
-        return in_array((int) $this->status, self::VISITOR_STATUSES, true);
+        if (in_array((int) $this->status, self::VISITOR_STATUSES, true)) {
+            return true;
+        }
+
+        $this->loadMissing('labels.label');
+
+        return $this->labels->contains(fn (StudentInteractiveLabels $link): bool => $link->label?->visitor === true);
     }
 
     /** The position after the last student in that queue */
@@ -159,7 +167,7 @@ class Student extends Model
     {
         $this->labels()->delete();
         $this->checklistItems()->delete();
-        $this->update(['status' => self::STATUS_COMPLETED]);
+        $this->update(['status' => self::STATUS_COMPLETED, 'instructor_id' => null, 'consolidation_rating' => null]);
     }
 
     /** Training package names in checklist-map order */
@@ -201,15 +209,25 @@ class Student extends Model
     {
         $this->loadMissing('labels.label', 'user');
 
-        if ($this->isRecertification() || $this->currentTrainingLabel(self::RATING_TRAINING_LABELS) !== 'C1 Training') {
-            return [];
+        $reasons = [];
+        $recertifying = $this->isRecertification();
+
+        if (! in_array((int) $this->status, [self::STATUS_ACTIVE, self::STATUS_VISITOR_ACTIVE], true)
+            || $this->consolidationIsPending()
+            || $this->labels->contains(fn ($link) => $link->label?->name === self::PAUSED_LABEL)) {
+            $reasons[] = 'Training must be active before it can be completed!';
         }
 
-        $reasons = [];
-        if ((int) $this->user?->rating_id < 5) {
-            $reasons[] = 'Student must have earned their C1 rating before you can complete training!';
+        if (! $recertifying && (
+            $this->isVisitor()
+            || $this->currentTrainingLabel(self::RATING_TRAINING_LABELS) !== 'C1 Training'
+            || (int) $this->user?->rating_id < 5
+        )) {
+            $reasons[] = 'The student must be in C1 Training and have earned their C1 rating!';
         }
-        if ($this->checklistItems()->where('completed', false)->exists()) {
+
+        if (($recertifying && ! $this->checklistItems()->exists())
+            || $this->checklistItems()->where('completed', false)->exists()) {
             $reasons[] = 'Student must have completed every checklist item before you can complete training!';
         }
 

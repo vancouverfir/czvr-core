@@ -30,7 +30,7 @@ class InstructingSession extends Mailable
         $start = $this->session->start_time->format('Ymd\THis\Z');
         $end = $this->session->end_time->format('Ymd\THis\Z');
         $title = $this->session->title;
-        $description = 'Instructing session with '.$this->session->instructorUser()->fullName('FLC');
+        $description = 'Instructing session with '.($this->session->instructorUser()?->fullName('FLC') ?? 'Vancouver FIR');
 
         $method = $this->action === 'cancelled' ? 'CANCEL' : 'REQUEST';
 

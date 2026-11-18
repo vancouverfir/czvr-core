@@ -153,7 +153,11 @@
                                 <form method="POST" action="{{ route('training.students.consolidation.waive', $student) }}" onsubmit="return confirm('Waive the remaining consolidation requirement for this student?');">@csrf <button type="submit" class="student-action"><i class="fas fa-forward"></i>Waive consolidation</button></form>
                                 @endcan
                                 @elseif ($student->isRecertification())
-                                <button type="button" class="student-action" data-bs-toggle="modal" data-bs-target="#completeTrainingModal"><i class="fas fa-check"></i>Complete Recertification</button>
+                                @php($recertificationLocks = $student->completionLockReasons())
+                                @foreach ($recertificationLocks as $lockReason)
+                                    <div class="student-automation-note"><span>{{ $lockReason }}</span></div>
+                                @endforeach
+                                <button type="button" class="student-action" data-bs-toggle="modal" data-bs-target="#completeTrainingModal" @disabled($recertificationLocks)><i class="fas fa-check"></i>Complete Recertification</button>
                                 @elseif ($isWaitlist || $isVisitor)
                                 @if ($isVisitor || ! $student->startsWithRecertification())
                                 <form method="POST" action="{{ $isVisitor ? route('training.students.promoteVisitor', $student->id) : route('training.students.promote', $student->id) }}">@csrf <button type="submit" class="student-action"><i class="fas fa-arrow-up"></i>{{ $buttonLabel }}</button></form>
@@ -242,7 +246,7 @@
                         <div class="activity-icon"><i class="fas fa-comment text-white"></i></div>
                         <div class="activity-bubble">
                             <div class="d-flex justify-content-between mb-1"><strong class="text-success">{{ $notes->title }}</strong><small>{{ $notes->created_at->diffForHumans() }}</small></div>
-                            <div style="color: var(--czvr-text); font-size: 0.9rem; margin-bottom: 8px;">{!! $notes->content !!}</div>
+                            <div style="color: var(--czvr-text); font-size: 0.9rem; margin-bottom: 8px;">{{ $notes->formattedContent() }}</div>
                             <small><u>{{ $notes->author?->fullName('FLC') ?? 'Unknown' }}</u></small>
                         </div>
                     </div>
@@ -271,7 +275,7 @@
                         </div>
                         <div class="activity-bubble">
                             <div class="d-flex justify-content-between mb-1"><strong class="text-success">{{ $notes->title }}</strong><small>{{ $notes->created_at->diffForHumans() }}</small></div>
-                            <div style="color: var(--czvr-text); font-size: 0.9rem;">{!! $notes->content !!}</div>
+                            <div style="color: var(--czvr-text); font-size: 0.9rem;">{{ $notes->formattedContent() }}</div>
                         </div>
                     </div>
                     @empty

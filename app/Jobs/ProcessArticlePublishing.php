@@ -15,7 +15,7 @@ class ProcessArticlePublishing implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(protected News $article)
+    public function __construct(protected News $article, protected bool $controllersOnly = false)
     {
     }
 
@@ -26,7 +26,10 @@ class ProcessArticlePublishing implements ShouldQueue
         }
 
         User::where('gdpr_subscribed_emails', 1)
+            ->where('deleted', false)
             ->whereNotNull('email')
+            ->where('email', 'not like', '%@invalid.local')
+            ->when($this->controllersOnly ?? false, fn ($query) => $query->whereHas('roles', fn ($roles) => $roles->where('slug', 'controller')))
             ->where('email', '!=', '')
             ->chunkById(100, function ($users): void {
                 foreach ($users as $user) {

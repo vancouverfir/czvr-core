@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Middleware\BookingIsCertified;
 use App\Http\Middleware\CheckCertified;
 use App\Http\Middleware\CheckStudent;
 use App\Http\Middleware\ForceMainDomain;
+use App\Http\Middleware\EnsureAccountIsActive;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -19,18 +19,21 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->trustHosts();
+        $middleware->trustHosts(at: fn () => array_map(
+            fn (string $host): string => '^'.preg_quote($host, '/').'$',
+            [config('app.domain'), config('app.booking_domain'), config('app.training_domain')],
+        ), subdomains: false);
         $middleware->validateCsrfTokens(except: ['emails/unsubscribe/*']);
         $middleware->authenticateSessions();
         $middleware->web(append: [
             ForceMainDomain::class,
+            EnsureAccountIsActive::class,
         ]);
         $middleware->throttleApi();
         $middleware->redirectGuestsTo(fn (Request $request): string => route('auth.connect.login'));
         $middleware->redirectUsersTo(fn (Request $request): string => route('index'));
 
         $middleware->alias([
-            'booking_certified' => BookingIsCertified::class,
             'student' => CheckStudent::class,
             'certified' => CheckCertified::class,
         ]);

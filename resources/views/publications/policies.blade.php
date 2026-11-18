@@ -243,7 +243,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="recipient-name" class="col-form-label">Effective Date</label>
-                                    <input type="datetime" name="date" placeholder="Choose a Date" class="form-control flatpickr policy-date"></input>
+                                    <input type="datetime" name="date" value="{{ $p->releaseDate }}" placeholder="Choose a Date" class="form-control flatpickr policy-date">
                                 </div>
                         </div>
                         <div class="modal-footer">

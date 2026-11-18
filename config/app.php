@@ -54,6 +54,10 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'domain' => parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST),
+    'booking_domain' => env('BOOKING_DOMAIN') ?: 'booking.'.parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST),
+    'training_domain' => env('TRAINING_DOMAIN') ?: 'training.'.parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

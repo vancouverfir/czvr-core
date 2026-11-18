@@ -26,6 +26,7 @@ class RenewalNotification extends Notification implements ShouldQueue
     public function __construct($student)
     {
         $this->student = $student;
+        $this->afterCommit();
     }
 
     /**

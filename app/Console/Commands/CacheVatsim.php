@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Classes\HttpHelper;
 use App\Classes\VatsimHelper;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -41,19 +40,14 @@ class CacheVatsim extends Command
     public function handle(): int
     {
         try {
-            $response = HttpHelper::getClient()
-                ->retry(2, 250, throw: false)
-                ->get(VatsimHelper::getDatafeedUrl());
-
-            if (! $response->successful()) {
-                Log::warning('VATSIM controller cache request failed!', ['status' => $response->status()]);
-
+            $feed = VatsimHelper::getDatafeed();
+            if ($feed === null) {
                 return self::FAILURE;
             }
 
-            $controllers = $response->json('controllers', []);
-            $atisStations = $response->json('atis', []);
-            $pilots = $response->json('pilots', []);
+            $controllers = $feed['controllers'];
+            $atisStations = $feed['atis'] ?? [];
+            $pilots = $feed['pilots'] ?? [];
 
             $finalPositions = [];
             $prefixes = ['CZVR_', 'ZVR_', 'CYVR_', 'CYYJ_', 'CYLW_', 'CYXS_', 'CYXX_', 'CYCD_'];

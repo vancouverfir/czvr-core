@@ -76,7 +76,10 @@ class SyncStudents extends Command
             }
 
             // Entries without a usable CID cannot be matched to anyone
-            $members = array_filter($members, fn ($entry) => is_array($entry['member']) && (int) ($entry['member']['cid'] ?? 0) > 0);
+            $deletedCids = User::where('deleted', true)->pluck('id')->flip();
+            $members = array_filter($members, fn ($entry) => is_array($entry['member'])
+                && ($cid = (int) ($entry['member']['cid'] ?? 0)) > 0
+                && ! $deletedCids->has($cid));
 
             Cache::forever(VatcanFacilities::HOME_FACILITY_CACHE_KEY, collect($members)
                 ->filter(fn ($entry) => is_numeric($entry['member']['facility'] ?? null))
@@ -271,6 +274,10 @@ class SyncStudents extends Command
 
         $student = Student::where('user_id', (int) $member['cid'])->first();
         if (! $student) {
+            return;
+        }
+
+        if ((int) $student->status === Student::STATUS_COMPLETED) {
             return;
         }
 

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class InstructingSession extends Model
 {
     protected $fillable = [
-        'instructor_id', 'student_id', 'title', 'start_time', 'end_time', 'instructor_comment',
+        'instructor_id', 'instructor_user_id', 'student_id', 'title', 'start_time', 'end_time', 'instructor_comment',
     ];
 
     protected function casts(): array
@@ -25,13 +25,18 @@ class InstructingSession extends Model
         return $this->belongsTo(Instructor::class);
     }
 
-    public function instructorUser()
+    public function assignedUser(): BelongsTo
     {
-        if ($this->instructor) {
-            return $this->instructor->user;
+        return $this->belongsTo(User::class, 'instructor_user_id');
+    }
+
+    public function instructorUser(): ?User
+    {
+        if ($this->instructor_user_id !== null) {
+            return $this->assignedUser;
         }
 
-        return User::find($this->instructor_id);
+        return $this->instructor?->user ?? User::find($this->instructor_id);
     }
 
     public function student(): BelongsTo

@@ -39,7 +39,7 @@ class StaffListController extends Controller
         $groups = StaffGroup::with(['members' => fn ($query) => $query->orderBy('id'), 'members.user'])->orderBy('id')->get();
         $ticketCounts = Ticket::selectRaw('staff_member_id, COUNT(*) AS total')->groupBy('staff_member_id')->pluck('total', 'staff_member_id');
         $staff = StaffMember::all();
-        $users = User::all();
+        $users = User::where('deleted', false)->orderBy('id')->get(['id', 'fname', 'lname']);
 
         return view('dashboard.staff.index', compact('groups', 'ticketCounts', 'staff', 'users'));
     }

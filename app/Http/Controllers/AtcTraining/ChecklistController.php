@@ -11,6 +11,7 @@ use App\Models\AtcTraining\LabelChecklistVisitorMap;
 use App\Models\AtcTraining\Student;
 use App\Models\AtcTraining\StudentChecklistItem;
 use App\Models\AtcTraining\StudentLabel;
+use App\Models\Settings\AuditLogEntry;
 use App\Services\TrainingProgressionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -109,6 +110,14 @@ class ChecklistController extends Controller
 
     public function promoteVisitor(Request $request, Student $student, TrainingProgressionService $progression): RedirectResponse
     {
+        $status = (int) $student->status;
+        if (! in_array($status, Student::VISITOR_STATUSES, true) || $student->isRecertification()
+            || ($status === Student::STATUS_VISITOR_ACTIVE
+                && (! $student->checklistItems()->exists() || $student->checklistItems()->where('completed', false)->exists()))
+            || $student->labels()->whereHas('label', fn ($query) => $query->where('name', Student::PAUSED_LABEL))->exists()) {
+            return back()->with('error', 'Complete the current visitor training package before promoting the student.');
+        }
+
         $isNonVatcanVisitor = $student->user->division_code !== 'CAN';
         $trainingOrder = Student::trainingOrder(true);
         $currentLabel = $student->currentTrainingLabel($trainingOrder);
@@ -203,7 +212,10 @@ class ChecklistController extends Controller
             return back()->with('error', 'This checklist is assigned by a label and can\'t be deleted!');
         }
 
-        $checklist->delete();
+        DB::transaction(function () use ($checklist): void {
+            $checklist->delete();
+            AuditLogEntry::staff("Deleted checklist {$checklist->id}: {$checklist->name}");
+        });
 
         return back()->with('success', 'Checklist deleted!');
     }
@@ -240,7 +252,10 @@ class ChecklistController extends Controller
 
     public function destroyItem(ChecklistItem $item): RedirectResponse
     {
-        $item->delete();
+        DB::transaction(function () use ($item): void {
+            $item->delete();
+            AuditLogEntry::staff("Deleted checklist item {$item->id}: {$item->item}");
+        });
 
         return back()->with('success', 'Item deleted!');
     }

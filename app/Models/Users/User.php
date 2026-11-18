@@ -120,8 +120,10 @@ class User extends Authenticatable
     /** The Staff and Administrator roles can only be given, removed or edited by an administrator */
     public function canAssignRole(Role $role): bool
     {
-        return $this->hasRole(SystemRoleCatalog::ADMINISTRATOR)
-            || ! in_array($role->slug, SystemRoleCatalog::administratorOnlySlugs(), true);
+        return $role->slug !== SystemRoleCatalog::LEGACY_ADMIN
+            && ($this->isAdministrator()
+                || (! in_array($role->slug, SystemRoleCatalog::administratorOnlySlugs(), true)
+                    && $role->permissions->every(fn (Permission $permission): bool => $this->canGrantPermission($permission->slug))));
     }
 
     /** Non-administrators can only hand out permissions they hold themselves */
@@ -132,7 +134,7 @@ class User extends Authenticatable
 
     public function canGrantPermission(string $slug): bool
     {
-        return $this->hasRole(SystemRoleCatalog::ADMINISTRATOR) || $this->hasPermissionTo($slug);
+        return $this->hasPermissionTo($slug);
     }
 
     public function rosterProfile(): HasOne

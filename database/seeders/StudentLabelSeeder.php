@@ -28,7 +28,7 @@ class StudentLabelSeeder extends Seeder
             15 => ['Fast Track', 'fas fa-forward', '#00d382ff', 0, 0, 0, null],
             16 => ['Visitor Non-VATCAN', 'fab fa-pagelines', '#FF6347', 0, 0, 1, null],
             17 => ['Visitor VATCAN', 'fab fa-canadian-maple-leaf', '#B22222', 0, 0, 1, null],
-            18 => ['Training Paused', 'fas fa-pause', '#FFEB00', 1, 1, 0, 1],
+            18 => ['Training Paused', 'fas fa-pause', '#FFEB00', 1, 0, 0, null],
         ];
 
         foreach ($labels as $id => $label) {

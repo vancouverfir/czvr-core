@@ -18,10 +18,6 @@ class DiscordClient
 
     private string $token;
 
-    private const AUDIT_CHANNEL = 1219713888636108921;
-
-    private const VANCOUVER_GUILD = 589477926961938443;
-
     public function __construct(string $token)
     {
         $this->token = $token;
@@ -36,7 +32,7 @@ class DiscordClient
     public function AddGuildMember(int $user_id, string $access_token, string $nickname, array $roles): bool
     {
         try {
-            $response = $this->http->put('guilds/'.self::VANCOUVER_GUILD."/members/$user_id", [
+            $response = $this->http->put('guilds/'.config('services.discord.guild_id')."/members/$user_id", [
                 'access_token' => $access_token,
                 'nick' => $nickname,
                 'roles' => $roles,
@@ -57,7 +53,7 @@ class DiscordClient
     public function GetGuildMember(int $user_id): ?object
     {
         try {
-            $response = $this->http->get('guilds/'.self::VANCOUVER_GUILD."/members/$user_id");
+            $response = $this->http->get('guilds/'.config('services.discord.guild_id')."/members/$user_id");
             if (! $response->successful()) {
                 return null;
             }
@@ -75,7 +71,7 @@ class DiscordClient
         try {
             $response = $this->http
                 ->withHeaders(['X-Audit-Log-Reason' => 'User disconnected via website!'])
-                ->delete('guilds/'.self::VANCOUVER_GUILD."/members/$user_id");
+                ->delete('guilds/'.config('services.discord.guild_id')."/members/$user_id");
 
             if (! $response->successful()) {
                 Log::warning('Discord guild member removal failed!', ['status' => $response->status()]);
@@ -105,7 +101,7 @@ class DiscordClient
     public function SendAuditMessage(string $content): void
     {
         try {
-            $response = $this->http->post('channels/'.self::AUDIT_CHANNEL.'/messages', [
+            $response = $this->http->post('channels/'.config('services.discord.audit_channel_id').'/messages', [
                 'content' => $content,
             ]);
 

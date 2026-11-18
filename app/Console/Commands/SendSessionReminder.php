@@ -33,11 +33,13 @@ class SendSessionReminder extends Command
         $start = $now->copy()->addHours(3)->startOfMinute();
         $end = $now->copy()->addHours(3)->endOfMinute();
 
-        $sessions = InstructingSession::whereBetween('start_time', [$start, $end])->get();
+        $sessions = InstructingSession::with(['student.user', 'assignedUser', 'instructor.user'])->whereBetween('start_time', [$start, $end])->get();
 
         foreach ($sessions as $session) {
             $instructorUser = $session->instructorUser();
-            Mail::to($instructorUser->email)->queue(new SessionReminder($instructorUser, $session));
+            if ($instructorUser && ! $instructorUser->deleted) {
+                Mail::to($instructorUser->email)->queue(new SessionReminder($instructorUser, $session));
+            }
 
             $studentUser = $session->student->user;
             Mail::to($studentUser->email)->queue(new SessionReminder($studentUser, $session));

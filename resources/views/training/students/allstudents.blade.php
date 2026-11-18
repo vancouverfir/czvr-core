@@ -16,7 +16,9 @@
                 <p>VATCAN-synced training stages, consolidation, and assigned instructors!</p>
             </div>
             <div class="d-flex gap-2">
-                <a href="{{ route('training.checklists.index') }}" class="btn btn-sm btn-outline-primary">Manage checklists</a>
+                @can('training.administer')
+                    <a href="{{ route('training.checklists.index') }}" class="btn btn-sm btn-outline-primary">Manage checklists</a>
+                @endcan
                 <button type="button" id="toggleLabels" class="btn btn-sm btn-outline-primary">Expand labels</button>
             </div>
         </header>

@@ -18,7 +18,7 @@ class InstructingSessionsController extends Controller
 {
     public function index(): View
     {
-        $upcomingSessions = InstructingSession::with(['student.user', 'instructor.user'])
+        $upcomingSessions = InstructingSession::with(['student.user', 'assignedUser', 'instructor.user'])
             ->where('end_time', '>=', now())
             ->orderBy('start_time')
             ->get();
@@ -54,6 +54,7 @@ class InstructingSessionsController extends Controller
             return $response;
         }
 
+        $data['instructor_user_id'] = Auth::id();
         $data['instructor_id'] = Instructor::where('user_id', Auth::id())->where('active', true)->value('id') ?? Auth::id();
 
         $session = InstructingSession::create($data);
@@ -113,7 +114,9 @@ class InstructingSessionsController extends Controller
 
     private function sendSessionMail(InstructingSession $session, string $type)
     {
-        Mail::to($session->instructorUser()->email)->send(new InstructingSessionMail($session, $type, 'instructor'));
+        if ($instructor = $session->instructorUser()) {
+            Mail::to($instructor->email)->send(new InstructingSessionMail($session, $type, 'instructor'));
+        }
         Mail::to($session->student->user->email)->send(new InstructingSessionMail($session, $type, 'student'));
     }
 
