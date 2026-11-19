@@ -176,20 +176,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('instructor_students', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('student_id')->unsigned();
-            $table->foreign('student_id')->references('id')->on('students');
-            $table->mediumText('student_name');
-            $table->integer('instructor_id')->unsigned();
-            $table->foreign('instructor_id')->references('id')->on('instructors');
-            $table->mediumText('instructor_name');
-            $table->mediumText('instructor_email');
-            $table->integer('assigned_by')->unsigned();
-            $table->foreign('assigned_by')->references('id')->on('users');
-            $table->timestamps();
-        });
-
         Schema::create('student_notes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('student_id')->unsigned();
@@ -199,18 +185,6 @@ return new class extends Migration
             $table->foreign('author_cid')->references('id')->on('users')->nullOnDelete();
             $table->text('title');
             $table->text('content');
-            $table->timestamps();
-        });
-
-        Schema::create('solo_requests', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('student_id')->unsigned();
-            $table->foreign('student_id')->references('id')->on('students');
-            $table->integer('instructor_id')->unsigned()->nullable();
-            $table->foreign('instructor_id')->references('id')->on('instructors');
-            $table->text('position');
-            $table->integer('approved');
-            $table->dateTime('approved_at')->nullable();
             $table->timestamps();
         });
 
@@ -452,18 +426,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('mentoring_sessions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->dateTime('time');
-            $table->text('position');
-            $table->longText('notes');
-            $table->unsignedInteger('student');
-            $table->foreign('student')->references('id')->on('users');
-            $table->unsignedInteger('instructor');
-            $table->foreign('instructor')->references('id')->on('users');
-            $table->timestamps();
-        });
-
         Schema::create('core_info', function (Blueprint $table) {
             $table->increments('id');
             $table->text('sys_name');
@@ -580,7 +542,6 @@ return new class extends Migration
         Schema::dropIfExists('training_waittimes');
         Schema::dropIfExists('homepage_images');
         Schema::dropIfExists('core_info');
-        Schema::dropIfExists('mentoring_sessions');
         Schema::dropIfExists('meeting_minutes');
         Schema::dropIfExists('audit_log_entries');
         Schema::dropIfExists('atc_resources');
@@ -600,9 +561,7 @@ return new class extends Migration
         Schema::dropIfExists('session_logs');
         Schema::dropIfExists('roster');
         Schema::dropIfExists('monitored_positions');
-        Schema::dropIfExists('solo_requests');
         Schema::dropIfExists('student_notes');
-        Schema::dropIfExists('instructor_students');
         Schema::dropIfExists('instructing_sessions');
         Schema::dropIfExists('students');
         Schema::dropIfExists('instructors');
